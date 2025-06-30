@@ -2,9 +2,9 @@
   {
     "objectID": "examples/notebooks/introduction.html",
     "href": "examples/notebooks/introduction.html",
-    "title": "Introduction to Python_package_template",
+    "title": "Introduction to talk_with_fews",
     "section": "",
-    "text": "This is an example of how the documentation could work\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom python_package_template import Example\n\n\nexample = Example(factor=2)\nresult = example.calculation(np.array([1, 2, 3]), np.array([4, 5, 6]))\n\n\nresult\n\narray([25., 49., 81.])\n\n\n\nplt.title(\"Example showing the documentation \")\nplt.plot(result);"
+    "text": "This is an example of how the documentation could work\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom talk_with_fews import Example\n\n\nexample = Example(factor=2)\nresult = example.calculation(np.array([1, 2, 3]), np.array([4, 5, 6]))\n\n\nresult\n\narray([25., 49., 81.])\n\n\n\nplt.title(\"Example showing the documentation \")\nplt.plot(result);"
   },
   {
     "objectID": "reference/index.html",
@@ -14,8 +14,8 @@
     "text": "Example\nExample class"
   },
   {
-    "objectID": "reference/index.html#python_package_template",
-    "href": "reference/index.html#python_package_template",
+    "objectID": "reference/index.html#talk_with_fews",
+    "href": "reference/index.html#talk_with_fews",
     "title": "API Reference",
     "section": "",
     "text": "Example\nExample class"
@@ -44,7 +44,7 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Python_package_template",
+    "title": "talk_with_fews",
     "section": "",
     "text": "This package contains a template for python projects. This is developed by HKV and is published under the GNU GPL-3 license."
   }
