@@ -1,9 +1,9 @@
 [project]
-name = "Python_package_template"
+name = "talk_with_fews"
 version = "0.0.1"
-description = "Python package template"
+description = "AI agents to talk with DelftFEWS"
 channels = ["conda-forge"]
-platforms = ["win-64", "linux-64", "osx-64"]
+platforms = ["osx-arm64", "osx-64", "win-64", "linux-64"]
 readme = "README.md"
 license = "GPL-3.0"
 license-file = "LICENSE"
@@ -15,7 +15,7 @@ install = "pre-commit install"
 # Docs
 quartodoc-build = { cmd = "quartodoc build && rm objects.json", cwd = "docs" ,inputs = [
     "docs/_quarto.yml",
-    "src/Python_package_template",
+    "src/talk_with_fews",
     ],outputs = [
     "docs/reference/"
     ]}
@@ -29,6 +29,10 @@ quarto-render = { cmd = "export QUARTO_PYTHON=python && quarto render docs --to 
 docs = { depends-on = ["quarto-preview"] }
 pre-commit = "pre-commit run --all-files"
 
+test = "pytest"
+start = { cmd = "streamlit run app/streamlit_app.py" } 
+docker = { cmd = "streamlit run app/streamlit_app.py --server.port=8501 --server.address=0.0.0.0" } 
+
 [tool.ruff]
 # Ruff configuration, see https://docs.astral.sh/ruff/configuration/
 #lint.ignore = [
@@ -40,26 +44,27 @@ pre-commit = "pre-commit run --all-files"
     #"T201",  # Use of print statement (use print() function instead)
 #]
 
-[feature.common.dependencies]
+[dependencies]
 python = ">=3.11"
 ipykernel ="*"
 ipywidgets ="*"
-matplotlib ="*"
 nbclient ="*"
 nbformat ="*"
-numpy ="*"
-openpyxl = "*"
-pandas ="*"
 pre-commit = "*"
-pytest ="*"
 pytest-cov = "*"
 quarto = ">=1.5.57"
 quartodoc = ">=0.9.1"
 ruff = ">=0.8.1"
 tqdm = "*"
+python-dotenv = ">=1.0.1"
+openai = ">=1.12.0"
+pydantic = ">=2.0.0"
+pydantic-ai = "*"
+streamlit = ">=1.32.0"
+pytest = ">=8.0.2"
+pytest-asyncio = ">=0.25.0"
 
-[feature.common.pypi-dependencies]
-python_package_template = { path = "src", editable = true }
+[pypi-dependencies]
+streamlit_markdown = ">=1.1.0"
+talk_with_fews = { path = "src", editable = true }
 
-[environments]
-default = { features = ["common"] }

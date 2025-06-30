@@ -1,6 +1,6 @@
 import numpy as np
 
-from python_package_template import Example
+from talk_with_fews import Example
 
 
 def test_Example():

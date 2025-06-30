@@ -1,23 +1,18 @@
-# Python_package_template
+# talk_with_fews
 
 This template package contains core functionality for a python package, developed to showcase and speed up the process of developing a python package. This Python package template is developed by HKV and is published under the GNU GPL-3 license.
 
-## Configuring the template (remove before publishing)
+## Developing
 
-### Naming
-
-The current package name is `python_package_template`, if you search for this in your IDE (e.g. VS Code) you can replace these with your given name.
+Here are a couple quick useful things to know when using this repo.
 
 ### Pre-commit
 
-This repo has an example pre-commit configuration in `.pre-commit-config.yaml`.
-Depending on your needs you might want to uncomment certain sections.
-Let us know by making an issue if we missed a useful pre-commit.
+This repo uses pre-commit, make sure you run `pixi run pre-commit` before you commit anything.
 
 ### GitHub Tests
 
-In the folder `.github` there are four workflows which run automatically.
-You will need to adjust these depending on your needs. 
+In the folder `.github` there are four workflows which run automatically when submitting a pull request.
 
 ### Pixi
 
@@ -25,35 +20,40 @@ Read bellow for more information on pixi and a quick guideline you can include i
 
 ## Getting started
 
-### Using install (in future)
+### Using install
 
-run `pip install Python_package_template`
+run `pip install talk_with_fews`
 
 ### developing with pixi
 
 To manage the environment we use Pixi.
 
-#### windows
+<details>
+<summary>windows</summary>
 
 ```powershell
 iwr -useb https://pixi.sh/install.ps1 | iex
 ```
 
-#### Linux/Mac
+</details>
+
+<details>
+<summary>Linux/Mac</summary>
 
 ```bash
 curl -fsSL https://pixi.sh/install.sh | bash
 ```
+</details>
 
 #### installing
 
 With the `Pixi` command in powershell install the python environment:
 
 ```bash
- cd ../python_package_template
+ cd ../talk_with_fews
  pixi install
 ```
 
-The `pixi.lock` file loads the correct packages and downloads to the `.pixi` file, you can use this environment in developing and resting.
+The `pixi.lock` file loads the correct packages and downloads to the `.pixi` folder.
 
-For questions about how to use this package contact `dupuits@hkv.nl` or `haasnoot@hkv.nl`.
+For questions about how to use this package contact `hoek@hkv.nl` or `haasnoot@hkv.nl`.
