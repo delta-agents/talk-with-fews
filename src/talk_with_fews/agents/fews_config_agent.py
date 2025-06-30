@@ -10,7 +10,7 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.agent import AgentRunResult
 
-from talk_with_fews.models.models import Deps
+from talk_with_fews.agents.dependencies import Deps
 
 # Import logging utilities from the dedicated module
 from talk_with_fews.utils.logging_utils import logger, setup_logging
@@ -35,7 +35,7 @@ from talk_with_fews.utils.schema_utils import (
     extract_db_schema_as_dict,
     generate_llm_context,
 )
-from talk_with_fews.models import AgentResponse
+from talk_with_fews.models.base import AgentResponse
 
 
 class FEWSConfigAgent:

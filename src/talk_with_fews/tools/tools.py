@@ -8,7 +8,7 @@ import sqlite3
 from typing import Dict, Any
 from pydantic_ai import RunContext, ModelRetry
 
-from talk_with_fews.models.models import (
+from talk_with_fews.models.dead_point import (
     Deps,
     SQLQueryInput,
     SQLQueryOutput,

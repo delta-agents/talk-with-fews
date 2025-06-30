@@ -1,0 +1,39 @@
+from typing import List
+from pydantic import BaseModel, Field
+
+from talk_with_fews.models.timeseries_properties import TimeSeriesProperties
+
+class DescribeTimeSeriesOutput(BaseModel):
+    """Model for the output of the describe_timeseries tool.
+
+    This model provides a complete description of a time series, including both its structured data
+    and a formatted markdown representation for display purposes.
+    """
+
+    results: List[TimeSeriesProperties] = Field(
+        ...,
+        description="List containing the time series properties and its associated transformations",
+    )
+    markdown_content: str = Field(
+        ...,
+        description="Pre-formatted markdown string that displays the time series information in a human-readable format, including properties and transformations tables",
+    )
+
+
+class DescribeTimeSeriesInput(BaseModel):
+    """Model for the input of the describe_timeseries tool.
+
+    This model defines the required parameters to describe a specific time series.
+
+    Attributes:
+        timeseries_id: The unique identifier of the time series to describe
+        include_transformations: Whether to include information about transformations using this time series
+    """
+
+    timeseries_id: int = Field(
+        ..., description="The unique identifier of the time series to describe"
+    )
+    include_transformations: bool = Field(
+        True,
+        description="Whether to include information about transformations using this time series",
+    )
