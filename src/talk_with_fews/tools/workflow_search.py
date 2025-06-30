@@ -1,10 +1,13 @@
-
 from pydantic_ai import RunContext
 
 from talk_with_fews.models.sql_query import SQLQueryInput
 from talk_with_fews.models.base import Deps
 
-from talk_with_fews.models.workflow_search import WorkflowSearchInput, WorkflowSearchOutput, WorkflowSearchResult
+from talk_with_fews.models.workflow_search import (
+    WorkflowSearchInput,
+    WorkflowSearchOutput,
+    WorkflowSearchResult,
+)
 from talk_with_fews.tools.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import log_tool_call
 
@@ -67,4 +70,3 @@ Found {len(workflow_results)} workflows matching the pattern '{input.name_patter
     return WorkflowSearchOutput(
         results=workflow_results, markdown_content=markdown_content
     )
-

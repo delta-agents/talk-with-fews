@@ -1,12 +1,14 @@
-
 from pydantic_ai import ModelRetry, RunContext
 
 from talk_with_fews.models.sql_query import SQLQueryInput
 from talk_with_fews.models.base import Deps, TimeSeriesProperties
 
-from talk_with_fews.models.timeseries_describe import DescribeTimeSeriesInput, DescribeTimeSeriesOutput
+from talk_with_fews.models.timeseries_describe import (
+    DescribeTimeSeriesInput,
+    DescribeTimeSeriesOutput,
+)
 from talk_with_fews.tools.sql_query import execute_query
-from talk_with_fews.utils.logging_utils import log_tool_call, logger
+from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.utils.schema_utils import format_timeseries_description
 
 
@@ -101,4 +103,3 @@ async def describe_timeseries(
     return DescribeTimeSeriesOutput(
         results=[TimeSeriesProperties(**time_series)], markdown_content=markdown_content
     )
-

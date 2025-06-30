@@ -1,14 +1,17 @@
-
-
 from pydantic_ai import ModelRetry, RunContext
 
-from talk_with_fews.models.deadpoint import DeadPoint, DeadPointProducer, DeadPointsAnalysisOutput
+from talk_with_fews.models.deadpoint import (
+    DeadPoint,
+    DeadPointProducer,
+    DeadPointsAnalysisOutput,
+)
 from talk_with_fews.models.sql_query import SQLQueryInput
 
 from talk_with_fews.tools.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import log_tool_call, logger
 from talk_with_fews.models.base import Deps, ModuleSummary
 from talk_with_fews.utils.schema_utils import format_timeseries_description
+
 
 @log_tool_call
 async def analyze_dead_points(
@@ -311,5 +314,3 @@ Found {len(dead_points)} dead points across {len(module_counts)} modules.
         error_msg = f"Error analyzing dead points: {str(e)}"
         logger.error(error_msg)
         raise ModelRetry(error_msg)
-
-

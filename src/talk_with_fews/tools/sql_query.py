@@ -1,4 +1,3 @@
-
 import sqlite3
 from pydantic_ai import RunContext, ModelRetry
 
@@ -10,6 +9,7 @@ from talk_with_fews.utils.schema_utils import (
     create_schema_info_dict,
     diagnose_sql_error,
 )
+
 
 @log_tool_call
 async def execute_query(ctx: RunContext[Deps], input: SQLQueryInput) -> SQLQueryOutput:
@@ -55,4 +55,3 @@ async def execute_query(ctx: RunContext[Deps], input: SQLQueryInput) -> SQLQuery
                 error_msg += f" - {error_diagnosis}"
 
         raise ModelRetry(error_msg)
-

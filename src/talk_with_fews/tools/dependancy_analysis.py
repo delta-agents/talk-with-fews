@@ -1,12 +1,15 @@
-
 from pydantic_ai import ModelRetry, RunContext
 
-from talk_with_fews.models.dependency_analysis import DependencyAnalysisInput, DependencyAnalysisOutput
+from talk_with_fews.models.dependency_analysis import (
+    DependencyAnalysisInput,
+    DependencyAnalysisOutput,
+)
 from talk_with_fews.models.sql_query import SQLQueryInput
 
 from talk_with_fews.tools.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import log_tool_call, logger
 from talk_with_fews.models.base import Deps
+
 
 @log_tool_call
 async def analyze_dependencies(
@@ -181,4 +184,3 @@ async def analyze_dependencies(
     return DependencyAnalysisOutput(
         results=result.results, markdown_content=markdown_content
     )
-

@@ -59,5 +59,3 @@ class DeadPointsAnalysisOutput(BaseModel):
         ...,
         description="Pre-formatted markdown string that displays the analysis results",
     )
-
-

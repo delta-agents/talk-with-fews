@@ -12,7 +12,6 @@ from talk_with_fews.models.base import Transformation
 from talk_with_fews.models.base import TimeSeriesProperties
 
 
-
 class TimeSeriesSearchResult(TimeSeriesProperties):
     """Model representing a time series search result.
 

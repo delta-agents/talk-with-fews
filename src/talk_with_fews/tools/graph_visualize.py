@@ -14,8 +14,13 @@ from talk_with_fews.models.workflow_details import WorkflowDetailsInput
 from talk_with_fews.tools.timeseries_describe import describe_timeseries
 from talk_with_fews.tools.transformation_details import get_transformation_details
 from talk_with_fews.tools.workflows_details import get_workflow_details
-from talk_with_fews.models.graph import GraphEdge, GraphLayout, GraphNode, GraphVisualizationInput, GraphVisualizationOutput
-
+from talk_with_fews.models.graph import (
+    GraphEdge,
+    GraphLayout,
+    GraphNode,
+    GraphVisualizationInput,
+    GraphVisualizationOutput,
+)
 
 
 async def visualize_graph(

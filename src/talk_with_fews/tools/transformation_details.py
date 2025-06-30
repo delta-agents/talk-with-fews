@@ -1,12 +1,15 @@
-
 from pydantic_ai import ModelRetry, RunContext
 
 from talk_with_fews.models.base import Deps
 from talk_with_fews.models.sql_query import SQLQueryInput
 
-from talk_with_fews.models.transformation_details import TransformationDetails, TransformationDetailsInput, TransformationDetailsOutput
+from talk_with_fews.models.transformation_details import (
+    TransformationDetails,
+    TransformationDetailsInput,
+    TransformationDetailsOutput,
+)
 from talk_with_fews.tools.sql_query import execute_query
-from talk_with_fews.utils.logging_utils import log_tool_call, logger
+from talk_with_fews.utils.logging_utils import log_tool_call
 
 
 @log_tool_call
@@ -142,4 +145,3 @@ This transformation processes the following time series:
         results=[TransformationDetails(**transformation_data[input.transformation_id])],
         markdown_content=markdown_content,
     )
-

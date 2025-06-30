@@ -5,6 +5,7 @@ from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
 from talk_with_fews.tools.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import logger
 
+
 @log_tool_call
 async def find_workflow_call_hierarchy(
     ctx: RunContext[Deps], input: dict

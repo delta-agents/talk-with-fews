@@ -1,10 +1,12 @@
-
 from pydantic_ai import ModelRetry, RunContext
 
 from talk_with_fews.models.sql_query import SQLQueryInput
 from talk_with_fews.models.base import Deps
 
-from talk_with_fews.models.timeseries_search import TimeSeriesSearchOutput, TimeSeriesSearchResult
+from talk_with_fews.models.timeseries_search import (
+    TimeSeriesSearchOutput,
+    TimeSeriesSearchResult,
+)
 from talk_with_fews.tools.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import log_tool_call, logger
 
@@ -123,5 +125,3 @@ Found {len(time_series_results)} time series matching the criteria.
     return TimeSeriesSearchOutput(
         results=time_series_results, markdown_content=markdown_content
     )
-
-
