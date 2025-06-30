@@ -1,4 +1,3 @@
 ---
 rules:
-  new-lines:
-    type: dos
+  new-lines: disable

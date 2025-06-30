@@ -10,23 +10,23 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.agent import AgentRunResult
 
-from talk_with_fews.models.models import Deps
+from talk_with_fews.models.base import Deps
 
 # Import logging utilities from the dedicated module
 from talk_with_fews.utils.logging_utils import logger, setup_logging
 
-from talk_with_fews.tools.tools import (
-    execute_query,
-    search_workflows,
-    search_timeseries,
-    describe_timeseries,
-    search_transformations,
-    get_transformation_details,
-    analyze_dependencies,
-    find_workflow_call_hierarchy,
-    get_database_schema,
+from talk_with_fews.tools import (
     analyze_dead_points,
+    analyze_dependencies,
+    get_database_schema,
     visualize_graph,
+    execute_query,
+    describe_timeseries,
+    search_timeseries,
+    get_transformation_details,
+    search_transformations,
+    find_workflow_call_hierarchy,
+    search_workflows,
 )
 
 from talk_with_fews.utils.utils import connect_to_database
@@ -35,7 +35,7 @@ from talk_with_fews.utils.schema_utils import (
     extract_db_schema_as_dict,
     generate_llm_context,
 )
-from talk_with_fews.models import AgentResponse
+from talk_with_fews.models.base import AgentResponse
 
 
 class FEWSConfigAgent:
