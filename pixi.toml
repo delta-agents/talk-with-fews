@@ -63,6 +63,7 @@ pydantic-ai = "*"
 streamlit = ">=1.32.0"
 pytest = ">=8.0.2"
 pytest-asyncio = ">=0.25.0"
+matplotlib = ">=3.10.3,<4"
 
 [pypi-dependencies]
 streamlit_markdown = ">=1.1.0"
