@@ -20,8 +20,13 @@ authors = [
 ]
 
 dependencies = [
-  "numpy",
-  "pydantic"
+  "python-dotenv",
+  "openai",
+  "pydantic",
+  "pydantic-ai",
+  "streamlit",
+  "pytest",
+  "pytest-asyncio",
 ]
 
 [project.urls]

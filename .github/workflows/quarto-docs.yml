@@ -1,3 +1,4 @@
+---
 name: Render and Publish Docs
 
 on:
@@ -12,8 +13,8 @@ concurrency:
 
 # You need these permissions to publish to GitHub pages
 permissions:
-    contents: write
-    pages: write
+  contents: write
+  pages: write
 
 jobs:
   build-deploy:

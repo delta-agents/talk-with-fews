@@ -1,4 +1,4 @@
-# talk_with_fews
+# Talk with FEWS
 
 This template package contains core functionality for a python package, developed to showcase and speed up the process of developing a python package. This Python package template is developed by HKV and is published under the GNU GPL-3 license.
 

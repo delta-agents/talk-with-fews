@@ -30,8 +30,8 @@ docs = { depends-on = ["quarto-preview"] }
 pre-commit = "pre-commit run --all-files"
 
 test = "pytest"
-start = { cmd = "streamlit run app/streamlit_app.py" } 
-docker = { cmd = "streamlit run app/streamlit_app.py --server.port=8501 --server.address=0.0.0.0" } 
+start = { cmd = "streamlit run app/streamlit_app.py" }
+docker = { cmd = "streamlit run app/streamlit_app.py --server.port=8501 --server.address=0.0.0.0" }
 
 [tool.ruff]
 # Ruff configuration, see https://docs.astral.sh/ruff/configuration/
@@ -67,4 +67,3 @@ pytest-asyncio = ">=0.25.0"
 [pypi-dependencies]
 streamlit_markdown = ">=1.1.0"
 talk_with_fews = { path = "src", editable = true }
-

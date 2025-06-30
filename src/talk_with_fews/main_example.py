@@ -11,6 +11,7 @@ class Example(BaseModel):
     ----------
     factor : float
         Power factor for calculation
+
     """
 
     factor: float
@@ -32,7 +33,7 @@ class Example(BaseModel):
 
         Returns
         -------
-            Updated results.
+        Updated results.
         """
 
         # Perform the calculation
