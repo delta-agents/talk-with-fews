@@ -8,7 +8,6 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
-
 class GraphNode(BaseModel):
     """Model representing a node in a graph visualization.
 
@@ -125,4 +124,3 @@ class GraphVisualizationOutput(BaseModel):
     markdown_content: Optional[str] = Field(
         None, description="Optional markdown representation of the graph"
     )
-

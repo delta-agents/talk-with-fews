@@ -8,7 +8,6 @@ from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 
 
-
 class SQLQueryInput(BaseModel):
     """
     Input for SQL query.
@@ -37,4 +36,3 @@ class SQLQueryOutput(BaseModel):
     )
     row_count: int = Field(..., description="Number of rows returned by the query")
     query_executed: str = Field(..., description="The SQL query that was executed")
-

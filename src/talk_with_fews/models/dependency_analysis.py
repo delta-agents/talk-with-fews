@@ -8,7 +8,6 @@ from typing import List, Dict, Any
 from pydantic import BaseModel, Field
 
 
-
 class DependencyAnalysisOutput(BaseModel):
     """Model for the output of the analyze_dependencies tool.
 

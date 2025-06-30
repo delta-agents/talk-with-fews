@@ -8,7 +8,6 @@ from typing import List
 from pydantic import BaseModel, Field
 
 
-
 class WorkflowSearchResult(BaseModel):
     """Model representing a workflow search result."""
 
@@ -18,6 +17,7 @@ class WorkflowSearchResult(BaseModel):
     module_config_ids: List[str] = Field(
         ..., description="List of module configuration IDs in this workflow"
     )
+
 
 class WorkflowSearchInput(BaseModel):
     """

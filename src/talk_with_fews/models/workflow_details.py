@@ -4,7 +4,8 @@ Pydantic models for the FEWS Configuration Agent.
 This module defines the models used by the agent to query and analyze FEWS configurations.
 """
 
-from pydantic import BaseModel, Field, List
+from pydantic import BaseModel, Field
+from typing import List
 
 from talk_with_fews.models.base import ModuleInstanceCall
 
@@ -23,6 +24,7 @@ class WorkflowDetails(BaseModel):
         ..., description="List of module instance calls in this workflow"
     )
 
+
 class WorkflowDetailsInput(BaseModel):
     """Model for the input of the get_workflow_details tool.
 
@@ -35,6 +37,7 @@ class WorkflowDetailsInput(BaseModel):
     workflow_id: int = Field(
         ..., description="The unique identifier of the workflow to describe"
     )
+
 
 class WorkflowDetailsOutput(BaseModel):
     """Model for the output of the get_workflow_details tool.
@@ -51,4 +54,3 @@ class WorkflowDetailsOutput(BaseModel):
         ...,
         description="Pre-formatted markdown string that displays the workflow information in a human-readable format",
     )
-

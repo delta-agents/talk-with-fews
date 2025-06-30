@@ -8,7 +8,6 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-
 class TransformationSearchResult(BaseModel):
     """Model representing a transformation search result.
 

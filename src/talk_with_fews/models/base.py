@@ -1,5 +1,7 @@
-from typing import Optional
+import sqlite3
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
+
 
 class Transformation(BaseModel):
     """Model representing a transformation in the FEWS configuration.
@@ -39,6 +41,7 @@ class Transformation(BaseModel):
         None, description="Qualifiers of the linked time series"
     )
 
+
 class ModuleInstanceCall(BaseModel):
     """Model representing a module instance call within a workflow.
 
@@ -68,7 +71,48 @@ class TimeSeriesLink(BaseModel):
     )
     tss_id: int = Field(..., description="Unique identifier of the time series")
 
-  
+
+class TimeSeriesProperties(BaseModel):
+    """Model representing the core properties of a time series in the FEWS configuration.
+
+    A time series is a sequence of data points indexed in time order. In FEWS, each time series
+    has specific properties that define its characteristics and how it's used in the system.
+    """
+
+    id: int = Field(..., description="Unique identifier of the time series")
+    modins: str = Field(
+        ..., description="Module instance that owns or manages this time series"
+    )
+    vtype: str = Field(
+        ..., description="Value type of the time series (e.g., 'scalar', 'vector')"
+    )
+    parid: str = Field(
+        ..., description="Parameter identifier (e.g., 'bodemvocht_e' for soil moisture)"
+    )
+    qualifiers: str = Field(
+        ...,
+        description="Additional qualifiers that specify the time series (e.g., '30cm_minmv' for 30cm minimum value)",
+    )
+    tstype: str = Field(
+        ..., description="Type of time series (e.g., 'external historical', 'internal')"
+    )
+    timess: str = Field(
+        ..., description="Time step of the time series (e.g., '10minute', '1hour')"
+    )
+    description: str = Field(
+        ...,
+        description="Formatted string describing the time series using the standard template",
+    )
+    endpoint: bool = Field(False, description="Whether this time series is an endpoint")
+    endpoint_desc: Optional[str] = Field(
+        None, description="Endpoint description if the time series is an endpoint"
+    )
+    transformations: Optional[List[Transformation]] = Field(
+        None,
+        description="Optional list of transformations that use this time series as input or output",
+    )
+
+
 class AgentResponse(BaseModel):
     """
     Model for standardized agent responses.
@@ -93,8 +137,43 @@ class AgentResponse(BaseModel):
         description="Optional mermaid diagram code, makee sure it uses nodes on a new line",
     )
 
+
 class ModuleSummary(BaseModel):
     """Model representing a summary of dead points by module."""
 
     module: str = Field(..., description="Module instance name")
     count: int = Field(..., description="Number of dead points in this module")
+
+
+class ToolCallTracker:
+    """Class to track tool calls and their results.
+
+    This class is used to maintain a history of tool calls and their outcomes,
+    which can be useful for debugging and analysis.
+    """
+
+    def __init__(self):
+        self.calls = []
+
+
+class Deps:
+    """
+    Dependencies for the FEWS Configuration Agent.
+
+    Attributes:
+        db_connection: SQLite database connection
+        db_path: Path to the SQLite database
+        schema: Comprehensive database schema information
+        tracker: Tool call tracker
+    """
+
+    def __init__(
+        self,
+        db_path: str = None,
+        db_connection: sqlite3.Connection = None,
+        tracker: ToolCallTracker = None,
+    ):
+        self.db_path = db_path
+        self.db_connection = db_connection
+        self.schema: Optional[Dict[str, Any]] = None
+        self.tracker = tracker

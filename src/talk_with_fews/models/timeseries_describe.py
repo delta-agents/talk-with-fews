@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from talk_with_fews.models.timeseries_properties import TimeSeriesProperties
+from talk_with_fews.models.base import TimeSeriesProperties
 
 class DescribeTimeSeriesOutput(BaseModel):
     """Model for the output of the describe_timeseries tool.

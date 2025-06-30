@@ -36,6 +36,7 @@ class TransformationDetails(BaseModel):
         ..., description="List of time series connected to this transformation"
     )
 
+
 class TransformationDetailsInput(BaseModel):
     """Model for the input of the get_transformation_details tool.
 
@@ -48,7 +49,8 @@ class TransformationDetailsInput(BaseModel):
     transformation_id: int = Field(
         ..., description="The unique identifier of the transformation to describe"
     )
-    
+
+
 class TransformationDetailsOutput(BaseModel):
     """Model for the output of the get_transformation_details tool.
 
@@ -64,4 +66,3 @@ class TransformationDetailsOutput(BaseModel):
         ...,
         description="Pre-formatted markdown string that displays the transformation information in a human-readable format",
     )
-
