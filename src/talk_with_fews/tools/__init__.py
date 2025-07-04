@@ -1,5 +1,5 @@
 from talk_with_fews.tools.deadpoint_analysis import analyze_dead_points
-from talk_with_fews.tools.dependancy_analysis import analyze_dependencies
+from talk_with_fews.tools.dependency_analysis import analyze_dependencies
 from talk_with_fews.tools.get_database_schema import get_database_schema
 from talk_with_fews.tools.graph_visualize import visualize_graph
 from talk_with_fews.tools.sql_query import execute_query
