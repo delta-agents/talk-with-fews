@@ -8,12 +8,12 @@ from talk_with_fews.utils.schema_utils import (
     extract_db_schema_as_dict,
     get_table_relationships,
 )
-
+from talk_with_fews.models.database_schema import DatabaseSchemaOutput
 
 @log_tool_call
 async def get_database_schema(
     ctx: RunContext[Deps], input: dict = None
-) -> Dict[str, Any]:
+) -> DatabaseSchemaOutput:
     """
     Get the database schema information to understand the structure of the FEWS configuration database.
 
@@ -52,11 +52,11 @@ async def get_database_schema(
         ctx.deps.schema = schema
 
         # Return formatted schema information
-        return {
-            "tables": create_schema_info_dict(schema),
-            "relationships": get_table_relationships(schema),
-            "sample_data": schema.get("sample_data", {}),
-        }
+        return DatabaseSchemaOutput(
+            tables=create_schema_info_dict(schema),
+            relationships=get_table_relationships(schema),
+            sample_data=schema.get("sample_data", {}),
+        )
 
     except Exception as e:
         error_msg = f"Error retrieving database schema: {str(e)}"
