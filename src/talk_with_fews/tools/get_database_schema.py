@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from pydantic_ai import ModelRetry, RunContext
 
 from talk_with_fews.utils.logging_utils import log_tool_call, logger
@@ -9,6 +8,7 @@ from talk_with_fews.utils.schema_utils import (
     get_table_relationships,
 )
 from talk_with_fews.models.database_schema import DatabaseSchemaOutput
+
 
 @log_tool_call
 async def get_database_schema(
