@@ -1,9 +1,13 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
 
 from fastapi.testclient import TestClient
 from src.main import app
+
 
 def test_get_database_schema():
     client = TestClient(app)
@@ -13,4 +17,4 @@ def test_get_database_schema():
     assert response.status_code == 200
     assert "tables" in response.json()
     assert "relationships" in response.json()
-    assert "sample_data" in response.json() 
+    assert "sample_data" in response.json()
