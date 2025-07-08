@@ -56,7 +56,7 @@ from talk_with_fews.models.transformation_details import TransformationDetailsIn
 from talk_with_fews.tools.workflow_hierarchy import find_workflow_call_hierarchy
 
 router = APIRouter()
-mcp = FastMCP("TalkWithFEWS", stateless_http=True)
+mcp = FastMCP("TalkWithFEWS")
 
 # describe_timeseries tool registration
 @mcp.tool()

@@ -19,3 +19,4 @@ docs/reference
 .cursor
 /docs/_site
 env/.env
+.coverage

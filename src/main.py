@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from talk_with_fews.routers.tools_router import router, mcp
 
 # Mount MCP at /mcp
-mcp_app = mcp.http_app(path='/', transport="streamable-http")
+mcp_app = mcp.http_app(path='/', transport="streamable-http",  stateless_http=True)
 
 app = FastAPI(
     title="Talk with FEWS Tools API",
