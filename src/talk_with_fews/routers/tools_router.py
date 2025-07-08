@@ -60,121 +60,88 @@ mcp = FastMCP("TalkWithFEWS", stateless_http=True)
 
 # describe_timeseries tool registration
 @mcp.tool()
-@router.post("/tools/describe_timeseries", response_model=DescribeTimeSeriesOutput)
-@auto_docstring(
-    description="Get a complete description of a time series, including its basic properties and optionally any transformations that use it as input or output.",
-    model_class=DescribeTimeSeriesOutput
-)
+@router.post("/tools/describe_timeseries")
+@auto_docstring("Get a complete description of a time series, including its basic properties and optionally any transformations that use it as input or output.")
 async def describe_timeseries_mcp(input: DescribeTimeSeriesInput) -> DescribeTimeSeriesOutput:
     ctx = get_runtime_ctx()
     return await describe_timeseries(ctx, input)
 
 # search_timeseries tool registration
 @mcp.tool()
-@router.post("/tools/search_timeseries", response_model=TimeSeriesSearchOutput)
-@auto_docstring(
-    description="Search for time series sets by parameter, qualifier, module, or endpoint status.",
-    model_class=TimeSeriesSearchOutput
-)
+@router.post("/tools/search_timeseries")
+@auto_docstring("Search for time series sets by parameter, qualifier, module, or endpoint status.")
 async def search_timeseries_mcp(input: TimeSeriesSearchOutput) -> TimeSeriesSearchOutput:
     ctx = get_runtime_ctx()
     return await search_timeseries(ctx, input)
 
 # search_transformations tool registration
 @mcp.tool()
-@router.post("/tools/search_transformations", response_model=TransformationSearchOutput)
-@auto_docstring(
-    description="Search for transformations matching the given criteria.",
-    model_class=TransformationSearchOutput
-)
+@router.post("/tools/search_transformations")
+@auto_docstring("Search for transformations matching the given criteria.")
 async def search_transformations_mcp(input: TransformationSearchInput) -> TransformationSearchOutput:
     ctx = get_runtime_ctx()
     return await search_transformations(ctx, input)
 
 # search_workflows tool registration
 @mcp.tool()
-@router.post("/tools/search_workflows", response_model=WorkflowSearchOutput)
-@auto_docstring(
-    description="Search for workflows by name pattern.",
-    model_class=WorkflowSearchOutput
-)
+@router.post("/tools/search_workflows")
+@auto_docstring("Search for workflows by name pattern.")
 async def search_workflows_mcp(input: WorkflowSearchInput) -> WorkflowSearchOutput:
     ctx = get_runtime_ctx()
     return await search_workflows(ctx, input)
 
 # get_workflow_details tool registration
 @mcp.tool()
-@router.post("/tools/get_workflow_details", response_model=WorkflowDetailsOutput)
-@auto_docstring(
-    description="Get detailed information about a specific workflow, including its module instance calls and their transformations in sequential order.",
-    model_class=WorkflowDetailsOutput
-)
+@router.post("/tools/get_workflow_details")
+@auto_docstring("Get detailed information about a specific workflow, including its module instance calls and their transformations in sequential order.")
 async def get_workflow_details_mcp(input: WorkflowDetailsInput) -> WorkflowDetailsOutput:
     ctx = get_runtime_ctx()
     return await get_workflow_details(ctx, input)
 
 # analyze_dead_points tool registration
 @mcp.tool()
-@router.post("/tools/analyze_dead_points", response_model=DeadPointsAnalysisOutput)
-@auto_docstring(
-    description="Identify 'dead points' in the FEWS configuration - time series sets that are neither used as inputs for any transformation nor marked as endpoints.",
-    model_class=DeadPointsAnalysisOutput
-)
+@router.post("/tools/analyze_dead_points")
+@auto_docstring("Identify 'dead points' in the FEWS configuration - time series sets that are neither used as inputs for any transformation nor marked as endpoints.")
 async def analyze_dead_points_mcp(input: dict = None) -> DeadPointsAnalysisOutput:
     ctx = get_runtime_ctx()
     return await analyze_dead_points(ctx, input)
 
 # analyze_dependencies tool registration
 @mcp.tool()
-@router.post("/tools/analyze_dependencies", response_model=DependencyAnalysisOutput)
-@auto_docstring(
-    description="Analyze dependencies for a specific entity, showing both upstream and downstream relationships.",
-    model_class=DependencyAnalysisOutput
-)
+@router.post("/tools/analyze_dependencies")
+@auto_docstring("Analyze dependencies for a specific entity, showing both upstream and downstream relationships.")
 async def analyze_dependencies_mcp(input: DependencyAnalysisInput) -> DependencyAnalysisOutput:
     ctx = get_runtime_ctx()
     return await analyze_dependencies(ctx, input)
 
 # get_database_schema tool registration
 @mcp.tool()
-@router.post("/tools/get_database_schema", response_model=dict)
-@auto_docstring(
-    description="Get the database schema information to understand the structure of the FEWS configuration database.",
-    model_class=DatabaseSchemaOutput
-)
+@router.post("/tools/get_database_schema")
+@auto_docstring("Get the database schema information to understand the structure of the FEWS configuration database.")
 async def get_database_schema_mcp(input: dict = None) -> DatabaseSchemaOutput:
     ctx = get_runtime_ctx()
     return await get_database_schema(ctx, input)
 
 # visualize_graph tool registration
 @mcp.tool()
-@router.post("/tools/visualize_graph", response_model=GraphVisualizationOutput)
-@auto_docstring(
-    description="Generate a graph visualization of FEWS entities and their relationships.",
-    model_class=GraphVisualizationOutput
-)
+@router.post("/tools/visualize_graph")
+@auto_docstring("Generate a graph visualization of FEWS entities and their relationships.")
 async def visualize_graph_mcp(input: GraphVisualizationInput) -> GraphVisualizationOutput:
     ctx = get_runtime_ctx()
     return await visualize_graph(ctx, input)
 
 # execute_query tool registration
 @mcp.tool()
-@router.post("/tools/execute_query", response_model=SQLQueryOutput)
-@auto_docstring(
-    description="Execute a SQL query against the FEWS configuration database.",
-    model_class=SQLQueryOutput
-)
+@router.post("/tools/execute_query")
+@auto_docstring("Execute a SQL query against the FEWS configuration database.")
 async def execute_query_mcp(input: SQLQueryInput) -> SQLQueryOutput:
     ctx = get_runtime_ctx()
     return await execute_query(ctx, input)
 
 # get_transformation_details tool registration
 @mcp.tool()
-@router.post("/tools/get_transformation_details", response_model=TransformationDetailsOutput)
-@auto_docstring(
-    description="Get detailed information about a specific transformation.",
-    model_class=TransformationDetailsOutput
-)
+@router.post("/tools/get_transformation_details")
+@auto_docstring("Get detailed information about a specific transformation.")
 async def get_transformation_details_mcp(input: TransformationDetailsInput) -> TransformationDetailsOutput:
     ctx = get_runtime_ctx()
     return await get_transformation_details(ctx, input)
