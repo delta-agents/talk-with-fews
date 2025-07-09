@@ -11,6 +11,8 @@ ENV PATH="/root/.pixi/bin:$PATH"
 WORKDIR /app
 
 # Copy project files
+COPY LICENSE /app/LICENSE
+COPY README.md /app/README.md
 COPY pixi.toml /app/pixi.toml
 COPY pixi.lock /app/pixi.lock
 COPY src/ /app/src/
