@@ -17,3 +17,6 @@ docs/reference
 # vscode
 .vscode
 /docs/_site
+data/fews_config.db3
+env/.env
+.coverage

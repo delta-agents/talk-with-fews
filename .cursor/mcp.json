@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+      "hkv-tools": {
+        "url": "https://api-test.hkvservices.nl/mcp-server/mcp/"
+      },
+      "fews-tools": {
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/"
+      }
+    }
+  }
