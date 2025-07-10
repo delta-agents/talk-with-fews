@@ -11,6 +11,7 @@ license-file = "LICENSE"
 [tasks]
 # Installation
 install = "pre-commit install"
+start = { cmd = "uvicorn main:app --host 0.0.0.0 --port 8000" }
 
 # Docs
 quartodoc-build = { cmd = "quartodoc build && rm objects.json", cwd = "docs" ,inputs = [
@@ -30,19 +31,18 @@ docs = { depends-on = ["quarto-preview"] }
 pre-commit = "pre-commit run --all-files"
 
 test = "pytest"
-start = { cmd = "streamlit run app/streamlit_app.py" }
-docker = { cmd = "streamlit run app/streamlit_app.py --server.port=8501 --server.address=0.0.0.0" }
 
 [tool.ruff]
 # Ruff configuration, see https://docs.astral.sh/ruff/configuration/
-#lint.ignore = [
+# lint.ignore = [
+    # "E402",   # module not at top of py file
     #"E501",  # Line too long
     #"F401",  # Unused import
     #"F403",  # 'from module import *' used; unable to detect undefined names
     #"F405",  # Name may be undefined, or defined from star imports: module
     #"F841",  # Local variable name is assigned to but never used
     #"T201",  # Use of print statement (use print() function instead)
-#]
+# ]
 
 [dependencies]
 python = ">=3.11"
@@ -60,11 +60,11 @@ python-dotenv = ">=1.0.1"
 openai = ">=1.12.0"
 pydantic = ">=2.0.0"
 pydantic-ai = "*"
-streamlit = ">=1.32.0"
 pytest = ">=8.0.2"
 pytest-asyncio = ">=0.25.0"
 matplotlib = ">=3.10.3,<4"
+fastapi = ">=0.115.14,<0.116"
+fastmcp = ">=2.10.2,<3"
 
 [pypi-dependencies]
-streamlit_markdown = ">=1.1.0"
 talk_with_fews = { path = "src", editable = true }

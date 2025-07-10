@@ -263,7 +263,7 @@ class FEWSConfigAgent:
             tools=tools,
             system_prompt=system_prompt,
             deps_type=Deps,
-            result_type=AgentResponse,
+            output_type=AgentResponse,
         )
 
         # Store deps for later use when calling the agent
