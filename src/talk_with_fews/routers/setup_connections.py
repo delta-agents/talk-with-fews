@@ -1,0 +1,44 @@
+import os
+from pydantic_ai import RunContext
+from talk_with_fews.models.base import Deps
+from talk_with_fews.utils.utils import connect_to_database
+from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
+
+class CtxWithDeps:
+    def __init__(self, deps):
+        self.deps = deps
+
+
+# Shared/cached context globals
+_db_connection = None
+_schema = None
+_webservice_url = None
+
+def get_runtime_ctx() -> RunContext:
+    """
+    Returns a RunContext[Deps] with a shared database connection and schema.
+    Uses FEWS_DB_PATH env var or defaults to './fews.db'.
+    """
+    global _db_connection, _schema
+    db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
+    if _db_connection is None:
+        _db_connection = connect_to_database(db_path)
+    if _schema is None:
+        _schema = extract_db_schema_as_dict(db_path)
+    deps = Deps(db_path=db_path, db_connection=_db_connection)
+    deps.schema = _schema
+    return CtxWithDeps(deps)
+
+
+def get_runtime_webservice() -> RunContext:
+    """
+    Returns a RunContext[Deps] with a shared database connection and schema.
+    Uses FEWS_DB_PATH env var or defaults to './fews.db'.
+    """
+    global _webservice_url
+    db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
+    if _webservice_url is None:
+        _db_connection = connect_to_database(db_path)
+    deps = Deps(db_path=db_path, db_connection=_db_connection)
+    deps.schema = _schema
+    return CtxWithDeps(deps)

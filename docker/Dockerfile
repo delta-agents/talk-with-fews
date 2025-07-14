@@ -17,6 +17,8 @@ COPY pixi.toml /app/pixi.toml
 COPY pixi.lock /app/pixi.lock
 COPY src/ /app/src/
 COPY env/ /app/env/
+RUN mkdir -p /app/data
+
 COPY data/ /app/data/
 
 # Create empty dirs if they don't exist

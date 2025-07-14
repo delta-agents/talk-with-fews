@@ -1,11 +1,7 @@
-import os
 from fastapi import APIRouter
 from fastmcp import FastMCP
 from talk_with_fews.utils.docstring_generator import auto_docstring
-from pydantic_ai import RunContext
-from talk_with_fews.models.base import Deps
-from talk_with_fews.utils.utils import connect_to_database
-from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
+
 
 # Import tool functions and their models
 from talk_with_fews.tools.timeseries_describe import describe_timeseries
@@ -51,32 +47,11 @@ from talk_with_fews.models.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
 )
-
-# Shared/cached context globals
-_db_connection = None
-_schema = None
-
-
-class CtxWithDeps:
-    def __init__(self, deps):
-        self.deps = deps
-
-
-def get_runtime_ctx() -> RunContext:
-    """
-    Returns a RunContext[Deps] with a shared database connection and schema.
-    Uses FEWS_DB_PATH env var or defaults to './fews.db'.
-    """
-    global _db_connection, _schema
-    db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
-    if _db_connection is None:
-        _db_connection = connect_to_database(db_path)
-    if _schema is None:
-        _schema = extract_db_schema_as_dict(db_path)
-    deps = Deps(db_path=db_path, db_connection=_db_connection)
-    deps.schema = _schema
-    return CtxWithDeps(deps)
-
+from talk_with_fews.tools.parameter_details import get_parameter_details
+from talk_with_fews.models.parameter_details import (
+    ParameterDetailsInput, ParameterDetailsOutput
+)
+from talk_with_fews.routers.setup_connections import get_runtime_ctx, get_runtime_webservice
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFEWS")
@@ -207,3 +182,14 @@ async def get_transformation_details_mcp(
 ) -> TransformationDetailsOutput:
     ctx = get_runtime_ctx()
     return await get_transformation_details(ctx, input)
+
+
+# get_parameter_details tool registration
+@mcp.tool()
+@router.post("/tools/get_transformation_details")
+@auto_docstring("Get detailed information about a specific transformation.")
+async def get_parameter_details_mcp(
+    input: ParameterDetailsInput,
+) -> ParameterDetailsOutput:
+    webservice = get_runtime_webservice()
+    return await get_parameter_details(webservice, input)
