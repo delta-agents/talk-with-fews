@@ -9,7 +9,6 @@ from talk_with_fews.models.parameter_details import (
 )
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.models.base import Parameter
-import requests
 from talk_with_fews.utils.webservice_utils import get_request
 
 

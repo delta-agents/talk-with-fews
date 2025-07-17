@@ -8,6 +8,7 @@ from typing import Optional, List
 from pydantic import BaseModel, Field
 from talk_with_fews.models.base import Parameter
 
+
 class ParameterDetailsInput(BaseModel):
     """Model representing a parameter search result.
 
@@ -27,6 +28,7 @@ class ParameterDetailsOutput(BaseModel):
     This model provides the search results including both structured data
     and a formatted markdown representation for display purposes.
     """
+
     parameters: Optional[List[Parameter]] = Field(
         None, description="Optional list of associated transformations"
     )
@@ -35,4 +37,3 @@ class ParameterDetailsOutput(BaseModel):
         ...,
         description="Pre-formatted markdown string that displays the search results in a human-readable format",
     )
-

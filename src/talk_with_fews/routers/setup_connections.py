@@ -4,6 +4,7 @@ from talk_with_fews.models.base import Deps
 from talk_with_fews.utils.utils import connect_to_database
 from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 
+
 class CtxWithDeps:
     def __init__(self, deps):
         self.deps = deps
@@ -12,6 +13,7 @@ class CtxWithDeps:
 # Shared/cached context globals
 _db_connection = None
 _schema = None
+
 
 def get_runtime_ctx() -> RunContext:
     """

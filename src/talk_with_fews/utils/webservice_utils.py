@@ -52,9 +52,7 @@ def get_request(
     return result, data
 
 
-def post_request(
-    url: str, json: dict, mime_type: str = "text", timeout: float = 60.0
-):
+def post_request(url: str, json: dict, mime_type: str = "text", timeout: float = 60.0):
     """
     Haal data op van gegeven URL d.m.v. POST-request.
 

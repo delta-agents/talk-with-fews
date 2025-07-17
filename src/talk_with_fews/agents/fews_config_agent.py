@@ -238,7 +238,6 @@ class FEWSConfigAgent:
                 name="get_parameter_details",
                 description="Get all the parameters available in the FEWS configuration, including their attributes and relationships",
             ),
-
         ]
 
         # Create the model with OpenRouter configuration

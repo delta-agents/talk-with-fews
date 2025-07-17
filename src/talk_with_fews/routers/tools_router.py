@@ -49,7 +49,8 @@ from talk_with_fews.models.transformation_details import (
 )
 from talk_with_fews.tools.parameter_details import get_parameter_details
 from talk_with_fews.models.parameter_details import (
-    ParameterDetailsInput, ParameterDetailsOutput
+    ParameterDetailsInput,
+    ParameterDetailsOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
