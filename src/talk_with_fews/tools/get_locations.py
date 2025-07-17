@@ -25,7 +25,6 @@ async def get_locations(
     Returns:
         LocationDetailsOutput: Retrieved parameter details with formatted markdown content
     """
-    
 
     webservice_url = ctx.deps.webservice_url
     # check if webservice_url is set
@@ -45,19 +44,19 @@ async def get_locations(
         includeIconNames={str(input.include_icon_names).lower()},
         includeLocationRelations={str(input.include_location_relations).lower()},
         includeTimeDependency={str(input.include_time_dependency).lower()},
-        documentFormat=document_format
+        documentFormat=document_format,
     )
     if input.parameters is not None:
         parameter_ids = ""
         for parameter in input.parameters:
-            parameter_ids += f'{str(parameter.id)},'
-        params['parameterIds'] = parameter_ids
+            parameter_ids += f"{str(parameter.id)},"
+        params["parameterIds"] = parameter_ids
 
     if input.parameter_group is not None:
         group_ids = ""
         for parameter in input.parameter_group:
-            group_ids += f'{str(parameter.parameter_group)},'
-        params['parameterGroupId'] = group_ids
+            group_ids += f"{str(parameter.parameter_group)},"
+        params["parameterGroupId"] = group_ids
 
     error, data = get_request(request_url, params=params)
     data = json.loads(data) if isinstance(data, str) else data
@@ -75,7 +74,7 @@ async def get_locations(
             x=value["x"],
             y=value["y"],
             z=value["z"],
-            geoDatum=data["geoDatum"], # in the main data, but still use full to have
+            geoDatum=data["geoDatum"],  # in the main data, but still use full to have
             attributes=value["attributes"] if input.show_attributes else None,
             relations=value["relations"] if input.include_location_relations else None,
         )
@@ -86,8 +85,12 @@ async def get_locations(
     markdown_content += f"Found {len(locations)} locations.\n\n"
 
     if locations:
-        markdown_content += "| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum |\n"
-        markdown_content += "|-------------|------------|----------|-----------|---|---|----------|\n"
+        markdown_content += (
+            "| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum |\n"
+        )
+        markdown_content += (
+            "|-------------|------------|----------|-----------|---|---|----------|\n"
+        )
 
         for location in locations:
             markdown_content += f"| {location.locationId} | {location.shortName} | {location.lat} | {location.lon} | {location.x} | {location.y} | {location.geoDatum} |\n"

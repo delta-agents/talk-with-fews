@@ -25,5 +25,5 @@ def test_get_locations():
     assert isinstance(output, GetLocationOutput)
     assert output.locations is not None
     assert len(output.locations) >= 3805  # > accounts for additions in the future
-    assert isinstance(output.markdown_content, str) 
+    assert isinstance(output.markdown_content, str)
     assert "## Locations" in output.markdown_content
