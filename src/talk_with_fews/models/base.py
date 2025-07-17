@@ -42,6 +42,29 @@ class Transformation(BaseModel):
     )
 
 
+class Parameter(BaseModel):
+    """Model representing a parameter in the FEWS configuration.
+
+    A parameter is a specific variable or characteristic that can be measured or calculated
+    within the FEWS system, such as soil moisture or water level.
+    """
+
+    id: str = Field(..., description="Unique identifier of the parameter")
+    name: str = Field(..., description="Name of the parameter")
+    parameter_type: str = Field(..., description="Type of parameter")
+    unit: str = Field(..., description="Unit of measurement for the parameter")
+    display_unit: str = Field(..., description="Unit used for display purposes")
+    uses_datum: bool = Field(..., description="Whether the parameter uses datum")
+    parameter_group: str = Field(
+        ..., description="Parameter group to which this parameter belongs"
+    )
+    parameter_group_name: str = Field(..., description="Parameter group name")
+    short_name: str = Field(..., description="Short name of the parameter")
+    attributes: Optional[List[Dict[str, Any]]] = Field(
+        None, description="List of parameter attributes"
+    )
+
+
 class ModuleInstanceCall(BaseModel):
     """Model representing a module instance call within a workflow.
 
@@ -164,7 +187,8 @@ class Deps:
         db_connection: SQLite database connection
         db_path: Path to the SQLite database
         schema: Comprehensive database schema information
-        tracker: Tool call tracker
+        tracker: Tool call tracker'
+        webservice_url: Optional URL for the web service if applicable
     """
 
     def __init__(
@@ -175,5 +199,6 @@ class Deps:
     ):
         self.db_path = db_path
         self.db_connection = db_connection
-        self.schema: Optional[Dict[str, Any]] = None
         self.tracker = tracker
+        self.schema: Optional[Dict[str, Any]] = None
+        self.webservice_url: Optional[str] = None
