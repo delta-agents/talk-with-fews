@@ -3,9 +3,9 @@ from pydantic_ai import RunContext
 
 from talk_with_fews.models.base import Deps
 
-from talk_with_fews.models.parameter_details import (
-    ParameterDetailsInput,
-    ParameterDetailsOutput,
+from talk_with_fews.models.get_parameters import (
+    GetParameterInput,
+    GetParameterOutput,
 )
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.models.base import Parameter
@@ -13,9 +13,9 @@ from talk_with_fews.utils.webservice_utils import get_request
 
 
 @log_tool_call
-async def get_parameter_details(
-    ctx: RunContext[Deps], input: ParameterDetailsInput
-) -> ParameterDetailsOutput:
+async def get_parameters(
+    ctx: RunContext[Deps], input: GetParameterInput
+) -> GetParameterOutput:
     """
     Retrieve parameter details from a web service and format the results.
 
@@ -23,7 +23,7 @@ async def get_parameter_details(
         ctx: RunContext with database connection
         input: ParameterDetailsInput containing request parameters
     Returns:
-        ParameterDetailsOutput: Retrieved parameter details with formatted markdown contentt
+        ParameterDetailsOutput: Retrieved parameter details with formatted markdown content
     """
     show_attributes = input.show_attributes
     documentFormat = "PI_JSON"  # can also be PI_XML, but we default to JSON for now
@@ -75,7 +75,7 @@ async def get_parameter_details(
     else:
         markdown_content += "No parameters found matching the criteria.\n"
 
-    return ParameterDetailsOutput(
+    return GetParameterOutput(
         parameters=parameters,
         markdown_content=markdown_content,
     )

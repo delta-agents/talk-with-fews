@@ -47,10 +47,15 @@ from talk_with_fews.models.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
 )
-from talk_with_fews.tools.parameter_details import get_parameter_details
-from talk_with_fews.models.parameter_details import (
-    ParameterDetailsInput,
-    ParameterDetailsOutput,
+from talk_with_fews.tools.get_parameters import get_parameters
+from talk_with_fews.models.get_parameters import (
+    GetParameterInput,
+    GetParameterOutput,
+)
+from talk_with_fews.tools.get_locations import get_locations
+from talk_with_fews.models.get_locations import (
+    GetLocationInput,
+    GetLocationOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
@@ -187,10 +192,21 @@ async def get_transformation_details_mcp(
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools/get_parameter_details")
-@auto_docstring("Get detailed information about a specific parameters.")
-async def get_parameter_details_mcp(
-    input: ParameterDetailsInput,
-) -> ParameterDetailsOutput:
+@router.post("/tools/get_parameters")
+@auto_docstring("Get information about all the parameters.")
+async def get_parameters_mcp(
+    input: GetParameterInput,
+) -> GetParameterOutput:
     ctx = get_runtime_ctx()
-    return await get_parameter_details(ctx, input)
+    return await get_parameters(ctx, input)
+
+
+# get_parameter_details tool registration
+@mcp.tool()
+@router.post("/tools/get_locations")
+@auto_docstring("Get information about all the locations.")
+async def get_locations_mcp(
+    input: GetLocationInput,
+) -> GetLocationOutput:
+    ctx = get_runtime_ctx()
+    return await get_locations(ctx, input)

@@ -27,7 +27,8 @@ from talk_with_fews.tools import (
     search_transformations,
     find_workflow_call_hierarchy,
     search_workflows,
-    get_parameter_details,
+    get_parameters,
+    get_locations,
 )
 
 from talk_with_fews.utils.utils import connect_to_database
@@ -233,10 +234,16 @@ class FEWSConfigAgent:
                 description="Generate a graph visualization of FEWS entities and their relationships",
             ),
             Tool(
-                get_parameter_details,
+                get_parameters,
                 takes_ctx=True,
-                name="get_parameter_details",
+                name="get_parameters",
                 description="Get all the parameters available in the FEWS configuration, including their attributes and relationships",
+            ),
+            Tool(
+                get_locations,
+                takes_ctx=True,
+                name="get_locations",
+                description="Get all the location available in the FEWS configuration, including their attributes and relationships",
             ),
         ]
 
