@@ -65,6 +65,28 @@ class Parameter(BaseModel):
     )
 
 
+class Location(BaseModel):
+    """Model representing a location in the FEWS configuration.
+
+    A location is a point or area where measurements are taken or where parameters are defined
+    within the FEWS system, such as a weather station or a river gauge.
+    """
+
+    locationId: str = Field(..., description="Unique identifier of the location")
+    shortName: str = Field(..., description="Short name of the location")
+    lat: str = Field(..., description="Latitude coordinate")
+    lon: str = Field(..., description="Longitude coordinate")
+    x: str = Field(..., description="X coordinate")
+    y: str = Field(..., description="Y coordinate")
+    z: str = Field(..., description="Z coordinate (elevation)")
+    geoDatum: str = Field(
+        ..., description="Geographic datum used for the location coordinates"
+    )
+    attributes: Optional[List[Dict[str, Any]]] = Field(
+        None, description="List of location attributes"
+    )
+
+
 class ModuleInstanceCall(BaseModel):
     """Model representing a module instance call within a workflow.
 
@@ -187,7 +209,7 @@ class Deps:
         db_connection: SQLite database connection
         db_path: Path to the SQLite database
         schema: Comprehensive database schema information
-        tracker: Tool call tracker'
+        tracker: Tool call tracker
         webservice_url: Optional URL for the web service if applicable
     """
 

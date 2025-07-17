@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from talk_with_fews.models.base import Parameter
 
 
-class ParameterDetailsInput(BaseModel):
+class GetParameterInput(BaseModel):
     """Model representing a parameter search result.
 
     A parameter search result extends the base time series properties with optional
@@ -21,7 +21,7 @@ class ParameterDetailsInput(BaseModel):
     )
 
 
-class ParameterDetailsOutput(BaseModel):
+class GetParameterOutput(BaseModel):
     """Model for the output of the parameter_details
       tool.
 
