@@ -21,24 +21,11 @@ def get_runtime_ctx() -> RunContext:
     """
     global _db_connection, _schema
     db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
+    webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
     if _db_connection is None:
         _db_connection = connect_to_database(db_path)
     if _schema is None:
         _schema = extract_db_schema_as_dict(db_path)
-    deps = Deps(db_path=db_path, db_connection=_db_connection)
-    deps.schema = _schema
-    return CtxWithDeps(deps)
-
-
-def get_runtime_webservice() -> RunContext:
-    """
-    Returns a RunContext[Deps] with a shared database connection and schema.
-    Uses FEWS_DB_PATH env var or defaults to './fews.db'.
-    """
-    global _webservice_url
-    db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
-    if _webservice_url is None:
-        _db_connection = connect_to_database(db_path)
-    deps = Deps(db_path=db_path, db_connection=_db_connection)
+    deps = Deps(db_path=db_path, db_connection=_db_connection, webservice_url=webservice_url)
     deps.schema = _schema
     return CtxWithDeps(deps)

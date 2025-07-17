@@ -191,5 +191,5 @@ async def get_transformation_details_mcp(
 async def get_parameter_details_mcp(
     input: ParameterDetailsInput,
 ) -> ParameterDetailsOutput:
-    webservice = get_runtime_webservice()
-    return await get_parameter_details(webservice, input)
+    ctx = get_runtime_ctx()
+    return await get_parameter_details(ctx, input)

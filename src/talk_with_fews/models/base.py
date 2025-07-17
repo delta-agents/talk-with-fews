@@ -164,7 +164,8 @@ class Deps:
         db_connection: SQLite database connection
         db_path: Path to the SQLite database
         schema: Comprehensive database schema information
-        tracker: Tool call tracker
+        tracker: Tool call tracker'
+        webservice_url: Optional URL for the web service if applicable
     """
 
     def __init__(
@@ -177,3 +178,4 @@ class Deps:
         self.db_connection = db_connection
         self.schema: Optional[Dict[str, Any]] = None
         self.tracker = tracker
+        self.webservice_url: Optional[str]= None

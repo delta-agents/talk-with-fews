@@ -19,3 +19,4 @@ docs/reference
 /docs/_site
 env/.env
 .coverage
+.github/chatmodes
