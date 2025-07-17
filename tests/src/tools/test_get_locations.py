@@ -10,7 +10,7 @@ import asyncio
 
 def test_get_locations():
     """
-    Test the get_locations function to ensure it retrieves parameter details correctly.
+    Test the get_locations function to ensure it retrieves locations details correctly.
     """
     # this is dependant on the FEWS web service being available indefinitely
     setup_dot_env()

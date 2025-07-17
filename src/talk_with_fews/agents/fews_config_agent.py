@@ -243,7 +243,7 @@ class FEWSConfigAgent:
                 get_locations,
                 takes_ctx=True,
                 name="get_locations",
-                description="Get all the location available in the FEWS configuration, including their attributes and relationships",
+                description="Get all the locations available in the FEWS configuration, including their attributes and relationships",
             ),
         ]
 

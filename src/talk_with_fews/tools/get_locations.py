@@ -21,9 +21,9 @@ async def get_locations(
 
     Args:
         ctx: RunContext with database connection
-        input: LocationDetailsInput containing request parameters
+        input: GetLocationInput containing request parameters
     Returns:
-        LocationDetailsOutput: Retrieved parameter details with formatted markdown content
+        GetLocationOutput: Retrieved locations details with formatted markdown content
     """
 
     webservice_url = ctx.deps.webservice_url
@@ -33,7 +33,7 @@ async def get_locations(
             "Web service URL is not configured in the environment variables."
         )
 
-    # Call the web service to get parameter details
+    # Call the web service to get locations details
     request_url = f"{webservice_url}/rest/fewspiservice/v1/locations"
 
     document_format = "PI_JSON"  # can also be PI_XML, but we default to JSON for now

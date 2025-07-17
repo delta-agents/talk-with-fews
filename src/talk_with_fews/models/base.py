@@ -83,7 +83,7 @@ class Location(BaseModel):
         ..., description="Geographic datum used for the location coordinates"
     )
     attributes: Optional[List[Dict[str, Any]]] = Field(
-        None, description="List of parameter attributes"
+        None, description="List of location attributes"
     )
 
 
