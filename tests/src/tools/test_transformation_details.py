@@ -11,7 +11,7 @@ import asyncio
 
 def test_transformation_details():
     """
-    Test the get_parameter_details function to ensure it retrieves parameter details correctly.
+    Test the test_transformation_details function to ensure it retrieves transformation details correctly.
     """
     # this is dependant on the FEWS web service being available indefinitely
     setup_dot_env()

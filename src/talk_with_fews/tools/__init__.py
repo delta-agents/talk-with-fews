@@ -10,7 +10,8 @@ from talk_with_fews.tools.transformation_search import search_transformations
 from talk_with_fews.tools.workflow_hierarchy import find_workflow_call_hierarchy
 from talk_with_fews.tools.workflow_search import search_workflows
 from talk_with_fews.tools.workflows_details import get_workflow_details
-from talk_with_fews.tools.parameter_details import get_parameter_details
+from talk_with_fews.tools.get_parameters import get_parameters
+from talk_with_fews.tools.get_locations import get_locations
 
 
 __all__ = [
@@ -26,5 +27,6 @@ __all__ = [
     "find_workflow_call_hierarchy",
     "search_workflows",
     "get_workflow_details",
-    "get_parameter_details",
+    "get_parameters",
+    "get_locations",
 ]
