@@ -25,7 +25,7 @@ quartodoc:
   dir: reference
   title: API Reference
   package: talk_with_fews
-  parser: numpy
+  parser: google
   dynamic: True
   rewrite_all_pages: True
   options:

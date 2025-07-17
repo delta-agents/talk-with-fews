@@ -17,14 +17,13 @@ async def get_parameter_details(
     ctx: RunContext[Deps], input: ParameterDetailsInput
 ) -> ParameterDetailsOutput:
     """
-    Search for time series sets by parameter, qualifier, module, or endpoint status.
+    Retrieve parameter details from a web service and format the results.
 
     Args:
         ctx: RunContext with database connection
-        input: TimeSeriesSearchInput containing search criteria
-
+        input: ParameterDetailsInput containing request parameters
     Returns:
-        TimeSeriesSearchOutput: Matching time series sets with formatted markdown content
+        ParameterDetailsOutput: Retrieved parameter details with formatted markdown contentt
     """
     show_attributes = input.show_attributes
     documentFormat = "PI_JSON"  # can also be PI_XML, but we default to JSON for now
@@ -74,7 +73,7 @@ async def get_parameter_details(
         for parameter in parameters:
             markdown_content += f"| {parameter.id} | {parameter.name} | {parameter.unit} | {parameter.parameter_group} |\n"
     else:
-        markdown_content += "No transformations found matching the criteria.\n"
+        markdown_content += "No parameters found matching the criteria.\n"
 
     return ParameterDetailsOutput(
         parameters=parameters,

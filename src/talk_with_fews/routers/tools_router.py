@@ -188,7 +188,7 @@ async def get_transformation_details_mcp(
 # get_parameter_details tool registration
 @mcp.tool()
 @router.post("/tools/get_parameter_details")
-@auto_docstring("Get detailed information about a specific transformation.")
+@auto_docstring("Get detailed information about a specific parameters.")
 async def get_parameter_details_mcp(
     input: ParameterDetailsInput,
 ) -> ParameterDetailsOutput:

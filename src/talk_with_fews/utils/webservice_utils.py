@@ -10,18 +10,18 @@ def get_request(
     path_certificate: str = None,
 ):
     """
-    Haal data op van gegeven URL.
+    Fetch data from the given URL.
 
     Args:
-        url (str): URL-adres
-        params (dict): lijst met URL-parameters.
-        mime_type (str, optional): mime type. Standaardwaarde is "text".
-        timeout (float, optional): tijd voordat de verbinding verbroken wordt (in seconden). Standaardwaarde is 10.0 seconden.
-        path_certificate (str, optional): locatie naar een pem-bestand
+        url (str): URL address
+        params (dict): list of URL parameters.
+        mime_type (str, optional): MIME type. Default value is "text".
+        timeout (float, optional): time before the connection is terminated (in seconds). Default value is 10.0 seconds.
+        path_certificate (str, optional): path to a PEM file
 
     Returns:
-        status: status code van de http request
-        data: data als tekst of json
+        status: status code of the HTTP request
+        data: data as text or JSON
     """
     data = None
     result = None
@@ -54,17 +54,16 @@ def get_request(
 
 def post_request(url: str, json: dict, mime_type: str = "text", timeout: float = 60.0):
     """
-    Haal data op van gegeven URL d.m.v. POST-request.
+    Fetch data from the given URL via a POST request.
 
     Args:
-        url (str): URL-adres
-        params (dict): lijst met URL-parameters.
-        mime_type (str, optional): mime type. Standaardwaarde is "text".
-        timeout (float, optional): tijd voordat de verbinding verbroken wordt (in seconden). Standaardwaarde is 10.0 seconden.
-
+        url (str): URL address.
+        json (dict): JSON payload to include in the POST request.
+        mime_type (str, optional): MIME type. Default value is "text".
+        timeout (float, optional): Time before the connection is terminated (in seconds). Default value is 60.0 seconds.
     Returns:
-        status: status code van de http post request
-        data: data als tekst of json
+        status: Status code of the HTTP POST request.
+        data: Data as text or JSON.
     """
     data = None
     result = None
@@ -80,7 +79,7 @@ def post_request(url: str, json: dict, mime_type: str = "text", timeout: float =
                     data = response.text
             else:
                 data = None
-                result = httpx.Response.text
+                result = response.text
 
         except httpx.RequestError as error:
             result = error
