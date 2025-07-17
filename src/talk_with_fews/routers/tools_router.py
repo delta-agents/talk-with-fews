@@ -51,7 +51,7 @@ from talk_with_fews.tools.parameter_details import get_parameter_details
 from talk_with_fews.models.parameter_details import (
     ParameterDetailsInput, ParameterDetailsOutput
 )
-from talk_with_fews.routers.setup_connections import get_runtime_ctx, get_runtime_webservice
+from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFEWS")
@@ -186,7 +186,7 @@ async def get_transformation_details_mcp(
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools/get_transformation_details")
+@router.post("/tools/get_parameter_details")
 @auto_docstring("Get detailed information about a specific transformation.")
 async def get_parameter_details_mcp(
     input: ParameterDetailsInput,

@@ -4,9 +4,9 @@ Pydantic models for the FEWS Configuration Agent.
 This module defines the models used by the agent to query and analyze FEWS configurations.
 """
 
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
-
+from talk_with_fews.models.base import Parameter
 
 class ParameterDetailsInput(BaseModel):
     """Model representing a parameter search result.
@@ -15,12 +15,9 @@ class ParameterDetailsInput(BaseModel):
     transformation information for search results.
     """
 
-    show_attributes: Optional[bool] = Field(
-        ..., description="Show parameter attributes"
+    show_attributes: bool = Field(
+        False, description="Show parameter attributes, defaults to False"
     )
-    documentFormat: Optional[str] = Field(
-        ..., description="Format for the output document: PI_JSON or PI_XML")
-
 
 
 class ParameterDetailsOutput(BaseModel):
@@ -30,4 +27,12 @@ class ParameterDetailsOutput(BaseModel):
     This model provides the search results including both structured data
     and a formatted markdown representation for display purposes.
     """
+    parameters: Optional[List[Parameter]] = Field(
+        None, description="Optional list of associated transformations"
+    )
+
+    markdown_content: str = Field(
+        ...,
+        description="Pre-formatted markdown string that displays the search results in a human-readable format",
+    )
 

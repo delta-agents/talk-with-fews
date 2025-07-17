@@ -12,7 +12,6 @@ class CtxWithDeps:
 # Shared/cached context globals
 _db_connection = None
 _schema = None
-_webservice_url = None
 
 def get_runtime_ctx() -> RunContext:
     """
@@ -26,6 +25,7 @@ def get_runtime_ctx() -> RunContext:
         _db_connection = connect_to_database(db_path)
     if _schema is None:
         _schema = extract_db_schema_as_dict(db_path)
-    deps = Deps(db_path=db_path, db_connection=_db_connection, webservice_url=webservice_url)
+    deps = Deps(db_path=db_path, db_connection=_db_connection)
+    deps.webservice_url = webservice_url
     deps.schema = _schema
     return CtxWithDeps(deps)
