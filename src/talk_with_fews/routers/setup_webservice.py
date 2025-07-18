@@ -184,9 +184,11 @@ def get_parameters(webservice_url, cache_FewsWebServices_db) -> None:
             attributes VARCHAR
         )
     """)
-    parameter_df # so ruff doesn't complain
+    parameter_df  # so ruff doesn't complain
     # Register the DataFrame as a DuckDB view    # Insert data into DuckDB table
-    cache_FewsWebServices_db.execute("INSERT INTO parameters SELECT * FROM parameter_df")
+    cache_FewsWebServices_db.execute(
+        "INSERT INTO parameters SELECT * FROM parameter_df"
+    )
 
     # Verify data was inserted
     result = cache_FewsWebServices_db.execute(
