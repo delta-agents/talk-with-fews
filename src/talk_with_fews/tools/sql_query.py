@@ -1,4 +1,5 @@
 import sqlite3
+import duckdb
 from pydantic_ai import RunContext, ModelRetry
 
 from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
@@ -91,7 +92,7 @@ async def execute_query_webservice_cache(
             row_count=len(results),
             query_executed=input.query,
         )
-    except sqlite3.Error as e:
+    except duckdb.Error as e:
         error_msg = f"Database error: {str(e)}"
         logger.error(f"SQL Error: {error_msg} - Query: {input.query}")
 

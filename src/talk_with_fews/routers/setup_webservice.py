@@ -100,8 +100,8 @@ def get_locations(webservice_url, cache_FewsWebServices_db) -> None:
     """)
 
     # Insert data into DuckDB table
-    locations_df  # so ruff doesn't complain
     cache_FewsWebServices_db.execute("INSERT INTO locations SELECT * FROM locations_df")
+    del locations_df
 
     # Verify data was inserted
     result = cache_FewsWebServices_db.execute(
@@ -184,11 +184,11 @@ def get_parameters(webservice_url, cache_FewsWebServices_db) -> None:
             attributes VARCHAR
         )
     """)
-    parameter_df  # so ruff doesn't complain
-    # Register the DataFrame as a DuckDB view    # Insert data into DuckDB table
+    # Insert data from the DataFrame into the DuckDB table
     cache_FewsWebServices_db.execute(
         "INSERT INTO parameters SELECT * FROM parameter_df"
     )
+    del parameter_df
 
     # Verify data was inserted
     result = cache_FewsWebServices_db.execute(
