@@ -20,3 +20,4 @@ docs/reference
 env/.env
 .coverage
 .github/chatmodes
+example code/*

@@ -1,6 +1,7 @@
 import sqlite3
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
+import duckdb
 
 
 class Transformation(BaseModel):
@@ -60,8 +61,8 @@ class Parameter(BaseModel):
     )
     parameter_group_name: str = Field(..., description="Parameter group name")
     short_name: str = Field(..., description="Short name of the parameter")
-    attributes: Optional[List[Dict[str, Any]]] = Field(
-        None, description="List of parameter attributes"
+    attributes: str | None = Field(
+        None, description="Stringified JSON of additional attributes for the parameter"
     )
 
 
@@ -74,15 +75,15 @@ class Location(BaseModel):
 
     locationId: str = Field(..., description="Unique identifier of the location")
     shortName: str = Field(..., description="Short name of the location")
-    lat: str = Field(..., description="Latitude coordinate")
-    lon: str = Field(..., description="Longitude coordinate")
-    x: str = Field(..., description="X coordinate")
-    y: str = Field(..., description="Y coordinate")
-    z: str = Field(..., description="Z coordinate (elevation)")
+    lat: float = Field(..., description="Latitude coordinate")
+    lon: float = Field(..., description="Longitude coordinate")
+    x: float = Field(..., description="X coordinate")
+    y: float = Field(..., description="Y coordinate")
+    z: float | None = Field(..., description="Z coordinate (elevation)")
     geoDatum: str = Field(
         ..., description="Geographic datum used for the location coordinates"
     )
-    attributes: Optional[List[Dict[str, Any]]] = Field(
+    attributes: Optional[List[Dict[str, Any]]] | None = Field(
         None, description="List of location attributes"
     )
 
@@ -224,4 +225,4 @@ class Deps:
         self.tracker = tracker
         self.schema: Optional[Dict[str, Any]] = None
         self.webservice_url: Optional[str] = None
-        self.locations: Optional[list[Location]] = None     
+        self.cache_FewsWebServices_db: Optional["duckdb.DuckDBPyConnection"] = None
