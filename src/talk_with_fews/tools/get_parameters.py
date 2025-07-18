@@ -1,4 +1,3 @@
-import json
 from pydantic_ai import RunContext
 
 from talk_with_fews.models.base import Deps
@@ -9,7 +8,6 @@ from talk_with_fews.models.get_parameters import (
 )
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.models.base import Parameter
-from talk_with_fews.utils.webservice_utils import get_request
 
 
 @log_tool_call
@@ -25,44 +23,48 @@ async def get_parameters(
     Returns:
         ParameterDetailsOutput: Retrieved parameter details with formatted markdown content
     """
-    show_attributes = input.show_attributes
-    documentFormat = "PI_JSON"  # can also be PI_XML, but we default to JSON for now
+    # TODO adjust input to filter on parameters
+    # Query parameters from DuckDB
+    query = """
+        SELECT
+            id,
+            name,
+            parameter_type,
+            unit,
+            display_unit,
+            uses_datum,
+            parameter_group,
+            parameter_group_name,
+            short_name,
+            attributes
+        FROM parameters
+    """
+    connection = ctx.deps.cache_FewsWebServices_db
+    cursor = connection.cursor()
+    data = cursor.execute(query)
+    rows = data.fetchall()
 
-    webservice_url = ctx.deps.webservice_url
-    # check if webservice_url is set
-    if webservice_url is None:
-        raise ValueError(
-            "Web service URL is not configured in the environment variables."
-        )
+    # Convert rows to Parameter objects
+    col_names = [
+        "id",
+        "name",
+        "parameter_type",
+        "unit",
+        "display_unit",
+        "uses_datum",
+        "parameter_group",
+        "parameter_group_name",
+        "short_name",
+        "attributes",
+    ]
+    # Convert rows to Parameter objects
+    parameters = [Parameter(**dict(zip(col_names, row))) for row in rows]
 
-    # Call the web service to get parameter details
-    request_url = f"{webservice_url}/rest/fewspiservice/v1/parameters"
-    params = dict(
-        showAttributes={str(show_attributes).lower()}, documentFormat=documentFormat
-    )
-    error, data = get_request(request_url, params=params)
-    data = json.loads(data) if isinstance(data, str) else data
-    if error is not None:
-        raise ValueError(f"Error fetching parameter details: {error}")
+    # make a summary of the locations
 
-    parameters = []
-    # Process the response data to create TimeSeriesSearchOutput
-    for value in data["timeSeriesParameters"]:
-        parameter = Parameter(
-            id=value["id"],
-            name=value["name"],
-            parameter_type=value["parameterType"],
-            unit=value["unit"],
-            display_unit=value["displayUnit"],
-            uses_datum=value["usesDatum"],
-            parameter_group=value["parameterGroup"],
-            parameter_group_name=value["parameterGroupName"],
-            short_name=value["shortName"],
-            attributes=value["attributes"] if show_attributes else None,
-        )
-        parameters.append(parameter)
+    # TODO change this to make a summary of the parameters
+    # Generate markdown content
 
-        # Generate markdown content
     markdown_content = "## Parameters\n\n"
     markdown_content += f"Found {len(parameters)} parameters.\n\n"
 

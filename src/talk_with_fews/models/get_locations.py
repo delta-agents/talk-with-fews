@@ -18,36 +18,12 @@ class GetLocationInput(BaseModel):
 
     parameters: Optional[list[Parameter]] = Field(
         None,
-        description="Optional list of parameters, whose ids are used to filter locations by",
+        description="Optional list of parameters, these are used to filter locations, obtainable from the tool get_parameters",
     )
 
     parameter_group: Optional[list[Parameter]] = Field(
         None,
         description="Optional list of parameter, whose Groupids to filter locations by",
-    )
-
-    show_attributes: bool = Field(
-        False, description="Show location attributes, defaults to False"
-    )
-
-    show_parent_locations: bool = Field(
-        False, description="Show parent locations, defaults to False"
-    )
-
-    show_thresholds: bool = Field(
-        False, description="Show thresholds, defaults to False"
-    )
-
-    include_icon_names: bool = Field(
-        False, description="Include icon names, defaults to False"
-    )
-
-    include_location_relations: bool = Field(
-        False, description="Include location relations, defaults to False"
-    )
-
-    include_time_dependency: bool = Field(
-        False, description="Include time dependency, defaults to False"
     )
 
 
