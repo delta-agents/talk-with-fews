@@ -3,6 +3,7 @@ from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
 from talk_with_fews.utils.utils import connect_to_database
 from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
+import duckdb
 
 
 class CtxWithDeps:
@@ -30,4 +31,6 @@ def get_runtime_ctx() -> RunContext:
     deps = Deps(db_path=db_path, db_connection=_db_connection)
     deps.webservice_url = webservice_url
     deps.schema = _schema
+    # for now this is limited to the session
+    # deps.locations = duckdb.connect(database=':memory:')
     return CtxWithDeps(deps)

@@ -18,7 +18,7 @@ class GetLocationInput(BaseModel):
 
     parameters: Optional[list[Parameter]] = Field(
         None,
-        description="Optional list of parameters, whose ids are used to filter locations by",
+        description="Optional list of parameters, these are used to filter locations, obtainable from the tool get_parameters",
     )
 
     parameter_group: Optional[list[Parameter]] = Field(

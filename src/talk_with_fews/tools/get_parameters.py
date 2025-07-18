@@ -62,7 +62,10 @@ async def get_parameters(
         )
         parameters.append(parameter)
 
-        # Generate markdown content
+    # TODO: Make this native in the FEWS web service to filter by location
+
+    # TODO make into a duckdb table with spatial extension
+    #  
     markdown_content = "## Parameters\n\n"
     markdown_content += f"Found {len(parameters)} parameters.\n\n"
 

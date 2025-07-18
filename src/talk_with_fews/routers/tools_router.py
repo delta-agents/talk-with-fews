@@ -193,7 +193,7 @@ async def get_transformation_details_mcp(
 # get_parameter_details tool registration
 @mcp.tool()
 @router.post("/tools/get_parameters")
-@auto_docstring("Get information about all the parameters.")
+@auto_docstring("Get information about all the parameters. These cannot be filtered by location.")
 async def get_parameters_mcp(
     input: GetParameterInput,
 ) -> GetParameterOutput:
@@ -204,7 +204,7 @@ async def get_parameters_mcp(
 # get_parameter_details tool registration
 @mcp.tool()
 @router.post("/tools/get_locations")
-@auto_docstring("Get information about all the locations.")
+@auto_docstring("Get information about all the locations. These can be filtered by parameters.")
 async def get_locations_mcp(
     input: GetLocationInput,
 ) -> GetLocationOutput:

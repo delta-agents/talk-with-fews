@@ -224,3 +224,4 @@ class Deps:
         self.tracker = tracker
         self.schema: Optional[Dict[str, Any]] = None
         self.webservice_url: Optional[str] = None
+        self.locations: Optional[list[Location]] = None     

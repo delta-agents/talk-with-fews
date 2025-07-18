@@ -6,7 +6,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from talk_with_fews.models.base import Parameter
+from talk_with_fews.models.base import Parameter #, Location
 
 
 class GetParameterInput(BaseModel):
@@ -15,7 +15,10 @@ class GetParameterInput(BaseModel):
     A parameter search result extends the base time series properties with optional
     transformation information for search results.
     """
-
+    # locations: Optional[list[Location]] = Field(
+    #     None,
+    #     description="Optional list of Locations, these are used to filter parameters, obtainable from the tool get_locations",
+    # )
     show_attributes: bool = Field(
         False, description="Show parameter attributes, defaults to False"
     )
