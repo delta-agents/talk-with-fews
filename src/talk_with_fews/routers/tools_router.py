@@ -40,7 +40,7 @@ from talk_with_fews.models.graph import (
     GraphVisualizationInput,
     GraphVisualizationOutput,
 )
-from talk_with_fews.tools.sql_query import execute_query
+from talk_with_fews.tools.sql_query import execute_query, execute_query_webservice_cache
 from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
 from talk_with_fews.tools.transformation_details import get_transformation_details
 from talk_with_fews.models.transformation_details import (
@@ -214,3 +214,14 @@ async def get_locations_mcp(
 ) -> GetLocationOutput:
     ctx = get_runtime_ctx()
     return await get_locations(ctx, input)
+
+
+# get_parameter_details tool registration
+@mcp.tool()
+@router.post("/tools/execute_query_webservice")
+@auto_docstring(
+    "Execute a SQL query on the cached FewsWebService database which contains the locations and parameters from the FEWS web service. This is useful for quick access to parameter and location data."
+)
+async def execute_query_webservice_mcp(input: SQLQueryInput) -> SQLQueryOutput:
+    ctx = get_runtime_ctx()
+    return await execute_query_webservice_cache(ctx, input)
