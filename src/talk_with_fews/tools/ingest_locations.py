@@ -7,6 +7,7 @@ import json
 import duckdb
 import geopandas as gpd
 
+
 def ingest_locations(
     webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection
 ) -> IngestLocationsOutput:
@@ -91,8 +92,8 @@ def ingest_locations(
         geometry=gpd.points_from_xy(locations_df.lon, locations_df.lat),
         crs="EPSG:4326",  # Assuming WGS84 for lat/lon
     )
-    locations_gdf['geom'] = locations_gdf['geometry'].to_wkt()
-    locations_gdf.drop(columns='geometry', inplace=True)
+    locations_gdf["geom"] = locations_gdf["geometry"].to_wkt()
+    locations_gdf.drop(columns="geometry", inplace=True)
 
     # Create and populate the locations table in DuckDB
     cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS locations")
@@ -113,15 +114,17 @@ def ingest_locations(
     """)
 
     # Insert data into DuckDB table
-    cache_FewsWebServices_db.execute("INSERT INTO locations SELECT * FROM locations_gdf")
+    cache_FewsWebServices_db.execute(
+        "INSERT INTO locations SELECT * FROM locations_gdf"
+    )
     del locations_gdf
 
     # TODO: add a view for the locations table
     cache_FewsWebServices_db.execute("""
         CREATE OR REPLACE VIEW locations_view AS
-        SELECT 
-            locationId, 
-            shortName, 
+        SELECT
+            locationId,
+            shortName,
             geom
         FROM locations
         WHERE lat IS NOT NULL AND lon IS NOT NULL
@@ -134,9 +137,12 @@ def ingest_locations(
     ).fetchone()
     assert result is not None, "Failed to insert locations into DuckDB table"
 
-    return IngestLocationsOutput(description="Locations ingested successfully", sql_examples=[
-        "SELECT * FROM locations_view WHERE ST_Within(geom, ST_GeomFromText('POLYGON((4.8 52.3, 4.9 52.3, 4.9 52.4, 4.8 52.4, 4.8 52.3))'))",
-        "SELECT * FROM locations_view WHERE ST_DWithin(geom, ST_Point(4.85, 52.35), 0.01)",
-        "SELECT locationId, shortName, ST_AsText(geom) FROM locations_view LIMIT 10",
-        "SELECT * FROM locations_view", 
-    ])
+    return IngestLocationsOutput(
+        description="Locations ingested successfully",
+        sql_examples=[
+            "SELECT * FROM locations_view WHERE ST_Within(geom, ST_GeomFromText('POLYGON((4.8 52.3, 4.9 52.3, 4.9 52.4, 4.8 52.4, 4.8 52.3))'))",
+            "SELECT * FROM locations_view WHERE ST_DWithin(geom, ST_Point(4.85, 52.35), 0.01)",
+            "SELECT locationId, shortName, ST_AsText(geom) FROM locations_view LIMIT 10",
+            "SELECT * FROM locations_view",
+        ],
+    )

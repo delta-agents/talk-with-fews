@@ -6,6 +6,7 @@ import pandas as pd
 import json
 import duckdb
 
+
 def ingest_parameters(
     webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection
 ) -> IngestParameterOutput:

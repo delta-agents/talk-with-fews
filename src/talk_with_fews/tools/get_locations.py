@@ -25,7 +25,7 @@ async def get_locations(
         GetLocationOutput: Retrieved locations details with formatted markdown content
     """
     if input.number_of_locations is not None:
-        n = input.number_of_locations  
+        n = input.number_of_locations
     else:
         n = 10
 
@@ -33,9 +33,11 @@ async def get_locations(
     if input.query is not None:
         query = input.query
     else:
-        query = "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
+        query = (
+            "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
+        )
     if "LIMIT" not in query:
-        query += f" LIMIT {n}"   
+        query += f" LIMIT {n}"
 
     connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     cursor = connection.cursor()
@@ -72,12 +74,8 @@ async def get_locations(
     markdown_content += f"Found {len(locations)} locations.\n\n"
 
     if locations:
-        markdown_content += (
-            "| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum | geom |\n"
-        )
-        markdown_content += (
-            "|-------------|------------|----------|-----------|---|---|----------| ---- |\n"
-        )
+        markdown_content += "| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum | geom |\n"
+        markdown_content += "|-------------|------------|----------|-----------|---|---|----------| ---- |\n"
 
         for location in locations:
             markdown_content += f"| {location.locationId} | {location.shortName} | {location.lat} | {location.lon} | {location.x} | {location.y} | {location.geoDatum} |\n"

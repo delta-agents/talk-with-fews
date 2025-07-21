@@ -1,6 +1,7 @@
 from talk_with_fews.models.sql_query import (
     SQLQueryInput,
-    SQLQueryOutput,)
+    SQLQueryOutput,
+)
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from talk_with_fews.tools.sql_query_webservice import execute_query_webservice
 from tests.utils_tests import setup_dot_env
@@ -15,7 +16,9 @@ def test_get_locations():
     setup_dot_env()
     # Create a mock RunContext and input
     ctx = get_runtime_ctx()
-    input_data = SQLQueryInput(query="SELECT * FROM locations WHERE shortName = 'Esvelder beek' LIMIT 1")
+    input_data = SQLQueryInput(
+        query="SELECT * FROM locations WHERE shortName = 'Esvelder beek' LIMIT 1"
+    )
 
     # Call the function
     output = asyncio.run(execute_query_webservice(ctx, input_data))
@@ -23,5 +26,5 @@ def test_get_locations():
     # Assert the output is of the expected type
     assert isinstance(output, SQLQueryOutput)
     assert output.results is not None
-    assert len(output.results) == 1  # Expecting one result for the specific location   
-    assert output.results[0]['shortName'] == 'Esvelder beek'
+    assert len(output.results) == 1  # Expecting one result for the specific location
+    assert output.results[0]["shortName"] == "Esvelder beek"

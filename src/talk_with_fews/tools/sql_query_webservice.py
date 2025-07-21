@@ -37,8 +37,10 @@ async def execute_query_webservice(
             if cursor.description
             else []
         )
-        if 'geom' in column_names:
-            column_names.remove('geom') # Remove 'geom' if present to avoid serialization issues, could convert back later
+        if "geom" in column_names:
+            column_names.remove(
+                "geom"
+            )  # Remove 'geom' if present to avoid serialization issues, could convert back later
         results = [dict(zip(column_names, row)) for row in cursor.fetchall()]
 
         # Return the query results

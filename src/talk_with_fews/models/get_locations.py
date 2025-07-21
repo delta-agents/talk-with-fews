@@ -16,7 +16,9 @@ class GetLocationInput(BaseModel):
     transformation information for search results.
     """
 
-    number_of_locations: Optional[int] = Field(..., description="Number of locations to retrieve")
+    number_of_locations: Optional[int] = Field(
+        ..., description="Number of locations to retrieve"
+    )
     query: Optional[str] = Field(
         None, description="Optional query string to filter locations"
     )
