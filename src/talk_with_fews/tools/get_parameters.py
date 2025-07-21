@@ -1,3 +1,4 @@
+import duckdb
 from pydantic_ai import RunContext
 
 from talk_with_fews.models.base import Deps
@@ -39,7 +40,7 @@ async def get_parameters(
             attributes
         FROM parameters
     """
-    connection = ctx.deps.cache_FewsWebServices_db
+    connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     cursor = connection.cursor()
     data = cursor.execute(query)
     rows = data.fetchall()

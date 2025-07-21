@@ -38,7 +38,6 @@ def get_runtime_ctx() -> RunContext:
     deps = Deps(db_path=db_path, db_connection=_db_connection)
     deps.webservice_url = webservice_url
     deps.schema = _schema
-    deps.cache_FewsWebServices_db = _cache_FewsWebServices_db
     # for now this is limited to the session
-    # deps.locations = duckdb.connect(database=':memory:')
+    deps.cache_FewsWebServices_db = _cache_FewsWebServices_db
     return CtxWithDeps(deps)

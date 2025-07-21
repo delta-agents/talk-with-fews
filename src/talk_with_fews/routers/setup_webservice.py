@@ -2,9 +2,12 @@ from talk_with_fews.models.base import Location, Parameter
 from talk_with_fews.utils.webservice_utils import get_request
 import pandas as pd
 import json
+import duckdb
 
 
-def get_locations(webservice_url, cache_FewsWebServices_db) -> None:
+def get_locations(
+    webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection
+) -> None:
     """
     Retrieve ALL the locations from a web service and format the results.
 
@@ -110,7 +113,9 @@ def get_locations(webservice_url, cache_FewsWebServices_db) -> None:
     assert result is not None, "Failed to insert locations into DuckDB table"
 
 
-def get_parameters(webservice_url, cache_FewsWebServices_db) -> None:
+def get_parameters(
+    webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection
+) -> None:
     """
     Retrieve ALL the parameters from a web service and format the results.
 
