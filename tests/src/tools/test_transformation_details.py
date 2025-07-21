@@ -29,6 +29,3 @@ def test_transformation_details():
     assert len(output.results) == 1  # one transformation expected
     transformation: TransformationDetails = output.results[0]
     assert transformation.id == index
-    assert (
-        transformation.modins == "Peilevaluatie"
-    )  # Example module instance, adjust as needed

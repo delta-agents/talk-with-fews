@@ -21,8 +21,11 @@ F = TypeVar("F", bound=Callable[..., Any])
 def format_sql_query(query):
     """Format a SQL query with proper indentation."""
     # Clean up the query
-    query = query.strip()
-    query = " ".join(query.split())
+    if query is not None:
+        query = query.strip()
+        query = " ".join(query.split())
+    else:
+        query = ""
 
     # Format with proper indentation
     formatted = query.replace("SELECT", "\nSELECT")

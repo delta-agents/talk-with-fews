@@ -3,6 +3,11 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 import duckdb
 
+from talk_with_fews.models.ingest_webservice import (
+    IngestLocationsOutput,
+    IngestParameterOutput,
+)
+
 
 class Transformation(BaseModel):
     """Model representing a transformation in the FEWS configuration.
@@ -225,4 +230,6 @@ class Deps:
         self.tracker = tracker
         self.schema: Optional[Dict[str, Any]] = None
         self.webservice_url: Optional[str] = None
-        self.cache_FewsWebServices_db: Optional["duckdb.DuckDBPyConnection"] = None
+        self.cache_FewsWebServices_db: Optional[duckdb.DuckDBPyConnection] = None
+        self.ingest_locations_output: Optional[IngestLocationsOutput] = None
+        self.ingest_parameters_output: Optional[IngestParameterOutput] = None

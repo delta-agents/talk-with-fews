@@ -1,26 +1,60 @@
 from fastapi import FastAPI
-from talk_with_fews.routers.tools_router import router, mcp
+from talk_with_fews.routers.tools_router_TalkWithConfig import (
+    router as router_talk_with_config,
+)
+from talk_with_fews.routers.tools_router_TalkWithConfig import (
+    mcp as mcp_talk_with_config,
+)
+from talk_with_fews.routers.tools_router_TalkWithWebservice import (
+    router as router_talk_with_webservice,
+)
+from talk_with_fews.routers.tools_router_TalkWithWebservice import (
+    mcp as mcp_talk_with_webservice,
+)
+
+from typing import AsyncIterator
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 load_dotenv(dotenv_path="env/.env")
 
+## Talk With Config
+
 # Mount MCP at /mcp
-mcp_app = mcp.http_app(path="/", transport="streamable-http", stateless_http=True)
+mcp_app_config = mcp_talk_with_config.http_app(
+    path="/", transport="streamable-http", stateless_http=True
+)
+
+mcp_app_webservice = mcp_talk_with_webservice.http_app(
+    path="/", transport="streamable-http", stateless_http=True
+)
+
+
+@asynccontextmanager
+async def combined_lifespan(app: FastAPI) -> AsyncIterator[None]:
+    # Run both lifespans in startup
+    async with (
+        mcp_app_config.lifespan(mcp_app_config),
+        mcp_app_webservice.lifespan(mcp_app_webservice),
+    ):
+        yield
+
 
 app = FastAPI(
     title="Talk with FEWS Tools API",
     version="0.1.0",
     description="API and MCP server exposing selected tools",
-    lifespan=mcp_app.lifespan,
+    lifespan=combined_lifespan,
 )
 
 # Include the tools router
-app.include_router(router)
+app.include_router(router_talk_with_config)
 
 # Mount MCP at /mcp
-app.mount("/mcp", mcp_app)
+app.mount("/mcp/TalkWithConfig", mcp_app_config)
 
-# if __name__ == "__main__":
-#     import uvicorn
+# Include the tools router
+app.include_router(router_talk_with_webservice)
 
-#     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+# Mount MCP at /mcp
+app.mount("/mcp/TalkWithWebservice", mcp_app_webservice)

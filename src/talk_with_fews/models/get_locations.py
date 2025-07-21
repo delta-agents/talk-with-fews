@@ -6,24 +6,30 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from talk_with_fews.models.base import Location, Parameter
+from talk_with_fews.models.base import Location
 
 
 class GetLocationInput(BaseModel):
-    """Model representing a location search result.
+    """
+    GetLocationInput defines the input parameters for retrieving location search results.
 
-    A location search result extends the base time series properties with optional
-    transformation information for search results.
+    Attributes:
+        number_of_locations (Optional[int]): The maximum number of locations to retrieve.
+        query (Optional[str]): An optional search string to filter locations by specific criteria.
+        locations_name (Optional[str]): An optional name to filter locations by their name.
+
+    This model allows flexible querying of location data, supporting both general and name-specific searches,
+    and limiting the number of results returned.
     """
 
-    parameters: Optional[list[Parameter]] = Field(
-        None,
-        description="Optional list of parameters, these are used to filter locations, obtainable from the tool get_parameters",
+    number_of_locations: Optional[int] = Field(
+        ..., description="Number of locations to retrieve"
     )
-
-    parameter_group: Optional[list[Parameter]] = Field(
-        None,
-        description="Optional list of parameter, whose Groupids to filter locations by",
+    query: Optional[str] = Field(
+        None, description="Optional query string to filter locations"
+    )
+    locations_name: Optional[str] = Field(
+        None, description="Optional name of the locations to filter by"
     )
 
 
