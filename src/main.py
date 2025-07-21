@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from talk_with_fews.routers.tools_router import router, mcp
+from talk_with_fews.routers.tools_router_TalkWithConfig import router, mcp
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="env/.env")

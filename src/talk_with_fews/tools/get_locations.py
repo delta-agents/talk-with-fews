@@ -8,6 +8,7 @@ from talk_with_fews.models.get_locations import (
 )
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.models.base import Location
+import duckdb
 
 
 @log_tool_call
@@ -28,7 +29,7 @@ async def get_locations(
 
     # Query locations from DuckDB
     query = "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
-    connection = ctx.deps.cache_FewsWebServices_db
+    connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     cursor = connection.cursor()
     data = cursor.execute(query)
     rows = data.fetchall()
