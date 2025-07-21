@@ -16,13 +16,14 @@ class GetParameterInput(BaseModel):
     transformation information for search results.
     """
 
-    # locations: Optional[list[Location]] = Field(
-    #     None,
-    #     description="Optional list of Locations, these are used to filter parameters, obtainable from the tool get_locations",
-    # )
-    show_attributes: bool = Field(
-        False, description="Show parameter attributes, defaults to False"
+    number_of_parameters: Optional[int] = Field(..., description="Number of parameter to retrieve")
+    locations_name: Optional[str] = Field(
+        None, description="Optional name of the parameter to filter by"
     )
+    query: Optional[str] = Field(
+        None, description="Optional query string to filter parameter"
+    )
+
 
 
 class GetParameterOutput(BaseModel):

@@ -16,7 +16,7 @@ def test_get_locations():
     setup_dot_env()
     # Create a mock RunContext and input
     ctx = get_runtime_ctx()
-    input_data = GetLocationInput(show_attributes=True)
+    input_data = GetLocationInput(number_of_locations=6)
 
     # Call the function
     output = asyncio.run(get_locations(ctx, input_data))
@@ -24,6 +24,6 @@ def test_get_locations():
     # Assert the output is of the expected type
     assert isinstance(output, GetLocationOutput)
     assert output.locations is not None
-    assert len(output.locations) >= 3805  # > accounts for additions in the future
+    assert len(output.locations) == 6  # > accounts for additions in the future
     assert isinstance(output.markdown_content, str)
     assert "## Locations" in output.markdown_content

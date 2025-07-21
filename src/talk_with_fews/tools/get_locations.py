@@ -16,7 +16,7 @@ async def get_locations(
     ctx: RunContext[Deps], input: GetLocationInput
 ) -> GetLocationOutput:
     """
-    Retrieve location details from a web service and format the results.
+    Retrieve a given number of location details from a web service and format the results.
 
     Args:
         ctx: RunContext with database connection
@@ -24,11 +24,19 @@ async def get_locations(
     Returns:
         GetLocationOutput: Retrieved locations details with formatted markdown content
     """
-
-    # TODO adjust input to filter on parameters
+    if input.number_of_locations is not None:
+        n = input.number_of_locations  
+    else:
+        n = 10
 
     # Query locations from DuckDB
-    query = "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
+    if input.query is not None:
+        query = input.query
+    else:
+        query = "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
+    if "LIMIT" not in query:
+        query += f" LIMIT {n}"   
+
     connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     cursor = connection.cursor()
     data = cursor.execute(query)
@@ -65,10 +73,10 @@ async def get_locations(
 
     if locations:
         markdown_content += (
-            "| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum |\n"
+            "| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum | geom |\n"
         )
         markdown_content += (
-            "|-------------|------------|----------|-----------|---|---|----------|\n"
+            "|-------------|------------|----------|-----------|---|---|----------| ---- |\n"
         )
 
         for location in locations:
@@ -79,4 +87,5 @@ async def get_locations(
     return GetLocationOutput(
         locations=locations,
         markdown_content=markdown_content,
+        description=f"Retrieved {n} locations from the FEWS web service, for more information query using the tool ",
     )

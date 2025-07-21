@@ -29,7 +29,7 @@ from talk_with_fews.tools import (
     search_workflows,
     get_parameters,
     get_locations,
-    execute_query_webservice_cache,
+    execute_query_webservice,
 )
 
 from talk_with_fews.utils.utils import connect_to_database
@@ -247,9 +247,9 @@ class FEWSConfigAgent:
                 description="Get the locations from in the FEWS configuration, including their attributes and relationships. Can be filtered by parameters and parameter groups obtainable from the tool get_parameters",
             ),
             Tool(
-                execute_query_webservice_cache,
+                execute_query_webservice,
                 takes_ctx=True,
-                name="execute_query_webservice_cache",
+                name="execute_query_webservice",
                 description="Execute a SQL query on the cached FewsWebService database which contains the locations and parameters from the FEWS web service. This is useful for quick access to parameter and location data.",
             ),
         ]

@@ -16,7 +16,7 @@ def test_get_parameter_details():
     setup_dot_env()
     # Create a mock RunContext and input
     ctx = get_runtime_ctx()
-    input_data = GetParameterInput(show_attributes=True)
+    input_data = GetParameterInput(number_of_parameters=6)
 
     # Call the function
     output = asyncio.run(get_parameters(ctx, input_data))
@@ -24,5 +24,5 @@ def test_get_parameter_details():
     # Assert the output is of the expected type
     assert isinstance(output, GetParameterOutput)
     assert output.parameters is not None
-    assert len(output.parameters) >= 34  # > accounts for additions in the future
+    assert len(output.parameters) == 6  # > accounts for additions in the future
     assert isinstance(output.markdown_content, str)

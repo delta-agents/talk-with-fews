@@ -26,7 +26,15 @@ async def get_parameters(
     """
     # TODO adjust input to filter on parameters
     # Query parameters from DuckDB
-    query = """
+    if input.number_of_parameters is not None:
+        n = input.number_of_parameters  
+    else:
+        n = 10
+
+    if input.query is not None:
+        query = input.query
+    else:
+        query = """
         SELECT
             id,
             name,
@@ -40,6 +48,9 @@ async def get_parameters(
             attributes
         FROM parameters
     """
+    if "LIMIT" not in query:
+        query += f" LIMIT {n}"
+    
     connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     cursor = connection.cursor()
     data = cursor.execute(query)
