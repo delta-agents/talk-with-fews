@@ -74,7 +74,7 @@ async def execute_query_webservice_cache(
     """
     try:
         # Execute the query
-        connection : duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
+        connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
         cursor = connection.cursor()
         cursor.execute(input.query)
 

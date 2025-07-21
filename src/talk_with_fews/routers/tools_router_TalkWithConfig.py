@@ -40,22 +40,12 @@ from talk_with_fews.models.graph import (
     GraphVisualizationInput,
     GraphVisualizationOutput,
 )
-from talk_with_fews.tools.sql_query import execute_query, execute_query_webservice_cache
+from talk_with_fews.tools.sql_query import execute_query
 from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
 from talk_with_fews.tools.transformation_details import get_transformation_details
 from talk_with_fews.models.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
-)
-from talk_with_fews.tools.get_parameters import get_parameters
-from talk_with_fews.models.get_parameters import (
-    GetParameterInput,
-    GetParameterOutput,
-)
-from talk_with_fews.tools.get_locations import get_locations
-from talk_with_fews.models.get_locations import (
-    GetLocationInput,
-    GetLocationOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
@@ -188,4 +178,3 @@ async def get_transformation_details_mcp(
 ) -> TransformationDetailsOutput:
     ctx = get_runtime_ctx()
     return await get_transformation_details(ctx, input)
-

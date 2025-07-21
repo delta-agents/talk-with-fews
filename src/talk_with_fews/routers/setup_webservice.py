@@ -4,7 +4,10 @@ import pandas as pd
 import json
 import duckdb
 
-def get_locations(webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection) -> None:
+
+def get_locations(
+    webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection
+) -> None:
     """
     Retrieve ALL the locations from a web service and format the results.
 
@@ -110,7 +113,9 @@ def get_locations(webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConne
     assert result is not None, "Failed to insert locations into DuckDB table"
 
 
-def get_parameters(webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection) -> None:
+def get_parameters(
+    webservice_url, cache_FewsWebServices_db: duckdb.DuckDBPyConnection
+) -> None:
     """
     Retrieve ALL the parameters from a web service and format the results.
 
