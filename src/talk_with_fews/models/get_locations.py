@@ -10,10 +10,16 @@ from talk_with_fews.models.base import Location
 
 
 class GetLocationInput(BaseModel):
-    """Model representing a location search result.
+    """
+    GetLocationInput defines the input parameters for retrieving location search results.
 
-    A location search result extends the base time series properties with optional
-    transformation information for search results.
+    Attributes:
+        number_of_locations (Optional[int]): The maximum number of locations to retrieve.
+        query (Optional[str]): An optional search string to filter locations by specific criteria.
+        locations_name (Optional[str]): An optional name to filter locations by their name.
+
+    This model allows flexible querying of location data, supporting both general and name-specific searches,
+    and limiting the number of results returned.
     """
 
     number_of_locations: Optional[int] = Field(

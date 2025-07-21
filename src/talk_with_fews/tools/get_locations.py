@@ -21,6 +21,12 @@ async def get_locations(
     Args:
         ctx: RunContext with database connection
         input: GetLocationInput containing request parameters
+
+               which includes:
+
+                - number_of_locations: The maximum number of locations to retrieve
+                - query: An optional search string to filter locations by specific criteria
+                - locations_name: An optional name to filter locations by their name
     Returns:
         GetLocationOutput: Retrieved locations details with formatted markdown content
     """

@@ -26,7 +26,10 @@ mcp = FastMCP("TalkWithFewsWebservice")
 @mcp.tool()
 @router.post("/tools/get_parameters")
 @auto_docstring(
-    "Get information about a given number of parameters. This is useful for quick access to location data format."
+    "Get information about parameters. This is how to access parameters data."
+    "By default 10 parameters are returned. "
+    "If no query is provided, the first number parameters asked for are returned."
+    "If a query is provided, the parameters are filtered by the query string."
 )
 async def get_parameters_mcp(
     input: GetParameterInput,
@@ -37,9 +40,13 @@ async def get_parameters_mcp(
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools/ge_locations")
+@router.post("/tools/get_locations")
 @auto_docstring(
-    "Get information about a given number of locations. This is useful for quick access to location data format."
+    "Get information about locations. This is how to access location data."
+    "By default 10 locations are returned. "
+    "If no query is provided, the first number locations asked for are returned."
+    "If a query is provided, the locations are filtered by the query string."
+    "This query can be spatial by using the `geom` field."
 )
 async def get_locations_mcp(
     input: GetLocationInput,
