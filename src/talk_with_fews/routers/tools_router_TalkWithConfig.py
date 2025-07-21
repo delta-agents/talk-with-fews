@@ -50,7 +50,7 @@ from talk_with_fews.models.transformation_details import (
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 router = APIRouter()
-mcp = FastMCP("TalkWithFEWS")
+mcp = FastMCP("TalkWithFewsConfig")
 
 
 # describe_timeseries tool registration

@@ -12,8 +12,6 @@ license-file = "LICENSE"
 # Installation
 install = "pre-commit install"
 start = { cmd = "uvicorn main:app --host 0.0.0.0 --port 8000" }
-start_webservice = { cmd = "uvicorn FewsWebService:app --host 0.0.0.0 --port 8000" }
-
 
 # Docs
 quartodoc-build = { cmd = "quartodoc build && rm objects.json", cwd = "docs" ,inputs = [
