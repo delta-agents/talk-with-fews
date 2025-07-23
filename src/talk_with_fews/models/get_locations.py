@@ -26,7 +26,7 @@ class GetLocationInput(BaseModel):
         ..., description="Number of locations to retrieve"
     )
     query: Optional[str] = Field(
-        None, description="Optional query string to filter locations"
+        None, description="Optional sql query string to filter locations from the locations table."
     )
     locations_name: Optional[str] = Field(
         None, description="Optional name of the locations to filter by"
