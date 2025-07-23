@@ -9,7 +9,6 @@ from tests.utils_tests import setup_dot_env
 import asyncio
 
 
-
 def test_transformation_details():
     """
     Test the test_transformation_details function to ensure it retrieves transformation details correctly.

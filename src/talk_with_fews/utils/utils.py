@@ -24,7 +24,7 @@ def connect_to_database(db_path: str) -> sqlite3.Connection:
 
     # check_same_thread=False allows sharing the connection across multiple threads
     # This is useful for async operations where the same connection might be used in different coroutines
-    # If False, the connection may be accessed in multiple threads; write operations may need to be serialized by the user to avoid data corruption. 
+    # If False, the connection may be accessed in multiple threads; write operations may need to be serialized by the user to avoid data corruption.
     # See threadsafety (http://docs.python.org/3/library/sqlite3.html#sqlite3.threadsafety) for more information.
     # WE only user this to READ!
     connection = sqlite3.connect(db_path, check_same_thread=False)

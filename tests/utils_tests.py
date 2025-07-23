@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 # from talk_with_fews.routers.setup_connections import get_runtime_ctx
 # import asyncio
 
+
 def setup_dot_env():
     env_template = Path(__file__).parent.parent / "env" / ".env.example"
     env_copy = Path(__file__).parent.parent / "env" / ".env"
