@@ -44,11 +44,14 @@ async def get_parameters_mcp(
 @mcp.tool()
 @router.post("/tools.webservice/get_locations")
 @auto_docstring(
-    "Get information about locations. This is how to access location data."
-    "By default 10 locations are returned. "
-    "If no query is provided, the first number locations asked for are returned."
-    "If a query is provided, the locations are filtered by the query string."
-    "This query can be spatial by using the `geom` field."
+    "Get location information from the FEWS WebService database. "
+    "Returns location metadata including coordinates, names, and spatial geometry data. "
+    "By default returns 10 locations. "
+    "Features: "
+    "- Filter locations using query string matching on location names/IDs "
+    "- Access spatial geometry data in 'geom' field (EPSG:4326 coordinate system) "
+    "- Control result size with limit parameter "
+    "- Essential for identifying monitoring sites and their geographic properties"
 )
 async def get_locations_mcp(
     input: GetLocationInput,
@@ -61,7 +64,13 @@ async def get_locations_mcp(
 @mcp.tool()
 @router.post("/tools.webservice/execute_query_webservice")
 @auto_docstring(
-    "Execute a SQL query on the cached FewsWebService database which contains the locations and parameters from the FEWS web service. This is useful for access to all the parameter and all the location data."
+    "Execute SQL queries on the FEWS WebService database containing locations and parameters. "
+    "Use this tool to access comprehensive parameter and location data with advanced filtering capabilities. "
+    "Features include: "
+    "- Full access to all parameters and location metadata "
+    "- Spatial queries using DuckDB's geospatial functions (ST_Within, ST_DWithin, ST_Transform) "
+    "- Location geometry data stored in 'geom' field (EPSG:4326 coordinate system) "
+    "- Complex filtering and aggregation operations "
 )
 async def execute_query_webservice_mcp(input: SQLQueryInput) -> SQLQueryOutput:
     ctx = get_runtime_ctx()
