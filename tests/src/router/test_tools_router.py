@@ -6,7 +6,7 @@ from tests.utils_tests import setup_dot_env
 def test_get_database_schema():
     setup_dot_env()
     client = TestClient(app)
-    response = client.post("/tools/get_database_schema", json={})
+    response = client.post("/tools.config/get_database_schema", json={})
     print("Status code:", response.status_code)
     print("Response JSON:", response.json())
     assert response.status_code == 200

@@ -8,7 +8,7 @@ from talk_with_fews.models.workflow_details import (
     WorkflowDetailsInput,
     WorkflowDetailsOutput,
 )
-from talk_with_fews.tools.sql_query import execute_query
+from talk_with_fews.tools.config.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import log_tool_call
 
 

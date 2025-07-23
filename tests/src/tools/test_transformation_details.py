@@ -4,7 +4,7 @@ from talk_with_fews.models.transformation_details import (
     TransformationDetailsOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
-from talk_with_fews.tools.transformation_details import get_transformation_details
+from talk_with_fews.tools import get_transformation_details
 from tests.utils_tests import setup_dot_env
 import asyncio
 
@@ -16,11 +16,9 @@ def test_transformation_details():
     # this is dependant on the FEWS web service being available indefinitely
     setup_dot_env()
     # Create a mock RunContext and input
-    ctx = get_runtime_ctx()
     index = 1  # Example transformation ID, adjust as needed
     input_data = TransformationDetailsInput(transformation_id=index)
-
-    # Call the function
+    ctx = get_runtime_ctx()
     output = asyncio.run(get_transformation_details(ctx, input_data))
 
     # Assert the output is of the expected type

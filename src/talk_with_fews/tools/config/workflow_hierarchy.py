@@ -2,7 +2,7 @@ from pydantic_ai import RunContext, ModelRetry
 from talk_with_fews.models.base import Deps
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
-from talk_with_fews.tools.sql_query import execute_query
+from talk_with_fews.tools.config.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import logger
 
 
