@@ -1,7 +1,7 @@
 """
-FEWS Configuration Agent.
+FEWS Webservice Agent.
 
-This module defines the agent that can answer questions about FEWS configurations.
+This module defines the agent that can answer questions about FEWS webservice.
 """
 
 import os
@@ -10,6 +10,7 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.agent import AgentRunResult
 
+from talk_with_fews.agents.fews_config_agent import FEWSConfigAgent
 from talk_with_fews.models.base import Deps
 
 # Import logging utilities from the dedicated module
@@ -30,14 +31,14 @@ from talk_with_fews.utils.schema_utils import (
 from talk_with_fews.models.base import AgentResponse
 
 
-class FEWSWebserviceAgent:
+class FEWSWebserviceAgent(FEWSConfigAgent):
     """
-    Agent for querying and analyzing FEWS configurations.
+    Agent for querying and analyzing FEWS Webservice.
 
     Initialize the FEWS Webservice Agent.
 
     Args:
-        db_path: Path to the SQLite database containing FEWS configuration data
+        db_path: Path to the SQLite database containing FEWS webservice data
         model: Optional model to use (defaults to PRIMARY_MODEL env var or gpt-4)
         api_key: Optional API key (will use OPENROUTER_API_KEY env var if not provided)
         base_url: Optional base URL (will use OPENROUTER_BASE_URL env var if not provided)
@@ -73,40 +74,13 @@ class FEWSWebserviceAgent:
         # Set up logging
         setup_logging(log_level=log_level, log_dir=log_dir)
 
-        logger.info(f"Initialized FEWSConfigAgent with database: {db_path}")
+        logger.info(f"Initialized FEWSWebserviceAgent with database: {db_path}")
         logger.info(f"Using model: {self.model_name}")
         if log_dir:
             logger.info(f"Logging to directory: {log_dir}")
 
-    def __enter__(self):
-        """Connect to database and create agent when entering context manager."""
-        self.connect()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Close database connection when exiting context manager."""
-        self.close()
-
-    def connect(self):
-        """Connect to the database and create the agent."""
-        if self.db_connection is None:
-            logger.info(f"Connecting to database: {self.db_path}")
-            self.db_connection = connect_to_database(self.db_path)
-
-            # Create the agent
-            self._create_agent()
-
-        return self
-
-    def close(self):
-        """Close the database connection."""
-        if self.db_connection is not None:
-            logger.info("Closing database connection")
-            self.db_connection.close()
-            self.db_connection = None
-
     def _create_agent(self):
-        """Create the FEWS Configuration Agent with tools."""
+        """Create the FEWS Webservice Agent with tools."""
         if self.agent is not None:
             return
 
@@ -131,7 +105,7 @@ class FEWSWebserviceAgent:
 
         # Create a simplified system prompt with the schema information
         system_prompt = (
-            "You are the FEWS Configuration Agent for analyzing Flood Early Warning System configurations. "
+            "You are the FEWS Webservice Agent for analyzing Flood Early Warning System Webservices. "
             f"You have access to the database schema:\n{llm_context}\n\n"
             "Your capabilities include analyzing timeseriessets, transformations, workflows, and dependencies in FEWS. "
             "Common questions are about data flows of time series sets (even when mentioned as time series, it is a time series set). "
@@ -161,13 +135,13 @@ class FEWSWebserviceAgent:
                 get_parameters,
                 takes_ctx=True,
                 name="get_parameters",
-                description="Get all the parameters available in the FEWS configuration, including their attributes and relationships",
+                description="Get all the parameters available in the FEWS Webservice, including their attributes and relationships",
             ),
             Tool(
                 get_locations,
                 takes_ctx=True,
                 name="get_locations",
-                description="Get the locations from in the FEWS configuration, including their attributes and relationships. Can be filtered by parameters and parameter groups obtainable from the tool get_parameters",
+                description="Get the locations from in the FEWS Webservice, including their attributes and relationships. Can be filtered by parameters and parameter groups obtainable from the tool get_parameters",
             ),
             Tool(
                 execute_query_webservice,
@@ -177,7 +151,7 @@ class FEWSWebserviceAgent:
             ),
         ]
 
-        # Create the model with OpenRouter configuration
+        # Create the model with OpenRouter Webservice
         api_key = self.api_key or os.environ.get("OPENROUTER_API_KEY")
         base_url = self.base_url or os.environ.get("OPENROUTER_BASE_URL")
 
@@ -198,7 +172,7 @@ class FEWSWebserviceAgent:
         )
 
         # Create the agent
-        logger.info(f"Creating FEWS Configuration Agent using {self.model_name}")
+        logger.info(f"Creating FEWS Webservice Agent using {self.model_name}")
         if base_url:
             logger.info(f"Using custom base URL: {base_url}")
 
@@ -217,7 +191,7 @@ class FEWSWebserviceAgent:
 
     async def ask(self, question: str) -> "AgentRunResult":
         """
-        Ask the FEWS Configuration Agent a question.
+        Ask the FEWS Webservice Agent a question.
 
         Args:
             question: The question to ask
