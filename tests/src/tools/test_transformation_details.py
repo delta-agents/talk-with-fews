@@ -4,7 +4,7 @@ from talk_with_fews.models.transformation_details import (
     TransformationDetailsOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
-from talk_with_fews.tools.transformation_details import get_transformation_details
+from talk_with_fews.tools import get_transformation_details
 from tests.utils_tests import setup_dot_env
 import asyncio
 

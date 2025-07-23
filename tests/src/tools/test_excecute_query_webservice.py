@@ -3,7 +3,7 @@ from talk_with_fews.models.sql_query import (
     SQLQueryOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
-from talk_with_fews.tools.sql_query_webservice import execute_query_webservice
+from talk_with_fews.tools import execute_query_webservice
 from tests.utils_tests import setup_dot_env
 import asyncio
 

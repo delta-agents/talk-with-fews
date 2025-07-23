@@ -4,8 +4,8 @@ from talk_with_fews.models.base import Deps
 from talk_with_fews.utils.utils import connect_to_database
 from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 import duckdb
-from talk_with_fews.tools.ingest_locations import ingest_locations
-from talk_with_fews.tools.ingest_parameters import ingest_parameters
+from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
+from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
 
 
 class CtxWithDeps:

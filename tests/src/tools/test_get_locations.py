@@ -3,7 +3,7 @@ from talk_with_fews.models.get_locations import (
     GetLocationOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
-from talk_with_fews.tools.get_locations import get_locations
+from talk_with_fews.tools import get_locations
 from tests.utils_tests import setup_dot_env
 import asyncio
 

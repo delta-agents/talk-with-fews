@@ -6,7 +6,7 @@ from talk_with_fews.models.dependency_analysis import (
 )
 from talk_with_fews.models.sql_query import SQLQueryInput
 
-from talk_with_fews.tools.sql_query import execute_query
+from talk_with_fews.tools.config.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import log_tool_call, logger
 from talk_with_fews.models.base import Deps
 
