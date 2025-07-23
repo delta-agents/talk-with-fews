@@ -1,4 +1,4 @@
-from pydantic_ai import ModelRetry, RunContext
+from pydantic_ai import RunContext
 
 from talk_with_fews.models.base import Deps
 
@@ -25,8 +25,7 @@ async def get_locations(
                which includes:
 
                 - number_of_locations: The maximum number of locations to retrieve
-                - query: An optional search string to filter locations by specific criteria
-                - locations_name: An optional name to filter locations by their name
+                - filter_locations_name: An optional name to filter locations by their name
     Returns:
         GetLocationOutput: Retrieved locations details with formatted markdown content
     """
@@ -35,33 +34,12 @@ async def get_locations(
     else:
         n = 10
 
+    columns = "locationId, shortName, lat, lon, x, y, z, geoDatum"
     # Query locations from DuckDB
-    if input.query is not None:
-        query = input.query
-        try:
-            assert "SELECT" in query, "Query must start with SELECT"
-            assert any(
-                col in query
-                for col in [
-                    "locationId",
-                    "shortName",
-                    "lat",
-                    "lon",
-                    "x",
-                    "y",
-                    "z",
-                    "geoDatum",
-                ]
-            ), (
-                "Query must include atleast one columns ocationId, shortName, lat, lon, x, y, z, geoDatum"
-            )
-            assert "FROM locations" in query, "Query must specify a table with FROM"
-        except AssertionError as e:
-            raise ModelRetry(f"Query validation failed: {str(e)}")
+    if input.filter_locations_name is not None:
+        query = f"SELECT {columns} FROM locations WHERE shortName ILIKE '%{input.filter_locations_name}%'"
     else:
-        query = (
-            "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
-        )
+        query = f"SELECT {columns} FROM locations"
     if "LIMIT" not in query:
         query += f" LIMIT {n}"
 

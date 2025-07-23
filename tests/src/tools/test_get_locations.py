@@ -25,3 +25,26 @@ def test_get_locations():
     assert len(output.locations) == 6  # > accounts for additions in the future
     assert isinstance(output.markdown_content, str)
     assert "## Locations" in output.markdown_content
+
+
+def test_get_locations_query():
+    """
+    Test the get_locations function to ensure it retrieves locations details correctly.
+    """
+    # this is dependant on the FEWS web service being available indefinitely
+    setup_dot_env()
+    # Create a mock RunContext and input
+    input_data = GetLocationInput(
+        number_of_locations=6,
+        query="SELECT * FROM locations WHERE shortName LIKE '%ede%'",
+    )
+
+    ctx = get_runtime_ctx()
+    output = asyncio.run(get_locations(ctx, input_data))
+
+    # Assert the output is of the expected type
+    assert isinstance(output, GetLocationOutput)
+    assert output.locations is not None
+    assert len(output.locations) == 6  # > accounts for additions in the future
+    assert isinstance(output.markdown_content, str)
+    assert "## Locations" in output.markdown_content

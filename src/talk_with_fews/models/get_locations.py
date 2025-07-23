@@ -15,8 +15,7 @@ class GetLocationInput(BaseModel):
 
     Attributes:
         number_of_locations (Optional[int]): The maximum number of locations to retrieve.
-        query (Optional[str]): An optional search string to filter locations by specific criteria.
-        locations_name (Optional[str]): An optional name to filter locations by their name.
+        filter_locations_name (Optional[str]): An optional name filter for locations names, using the SQL LIKE functionality.
 
     This model allows flexible querying of location data, supporting both general and name-specific searches,
     and limiting the number of results returned.
@@ -25,11 +24,9 @@ class GetLocationInput(BaseModel):
     number_of_locations: Optional[int] = Field(
         ..., description="Number of locations to retrieve"
     )
-    query: Optional[str] = Field(
-        None, description="Optional sql query string to filter locations from the locations table."
-    )
-    locations_name: Optional[str] = Field(
-        None, description="Optional name of the locations to filter by"
+    filter_locations_name: Optional[str] = Field(
+        None,
+        description="Optional string used to filter the locations returned by using sql LIKE functionality",
     )
 
 
