@@ -24,32 +24,19 @@ async def get_parameters(
     Returns:
         ParameterDetailsOutput: Retrieved parameter details with formatted markdown content
     """
-    # TODO adjust input to filter on parameters
     # Query parameters from DuckDB
     if input.number_of_parameters is not None:
         n = input.number_of_parameters
     else:
         n = 10
 
-    if input.query is not None:
-        query = input.query
+    columns = "id,name,parameter_type,unit,display_unit,uses_datum,parameter_group,parameter_group_name,short_name,attributes"
+    if input.filter_parameters_name is not None:
+        query = f"SELECT {columns} FROM parameters WHERE name ILIKE '%{input.filter_parameters_name}%'"
     else:
-        query = """
-        SELECT
-            id,
-            name,
-            parameter_type,
-            unit,
-            display_unit,
-            uses_datum,
-            parameter_group,
-            parameter_group_name,
-            short_name,
-            attributes
-        FROM parameters
-    """
-    if "LIMIT" not in query:
-        query += f" LIMIT {n}"
+        query = f"SELECT {columns} FROM parameters"
+
+    query += f" LIMIT {n}"
 
     connection: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     cursor = connection.cursor()

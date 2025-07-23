@@ -12,6 +12,10 @@ from talk_with_fews.models.base import Parameter  # , Location
 class GetParameterInput(BaseModel):
     """Model representing a parameter search result.
 
+    Attributes:
+        number_of_parameters (Optional[int]): The maximum number of parameters to retrieve.
+        filter_parameters_name (Optional[str]): An optional name filter for parameters names, using the SQL LIKE functionality.
+
     A parameter search result extends the base time series properties with optional
     transformation information for search results.
     """
@@ -19,11 +23,9 @@ class GetParameterInput(BaseModel):
     number_of_parameters: Optional[int] = Field(
         ..., description="Number of parameter to retrieve"
     )
-    locations_name: Optional[str] = Field(
-        None, description="Optional name of the parameter to filter by"
-    )
-    query: Optional[str] = Field(
-        None, description="Optional query string to filter parameter"
+    filter_parameters_name: Optional[str] = Field(
+        None,
+        description="Optional string used to filter the parameters returned by using sql LIKE functionality",
     )
 
 
