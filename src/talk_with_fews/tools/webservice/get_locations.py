@@ -40,7 +40,21 @@ async def get_locations(
         query = input.query
         try:
             assert "SELECT" in query, "Query must start with SELECT"
-            assert any(col in query for col in ["locationId", "shortName", "lat", "lon", "x", "y", "z", "geoDatum"]), "Query must include atleast one columns ocationId, shortName, lat, lon, x, y, z, geoDatum"
+            assert any(
+                col in query
+                for col in [
+                    "locationId",
+                    "shortName",
+                    "lat",
+                    "lon",
+                    "x",
+                    "y",
+                    "z",
+                    "geoDatum",
+                ]
+            ), (
+                "Query must include atleast one columns ocationId, shortName, lat, lon, x, y, z, geoDatum"
+            )
             assert "FROM locations" in query, "Query must specify a table with FROM"
         except AssertionError as e:
             raise ModelRetry(f"Query validation failed: {str(e)}")
