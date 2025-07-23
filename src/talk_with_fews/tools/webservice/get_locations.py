@@ -1,4 +1,4 @@
-from pydantic_ai import RunContext
+from pydantic_ai import ModelRetry, RunContext
 
 from talk_with_fews.models.base import Deps
 
@@ -38,6 +38,26 @@ async def get_locations(
     # Query locations from DuckDB
     if input.query is not None:
         query = input.query
+        try:
+            assert "SELECT" in query, "Query must start with SELECT"
+            assert any(
+                col in query
+                for col in [
+                    "locationId",
+                    "shortName",
+                    "lat",
+                    "lon",
+                    "x",
+                    "y",
+                    "z",
+                    "geoDatum",
+                ]
+            ), (
+                "Query must include atleast one columns ocationId, shortName, lat, lon, x, y, z, geoDatum"
+            )
+            assert "FROM locations" in query, "Query must specify a table with FROM"
+        except AssertionError as e:
+            raise ModelRetry(f"Query validation failed: {str(e)}")
     else:
         query = (
             "SELECT locationId, shortName, lat, lon, x, y, z, geoDatum FROM locations"
