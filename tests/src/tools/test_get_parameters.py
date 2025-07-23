@@ -15,10 +15,10 @@ def test_get_parameter_details():
     # this is dependant on the FEWS web service being available indefinitely
     setup_dot_env()
     # Create a mock RunContext and input
-    ctx = get_runtime_ctx()
     input_data = GetParameterInput(number_of_parameters=6)
 
     # Call the function
+    ctx = get_runtime_ctx()
     output = asyncio.run(get_parameters(ctx, input_data))
 
     # Assert the output is of the expected type

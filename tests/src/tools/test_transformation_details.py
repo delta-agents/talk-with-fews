@@ -9,6 +9,7 @@ from tests.utils_tests import setup_dot_env
 import asyncio
 
 
+
 def test_transformation_details():
     """
     Test the test_transformation_details function to ensure it retrieves transformation details correctly.
@@ -16,11 +17,9 @@ def test_transformation_details():
     # this is dependant on the FEWS web service being available indefinitely
     setup_dot_env()
     # Create a mock RunContext and input
-    ctx = get_runtime_ctx()
     index = 1  # Example transformation ID, adjust as needed
     input_data = TransformationDetailsInput(transformation_id=index)
-
-    # Call the function
+    ctx = get_runtime_ctx()
     output = asyncio.run(get_transformation_details(ctx, input_data))
 
     # Assert the output is of the expected type

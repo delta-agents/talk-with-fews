@@ -15,10 +15,8 @@ def test_get_locations():
     # this is dependant on the FEWS web service being available indefinitely
     setup_dot_env()
     # Create a mock RunContext and input
-    ctx = get_runtime_ctx()
     input_data = GetLocationInput(number_of_locations=6)
-
-    # Call the function
+    ctx = get_runtime_ctx()
     output = asyncio.run(get_locations(ctx, input_data))
 
     # Assert the output is of the expected type
