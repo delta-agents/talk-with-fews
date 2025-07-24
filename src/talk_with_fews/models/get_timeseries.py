@@ -1,0 +1,47 @@
+"""
+Pydantic models for the FEWS Configuration Agent.
+
+This module defines the models used by the agent to query and analyze FEWS configurations.
+"""
+
+from typing import Optional, List
+from pydantic import BaseModel, Field
+from talk_with_fews.models.base import Parameter  # , Location
+
+
+class GetTimeseriesInput(BaseModel):
+    """Model representing a timeseries search result.
+
+    Attributes:
+        number_of_timeseries (Optional[int]): The maximum number of timeseries to retrieve.
+        filter_timeseries_name (Optional[str]): An optional name filter for timeseries names, using the SQL LIKE functionality.
+
+    A timeseries search result extends the base time series properties with optional
+    transformation information for search results.
+    """
+
+    number_of_timeseries: Optional[int] = Field(
+        ..., description="Number of timeseries to retrieve"
+    )
+    filter_timeseries_name: Optional[str] = Field(
+        None,
+        description="Optional string used to filter the timeseries returned by using sql LIKE functionality",
+    )
+
+
+class GetTimeseriesOutput(BaseModel):
+    """Model for the output of the timeseries_details
+      tool.
+
+    This model provides the search results including both structured data
+    and a formatted markdown representation for display purposes.
+    """
+
+    parameters: Optional[List[Parameter]] = Field(
+        None, description="Optional list of associated transformations"
+    )
+
+    markdown_content: str = Field(
+        ...,
+        description="Pre-formatted markdown string that displays the search results in a human-readable format",
+    )
