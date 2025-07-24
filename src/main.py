@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
- 
+
 from talk_with_fews.routers.tools_router_TalkWithConfig import (
     router as router_talk_with_config,
 )
