@@ -24,7 +24,7 @@ A specialized tool to retrieve current time range statistics for series, providi
 
 #### get_series_statistics.py
 - **Input**: `GetSeriesStatisticsInput` with series identifiers
-- **Logic**: 
+- **Logic**:
   1. Query webservice for current time range information
   2. Parse XML response for startDate/endDate
   3. Calculate statistics (data coverage, freshness, gaps)
@@ -144,12 +144,12 @@ fcst_stats = get_series_statistics(parameter_id="Kwel", module_instance="im.digi
 
 ### Workflow Enhancement
 ```
-User Request → get_series_headers.py → Check Local Cache → 
+User Request → get_series_headers.py → Check Local Cache →
 ├─ If Found: Return from DuckDB
-└─ If Not Found: Call ingest_series_headers.py → 
+└─ If Not Found: Call ingest_series_headers.py →
    Fetch from Webservice → Store in DuckDB → Return Results
 
-Additional: get_series_statistics.py → 
+Additional: get_series_statistics.py →
    Query Current Time Ranges → Analyze Freshness → Return Operational Insights
 ```
 

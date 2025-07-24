@@ -67,7 +67,7 @@ def get_runtime_ctx() -> RunContext:
                 timeZone VARCHAR,
                 qualifiers VARCHAR,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                
+
                 -- Foreign key constraints
                 FOREIGN KEY (locationId) REFERENCES locations(locationId),
                 FOREIGN KEY (parameterId) REFERENCES parameters(id)

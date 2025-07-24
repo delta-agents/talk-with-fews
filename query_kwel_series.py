@@ -27,7 +27,7 @@ async def main():
     result = await get_series_headers(ctx, input_data)
 
     # Print results
-    print(f"=== Series Headers voor Kwel ===")
+    print("=== Series Headers voor Kwel ===")
     print(f"Aantal series gevonden: {result.count}")
     print(f"Samenvatting: {result.summary}")
     print(f"Voorbeeld IDs: {result.sample_ids}")

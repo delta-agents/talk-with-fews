@@ -128,7 +128,7 @@ def insert_series_header(
     # Check if this series already exists (deduplication)
     existing = cache_FewsWebServices_db.execute(
         """
-        SELECT COUNT(*) FROM series_headers 
+        SELECT COUNT(*) FROM series_headers
         WHERE locationId = ? AND parameterId = ? AND moduleInstanceId = ?
     """,
         [
@@ -145,7 +145,7 @@ def insert_series_header(
     cache_FewsWebServices_db.execute(
         """
         INSERT INTO series_headers (
-            id, type, moduleInstanceId, locationId, parameterId, 
+            id, type, moduleInstanceId, locationId, parameterId,
             timeStepUnit, timeStepMultiplier, missVal, timeZone, qualifiers
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """,

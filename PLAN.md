@@ -39,9 +39,9 @@ graph TD
 
 ### Data Flow Diagram
 ```
-User Request → get_series_headers.py → Check Local Cache → 
+User Request → get_series_headers.py → Check Local Cache →
 ├─ If Found: Return from DuckDB
-└─ If Not Found: Call ingest_timeseries_headers.py → 
+└─ If Not Found: Call ingest_timeseries_headers.py →
    Fetch from Webservice → Store in DuckDB → Return Results
 ```
 
@@ -83,7 +83,7 @@ CREATE TABLE series_headers (
     timeZone VARCHAR,
     qualifiers VARCHAR,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- Foreign key constraints
     FOREIGN KEY (locationId) REFERENCES locations(locationId),
     FOREIGN KEY (parameterId) REFERENCES parameters(id)
@@ -114,10 +114,10 @@ The system uses cached data for combined queries to avoid redundant webservice c
    # Step 1: Query by parameter and cache all results
    parameter_results = query_webservice("?parameterIds=Kwel")
    cache_timeseries_headers(parameter_results)
-   
+
    # Step 2: Future combined queries use cached data
    combined_results = query_local_db("""
-       SELECT * FROM timeseries_headers 
+       SELECT * FROM timeseries_headers
        WHERE parameterId = 'Kwel' AND locationId = 'GPG_1698'
    """)
    ```
@@ -127,10 +127,10 @@ The system uses cached data for combined queries to avoid redundant webservice c
    # Step 1: Query by location and cache all results
    location_results = query_webservice("?locationIds=GPG_1698")
    cache_timeseries_headers(location_results)
-   
+
    # Step 2: Future combined queries use cached data
    combined_results = query_local_db("""
-       SELECT * FROM timeseries_headers 
+       SELECT * FROM timeseries_headers
        WHERE parameterId = 'Kwel' AND locationId = 'GPG_1698'
    """)
    ```
@@ -140,8 +140,8 @@ The system uses cached data for combined queries to avoid redundant webservice c
    # Use series_headers table for parameter-location lookups
    def get_parameter_locations(parameter_id):
        return query_local_db("""
-           SELECT DISTINCT locationId 
-           FROM series_headers 
+           SELECT DISTINCT locationId
+           FROM series_headers
            WHERE parameterId = ?
            ORDER BY locationId
        """, [parameter_id])
@@ -154,10 +154,10 @@ The system uses cached data for combined queries to avoid redundant webservice c
        if has_cached_parameter(parameter_id):
            # Query local cache for the specific combination
            results = query_local_db("""
-               SELECT * FROM series_headers 
+               SELECT * FROM series_headers
                WHERE parameterId = ? AND locationId = ?
            """, [parameter_id, location_id])
-           
+
            if results:
                return results
            else:
@@ -191,7 +191,7 @@ The system supports multiple query patterns:
 
 #### get_series_headers.py
 - **Input**: `GetSeriesHeadersInput` with optional filters (parameter_id OR location_id)
-- **Logic**: 
+- **Logic**:
   1. Check if requested parameter/location exists in local cache
   2. If not found, call `ingest_series_headers.py`
   3. Query local DuckDB with JOINs to get complete information
@@ -210,7 +210,7 @@ The system supports multiple query patterns:
 
 ### 4. Webservice Integration
 
-**URL Patterns**: 
+**URL Patterns**:
 ```
 # By Parameter ID
 {webservice_url}/rest/fewspiservice/v1/timeseries?parameterIds={parameterId}&onlyHeaders=True&documentFormat=PI_XML
@@ -225,7 +225,7 @@ The system supports multiple query patterns:
 {webservice_url}/rest/fewspiservice/v1/timeseries?locationIds={loc1},{loc2}&onlyHeaders=True&documentFormat=PI_XML
 ```
 
-**Examples**: 
+**Examples**:
 ```
 # Parameter-based query
 https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices/rest/fewspiservice/v1/timeseries?parameterIds=Kwel&onlyHeaders=True&documentFormat=PI_XML
@@ -262,7 +262,7 @@ class GetSeriesHeadersOutput(BaseModel):
     summary: str = Field(..., description="Brief summary (max 200 chars)")
     sample_ids: List[str] = Field(..., description="First 3 series IDs for reference")
     available_filters: Dict[str, List[str]] = Field(
-        default_factory=dict, 
+        default_factory=dict,
         description="Available values for user-friendly filtering options"
     )
     follow_up_suggestions: List[str] = Field(
@@ -434,20 +434,20 @@ To enable effective combined queries, we derive parameter-location relationships
 -- No separate mapping table needed!
 
 -- Query for available locations for a parameter
-SELECT DISTINCT locationId 
-FROM series_headers 
-WHERE parameterId = 'Kwel' 
+SELECT DISTINCT locationId
+FROM series_headers
+WHERE parameterId = 'Kwel'
 ORDER BY locationId;
 
 -- Query for available parameters at a location
-SELECT DISTINCT parameterId 
-FROM series_headers 
-WHERE locationId = 'GPG_1698' 
+SELECT DISTINCT parameterId
+FROM series_headers
+WHERE locationId = 'GPG_1698'
 ORDER BY parameterId;
 
 -- Get parameter-location combinations with counts
 SELECT parameterId, locationId, COUNT(*) as series_count
-FROM series_headers 
+FROM series_headers
 GROUP BY parameterId, locationId
 ORDER BY series_count DESC;
 

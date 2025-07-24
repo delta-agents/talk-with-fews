@@ -25,7 +25,7 @@ def get_series_headers_with_details(
     """Query series headers with complete location and parameter information"""
 
     query = """
-        SELECT 
+        SELECT
             sh.id,
             sh.type,
             sh.moduleInstanceId,
@@ -82,8 +82,8 @@ def get_available_filters(
         # For parameter query, show available locations and model types
         locations = cache_FewsWebServices_db.execute(
             """
-            SELECT DISTINCT locationId 
-            FROM series_headers 
+            SELECT DISTINCT locationId
+            FROM series_headers
             WHERE parameterId = ?
             ORDER BY locationId
             LIMIT 10
@@ -93,13 +93,13 @@ def get_available_filters(
 
         model_types = cache_FewsWebServices_db.execute(
             """
-            SELECT DISTINCT 
-                CASE 
+            SELECT DISTINCT
+                CASE
                     WHEN moduleInstanceId LIKE '%hist%' THEN 'historical'
                     WHEN moduleInstanceId LIKE '%fcst%' THEN 'forecast'
                     ELSE 'other'
                 END as model_type
-            FROM series_headers 
+            FROM series_headers
             WHERE parameterId = ?
             ORDER BY model_type
         """,
@@ -115,8 +115,8 @@ def get_available_filters(
         # For location query, show available parameters and model types
         parameters = cache_FewsWebServices_db.execute(
             """
-            SELECT DISTINCT parameterId 
-            FROM series_headers 
+            SELECT DISTINCT parameterId
+            FROM series_headers
             WHERE locationId = ?
             ORDER BY parameterId
             LIMIT 10
@@ -126,13 +126,13 @@ def get_available_filters(
 
         model_types = cache_FewsWebServices_db.execute(
             """
-            SELECT DISTINCT 
-                CASE 
+            SELECT DISTINCT
+                CASE
                     WHEN moduleInstanceId LIKE '%hist%' THEN 'historical'
                     WHEN moduleInstanceId LIKE '%fcst%' THEN 'forecast'
                     ELSE 'other'
                 END as model_type
-            FROM series_headers 
+            FROM series_headers
             WHERE locationId = ?
             ORDER BY model_type
         """,
