@@ -71,7 +71,7 @@ def ingest_parameters(
     cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS parameters")
     cache_FewsWebServices_db.execute("""
         CREATE TABLE parameters (
-            id VARCHAR,
+            id VARCHAR PRIMARY KEY,
             name VARCHAR,
             parameter_type VARCHAR,
             unit VARCHAR,

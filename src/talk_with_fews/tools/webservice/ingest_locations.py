@@ -99,7 +99,7 @@ def ingest_locations(
     cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS locations")
     cache_FewsWebServices_db.execute("""
         CREATE TABLE locations (
-            locationId VARCHAR,
+            locationId VARCHAR PRIMARY KEY,
             shortName VARCHAR,
             lat DOUBLE,
             lon DOUBLE,

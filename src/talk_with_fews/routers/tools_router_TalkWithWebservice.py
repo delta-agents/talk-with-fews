@@ -18,6 +18,11 @@ from talk_with_fews.models.get_locations import (
     GetLocationInput,
     GetLocationOutput,
 )
+from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
+from talk_with_fews.models.get_series_headers import (
+    GetSeriesHeadersInput,
+    GetSeriesHeadersOutput,
+)
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 router = APIRouter()
@@ -60,7 +65,7 @@ async def get_locations_mcp(
     return await get_locations(ctx, input)
 
 
-# get_parameter_details tool registration
+# execute_query_webservice tool registration
 @mcp.tool()
 @router.post("/tools.webservice/execute_query_webservice")
 @auto_docstring(
@@ -75,3 +80,24 @@ async def get_locations_mcp(
 async def execute_query_webservice_mcp(input: SQLQueryInput) -> SQLQueryOutput:
     ctx = get_runtime_ctx()
     return await execute_query_webservice(ctx, input)
+
+
+# get_series_headers tool registration
+@mcp.tool()
+@router.post("/tools.webservice/get_series_headers")
+@auto_docstring(
+    "Get series headers from the FEWS WebService with incremental caching. "
+    "Retrieves available time series metadata using an efficient caching strategy. "
+    "Features include: "
+    "- Query by parameter ID or location ID "
+    "- Incremental caching (only fetch when needed) "
+    "- Minimal but meaningful output for cost optimization "
+    "- User-friendly follow-up suggestions "
+    "- Automatic foreign key validation with existing data "
+    "- Essential for discovering available time series and their properties"
+)
+async def get_series_headers_mcp(
+    input: GetSeriesHeadersInput,
+) -> GetSeriesHeadersOutput:
+    ctx = get_runtime_ctx()
+    return await get_series_headers(ctx, input)
