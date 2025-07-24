@@ -1,7 +1,9 @@
 import asyncio
 import duckdb
 from src.talk_with_fews.routers.setup_connections import get_runtime_ctx
-from src.talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
+from src.talk_with_fews.tools.webservice.ingest_series_headers import (
+    ingest_series_headers,
+)
 
 
 def test_series_headers_foreign_keys():
@@ -19,15 +21,18 @@ def test_series_headers_foreign_keys():
     if series_count == 0:
         print("Series headers tabel is leeg, laad data in...")
         try:
-            result = asyncio.run(ingest_series_headers(
-                webservice_url=webservice_url,
-                cache_FewsWebServices_db=db,
-                parameter_id="Kwel"
-            ))
+            result = asyncio.run(
+                ingest_series_headers(
+                    webservice_url=webservice_url,
+                    cache_FewsWebServices_db=db,
+                    parameter_id="Kwel",
+                )
+            )
             print(f"Data ingeladen: {result}")
         except Exception as e:
             print(f"Error bij inladen data: {e}")
             import traceback
+
             traceback.print_exc()
 
     # Query voor series_headers met ongeldige locationId
@@ -74,4 +79,4 @@ def test_series_headers_foreign_keys():
         ).fetchall()
         print(f"Overzicht van series_headers: {series_overview}")
     else:
-        print("Geen series_headers gevonden in de database") 
+        print("Geen series_headers gevonden in de database")

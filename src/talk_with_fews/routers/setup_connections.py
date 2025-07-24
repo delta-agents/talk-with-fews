@@ -43,7 +43,7 @@ def get_runtime_ctx() -> RunContext:
         _cache_FewsWebServices_db = duckdb.connect(database=":memory:", read_only=False)
         _cache_FewsWebServices_db.execute("INSTALL spatial;")
         _cache_FewsWebServices_db.execute("LOAD spatial;")
-        
+
         # Ingest existing data
         _ingest_locations_output = ingest_locations(
             webservice_url, _cache_FewsWebServices_db
@@ -51,7 +51,7 @@ def get_runtime_ctx() -> RunContext:
         _ingest_parameters_output = ingest_parameters(
             webservice_url, _cache_FewsWebServices_db
         )
-        
+
         # Create series_headers table (empty initially, populated incrementally)
         _cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS series_headers")
         _cache_FewsWebServices_db.execute("""
@@ -73,12 +73,20 @@ def get_runtime_ctx() -> RunContext:
                 FOREIGN KEY (parameterId) REFERENCES parameters(id)
             )
         """)
-        
+
         # Create indexes for performance
-        _cache_FewsWebServices_db.execute("CREATE INDEX idx_series_headers_parameterId ON series_headers(parameterId)")
-        _cache_FewsWebServices_db.execute("CREATE INDEX idx_series_headers_locationId ON series_headers(locationId)")
-        _cache_FewsWebServices_db.execute("CREATE INDEX idx_series_headers_moduleInstanceId ON series_headers(moduleInstanceId)")
-        _cache_FewsWebServices_db.execute("CREATE INDEX idx_series_headers_type ON series_headers(type)")
+        _cache_FewsWebServices_db.execute(
+            "CREATE INDEX idx_series_headers_parameterId ON series_headers(parameterId)"
+        )
+        _cache_FewsWebServices_db.execute(
+            "CREATE INDEX idx_series_headers_locationId ON series_headers(locationId)"
+        )
+        _cache_FewsWebServices_db.execute(
+            "CREATE INDEX idx_series_headers_moduleInstanceId ON series_headers(moduleInstanceId)"
+        )
+        _cache_FewsWebServices_db.execute(
+            "CREATE INDEX idx_series_headers_type ON series_headers(type)"
+        )
 
     deps = Deps(db_path=db_path, db_connection=_db_connection)
     deps.webservice_url = webservice_url

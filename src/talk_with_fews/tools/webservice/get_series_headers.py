@@ -9,16 +9,21 @@ from typing import List, Dict, Any
 import duckdb
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.get_series_headers import GetSeriesHeadersInput, GetSeriesHeadersOutput
+from talk_with_fews.models.get_series_headers import (
+    GetSeriesHeadersInput,
+    GetSeriesHeadersOutput,
+)
 from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from talk_with_fews.utils.logging_utils import log_tool_call
 
 
-def get_series_headers_with_details(cache_FewsWebServices_db: duckdb.DuckDBPyConnection, 
-                                   parameter_id: str = None, 
-                                   location_id: str = None) -> List[Dict[str, Any]]:
+def get_series_headers_with_details(
+    cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
+    parameter_id: str = None,
+    location_id: str = None,
+) -> List[Dict[str, Any]]:
     """Query series headers with complete location and parameter information"""
-    
+
     query = """
         SELECT 
             sh.id,
@@ -44,44 +49,50 @@ def get_series_headers_with_details(cache_FewsWebServices_db: duckdb.DuckDBPyCon
         JOIN locations l ON sh.locationId = l.locationId
         JOIN parameters p ON sh.parameterId = p.id
     """
-    
+
     params = []
     conditions = []
-    
+
     if parameter_id:
         conditions.append("sh.parameterId = ?")
         params.append(parameter_id)
-    
+
     if location_id:
         conditions.append("sh.locationId = ?")
         params.append(location_id)
-    
+
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
-    
+
     query += " ORDER BY sh.locationId, sh.parameterId"
-    
+
     return cache_FewsWebServices_db.execute(query, params).fetchall()
 
 
-def get_available_filters(cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
-                         parameter_id: str = None,
-                         location_id: str = None) -> Dict[str, List[str]]:
+def get_available_filters(
+    cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
+    parameter_id: str = None,
+    location_id: str = None,
+) -> Dict[str, List[str]]:
     """Get available filter options for the query results"""
-    
+
     available_filters = {}
-    
+
     if parameter_id:
         # For parameter query, show available locations and model types
-        locations = cache_FewsWebServices_db.execute("""
+        locations = cache_FewsWebServices_db.execute(
+            """
             SELECT DISTINCT locationId 
             FROM series_headers 
             WHERE parameterId = ?
             ORDER BY locationId
             LIMIT 10
-        """, [parameter_id]).fetchall()
-        
-        model_types = cache_FewsWebServices_db.execute("""
+        """,
+            [parameter_id],
+        ).fetchall()
+
+        model_types = cache_FewsWebServices_db.execute(
+            """
             SELECT DISTINCT 
                 CASE 
                     WHEN moduleInstanceId LIKE '%hist%' THEN 'historical'
@@ -91,22 +102,30 @@ def get_available_filters(cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
             FROM series_headers 
             WHERE parameterId = ?
             ORDER BY model_type
-        """, [parameter_id]).fetchall()
-        
+        """,
+            [parameter_id],
+        ).fetchall()
+
         available_filters["locations"] = [row[0] for row in locations]
-        available_filters["model_types"] = [row[0] for row in model_types if row[0] != 'other']
-        
+        available_filters["model_types"] = [
+            row[0] for row in model_types if row[0] != "other"
+        ]
+
     elif location_id:
         # For location query, show available parameters and model types
-        parameters = cache_FewsWebServices_db.execute("""
+        parameters = cache_FewsWebServices_db.execute(
+            """
             SELECT DISTINCT parameterId 
             FROM series_headers 
             WHERE locationId = ?
             ORDER BY parameterId
             LIMIT 10
-        """, [location_id]).fetchall()
-        
-        model_types = cache_FewsWebServices_db.execute("""
+        """,
+            [location_id],
+        ).fetchall()
+
+        model_types = cache_FewsWebServices_db.execute(
+            """
             SELECT DISTINCT 
                 CASE 
                     WHEN moduleInstanceId LIKE '%hist%' THEN 'historical'
@@ -116,163 +135,175 @@ def get_available_filters(cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
             FROM series_headers 
             WHERE locationId = ?
             ORDER BY model_type
-        """, [location_id]).fetchall()
-        
+        """,
+            [location_id],
+        ).fetchall()
+
         available_filters["parameters"] = [row[0] for row in parameters]
-        available_filters["model_types"] = [row[0] for row in model_types if row[0] != 'other']
-    
+        available_filters["model_types"] = [
+            row[0] for row in model_types if row[0] != "other"
+        ]
+
     return available_filters
 
 
-def generate_follow_up_suggestions(parameter_id: str = None,
-                                  location_id: str = None,
-                                  count: int = 0) -> List[str]:
+def generate_follow_up_suggestions(
+    parameter_id: str = None, location_id: str = None, count: int = 0
+) -> List[str]:
     """Generate user-friendly follow-up suggestions"""
-    
+
     suggestions = []
-    
+
     if parameter_id:
         if count > 10:
-            suggestions.append(f"Get series for specific location from the available {count} locations")
+            suggestions.append(
+                f"Get series for specific location from the available {count} locations"
+            )
         suggestions.append("Filter by historical model data")
         suggestions.append("Analyze spatial distribution of series")
-        
+
     elif location_id:
         if count > 10:
-            suggestions.append(f"Get series for specific parameter from the available {count} parameters")
+            suggestions.append(
+                f"Get series for specific parameter from the available {count} parameters"
+            )
         suggestions.append("Analyze time ranges and data coverage")
         suggestions.append("Compare with other locations in the region")
-    
+
     # Limit to 3 suggestions
     return suggestions[:3]
 
 
-def generate_sample_ids(results: List[Dict[str, Any]], 
-                       parameter_id: str = None,
-                       location_id: str = None) -> List[str]:
+def generate_sample_ids(
+    results: List[Dict[str, Any]], parameter_id: str = None, location_id: str = None
+) -> List[str]:
     """Generate sample series IDs for reference"""
-    
+
     sample_ids = []
-    
+
     for row in results[:3]:  # Take first 3 results
-        location_id_val = row['locationId']
-        parameter_id_val = row['parameterId']
-        module_instance = row['moduleInstanceId']
-        
+        location_id_val = row["locationId"]
+        parameter_id_val = row["parameterId"]
+        module_instance = row["moduleInstanceId"]
+
         # Create a meaningful ID
-        if 'hist' in module_instance:
-            suffix = 'hist'
-        elif 'fcst' in module_instance:
-            suffix = 'fcst'
+        if "hist" in module_instance:
+            suffix = "hist"
+        elif "fcst" in module_instance:
+            suffix = "fcst"
         else:
-            suffix = 'other'
-        
+            suffix = "other"
+
         sample_id = f"{location_id_val}_{parameter_id_val}_{suffix}"
         sample_ids.append(sample_id)
-    
+
     return sample_ids
 
 
 @log_tool_call
 async def get_series_headers(
-    ctx: RunContext[Deps], 
-    input: GetSeriesHeadersInput
+    ctx: RunContext[Deps], input: GetSeriesHeadersInput
 ) -> GetSeriesHeadersOutput:
     """
     Retrieve series headers with incremental caching from FEWS webservice.
-    
+
     This tool implements the incremental caching strategy: first check local cache,
     then trigger ingestion if needed, and return minimal but meaningful output.
-    
+
     Args:
         ctx: RunContext with database connection
         input: GetSeriesHeadersInput containing parameter_id OR location_id
-        
+
     Returns:
         GetSeriesHeadersOutput with series headers summary and follow-up suggestions
     """
-    
+
     # Validate input
     if input.parameter_id and input.location_id:
         raise ValueError("Cannot specify both parameter_id and location_id")
     if not input.parameter_id and not input.location_id:
         raise ValueError("Must specify either parameter_id or location_id")
-    
+
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
     webservice_url = ctx.deps.webservice_url
-    
+
     # Check if we have data cached
     if input.parameter_id:
-        cached_count = cache_FewsWebServices_db.execute("""
+        cached_count = cache_FewsWebServices_db.execute(
+            """
             SELECT COUNT(*) FROM series_headers WHERE parameterId = ?
-        """, [input.parameter_id]).fetchone()[0]
-        
+        """,
+            [input.parameter_id],
+        ).fetchone()[0]
+
         if cached_count == 0:
             # No data cached - trigger ingestion
             await ingest_series_headers(
                 webservice_url=webservice_url,
                 cache_FewsWebServices_db=cache_FewsWebServices_db,
-                parameter_id=input.parameter_id
+                parameter_id=input.parameter_id,
             )
-        
+
         # Query cached data
         results = get_series_headers_with_details(
-            cache_FewsWebServices_db, 
-            parameter_id=input.parameter_id
+            cache_FewsWebServices_db, parameter_id=input.parameter_id
         )
-        
+
         # Generate summary
         summary = f"Found {len(results)} {input.parameter_id} series across {len(set(r['locationId'] for r in results))} locations"
-        
+
     else:  # location_id
-        cached_count = cache_FewsWebServices_db.execute("""
+        cached_count = cache_FewsWebServices_db.execute(
+            """
             SELECT COUNT(*) FROM series_headers WHERE locationId = ?
-        """, [input.location_id]).fetchone()[0]
-        
+        """,
+            [input.location_id],
+        ).fetchone()[0]
+
         if cached_count == 0:
             # No data cached - trigger ingestion
             await ingest_series_headers(
                 webservice_url=webservice_url,
                 cache_FewsWebServices_db=cache_FewsWebServices_db,
-                location_id=input.location_id
+                location_id=input.location_id,
             )
-        
+
         # Query cached data
         results = get_series_headers_with_details(
-            cache_FewsWebServices_db, 
-            location_id=input.location_id
+            cache_FewsWebServices_db, location_id=input.location_id
         )
-        
+
         # Get location name for summary
-        location_name = cache_FewsWebServices_db.execute("""
+        location_name = cache_FewsWebServices_db.execute(
+            """
             SELECT shortName FROM locations WHERE locationId = ?
-        """, [input.location_id]).fetchone()
+        """,
+            [input.location_id],
+        ).fetchone()
         location_display = location_name[0] if location_name else input.location_id
-        
+
         # Generate summary
-        summary = f"Found {len(results)} series at {input.location_id} ({location_display})"
-    
+        summary = (
+            f"Found {len(results)} series at {input.location_id} ({location_display})"
+        )
+
     # Generate sample IDs
     sample_ids = generate_sample_ids(results, input.parameter_id, input.location_id)
-    
+
     # Get available filters
     available_filters = get_available_filters(
-        cache_FewsWebServices_db, 
-        input.parameter_id, 
-        input.location_id
+        cache_FewsWebServices_db, input.parameter_id, input.location_id
     )
-    
+
     # Generate follow-up suggestions
     follow_up_suggestions = generate_follow_up_suggestions(
-        input.parameter_id, 
-        input.location_id, 
-        len(results)
+        input.parameter_id, input.location_id, len(results)
     )
-    
+
     return GetSeriesHeadersOutput(
         count=len(results),
         summary=summary,
         sample_ids=sample_ids,
         available_filters=available_filters,
-        follow_up_suggestions=follow_up_suggestions
-    ) 
+        follow_up_suggestions=follow_up_suggestions,
+    )

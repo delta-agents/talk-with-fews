@@ -24,16 +24,16 @@ def test_get_series_headers_by_parameter():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Create input for parameter-based query
     input_data = GetSeriesHeadersInput(parameter_id="Kwel")
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
-    
+
     # Call the function
     output = asyncio.run(get_series_headers(ctx, input_data))
-    
+
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesHeadersOutput)
     assert output.count >= 0  # Should be non-negative
@@ -44,10 +44,10 @@ def test_get_series_headers_by_parameter():
     assert isinstance(output.available_filters, dict)
     assert isinstance(output.follow_up_suggestions, list)
     assert len(output.follow_up_suggestions) <= 3  # Should have max 3 suggestions
-    
+
     # Check that summary mentions the parameter
     assert "Kwel" in output.summary
-    
+
     # Check that available_filters contains expected keys for parameter query
     if output.count > 0:
         assert "locations" in output.available_filters
@@ -60,16 +60,16 @@ def test_get_series_headers_by_location():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Create input for location-based query
     input_data = GetSeriesHeadersInput(location_id="GPG_1698")
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
-    
+
     # Call the function
     output = asyncio.run(get_series_headers(ctx, input_data))
-    
+
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesHeadersOutput)
     assert output.count >= 0  # Should be non-negative
@@ -80,10 +80,10 @@ def test_get_series_headers_by_location():
     assert isinstance(output.available_filters, dict)
     assert isinstance(output.follow_up_suggestions, list)
     assert len(output.follow_up_suggestions) <= 3  # Should have max 3 suggestions
-    
+
     # Check that summary mentions the location
     assert "GPG_1698" in output.summary
-    
+
     # Check that available_filters contains expected keys for location query
     if output.count > 0:
         assert "parameters" in output.available_filters
@@ -96,15 +96,17 @@ def test_get_series_headers_invalid_input():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Create invalid input (both parameter and location)
     input_data = GetSeriesHeadersInput(parameter_id="Kwel", location_id="GPG_1698")
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
-    
+
     # Call the function and expect ValueError
-    with pytest.raises(ValueError, match="Cannot specify both parameter_id and location_id"):
+    with pytest.raises(
+        ValueError, match="Cannot specify both parameter_id and location_id"
+    ):
         asyncio.run(get_series_headers(ctx, input_data))
 
 
@@ -114,15 +116,17 @@ def test_get_series_headers_no_input():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Create invalid input (neither parameter nor location)
     input_data = GetSeriesHeadersInput()
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
-    
+
     # Call the function and expect ValueError
-    with pytest.raises(ValueError, match="Must specify either parameter_id or location_id"):
+    with pytest.raises(
+        ValueError, match="Must specify either parameter_id or location_id"
+    ):
         asyncio.run(get_series_headers(ctx, input_data))
 
 
@@ -132,26 +136,28 @@ def test_ingest_series_headers_by_parameter():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
-    
+
     # Call the function
-    output = asyncio.run(ingest_series_headers(
-        webservice_url=webservice_url,
-        cache_FewsWebServices_db=cache_FewsWebServices_db,
-        parameter_id="Kwel"
-    ))
-    
+    output = asyncio.run(
+        ingest_series_headers(
+            webservice_url=webservice_url,
+            cache_FewsWebServices_db=cache_FewsWebServices_db,
+            parameter_id="Kwel",
+        )
+    )
+
     # Assert the output is of the expected type
     assert isinstance(output, IngestSeriesHeadersOutput)
     assert isinstance(output.description, str)
     assert output.series_count >= 0  # Should be non-negative
     assert isinstance(output.sql_examples, list)
     assert len(output.sql_examples) >= 1  # Should have at least one SQL example
-    
+
     # Check that description mentions the parameter
     assert "Kwel" in output.description
 
@@ -162,26 +168,28 @@ def test_ingest_series_headers_by_location():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
-    
+
     # Call the function
-    output = asyncio.run(ingest_series_headers(
-        webservice_url=webservice_url,
-        cache_FewsWebServices_db=cache_FewsWebServices_db,
-        location_id="GPG_1698"
-    ))
-    
+    output = asyncio.run(
+        ingest_series_headers(
+            webservice_url=webservice_url,
+            cache_FewsWebServices_db=cache_FewsWebServices_db,
+            location_id="GPG_1698",
+        )
+    )
+
     # Assert the output is of the expected type
     assert isinstance(output, IngestSeriesHeadersOutput)
     assert isinstance(output.description, str)
     assert output.series_count >= 0  # Should be non-negative
     assert isinstance(output.sql_examples, list)
     assert len(output.sql_examples) >= 1  # Should have at least one SQL example
-    
+
     # Check that description mentions the location
     assert "GPG_1698" in output.description
 
@@ -192,20 +200,24 @@ def test_ingest_series_headers_invalid_input():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
-    
+
     # Call the function and expect ValueError
-    with pytest.raises(ValueError, match="Cannot specify both parameter_id and location_id"):
-        asyncio.run(ingest_series_headers(
-            webservice_url=webservice_url,
-            cache_FewsWebServices_db=cache_FewsWebServices_db,
-            parameter_id="Kwel",
-            location_id="GPG_1698"
-        ))
+    with pytest.raises(
+        ValueError, match="Cannot specify both parameter_id and location_id"
+    ):
+        asyncio.run(
+            ingest_series_headers(
+                webservice_url=webservice_url,
+                cache_FewsWebServices_db=cache_FewsWebServices_db,
+                parameter_id="Kwel",
+                location_id="GPG_1698",
+            )
+        )
 
 
 def test_ingest_series_headers_no_input():
@@ -214,18 +226,22 @@ def test_ingest_series_headers_no_input():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
-    
+
     # Call the function and expect ValueError
-    with pytest.raises(ValueError, match="Must specify either parameter_id or location_id"):
-        asyncio.run(ingest_series_headers(
-            webservice_url=webservice_url,
-            cache_FewsWebServices_db=cache_FewsWebServices_db
-        ))
+    with pytest.raises(
+        ValueError, match="Must specify either parameter_id or location_id"
+    ):
+        asyncio.run(
+            ingest_series_headers(
+                webservice_url=webservice_url,
+                cache_FewsWebServices_db=cache_FewsWebServices_db,
+            )
+        )
 
 
 def test_series_headers_caching():
@@ -234,18 +250,18 @@ def test_series_headers_caching():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
-    
+
     # First call - should trigger ingestion
     input_data1 = GetSeriesHeadersInput(parameter_id="Kwel")
     output1 = asyncio.run(get_series_headers(ctx, input_data1))
-    
+
     # Second call - should use cache
     input_data2 = GetSeriesHeadersInput(parameter_id="Kwel")
     output2 = asyncio.run(get_series_headers(ctx, input_data2))
-    
+
     # Both outputs should be identical (same data from cache)
     assert output1.count == output2.count
     assert output1.summary == output2.summary
@@ -258,32 +274,32 @@ def test_series_headers_output_structure():
     """
     # Setup environment
     setup_dot_env()
-    
+
     # Create input
     input_data = GetSeriesHeadersInput(parameter_id="Kwel")
-    
+
     # Get runtime context
     ctx = get_runtime_ctx()
-    
+
     # Call the function
     output = asyncio.run(get_series_headers(ctx, input_data))
-    
+
     # Test output structure
-    assert hasattr(output, 'count')
-    assert hasattr(output, 'summary')
-    assert hasattr(output, 'sample_ids')
-    assert hasattr(output, 'available_filters')
-    assert hasattr(output, 'follow_up_suggestions')
-    
+    assert hasattr(output, "count")
+    assert hasattr(output, "summary")
+    assert hasattr(output, "sample_ids")
+    assert hasattr(output, "available_filters")
+    assert hasattr(output, "follow_up_suggestions")
+
     # Test data types
     assert isinstance(output.count, int)
     assert isinstance(output.summary, str)
     assert isinstance(output.sample_ids, list)
     assert isinstance(output.available_filters, dict)
     assert isinstance(output.follow_up_suggestions, list)
-    
+
     # Test constraints
     assert output.count >= 0
     assert len(output.summary) <= 200
     assert len(output.sample_ids) <= 3
-    assert len(output.follow_up_suggestions) <= 3 
+    assert len(output.follow_up_suggestions) <= 3

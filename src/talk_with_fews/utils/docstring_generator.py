@@ -23,7 +23,7 @@ def auto_docstring(description: str = "", model_class: type[BaseModel] = None):
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         # Get type hints
         type_hints = get_type_hints(func)
-        
+
         # Get return type from type hints if model_class isn't explicitly given
         return_type = type_hints.get("return")
         resolved_return_model = model_class or (
@@ -41,24 +41,30 @@ def auto_docstring(description: str = "", model_class: type[BaseModel] = None):
         doc_parts = []
         if description:
             doc_parts.append(description.strip())
-        
+
         # Add input documentation
         if input_model:
             doc_parts.append("\nParameters:\n")
-            doc_parts.append(f"- input ({input_model.__name__}): Input parameters for the tool")
+            doc_parts.append(
+                f"- input ({input_model.__name__}): Input parameters for the tool"
+            )
             doc_parts.append(generate_pydantic_docstring(input_model, indent=4))
-            
+
             # Add JSON example
             doc_parts.append("\nExample input:")
             doc_parts.append("```json")
             doc_parts.append(generate_json_example(input_model))
             doc_parts.append("```")
-        
+
         # Add return documentation
         if resolved_return_model:
             doc_parts.append("\nReturns:\n")
-            doc_parts.append(f"- {resolved_return_model.__name__}: Output data from the tool")
-            doc_parts.append(generate_pydantic_docstring(resolved_return_model, indent=4))
+            doc_parts.append(
+                f"- {resolved_return_model.__name__}: Output data from the tool"
+            )
+            doc_parts.append(
+                generate_pydantic_docstring(resolved_return_model, indent=4)
+            )
 
         # Combine with existing docstring if any
         existing_doc = func.__doc__ or ""
@@ -190,10 +196,10 @@ def generate_pydantic_docstring(
 def generate_json_example(model_class: type[BaseModel]) -> str:
     """
     Generate a JSON example from a Pydantic model.
-    
+
     Args:
         model_class: The Pydantic model class
-        
+
     Returns:
         A JSON example string
     """
@@ -202,24 +208,26 @@ def generate_json_example(model_class: type[BaseModel]) -> str:
         schema = model_class.model_json_schema()
         properties = schema.get("properties", {})
         required = schema.get("required", [])
-        
+
         # Build example JSON
         example = {}
         for field_name, field_info in properties.items():
             # Check if field is required
             is_required = field_name in required
-            
+
             # Handle Optional types (anyOf with null)
             if "anyOf" in field_info:
                 # Find the non-null type
-                non_null_types = [t for t in field_info["anyOf"] if t.get("type") != "null"]
+                non_null_types = [
+                    t for t in field_info["anyOf"] if t.get("type") != "null"
+                ]
                 if non_null_types:
                     field_type = non_null_types[0].get("type", "string")
                 else:
                     field_type = "string"
             else:
                 field_type = field_info.get("type", "string")
-            
+
             # Generate example values based on type
             if field_type == "string":
                 if "parameter" in field_name.lower():
@@ -240,16 +248,17 @@ def generate_json_example(model_class: type[BaseModel]) -> str:
                 example[field_name] = {"key": "value"}
             else:
                 example[field_name] = None
-            
+
             # For optional fields, we might want to omit them or set to null
             if not is_required and field_name in ["parameter_id", "location_id"]:
                 # For mutually exclusive fields, only include one
                 if field_name == "location_id":
                     example[field_name] = None
-        
+
         # Convert to JSON string
         import json
+
         return json.dumps({"input": example}, indent=2)
-        
+
     except Exception as e:
         return f'{{"input": {{"error": "Could not generate example: {e}"}}}}'

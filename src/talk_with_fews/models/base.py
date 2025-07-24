@@ -198,22 +198,34 @@ class ModuleSummary(BaseModel):
 
 class SeriesHeader(BaseModel):
     """Model representing a series header from the FEWS webservice.
-    
+
     A series header defines the metadata for a time series, including its type, location,
     parameter, and timing characteristics. This model represents the structure returned
     by the FEWS webservice timeseries endpoint with onlyHeaders=True.
     """
-    
+
     id: int = Field(..., description="Unique identifier of the series header")
     type: str = Field(..., description="Type of series (e.g., 'instantaneous')")
-    moduleInstanceId: str = Field(..., description="Module instance ID that manages this series")
-    locationId: str = Field(..., description="Location ID (foreign key to locations table)")
-    parameterId: str = Field(..., description="Parameter ID (foreign key to parameters table)")
-    timeStepUnit: str = Field(..., description="Time step unit (e.g., 'minute', 'hour')")
-    timeStepMultiplier: int = Field(..., description="Time step multiplier (e.g., 10 for 10 minutes)")
+    moduleInstanceId: str = Field(
+        ..., description="Module instance ID that manages this series"
+    )
+    locationId: str = Field(
+        ..., description="Location ID (foreign key to locations table)"
+    )
+    parameterId: str = Field(
+        ..., description="Parameter ID (foreign key to parameters table)"
+    )
+    timeStepUnit: str = Field(
+        ..., description="Time step unit (e.g., 'minute', 'hour')"
+    )
+    timeStepMultiplier: int = Field(
+        ..., description="Time step multiplier (e.g., 10 for 10 minutes)"
+    )
     missVal: float = Field(..., description="Missing value indicator")
     timeZone: str = Field(..., description="Time zone offset (e.g., '0.0')")
-    qualifiers: Optional[str] = Field(None, description="Optional qualifiers for the series")
+    qualifiers: Optional[str] = Field(
+        None, description="Optional qualifiers for the series"
+    )
 
 
 class ToolCallTracker:
