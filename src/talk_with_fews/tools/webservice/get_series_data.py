@@ -4,6 +4,7 @@ Get timeseries data from FEWS webservice for specific location-parameter combina
 
 import xml.etree.ElementTree as ET
 from typing import Tuple, List
+from datetime import datetime, timezone, timedelta
 
 import httpx
 from pydantic_ai import RunContext
@@ -32,6 +33,10 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
     """
     root = ET.fromstring(xml_content)
     ns = {"pi": "http://www.wldelft.nl/fews/PI"}
+
+    # Get timezone offset from XML
+    timezone_offset = float(root.find("pi:timeZone", ns).text)
+    tz = timezone(timedelta(hours=timezone_offset))
 
     # Parse header information
     header = root.find(".//pi:header", ns)
@@ -62,8 +67,14 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
         # Handle missing values: if value equals missing_value indicator, set to None
         value = None if value == missing_value else value
 
-        # Combine date and time strings and parse into a datetime object
+        # Combine date and time strings and parse into a datetime object with the XML-specified timezone
         event_datetime = datetime.fromisoformat(f"{date}T{time}")
+        # Convert to UTC if not already UTC timezone
+        if timezone_offset != 0:
+            event_datetime = event_datetime.replace(tzinfo=tz).astimezone(timezone.utc)
+        else:
+            event_datetime = event_datetime.replace(tzinfo=timezone.utc)
+
         values.append(
             TimeseriesValue(
                 datetime=event_datetime,
