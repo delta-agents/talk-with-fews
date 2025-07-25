@@ -103,7 +103,9 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
 def convert_to_csv(values: List[TimeseriesValue]) -> str:
     """
     Convert timeseries values to CSV format.
+    Only includes flag_source column if any value has a flag source.
     """
+    # Base headers without flag_source
     headers = [
         "datetime",
         "location_id",
@@ -112,8 +114,11 @@ def convert_to_csv(values: List[TimeseriesValue]) -> str:
         "moduleinstance_id",
         "value",
         "flag",
-        "flag_source",  # Added for future use when FEWS API supports it
     ]
+
+    # Check if any value has a flag_source
+    if any(value.flag_source is not None for value in values):
+        headers.append("flag_source")
 
     # Create CSV string manually to ensure consistent line endings
     lines = [",".join(headers)]
