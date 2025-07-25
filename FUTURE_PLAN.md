@@ -1,167 +1,220 @@
-# Future Plan: Series Statistics and Operational Data Management
+# Future Plan: FEWS Quality Flag Report Generator
 
 ## Overview
-This plan outlines future enhancements for handling operational data characteristics, particularly the dynamic nature of time ranges in operational FEWS systems.
+This plan outlines the implementation of a periodic reporting tool that builds upon the `analyze_series_flags` functionality to provide comprehensive summaries of FEWS quality flags across multiple locations and parameters.
 
-## Operational Data Challenges
+IMPORTANT: Like the core tool, this reporting tool ONLY summarizes existing flags and sources. It does NOT:
+- Compute any patterns in the measurement values
+- Detect any anomalies or trends
+- Set or modify any flags
+- Make any quality judgments
 
-### Time Range Dynamics
-In operational FEWS systems, time ranges are dynamic:
-- **startDate** and **endDate** change daily as new data arrives
-- Historical data ranges expand over time
-- Forecast data ranges shift forward daily
-- Different series may have different update frequencies
+## Architecture
 
-### Current Limitation
-The current `series_headers` table stores static metadata but doesn't handle dynamic time range information that changes with operational updates.
+### System Architecture Diagram
+```mermaid
+graph TD
+    A[User Request] --> B[generate_series_flags_report.py]
+    B --> C[analyze_series_flags.py]
+    C --> D[Aggregate Summaries]
+    D --> E[Generate Report]
+    E --> F[Output Formats]
 
-## Proposed Solution: get_series_statistics Tool
+    subgraph "Report Generation"
+        D --> G[Parameter Groups]
+        D --> H[Flag Summary Matrix]
+        D --> I[Summary Tables]
+    end
 
-### Purpose
-A specialized tool to retrieve current time range statistics for series, providing operational data freshness information.
+    subgraph "Output"
+        F --> J[Markdown Tables]
+        F --> K[CSV Export]
+    end
+```
 
-### Tool Design
+## Implementation Details
 
-#### get_series_statistics.py
-- **Input**: `GetSeriesStatisticsInput` with series identifiers
-- **Logic**:
-  1. Query webservice for current time range information
-  2. Parse XML response for startDate/endDate
-  3. Calculate statistics (data coverage, freshness, gaps)
-  4. Return operational insights
-- **Output**: `GetSeriesStatisticsOutput` with time range statistics
+### 1. Data Models
 
-### Data Model
-
-#### GetSeriesStatisticsInput
+#### SeriesFlagsReportInput
 ```python
-class GetSeriesStatisticsInput(BaseModel):
-    parameter_id: Optional[str] = Field(None, description="Parameter ID to analyze")
-    location_id: Optional[str] = Field(None, description="Location ID to analyze")
-    series_ids: Optional[List[str]] = Field(None, description="Specific series IDs")
-    include_gaps: bool = Field(True, description="Include data gap analysis")
-    include_freshness: bool = Field(True, description="Include data freshness metrics")
+class SeriesFlagsReportInput(BaseModel):
+    location_ids: List[str] = Field(..., description="List of location IDs to analyze")
+    parameter_ids: List[str] = Field(..., description="List of parameter IDs to analyze")
+    start_time: datetime = Field(..., description="Start time for analysis")
+    end_time: datetime = Field(..., description="End time for analysis")
+    group_by_parameter_group: bool = Field(
+        False,
+        description="Whether to group parameters by their parameter group"
+    )
+    report_period: str = Field(
+        ...,
+        description="Period for report aggregation ('1W' for weekly, '1M' for monthly)"
+    )
 ```
 
-#### GetSeriesStatisticsOutput
+#### ParameterGroup
 ```python
-class GetSeriesStatisticsOutput(BaseModel):
-    series_count: int = Field(..., description="Number of series analyzed")
-    summary: str = Field(..., description="Brief operational summary")
-    time_ranges: List[SeriesTimeRange] = Field(..., description="Current time ranges")
-    freshness_metrics: Optional[FreshnessMetrics] = Field(None, description="Data freshness information")
-    gap_analysis: Optional[List[DataGap]] = Field(None, description="Identified data gaps")
-    operational_status: str = Field(..., description="Overall operational status")
+class ParameterGroup(BaseModel):
+    """Parameter grouping information"""
+    group_id: str
+    parameters: List[str]
+    description: str
 ```
 
-#### SeriesTimeRange
+#### FlagSummaryMatrix
 ```python
-class SeriesTimeRange(BaseModel):
-    series_id: str = Field(..., description="Series identifier")
-    start_date: datetime = Field(..., description="Current start date")
-    end_date: datetime = Field(..., description="Current end date")
-    data_points: int = Field(..., description="Number of data points")
-    last_update: datetime = Field(..., description="Last data update timestamp")
-    update_frequency: str = Field(..., description="Expected update frequency")
+class FlagSummaryMatrix(BaseModel):
+    """Summary of flags for a location-parameter combination"""
+    location_id: str
+    parameter_id: str
+    parameter_group: Optional[str]
+    flag_counts: Dict[int, int]  # Flag number to count
+    flag_percentages: Dict[int, float]  # Flag number to percentage
+    source_counts: Dict[str, int]  # Source code to count
+    source_percentages: Dict[str, float]  # Source code to percentage
+    total_values: int
 ```
 
-#### FreshnessMetrics
+#### SeriesFlagsReport
 ```python
-class FreshnessMetrics(BaseModel):
-    oldest_data: datetime = Field(..., description="Oldest data point across series")
-    newest_data: datetime = Field(..., description="Newest data point across series")
-    average_age_hours: float = Field(..., description="Average data age in hours")
-    stale_series_count: int = Field(..., description="Number of series with stale data")
-    operational_series_count: int = Field(..., description="Number of series with recent data")
+class SeriesFlagsReport(BaseModel):
+    """Complete periodic report output"""
+    period: str  # e.g., "2024-W10" or "2024-03"
+    start_time: datetime
+    end_time: datetime
+    locations: List[str]
+    parameters: List[str]
+    parameter_groups: Optional[Dict[str, ParameterGroup]]
+    summary_matrix: List[FlagSummaryMatrix]
+    markdown_report: str  # The formatted markdown report
+    csv_export: str  # CSV format for further processing
 ```
 
-### Use Cases
+### 2. Implementation Steps
 
-#### 1. Operational Monitoring
+1. **Report Generation Function**
 ```python
-# Check data freshness across all Kwel series
-stats = get_series_statistics(parameter_id="Kwel")
-# Returns: "156 Kwel series analyzed. 142 operational, 14 stale (>24h old)"
+async def generate_series_flags_report(
+    ctx: RunContext[Deps],
+    input: SeriesFlagsReportInput
+) -> SeriesFlagsReport:
+    """
+    Generate a periodic report summarizing FEWS flags across multiple series.
+
+    This tool ONLY:
+    1. Collects flag summaries for each location-parameter combination
+    2. Groups these summaries by parameter group if requested
+    3. Formats the summaries into reports
+
+    It does NOT:
+    - Analyze measurement values
+    - Detect patterns or anomalies
+    - Set or modify any flags
+    """
+    # 1. Get parameter groups if needed
+    parameter_groups = await get_parameter_groups() if input.group_by_parameter_group else None
+
+    # 2. Generate summary matrix
+    summary_matrix = []
+    for location_id in input.location_ids:
+        for parameter_id in input.parameter_ids:
+            # Get flag summary for location-parameter combination
+            flags_summary = await analyze_series_flags(
+                ctx,
+                SeriesFlagsInput(
+                    location_id=location_id,
+                    parameter_id=parameter_id,
+                    start_time=input.start_time,
+                    end_time=input.end_time
+                )
+            )
+
+            # Add to matrix
+            summary_matrix.append(
+                FlagSummaryMatrix(
+                    location_id=location_id,
+                    parameter_id=parameter_id,
+                    parameter_group=get_parameter_group(parameter_id, parameter_groups),
+                    flag_counts=flags_summary.counts.flag_counts,
+                    flag_percentages=flags_summary.counts.flag_percentages,
+                    source_counts=flags_summary.counts.source_counts,
+                    source_percentages=flags_summary.counts.source_percentages,
+                    total_values=flags_summary.total_values
+                )
+            )
+
+    # 3. Generate report formats
+    markdown_report = generate_markdown_report(summary_matrix, parameter_groups)
+    csv_export = generate_csv_export(summary_matrix)
+
+    return SeriesFlagsReport(
+        period=format_period(input.start_time, input.report_period),
+        start_time=input.start_time,
+        end_time=input.end_time,
+        locations=input.location_ids,
+        parameters=input.parameter_ids,
+        parameter_groups=parameter_groups,
+        summary_matrix=summary_matrix,
+        markdown_report=markdown_report,
+        csv_export=csv_export
+    )
 ```
 
-#### 2. Data Gap Analysis
-```python
-# Identify series with data gaps
-stats = get_series_statistics(location_id="GPG_1698", include_gaps=True)
-# Returns: "89 series at GPG_1698. 3 series have gaps in last 7 days"
+### 3. Output Format
+
+The tool will provide structured reports in both markdown and CSV formats:
+
+1. **Markdown Report Structure**
+```markdown
+# FEWS Flag Summary Report for {period}
+Period: {start_date} to {end_date}
+
+## Flag Summary Matrix by Location and Parameter
+
+### Parameter Group: {group_name} (if grouped)
+| Location | Parameter | Flag Counts | Flag Sources |
+|----------|-----------|-------------|--------------|
+| Loc1     | Par1      | 0: 800      | IMP: 850    |
+|          |           | 3: 100      | SN: 50      |
+|          |           | 9: 50       | HN: 30      |
 ```
 
-#### 3. Forecast vs Historical Comparison
-```python
-# Compare historical and forecast data ranges
-hist_stats = get_series_statistics(parameter_id="Kwel", module_instance="im.digiflow.model.hist.mswap")
-fcst_stats = get_series_statistics(parameter_id="Kwel", module_instance="im.digiflow.model.fcst.mswap")
+2. **CSV Export Format**
+```csv
+location_id,parameter_id,parameter_group,flag_0_count,flag_3_count,...,imp_count,sn_count,...
+Loc1,Par1,Group1,800,100,...,850,50,...
 ```
 
-### Implementation Strategy
+### 4. Testing Strategy
 
-#### Phase 1: Basic Time Range Retrieval
-1. Implement webservice queries for time range information
-2. Parse XML responses for startDate/endDate
-3. Basic statistics calculation
+1. **Unit Tests**
+   - Report generation logic
+   - Period aggregation
+   - Parameter grouping
+   - Output formatting
 
-#### Phase 2: Advanced Analytics
-1. Data gap detection algorithms
-2. Freshness metrics calculation
-3. Operational status classification
+2. **Integration Tests**
+   - Full workflow with analyze_series_flags
+   - Multiple location-parameter combinations
+   - Different time periods
+   - Parameter group handling
 
-#### Phase 3: Integration
-1. Integrate with existing series_headers workflow
-2. Add operational alerts and notifications
-3. Dashboard integration for monitoring
+## Dependencies
 
-### Benefits
-
-1. **Operational Awareness**: Real-time understanding of data freshness
-2. **Quality Assurance**: Identify data gaps and stale series
-3. **System Monitoring**: Track operational health of FEWS system
-4. **Decision Support**: Help users understand data reliability
-5. **Maintenance Planning**: Identify series requiring attention
-
-### Technical Considerations
-
-#### Performance
-- Cache time range statistics to avoid frequent webservice calls
-- Implement incremental updates for efficiency
-- Use batch processing for large series sets
-
-#### Reliability
-- Handle webservice timeouts gracefully
-- Implement retry logic for failed queries
-- Provide fallback to cached statistics
-
-#### Scalability
-- Support analysis of large series collections
-- Implement parallel processing for multiple series
-- Use efficient data structures for gap analysis
-
-## Integration with Current System
-
-### Workflow Enhancement
-```
-User Request → get_series_headers.py → Check Local Cache →
-├─ If Found: Return from DuckDB
-└─ If Not Found: Call ingest_series_headers.py →
-   Fetch from Webservice → Store in DuckDB → Return Results
-
-Additional: get_series_statistics.py →
-   Query Current Time Ranges → Analyze Freshness → Return Operational Insights
-```
-
-### Complementary Tools
-- `get_series_headers.py`: Static metadata and structure
-- `get_series_statistics.py`: Dynamic operational information
-- Together: Complete picture of series availability and health
+- Core `analyze_series_flags` tool
+- Parameter group metadata access
+- Standard Python libraries for report generation
 
 ## Future Enhancements
 
-1. **Automated Monitoring**: Scheduled statistics collection and alerting
-2. **Trend Analysis**: Historical patterns in data freshness
-3. **Predictive Analytics**: Forecast data availability issues
-4. **Integration APIs**: Connect with external monitoring systems
-5. **Custom Alerts**: User-defined thresholds and notifications
+1. **Report Features**
+   - Custom report templates
+   - Additional export formats (JSON)
+   - Report scheduling
+   - Report archiving
+
+2. **Aggregation Options**
+   - Custom grouping criteria
+   - Different time period options
+   - Location grouping support
