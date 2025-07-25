@@ -4,6 +4,7 @@ Utility functions for the FEWS Configuration Agent.
 This module provides utility functions for connecting to the database and formatting results.
 """
 
+from datetime import datetime
 import sqlite3
 import os
 from typing import List, Dict, Any
@@ -147,3 +148,13 @@ def generate_mermaid_diagram(results: List[Dict[str, Any]], diagram_type: str) -
 
         diagram += "```"
         return diagram
+
+
+def to_iso(date_str, time_str):
+    if date_str and time_str:
+        try:
+            dt = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
+            return dt.isoformat()
+        except Exception:
+            return None
+    return None
