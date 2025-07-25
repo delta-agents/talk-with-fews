@@ -29,6 +29,11 @@ from talk_with_fews.models.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
 )
+from talk_with_fews.tools.webservice.get_series_data import get_series_data
+from talk_with_fews.models.get_series_data import (
+    GetSeriesDataInput,
+    GetSeriesDataOutput,
+)
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFewsWebservice")
@@ -108,6 +113,7 @@ async def get_series_headers_mcp(
     return await get_series_headers(ctx, input)
 
 
+# get_series_statistics tool registration
 @mcp.tool()
 @router.post("/tools.webservice/get_series_statistics")
 @auto_docstring(
@@ -124,3 +130,17 @@ async def get_series_statistics_mcp(
 ) -> GetSeriesStatisticsOutput:
     ctx = get_runtime_ctx()
     return await get_series_statistics(ctx, input)
+
+
+# get_series_data tool registration
+@mcp.tool()
+@router.post("/tools.webservice/get_series_data")
+@auto_docstring(
+    "Get timeseries data for a specific location-parameter combination. "
+    "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
+    "Features include: "
+    "- Query by location ID and parameter ID "
+)
+async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
+    ctx = get_runtime_ctx()
+    return await get_series_data(ctx, input)
