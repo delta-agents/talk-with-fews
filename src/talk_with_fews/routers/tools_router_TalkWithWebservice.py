@@ -34,6 +34,11 @@ from talk_with_fews.models.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
 )
+from talk_with_fews.tools.config.analyze_flags import analyze_series_flags
+from talk_with_fews.models.flags.io import (
+    SeriesFlagsInput,
+    SeriesFlagsSummary,
+)
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFewsWebservice")
@@ -144,3 +149,31 @@ async def get_series_statistics_mcp(
 async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     ctx = get_runtime_ctx()
     return await get_series_data(ctx, input)
+
+
+# analyze_series_flags tool registration
+@mcp.tool()
+@router.post("/tools.webservice/analyze_series_flags")
+@auto_docstring(
+    "Analyze FEWS quality flags for a specific location-parameter combination. "
+    "This tool analyzes existing quality flags in the timeseries. "
+    "Features include: "
+    "- Detailed flag distribution (counts and percentages) "
+    "- Quality level summary (Reliable/Doubtful/Unreliable) "
+    "- Origin tracking (Original/Corrected/Completed) "
+    "- Complete flag descriptions and metadata "
+    "\n"
+    "Requirements: "
+    "- Must provide location ID and parameter ID "
+    "- Time range cannot be in the future "
+    "- Start time must be before end time "
+    "\n"
+    "Example Use Cases: "
+    "- Monitor data quality across different periods "
+    "- Compare quality between locations/parameters "
+    "- Track data corrections and completions "
+    "- Identify problematic data sources"
+)
+async def analyze_series_flags_mcp(input: SeriesFlagsInput) -> SeriesFlagsSummary:
+    ctx = get_runtime_ctx()
+    return await analyze_series_flags(ctx, input)

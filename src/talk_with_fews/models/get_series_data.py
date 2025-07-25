@@ -1,3 +1,5 @@
+"""Models for retrieving timeseries data from FEWS."""
+
 from datetime import datetime
 from typing import List, Optional, Annotated
 from pydantic import BaseModel, Field
@@ -31,6 +33,10 @@ class TimeseriesValue(BaseModel):
         ...,
         description="Quality flag for the measurement (0 = good, other values indicate specific issues)",
     )
+    flag_source: Optional[str] = Field(
+        None,
+        description="Source of the flag (e.g., 'IMP', 'SN', 'HX'). Requires FEWS API support.",
+    )
 
 
 class GetSeriesDataInput(BaseModel):
@@ -38,6 +44,9 @@ class GetSeriesDataInput(BaseModel):
     parameter_id: str = Field(..., description="Parameter ID to fetch data for")
     start_time: Annotated[datetime, Field(description="Start time for data retrieval")]
     end_time: Annotated[datetime, Field(description="End time for data retrieval")]
+    include_flag_sources: bool = Field(
+        False, description="Whether to request flag sources. Requires FEWS API support."
+    )
 
 
 class GetSeriesDataOutput(BaseModel):
