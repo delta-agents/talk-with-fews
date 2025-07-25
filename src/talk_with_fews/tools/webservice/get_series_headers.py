@@ -8,7 +8,7 @@ the local DuckDB cache, and if data is not found, it triggers ingestion from the
 from typing import List, Dict
 import duckdb
 import pandas as pd
-from pydantic_ai import RunContext
+from pydantic_ai import ModelRetry, RunContext
 from talk_with_fews.models.base import Deps
 from talk_with_fews.models.get_series_headers import (
     GetSeriesHeadersInput,
@@ -195,9 +195,9 @@ async def get_series_headers(
 
     # Validate input
     if input.parameter_id and input.location_id:
-        raise ValueError("Cannot specify both parameter_id and location_id")
+        raise ModelRetry("Cannot specify both parameter_id and location_id")
     if not input.parameter_id and not input.location_id:
-        raise ValueError("Must specify either parameter_id or location_id")
+        raise ModelRetry("Must specify either parameter_id or location_id")
 
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
     webservice_url = ctx.deps.webservice_url

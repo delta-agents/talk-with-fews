@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastmcp import FastMCP
 from talk_with_fews.utils.docstring_generator import auto_docstring
+from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 
 # Import tool functions and their models
@@ -23,7 +24,11 @@ from talk_with_fews.models.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
-from talk_with_fews.routers.setup_connections import get_runtime_ctx
+from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
+from talk_with_fews.models.get_series_statistics import (
+    GetSeriesStatisticsInput,
+    GetSeriesStatisticsOutput,
+)
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFewsWebservice")
@@ -101,3 +106,21 @@ async def get_series_headers_mcp(
 ) -> GetSeriesHeadersOutput:
     ctx = get_runtime_ctx()
     return await get_series_headers(ctx, input)
+
+
+@mcp.tool()
+@router.post("/tools.webservice/get_series_statistics")
+@auto_docstring(
+    "Get statistical summaries for time series from the FEWS WebService. "
+    "Retrieves statistics such as mean, min, max, and count for specified series. "
+    "Features include: "
+    "- Must Query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
+    "- Optionally Specify time range for statistics, else defaults 2 days"
+    "- Useful for quick data exploration and validation "
+    "- Returns summary statistics for each matching series"
+)
+async def get_series_statistics_mcp(
+    input: GetSeriesStatisticsInput,
+) -> GetSeriesStatisticsOutput:
+    ctx = get_runtime_ctx()
+    return await get_series_statistics(ctx, input)

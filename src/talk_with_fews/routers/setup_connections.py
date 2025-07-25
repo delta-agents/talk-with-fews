@@ -34,6 +34,8 @@ def get_runtime_ctx() -> RunContext:
         _ingest_parameters_output
     db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
     webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
+    if webservice_url is not None and webservice_url.endswith("/"):
+        webservice_url = webservice_url[:-1]
 
     if _db_connection is None:
         _db_connection = connect_to_database(db_path)
