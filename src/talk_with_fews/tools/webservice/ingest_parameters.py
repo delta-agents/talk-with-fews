@@ -66,6 +66,7 @@ def ingest_parameters(
         )
 
     parameter_df = pd.DataFrame(parameters_data)
+    parameter_df['series_headers_retrieved'] = False
 
     # Create and populate the parameters table in DuckDB
     cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS parameters")
@@ -80,7 +81,10 @@ def ingest_parameters(
             parameter_group VARCHAR,
             parameter_group_name VARCHAR,
             short_name VARCHAR,
-            attributes VARCHAR
+            attributes VARCHAR,
+            -- New column to track if series headers have been ingested
+            series_headers_retrieved BOOLEAN DEFAULT FALSE
+
         )
     """)
     # Insert data from the DataFrame into the DuckDB table

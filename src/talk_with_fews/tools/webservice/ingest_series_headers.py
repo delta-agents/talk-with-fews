@@ -39,7 +39,7 @@ def validate_foreign_keys(
     return location_exists > 0 and parameter_exists > 0
 
 
-def parse_series_headers_xml(xml_content: str) -> List[SeriesHeader]:
+def parse_series_headers_xml(xml_content: str, start_id: int) -> List[SeriesHeader]:
     """Parse XML content and extract series headers"""
 
     # Define namespace for PI_XML format
@@ -94,7 +94,7 @@ def parse_series_headers_xml(xml_content: str) -> List[SeriesHeader]:
 
         # Create SeriesHeader object
         series_header = SeriesHeader(
-            id=len(series_headers) + 1,  # Simple auto-increment for now
+            id=start_id,  # auto-increment for now
             type=series_type,
             moduleInstanceId=module_instance_id,
             locationId=location_id,
@@ -105,8 +105,9 @@ def parse_series_headers_xml(xml_content: str) -> List[SeriesHeader]:
             timeZone=header_elem.get("timeZone", ""),
             qualifiers=qualifiers,
         )
-
+        # Increment for next series header
         series_headers.append(series_header)
+        start_id += 1
 
     return series_headers
 
@@ -141,6 +142,9 @@ def insert_series_header(
     if existing > 0:
         return False  # Already exists, skip insertion
 
+    # TODO: replace id with a sequence
+    # Vraag aan Rolf databaseman
+    # See https://duckdb.org/docs/stable/sql/statements/create_sequence.html
     # Insert the series header
     cache_FewsWebServices_db.execute(
         """
@@ -214,8 +218,14 @@ async def ingest_series_headers(
     if error is not None:
         raise ValueError(f"Error fetching series headers for {query_type}: {error}")
 
+    # TODO: get_latest_id
+
+    latest_id = cache_FewsWebServices_db.execute(
+        "SELECT COALESCE(MAX(id), 0) FROM series_headers"
+    ).fetchone()[0]
+    start_id = latest_id + 1
     # Parse XML and extract series headers
-    series_headers = parse_series_headers_xml(data)
+    series_headers = parse_series_headers_xml(data, start_id)
 
     # Insert series headers into database
     inserted_count = 0

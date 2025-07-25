@@ -35,7 +35,9 @@ class GetSeriesHeadersOutput(BaseModel):
 
     count: int = Field(..., description="Number of series found")
     summary: str = Field(..., description="Brief summary (max 200 chars)")
-    sample_ids: List[str] = Field(..., description="First 3 series IDs for reference")
+    sample_ids: str = Field(
+        ..., description="First 5 series IDs for reference in markdown format"
+    )
     available_filters: Dict[str, List[str]] = Field(
         default_factory=dict,
         description="Available values for user-friendly filtering options",

@@ -5,8 +5,9 @@ This tool retrieves series headers using an incremental caching approach. It fir
 the local DuckDB cache, and if data is not found, it triggers ingestion from the webservice.
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict
 import duckdb
+import pandas as pd
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
 from talk_with_fews.models.get_series_headers import (
@@ -21,7 +22,7 @@ def get_series_headers_with_details(
     cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
     parameter_id: str = None,
     location_id: str = None,
-) -> List[Dict[str, Any]]:
+) -> pd.DataFrame:
     """Query series headers with complete location and parameter information"""
 
     query = """
@@ -66,7 +67,7 @@ def get_series_headers_with_details(
 
     query += " ORDER BY sh.locationId, sh.parameterId"
 
-    return cache_FewsWebServices_db.execute(query, params).fetchall()
+    return cache_FewsWebServices_db.execute(query, params).df()
 
 
 def get_available_filters(
@@ -174,32 +175,6 @@ def generate_follow_up_suggestions(
     return suggestions[:3]
 
 
-def generate_sample_ids(
-    results: List[Dict[str, Any]], parameter_id: str = None, location_id: str = None
-) -> List[str]:
-    """Generate sample series IDs for reference"""
-
-    sample_ids = []
-
-    for row in results[:3]:  # Take first 3 results
-        location_id_val = row["locationId"]
-        parameter_id_val = row["parameterId"]
-        module_instance = row["moduleInstanceId"]
-
-        # Create a meaningful ID
-        if "hist" in module_instance:
-            suffix = "hist"
-        elif "fcst" in module_instance:
-            suffix = "fcst"
-        else:
-            suffix = "other"
-
-        sample_id = f"{location_id_val}_{parameter_id_val}_{suffix}"
-        sample_ids.append(sample_id)
-
-    return sample_ids
-
-
 @log_tool_call
 async def get_series_headers(
     ctx: RunContext[Deps], input: GetSeriesHeadersInput
@@ -229,47 +204,56 @@ async def get_series_headers(
 
     # Check if we have data cached
     if input.parameter_id:
-        cached_count = cache_FewsWebServices_db.execute(
-            """
-            SELECT COUNT(*) FROM series_headers WHERE parameterId = ?
-        """,
-            [input.parameter_id],
+        series_headers_retrieved = cache_FewsWebServices_db.execute(
+            f"""
+            SELECT series_headers_retrieved FROM parameters WHERE id = '{input.parameter_id}'
+        """
         ).fetchone()[0]
 
-        if cached_count == 0:
+        if not series_headers_retrieved:
             # No data cached - trigger ingestion
             await ingest_series_headers(
                 webservice_url=webservice_url,
                 cache_FewsWebServices_db=cache_FewsWebServices_db,
                 parameter_id=input.parameter_id,
             )
+            cache_FewsWebServices_db.execute(
+                """
+                UPDATE parameters SET series_headers_retrieved = TRUE WHERE id = ?
+            """,
+                [input.parameter_id],
+            )
 
         # Query cached data
-        results = get_series_headers_with_details(
+        df_results = get_series_headers_with_details(
             cache_FewsWebServices_db, parameter_id=input.parameter_id
         )
 
         # Generate summary
-        summary = f"Found {len(results)} {input.parameter_id} series across {len(set(r['locationId'] for r in results))} locations"
+        summary = f"Found timeseries for {input.parameter_id} across {df_results['locationId'].nunique()} locations"
 
     else:  # location_id
-        cached_count = cache_FewsWebServices_db.execute(
-            """
-            SELECT COUNT(*) FROM series_headers WHERE locationId = ?
+        series_headers_retrieved = cache_FewsWebServices_db.execute(
+            f"""
+            SELECT series_headers_retrieved FROM locations WHERE locationId = '{input.location_id}'
         """,
-            [input.location_id],
         ).fetchone()[0]
 
-        if cached_count == 0:
+        if not series_headers_retrieved:
             # No data cached - trigger ingestion
             await ingest_series_headers(
                 webservice_url=webservice_url,
                 cache_FewsWebServices_db=cache_FewsWebServices_db,
                 location_id=input.location_id,
             )
-
+            cache_FewsWebServices_db.execute(
+                """
+                UPDATE locations SET series_headers_retrieved = TRUE WHERE locationId = ?
+            """,
+                [input.location_id],
+            )
         # Query cached data
-        results = get_series_headers_with_details(
+        df_results = get_series_headers_with_details(
             cache_FewsWebServices_db, location_id=input.location_id
         )
 
@@ -283,27 +267,27 @@ async def get_series_headers(
         location_display = location_name[0] if location_name else input.location_id
 
         # Generate summary
-        summary = (
-            f"Found {len(results)} series at {input.location_id} ({location_display})"
-        )
+        summary = f"Found {df_results['parameterId'].nunique()} parameters at location {location_display}."
 
     # Generate sample IDs
-    sample_ids = generate_sample_ids(results, input.parameter_id, input.location_id)
+    sample_ids = df_results.head().to_markdown(index=False)
 
     # Get available filters
     available_filters = get_available_filters(
         cache_FewsWebServices_db, input.parameter_id, input.location_id
     )
 
+    # TODO: readd generate_follow_up_suggestions
     # Generate follow-up suggestions
-    follow_up_suggestions = generate_follow_up_suggestions(
-        input.parameter_id, input.location_id, len(results)
-    )
+    # follow_up_suggestions = generate_follow_up_suggestions(
+    #     input.parameter_id, input.location_id, len(results)
+    # )
+    follow_up_suggestions = ["No follow-up suggestions available yet."]
 
     return GetSeriesHeadersOutput(
-        count=len(results),
+        count=len(df_results),
         summary=summary,
         sample_ids=sample_ids,
         available_filters=available_filters,
-        follow_up_suggestions=follow_up_suggestions,
+        follow_up_suggestions=follow_up_suggestions,  # Placeholder for follow-up suggestions
     )

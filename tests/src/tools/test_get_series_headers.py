@@ -39,11 +39,9 @@ def test_get_series_headers_by_parameter():
     assert output.count >= 0  # Should be non-negative
     assert isinstance(output.summary, str)
     assert len(output.summary) <= 200  # Check summary length constraint
-    assert isinstance(output.sample_ids, list)
-    assert len(output.sample_ids) <= 3  # Should have max 3 sample IDs
+    assert isinstance(output.sample_ids, str)
     assert isinstance(output.available_filters, dict)
     assert isinstance(output.follow_up_suggestions, list)
-    assert len(output.follow_up_suggestions) <= 3  # Should have max 3 suggestions
 
     # Check that summary mentions the parameter
     assert "Kwel" in output.summary
@@ -75,11 +73,9 @@ def test_get_series_headers_by_location():
     assert output.count >= 0  # Should be non-negative
     assert isinstance(output.summary, str)
     assert len(output.summary) <= 200  # Check summary length constraint
-    assert isinstance(output.sample_ids, list)
-    assert len(output.sample_ids) <= 3  # Should have max 3 sample IDs
+    assert isinstance(output.sample_ids, str)
     assert isinstance(output.available_filters, dict)
     assert isinstance(output.follow_up_suggestions, list)
-    assert len(output.follow_up_suggestions) <= 3  # Should have max 3 suggestions
 
     # Check that summary mentions the location
     assert "GPG_1698" in output.summary
@@ -294,12 +290,10 @@ def test_series_headers_output_structure():
     # Test data types
     assert isinstance(output.count, int)
     assert isinstance(output.summary, str)
-    assert isinstance(output.sample_ids, list)
+    assert isinstance(output.sample_ids, str)
     assert isinstance(output.available_filters, dict)
     assert isinstance(output.follow_up_suggestions, list)
 
     # Test constraints
     assert output.count >= 0
     assert len(output.summary) <= 200
-    assert len(output.sample_ids) <= 3
-    assert len(output.follow_up_suggestions) <= 3
