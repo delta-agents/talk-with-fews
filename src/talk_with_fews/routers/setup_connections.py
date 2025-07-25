@@ -51,7 +51,9 @@ def get_runtime_ctx() -> RunContext:
         _ingest_parameters_output = ingest_parameters(
             webservice_url, _cache_FewsWebServices_db
         )
-        _cache_FewsWebServices_db = setup_series_headers_table(_cache_FewsWebServices_db)
+        _cache_FewsWebServices_db = setup_series_headers_table(
+            _cache_FewsWebServices_db
+        )
 
     deps = Deps(db_path=db_path, db_connection=_db_connection)
     deps.webservice_url = webservice_url
