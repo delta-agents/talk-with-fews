@@ -151,10 +151,22 @@ def generate_mermaid_diagram(results: List[Dict[str, Any]], diagram_type: str) -
 
 
 def to_iso(date_str, time_str):
+    """
+    Convert a date and time string into ISO 8601 format.
+
+    Args:
+        date_str (str): The date string in the format 'YYYY-MM-DD'.
+        time_str (str): The time string in the format 'HH:MM:SS'.
+    Returns:
+        str: The combined date and time in ISO 8601 format (e.g., '2023-01-01T12:00:00'),
+             or None if the input is invalid or an error occurs.
+    Exceptions:
+        Returns None if the input strings are not in the expected format or are None.
+    """
     if date_str and time_str:
         try:
             dt = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
             return dt.isoformat()
-        except Exception:
+        except ValueError:
             return None
     return None

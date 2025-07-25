@@ -7,13 +7,13 @@ the local DuckDB cache, and if data is not found, it triggers ingestion from the
 
 import xml.etree.ElementTree as ET
 
-from pydantic_ai import RunContext
+from pydantic_ai import RunContext, ModelRetry
 from talk_with_fews.models.base import Deps
 from talk_with_fews.models.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
 )
-from talk_with_fews.utils.logging_utils import log_tool_call
+from talk_with_fews.utils.logging_utils import log_tool_call, logger
 from talk_with_fews.utils.utils import to_iso
 from talk_with_fews.utils.webservice_utils import get_request
 
@@ -23,22 +23,22 @@ async def get_series_statistics(
     ctx: RunContext[Deps], input: GetSeriesStatisticsInput
 ) -> GetSeriesStatisticsOutput:
     """
-    Retrieve series statistics with incremental caching from FEWS webservice.
-
-    This tool implements the incremental caching strategy: first check local cache,
-    then trigger ingestion if needed, and return minimal but meaningful output.
+    Retrieve series statistics from FEWS webservice.
 
     Args:
         ctx: RunContext with database connection
-        input: GetSeriesHeadersInput containing parameter_id OR location_id
+        input: GetSeriesHeadersInput containing parameter_id AND location_id
 
     Returns:
-        GetSeriesHeadersOutput with series headers summary and follow-up suggestions
+        GetSeriesStatisticsOutput with series headers summary and follow-up suggestions
     """
 
     # Validate input
-    if not input.parameter_id and not input.location_id:
-        raise ValueError("Require both parameter_id and location_id")
+    if not input.parameter_id or not input.location_id:
+        logger.error(
+            "Both parameter_id and location_id must be provided for series statistics."
+        )
+        raise ModelRetry("Both parameter_id and location_id are required")  # noqa: F821
 
     webservice_url = ctx.deps.webservice_url
     location_id = input.location_id

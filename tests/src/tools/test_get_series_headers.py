@@ -6,6 +6,7 @@ including parameter-based and location-based queries.
 """
 
 import asyncio
+from pydantic_ai import ModelRetry
 import pytest
 from talk_with_fews.models.get_series_headers import (
     GetSeriesHeadersInput,
@@ -93,16 +94,15 @@ def test_get_series_headers_invalid_input():
     # Setup environment
     setup_dot_env()
 
-    # Create invalid input (both parameter and location)
-    input_data = GetSeriesHeadersInput(parameter_id="Kwel", location_id="GPG_1698")
-
-    # Get runtime context
-    ctx = get_runtime_ctx()
-
-    # Call the function and expect ValueError
+    # Call the function and expect ModelRetry
     with pytest.raises(
-        ValueError, match="Cannot specify both parameter_id and location_id"
+        ModelRetry,
+        match="Only one of 'parameter_id' or 'location_id' can be provided, not both.",
     ):
+        # Create invalid input (both parameter and location)
+        input_data = GetSeriesHeadersInput(parameter_id="Kwel", location_id="GPG_1698")
+        # Get runtime context
+        ctx = get_runtime_ctx()
         asyncio.run(get_series_headers(ctx, input_data))
 
 
@@ -114,15 +114,14 @@ def test_get_series_headers_no_input():
     setup_dot_env()
 
     # Create invalid input (neither parameter nor location)
-    input_data = GetSeriesHeadersInput()
 
-    # Get runtime context
-    ctx = get_runtime_ctx()
-
-    # Call the function and expect ValueError
+    # Call the function and expect ModelRetry
     with pytest.raises(
-        ValueError, match="Must specify either parameter_id or location_id"
+        ModelRetry, match="Either 'parameter_id' or 'location_id' must be provided."
     ):
+        input_data = GetSeriesHeadersInput()
+        # Get runtime context
+        ctx = get_runtime_ctx()
         asyncio.run(get_series_headers(ctx, input_data))
 
 
@@ -202,9 +201,9 @@ def test_ingest_series_headers_invalid_input():
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
 
-    # Call the function and expect ValueError
+    # Call the function and expect ModelRetry
     with pytest.raises(
-        ValueError, match="Cannot specify both parameter_id and location_id"
+        ModelRetry, match="Cannot specify both parameter_id and location_id"
     ):
         asyncio.run(
             ingest_series_headers(
@@ -228,9 +227,9 @@ def test_ingest_series_headers_no_input():
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
 
-    # Call the function and expect ValueError
+    # Call the function and expect ModelRetry
     with pytest.raises(
-        ValueError, match="Must specify either parameter_id or location_id"
+        ModelRetry, match="Must specify either parameter_id or location_id"
     ):
         asyncio.run(
             ingest_series_headers(

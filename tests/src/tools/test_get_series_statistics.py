@@ -6,6 +6,8 @@ including parameter-based and location-based queries.
 """
 
 import asyncio
+from pydantic import ValidationError
+import pytest
 
 from talk_with_fews.models.get_series_statistics import (
     GetSeriesStatisticsInput,
@@ -39,7 +41,7 @@ def test_get_series_statistics_no_date():
     assert output.count >= 600  # Should be non-negative
 
 
-def test_get_series_statistics_empty():
+def test_get_series_statistics_data_empty():
     """
     Test the get_series_statistics function when the data is empty.
     """
@@ -58,3 +60,18 @@ def test_get_series_statistics_empty():
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
     assert output.count == 0  # Should be non-negative
+
+
+def test_get_series_statistics_no_input():
+    """
+    Test the get_series_statistics function when no input is provided.
+    """
+    # Call the function and expect ValidationError
+    with pytest.raises(ValidationError):
+        GetSeriesStatisticsInput()
+
+
+# todo one input
+def test_get_series_statistics_one_input():
+    with pytest.raises(ValidationError):
+        GetSeriesStatisticsInput(parameter_id="Kwel")
