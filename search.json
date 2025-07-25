@@ -4,7 +4,7 @@
     "href": "examples/notebooks/introduction.html",
     "title": "Introduction to talk_with_fews",
     "section": "",
-    "text": "This is an example of how the documentation could work\n\nfrom talk_with_fews.agents import FEWSConfigAgent\n\n\nagent = FEWSConfigAgent(db_path=\"\")\n\nINFO:fews_agent:Initialized FEWSConfigAgent with database: \nINFO:fews_agent:Using model: gpt-4\n\n\n\nagent\n\n&lt;talk_with_fews.agents.fews_config_agent.FEWSConfigAgent at 0x7f9df1ac4ec0&gt;"
+    "text": "This is an example of how the documentation could work\n\nfrom talk_with_fews.agents import FEWSConfigAgent\n\n\nagent = FEWSConfigAgent(db_path=\"\")\n\nINFO:fews_agent:Initialized FEWSConfigAgent with database: \nINFO:fews_agent:Using model: gpt-4\n\n\n\nagent\n\n&lt;talk_with_fews.agents.fews_config_agent.FEWSConfigAgent at 0x7fcef601bb90&gt;"
   },
   {
     "objectID": "index.html",
