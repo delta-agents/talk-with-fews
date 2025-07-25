@@ -46,18 +46,18 @@ async def get_series_statistics(
 
     request_url = f"{webservice_url}/rest/fewspiservice/v1/timeseries"
     params = {
-            "locationIds": location_id,
-            "parameterIds": parameter_id,
-            "onlyHeaders": "True",
-            "showStatistics": "true",
-            "documentFormat": "PI_XML",
-        }
+        "locationIds": location_id,
+        "parameterIds": parameter_id,
+        "onlyHeaders": "True",
+        "showStatistics": "true",
+        "documentFormat": "PI_XML",
+    }
 
     # Fetch data from webservice
     error, xml_content = get_request(request_url, params=params)  # noqa: F821
     if error is not None:
         raise ValueError(f"Error fetching timeseries details: {error}")
-    
+
     namespace = {"pi": "http://www.wldelft.nl/fews/PI"}
 
     # Parse the XML response
@@ -71,7 +71,9 @@ async def get_series_statistics(
     # Extract the header element containing metadata
     header_elem = series_elem.find("pi:header", namespace)
     if header_elem is None:
-        raise ValueError("Missing series header information for the given parameter_id or location_id")
+        raise ValueError(
+            "Missing series header information for the given parameter_id or location_id"
+        )
 
     # Extract valueCount information
     count_elem = header_elem.find("pi:valueCount", namespace)
@@ -88,7 +90,7 @@ async def get_series_statistics(
         max_value_elem = header_elem.find("pi:maxValue", namespace)
         min_value = min_value_elem.text if min_value_elem is not None else None
         max_value = max_value_elem.text if max_value_elem is not None else None
-        
+
         # Extract first value time
         first_value_elem = header_elem.find("pi:firstValueTime", namespace)
         first_date = first_value_elem.get("date")
@@ -98,7 +100,7 @@ async def get_series_statistics(
         last_value_elem = header_elem.find("pi:lastValueTime", namespace)
         last_date = last_value_elem.get("date")
         last_time = last_value_elem.get("time")
-        
+
         # make into ISO 8601 format
         first_datetime = to_iso(first_date, first_time)
         last_datetime = to_iso(last_date, last_time)
@@ -111,5 +113,3 @@ async def get_series_statistics(
             first_value_time=first_datetime,
             last_value_time=last_datetime,
         )
-
-

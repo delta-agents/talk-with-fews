@@ -24,7 +24,9 @@ def test_get_series_statistics_no_date():
     setup_dot_env()
 
     # Create input for parameter-based query
-    input_data = GetSeriesStatisticsInput(parameter_id="Eref.d", location_id="KNMIUUR278")
+    input_data = GetSeriesStatisticsInput(
+        parameter_id="Eref.d", location_id="KNMIUUR278"
+    )
 
     # Get runtime context
     ctx = get_runtime_ctx()
@@ -56,4 +58,3 @@ def test_get_series_statistics_empty():
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
     assert output.count == 0  # Should be non-negative
-

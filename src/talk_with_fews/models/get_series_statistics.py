@@ -34,8 +34,18 @@ class GetSeriesStatisticsOutput(BaseModel):
     """
 
     count: int = Field(..., description="Total number of series found")
-    description: Optional[str] = Field(None, description="Short description of the FEWS series or its context")
-    min_value: Optional[str] = Field(None, description="Minimum value across all series")
-    max_value: Optional[str] = Field(None, description="Maximum value across all series")
-    first_value_time: Optional[str] = Field(None, description="Earliest start date among all series (ISO 8601 format)")
-    last_value_time: Optional[str] = Field(None, description="Latest end date among all series (ISO 8601 format)")
+    description: Optional[str] = Field(
+        None, description="Short description of the FEWS series or its context"
+    )
+    min_value: Optional[str] = Field(
+        None, description="Minimum value across all series"
+    )
+    max_value: Optional[str] = Field(
+        None, description="Maximum value across all series"
+    )
+    first_value_time: Optional[str] = Field(
+        None, description="Earliest start date among all series (ISO 8601 format)"
+    )
+    last_value_time: Optional[str] = Field(
+        None, description="Latest end date among all series (ISO 8601 format)"
+    )
