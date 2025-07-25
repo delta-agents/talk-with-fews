@@ -20,6 +20,7 @@ from talk_with_fews.tools import (
     get_parameters,
     get_locations,
     execute_query_webservice,
+    get_series_statistics,
 )
 
 from talk_with_fews.utils.utils import connect_to_database
@@ -148,6 +149,12 @@ class FEWSWebserviceAgent(FEWSConfigAgent):
                 takes_ctx=True,
                 name="execute_query_webservice",
                 description="Execute a SQL query on the cached FewsWebService database which contains the locations and parameters from the FEWS web service. This is useful for quick access to parameter and location data.",
+            ),
+            Tool(
+                get_series_statistics,
+                takes_ctx=True,
+                name="get_series_statistics",
+                description="Get series statistics from the FEWS webservice with incremental caching. Requires either parameter_id or location_id.",
             ),
         ]
 

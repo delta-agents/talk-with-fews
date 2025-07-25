@@ -20,6 +20,8 @@ from talk_with_fews.tools.webservice.get_locations import get_locations
 from talk_with_fews.tools.webservice.sql_query_webservice import (
     execute_query_webservice,
 )
+from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
+from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
 
 
 __all__ = [
@@ -40,4 +42,6 @@ __all__ = [
     "get_parameters",
     "get_locations",
     "execute_query_webservice",
+    "get_series_headers",
+    "get_series_statistics",
 ]
