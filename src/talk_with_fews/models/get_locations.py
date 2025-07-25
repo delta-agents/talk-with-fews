@@ -23,18 +23,19 @@ class GetLocationInput(BaseModel):
     """
 
     number_of_locations: Optional[int] = Field(
-        ..., description="Number of locations to retrieve, at most 100",
+        ...,
+        description="Number of locations to retrieve, at most 100",
     )
     filter_locations_name: Optional[str] = Field(
         None,
         description="Optional string used to filter the locations returned by using sql LIKE functionality",
     )
+
     @model_validator(mode="after")
     def validate_number_of_locations(cls, values):
         if values.number_of_locations is not None and values.number_of_locations > 100:
             raise ModelRetry("number_of_locations must be at most 100.")
         return values
-
 
 
 class GetLocationOutput(BaseModel):
