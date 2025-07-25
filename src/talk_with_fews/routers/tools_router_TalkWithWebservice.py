@@ -113,7 +113,7 @@ async def get_series_headers_mcp(
 @router.post("/tools.webservice/get_series_data")
 @auto_docstring(
     "Get timeseries data for a specific location-parameter combination. "
-    "Returns timeseries data for a specific location-parameter combination. "
+    "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
     "Features include: "
     "- Query by location ID and parameter ID "
 )
