@@ -24,6 +24,11 @@ from talk_with_fews.models.get_series_headers import (
     GetSeriesHeadersOutput,
 )
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
+from talk_with_fews.tools.webservice.get_series_data import get_series_data
+from talk_with_fews.models.get_series_data import (
+    GetSeriesDataInput,
+    GetSeriesDataOutput,
+)
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFewsWebservice")
@@ -101,3 +106,12 @@ async def get_series_headers_mcp(
 ) -> GetSeriesHeadersOutput:
     ctx = get_runtime_ctx()
     return await get_series_headers(ctx, input)
+
+
+# get_series_data tool registration
+@mcp.tool()
+@router.post("/tools.webservice/get_series_data")
+@auto_docstring("Get timeseries data for a specific location-parameter combination.")
+async def get_series_data_endpoint(input: GetSeriesDataInput) -> GetSeriesDataOutput:
+    ctx = get_runtime_ctx()
+    return await get_series_data(ctx, input)
