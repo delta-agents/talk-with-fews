@@ -235,9 +235,10 @@ async def get_series_headers(
 
     else:  # location_id
         series_headers_retrieved = cache_FewsWebServices_db.execute(
-            f"""
-            SELECT series_headers_retrieved FROM locations WHERE locationId = '{input.location_id}'
-        """,
+            """
+            SELECT series_headers_retrieved FROM locations WHERE locationId = ?
+            """,
+            [input.location_id],
         ).fetchone()[0]
 
         if not series_headers_retrieved:
