@@ -66,7 +66,7 @@ def ingest_parameters(
         )
 
     parameter_df = pd.DataFrame(parameters_data)
-    parameter_df['series_headers_retrieved'] = False
+    parameter_df["series_headers_retrieved"] = False
 
     # Create and populate the parameters table in DuckDB
     cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS parameters")

@@ -94,7 +94,7 @@ def ingest_locations(
     )
     locations_gdf["geom"] = locations_gdf["geometry"].to_wkt()
     locations_gdf.drop(columns="geometry", inplace=True)
-    locations_gdf['series_headers_retrieved'] = False  
+    locations_gdf["series_headers_retrieved"] = False
 
     # Create and populate the locations table in DuckDB
     cache_FewsWebServices_db.execute("DROP TABLE IF EXISTS locations")
@@ -111,7 +111,7 @@ def ingest_locations(
             attributes VARCHAR,
             relations VARCHAR,
             geom GEOMETRY, -- Add geometry column for spatial data
-            series_headers_retrieved BOOLEAN DEFAULT FALSE -- Column to track if series headers have been ingested 
+            series_headers_retrieved BOOLEAN DEFAULT FALSE -- Column to track if series headers have been ingested
         )
     """)
 
