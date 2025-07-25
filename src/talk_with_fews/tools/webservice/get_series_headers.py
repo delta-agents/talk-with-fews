@@ -205,9 +205,10 @@ async def get_series_headers(
     # Check if we have data cached
     if input.parameter_id:
         series_headers_retrieved = cache_FewsWebServices_db.execute(
-            f"""
-            SELECT series_headers_retrieved FROM parameters WHERE id = '{input.parameter_id}'
-        """
+            """
+            SELECT series_headers_retrieved FROM parameters WHERE id = ?
+            """,
+            [input.parameter_id],
         ).fetchone()[0]
 
         if not series_headers_retrieved:
