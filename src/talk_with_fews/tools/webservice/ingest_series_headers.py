@@ -142,19 +142,15 @@ def insert_series_header(
     if existing > 0:
         return False  # Already exists, skip insertion
 
-    # TODO: replace id with a sequence
-    # Vraag aan Rolf databaseman
-    # See https://duckdb.org/docs/stable/sql/statements/create_sequence.html
     # Insert the series header
     cache_FewsWebServices_db.execute(
         """
         INSERT INTO series_headers (
             id, type, moduleInstanceId, locationId, parameterId,
             timeStepUnit, timeStepMultiplier, missVal, timeZone, qualifiers
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (nextval('series_headers_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """,
         [
-            series_header.id,
             series_header.type,
             series_header.moduleInstanceId,
             series_header.locationId,
@@ -217,8 +213,6 @@ async def ingest_series_headers(
     error, data = get_request(request_url, params=params)
     if error is not None:
         raise ValueError(f"Error fetching series headers for {query_type}: {error}")
-
-    # TODO: get_latest_id
 
     latest_id = cache_FewsWebServices_db.execute(
         "SELECT COALESCE(MAX(id), 0) FROM series_headers"
