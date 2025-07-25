@@ -95,7 +95,7 @@ def convert_to_csv(values: List[TimeseriesValue]) -> str:
     lines = [",".join(headers)]
     for value in values:
         data = value.model_dump()
-        lines.append(",".join(str(data[h]) for h in headers))
+        lines.append(",".join("" if data[h] is None else str(data[h]) for h in headers))
 
     return "\n".join(lines)
 
