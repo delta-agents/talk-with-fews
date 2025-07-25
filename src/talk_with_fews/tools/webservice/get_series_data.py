@@ -62,9 +62,11 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
         # Handle missing values: if value equals missing_value indicator, set to None
         value = None if value == missing_value else value
 
+        # Combine date and time strings and parse into a datetime object
+        event_datetime = datetime.fromisoformat(f"{date}T{time}")
         values.append(
             TimeseriesValue(
-                datetime=f"{date}T{time}Z",
+                datetime=event_datetime,
                 location_id=metadata["location_id"],
                 station_name=metadata["station_name"],
                 parameter_id=metadata["parameter_id"],
