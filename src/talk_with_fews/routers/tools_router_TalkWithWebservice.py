@@ -111,7 +111,12 @@ async def get_series_headers_mcp(
 # get_series_data tool registration
 @mcp.tool()
 @router.post("/tools.webservice/get_series_data")
-@auto_docstring("Get timeseries data for a specific location-parameter combination.")
-async def get_series_data_endpoint(input: GetSeriesDataInput) -> GetSeriesDataOutput:
+@auto_docstring(
+    "Get timeseries data for a specific location-parameter combination. "
+    "Returns timeseries data for a specific location-parameter combination. "
+    "Features include: "
+    "- Query by location ID and parameter ID "
+)
+async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     ctx = get_runtime_ctx()
     return await get_series_data(ctx, input)
