@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from talk_with_fews.routers.tools_router_TalkWithConfig import (
     router as router_talk_with_config,
 )
@@ -45,6 +47,14 @@ app = FastAPI(
     version="0.1.0",
     description="API and MCP server exposing selected tools",
     lifespan=combined_lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include the tools router
