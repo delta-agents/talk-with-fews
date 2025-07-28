@@ -32,6 +32,7 @@ from talk_with_fews.models.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
 )
+
 # Webservice tools
 # corresponding models
 from talk_with_fews.models.get_parameters import (
@@ -64,7 +65,7 @@ __all__ = [
     "DescribeTimeSeriesInput",
     "DescribeTimeSeriesOutput",
     "TimeSeriesSearchOutput",
-    "TransformationSearchInput", 
+    "TransformationSearchInput",
     "TransformationSearchOutput",
     "TransformationDetailsOutput",
     "WorkflowSearchInput",
