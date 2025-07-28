@@ -5,21 +5,16 @@ This module provides enhanced XML validation capabilities using locally cached F
 including auto-schema discovery, XPath evaluation, and comprehensive validation results.
 """
 
-import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import xmlschema
-from elementpath import select
 
 from talk_with_fews.models.validate_xml import (
     XMLValidationInput,
     XMLValidationOutput,
     ValidationError,
     ValidationWarning,
-    XPathResult,
-    SchemaInfo,
-    ValidationSummary,
 )
 
 
@@ -30,64 +25,15 @@ class FEWSSchemaDiscovery:
         self.schemas_dir = Path(schemas_dir)
         self.schema_index = self._build_schema_index()
 
-    def _build_schema_index(self) -> Dict[str, SchemaInfo]:
+    def _build_schema_index(self) -> Dict[str, str]:
         """Build index of all available schemas from local cache"""
         index = {}
         if not self.schemas_dir.exists():
             return index
 
         for schema_file in self.schemas_dir.rglob("*.xsd"):
-            try:
-                schema_info = self._extract_schema_info(schema_file)
-                index[schema_file.name] = schema_info
-            except Exception as e:
-                print(f"Warning: Could not extract info from {schema_file}: {e}")
+            index[schema_file.name] = str(schema_file)
         return index
-
-    def _extract_schema_info(self, schema_file: Path) -> SchemaInfo:
-        """Extract basic information from a schema file"""
-        try:
-            # Parse the schema file to extract basic info
-            tree = ET.parse(schema_file)
-            root = tree.getroot()
-
-            # Extract namespace
-            target_namespace = root.get("targetNamespace")
-
-            # Determine schema type from path
-            schema_type = "unknown"
-            if "pi-schemas" in str(schema_file):
-                schema_type = "pi-schemas"
-            elif "adapter-schemas" in str(schema_file):
-                schema_type = "adapter-schemas"
-            elif "schemas" in str(schema_file):
-                schema_type = "core-schemas"
-
-            # Extract root elements (simplified - could be enhanced)
-            root_elements = []
-            for elem in root.findall(".//{*}element"):
-                name = elem.get("name")
-                if name:
-                    root_elements.append(name)
-
-            return SchemaInfo(
-                schema_url=str(schema_file),
-                target_namespace=target_namespace,
-                version=None,  # Could be enhanced to extract version
-                description=None,  # Could be enhanced to extract description
-                root_elements=root_elements,
-                schema_type=schema_type,
-            )
-        except Exception:
-            # Return basic info if parsing fails
-            return SchemaInfo(
-                schema_url=str(schema_file),
-                target_namespace=None,
-                version=None,
-                description=None,
-                root_elements=[],
-                schema_type="unknown",
-            )
 
     def _extract_xml_info(self, xml_content: str) -> Tuple[str, Optional[str]]:
         """Extract root element and namespace from XML content"""
@@ -117,79 +63,30 @@ class FEWSSchemaDiscovery:
         # 3. Common FEWS patterns
 
         # First, try to find by root element name
-        for schema_name, schema_info in self.schema_index.items():
-            if root_element in schema_info.root_elements:
-                return schema_info.schema_url
+        for schema_name, schema_path in self.schema_index.items():
+            # Simple check - if schema name contains the root element, it might be a match
+            if root_element.lower() in schema_name.lower():
+                return schema_path
 
         # If no direct match, try common FEWS patterns
         if "series" in root_element.lower():
             # Look for timeseries schemas - prioritize pi_timeseries.xsd
-            for schema_name, schema_info in self.schema_index.items():
+            for schema_name, schema_path in self.schema_index.items():
                 if "pi_timeseries.xsd" in schema_name:
-                    return schema_info.schema_url
+                    return schema_path
 
             # Fallback to other timeseries schemas
-            for schema_name, schema_info in self.schema_index.items():
+            for schema_name, schema_path in self.schema_index.items():
                 if "timeseries" in schema_name.lower():
-                    return schema_info.schema_url
+                    return schema_path
 
         # Default fallback for PI schemas
         if namespace and "fews" in namespace.lower():
-            for schema_name, schema_info in self.schema_index.items():
+            for schema_name, schema_path in self.schema_index.items():
                 if "pi_" in schema_name.lower():
-                    return schema_info.schema_url
+                    return schema_path
 
         return None
-
-    def get_schema_info(self, schema_path: str) -> Optional[SchemaInfo]:
-        """Get detailed information about a schema"""
-        # Try direct match first
-        if schema_path in self.schema_index:
-            return self.schema_index[schema_path]
-
-        # Try to find by schema URL
-        for schema_info in self.schema_index.values():
-            if schema_info.schema_url == schema_path:
-                return schema_info
-
-        return None
-
-
-class FEWSXPathEvaluator:
-    """XPath evaluation using ElementPath library"""
-
-    def __init__(self):
-        self.namespaces = {
-            "fews": "http://www.wldelft.nl/fews/PI",
-            "pi": "http://www.wldelft.nl/fews/PI",
-            "xsi": "http://www.w3.org/2001/XMLSchema-instance",
-        }
-
-    def evaluate_xpath(
-        self, xml_content: str, xpath_expression: str
-    ) -> List[XPathResult]:
-        """Evaluate XPath expression against XML content"""
-        try:
-            # Parse XML
-            root = ET.fromstring(xml_content)
-
-            # Evaluate XPath
-            results = select(root, xpath_expression, namespaces=self.namespaces)
-
-            return [
-                XPathResult(
-                    element=str(result),
-                    tag=result.tag if hasattr(result, "tag") else str(result),
-                    text=result.text if hasattr(result, "text") else None,
-                    attributes=dict(result.attrib) if hasattr(result, "attrib") else {},
-                    error=None,
-                )
-                for result in results
-            ]
-        except Exception as e:
-            return [
-                XPathResult(element="", tag="", text="", attributes={}, error=str(e))
-            ]
 
 
 class EnhancedFEWSXMLValidator:
@@ -198,14 +95,12 @@ class EnhancedFEWSXMLValidator:
     def __init__(self, schemas_dir: str = "data/fews_schemas"):
         self.schemas_dir = Path(schemas_dir)
         self.schema_discovery = FEWSSchemaDiscovery(schemas_dir)
-        self.xpath_evaluator = FEWSXPathEvaluator()
         self._schema_cache = {}
 
     async def validate_xml(
         self,
         xml_content: str,
         schema_url: Optional[str] = None,
-        xpath: Optional[str] = None,
         validation_mode: str = "lax",
     ) -> XMLValidationOutput:
         """
@@ -229,21 +124,11 @@ class EnhancedFEWSXMLValidator:
                             reason="Could not auto-discover appropriate schema for XML content"
                         )
                     ],
-                    validation_summary=ValidationSummary(
-                        total_elements=0,
-                        validated_elements=0,
-                        error_count=1,
-                        warning_count=0,
-                        validation_time_ms=0,
-                        schema_load_time_ms=0,
-                    ),
                 )
 
         # 2. Load schema
-        schema_load_start = time.time()
         try:
             schema = await self._load_schema(schema_url)
-            schema_load_time = (time.time() - schema_load_start) * 1000
         except Exception as e:
             return XMLValidationOutput(
                 is_valid=False,
@@ -252,46 +137,18 @@ class EnhancedFEWSXMLValidator:
                         reason=f"Failed to load schema {schema_url}: {str(e)}"
                     )
                 ],
-                validation_summary=ValidationSummary(
-                    total_elements=0,
-                    validated_elements=0,
-                    error_count=1,
-                    warning_count=0,
-                    validation_time_ms=0,
-                    schema_load_time_ms=0,
-                ),
             )
 
         # 3. Validate XML
-        validation_start = time.time()
         is_valid, errors, warnings = await self._validate_xml_content(
             xml_content, schema, validation_mode
         )
-        validation_time = (time.time() - validation_start) * 1000
-
-        # 4. Evaluate XPath if specified
-        xpath_results = None
-        if xpath:
-            xpath_results = self.xpath_evaluator.evaluate_xpath(xml_content, xpath)
-
-        # 5. Get schema information
-        schema_info = self.schema_discovery.get_schema_info(schema_url)
 
         return XMLValidationOutput(
             is_valid=is_valid,
             errors=errors,
             warnings=warnings,
             schema_location=schema_url,
-            schema_info=schema_info,
-            xpath_results=xpath_results,
-            validation_summary=ValidationSummary(
-                total_elements=self._count_elements(xml_content),
-                validated_elements=self._count_validated_elements(xml_content, errors),
-                error_count=len(errors),
-                warning_count=len(warnings),
-                validation_time_ms=validation_time,
-                schema_load_time_ms=schema_load_time,
-            ),
         )
 
     async def _load_schema(self, schema_path: str) -> xmlschema.XMLSchema:
@@ -335,9 +192,6 @@ class EnhancedFEWSXMLValidator:
             errors.append(
                 ValidationError(
                     reason=error_reason,
-                    line=None,  # Could be extracted from error message if needed
-                    column=None,
-                    element=None,
                 )
             )
         except Exception as e:
@@ -607,22 +461,6 @@ class EnhancedFEWSXMLValidator:
             text = text.replace(prefix, "")
         return text
 
-    def _count_elements(self, xml_content: str) -> int:
-        """Count total elements in XML"""
-        try:
-            root = ET.fromstring(xml_content)
-            return len(list(root.iter()))
-        except Exception:
-            return 0
-
-    def _count_validated_elements(
-        self, xml_content: str, errors: List[ValidationError]
-    ) -> int:
-        """Count successfully validated elements"""
-        total = self._count_elements(xml_content)
-        # Simplified: assume all elements are validated if no errors
-        return total if not errors else max(0, total - len(errors))
-
 
 async def validate_xml(ctx, input: XMLValidationInput) -> XMLValidationOutput:
     """
@@ -643,6 +481,5 @@ async def validate_xml(ctx, input: XMLValidationInput) -> XMLValidationOutput:
     return await validator.validate_xml(
         xml_content=input.xml_content,
         schema_url=input.schema_url,
-        xpath=input.xpath,
         validation_mode=input.validation_mode,
     )

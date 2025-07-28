@@ -3,7 +3,6 @@ from .validate_xml import (
     validate_xml,
     EnhancedFEWSXMLValidator,
     FEWSSchemaDiscovery,
-    FEWSXPathEvaluator,
 )
 
 __all__ = [
@@ -11,5 +10,4 @@ __all__ = [
     "validate_xml",
     "EnhancedFEWSXMLValidator",
     "FEWSSchemaDiscovery",
-    "FEWSXPathEvaluator",
 ]
