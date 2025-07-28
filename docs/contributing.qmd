@@ -1,0 +1,100 @@
+# Richtlijnen voor bijdragen aan Talk with Fews
+
+Het ontwikkelen van de Talk with Fews bestaat uit twee delen.
+Eerst ontwikkelt HKV de basisfunctionaliteit. Deze ontwikkeling is voor iedereen te volgen op GitHub, maar toevoegingen worden nog niet geaccepteerd.
+Daarna blijft het project open source beschikbaar en kan het verder worden ontwikkeld.
+De term 'ontwikkelaars' duidt in de eerste ontwikkelfase op het team van HKV, later op anderen die een bijdrage willen leveren.
+Een bijdrage kan uiteenlopen van een vraag tot een grote wijziging via een [pull
+request](https://help.github.com/articles/about-pull-requests/).
+
+Een bijdrage kan een van de volgend zaken zijn:
+
+1. Je hebt een vraag
+1. Je denkt een probleem (bug) te hebben gevonden (of onverwachte  functionaliteit)
+1. Je wilt een aanpassing maken (bug fixen, nieuwe functionaliteit, update aan de documentatie)
+1. Je wilt een nieuwe versie publiceren
+
+De onderstaande secties behandelen de stappen per geval.
+
+## Je hebt een vraag
+
+1. Gebruik de zoekfunctie
+    [hier](https://github.com/HKV-products-services/talk-with-fews/issues) om te kijken
+    of iemand anders dezelfde vraag heeft.
+1. Als je niks vergelijkbaars kan vinden, maak een nieuwe issue aan.
+1. Voeg het \"Question"\ label toe; voeg andere labels toe waar nodig.
+
+## Je denkt een probleem (bug) te hebben gevonden
+
+1. Gebruik de zoekfunctie
+    [hier](https://github.com/HKV-products-services/talk-with-fews/issues) om te kijken
+    of iemand anders dezelfde vraag/probleem heeft.
+1. Als je niks vergelijkbaars kan vinden, maak een nieuwe issue aan.
+   Zorg dat je genoeg informatie meegeeft zodat andere ontwikkelaars je
+   probleem begrijpen en genoeg context hebben om je te helpen.
+   Afhankelijk van je probleem, kan je de [SHA
+   hashcode](https://help.github.com/articles/autolinked-references-and-urls/#commit-shas)
+   van de commit die problemen veroorzaakt toevoegen. Denk daarnaast ook aan
+   versie- en besturingssysteeminformatie.
+1. Voeg labels toe die relevant zijn voor je probleem.
+
+## Je wilt een aanpassing maken
+
+1. (**Belangrijk**) Communiceer aan de rest van de ontwikkelaars _voor je begint_ dat je een aanpassing wilt maken. Dit laat je weten door een issue aan te maken.
+1. (**Belangrijk**) Bereik consensus over je idee.
+1. De hoofdontwikkelaars hebben rechten om nieuwe branches aan te maken.
+   Als je deze rechten niet hebt, maak een \'fork\' (kopie) in je eigen account.
+   In deze fork maak je een eigen branch van de laatste  commit in main. Probeer om
+    veranderingen die in de tussentijd worden doorgevoerd op main al mee
+    te nemen. Dit doe je door te pullen van de \'upstream\'
+    repository, (zie instructies
+    [hier](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
+    en [hier](https://help.github.com/articles/syncing-a-fork/));
+1. Voor [Visual Studio Code](https://code.visualstudio.com) staat er een voorbeeldconfiguratie.
+1. Installeer de benodigde python packages in een pixi omgeving met `pixi install`, volg de uitleg van de [pixi](https://pixi.sh/latest/). Pixi zorgt er voor dat iedereen dezelfde versies van python packages heeft.
+1. Zorg dat de format van je code correct is met `pixi run pre-commit`.
+[`Pre-commit`](https://pre-commit.com/) haalt opmaak fouten uit je code en zorgt voor een fijne manier van samenwerken.
+Hier onder vallen een aantal zaken als spaties, haakjes etc, maar ook docstrings. Door het installeren van pre-commit met de volgende commando: [`pre-commit install --hook-type pre-commit --hook-type pre-push`](https://stackoverflow.com/questions/63820683/with-pre-commit-how-to-use-some-hooks-before-commit-and-others-before-push) runt deze lokaal automatisch met `git commit` actie.
+1. Zorg dat alle bestaande testen werken met `pixi run pytest`. Met `pixi run pytest` wordt (lokaal) een html overzicht gegenereerd in de map tests/hidden_test_cov/index.html.
+1. Zorg dat alle documentatie automatisch genereert met `pixi run quarto-render`. [Quarto](https://quarto.org/docs/computations/python.html) is al onderdeel van de zojuist aangemaakte pixi omgeving.
+1. Voeg bij nieuwe functionaliteit altijd nieuwe tests toe.
+1. Update en voeg documentatie toe. Gebruik [Google Style Python
+    docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.htmls). Zorg dat je code leesbaar en begrijpelijk is voor anderen. De [`pydoclint`](https://github.com/jsh9/pydoclint) checkt de doctring format voor je.
+1. Heb je nieuwe termen toegevoegd? Update dan de vertalingen in [tabel](overig/translations.qmd)
+1. [Push](http://rogerdudler.github.io/git-guide/) je branch.
+    naar (jouw fork van) de Talk with Fews repo op GitHub;
+1. Maak een pull request aan, bijvoorbeeld volgens
+    [deze instructies](https://help.github.com/articles/creating-a-pull-request/). Pull requests die worden ontvangen, krijgen altijd een review.
+
+Als je het idee heb dat je iets nuttig heb toegevoegd,
+maar je weet niet hoe je tests schrijft of runt
+of hoe je documentatie aanmaakt: geen probleem.
+Maak een pull request en dan kijken we hoe we kunnen helpen.
+
+## Je wilt een nieuwe versie publiceren
+
+Dit is een stukje voor de hoofdontwikkelaars van Talk with Fews.
+
+1. Checkout `HEAD` van de `main` branch met `git checkout main` en `git pull`.
+1. Beslis welke nieuwe versie (major, minor or patch) gebruikt gaat worden. We gebruiken [semantic versioning](https://semver.org).
+1. Omdat je niet direct naar de main branch kan schrijven (protected), maak een nieuwe branch aan met ``git checkout -b release-<version>``.
+1. Indien dependencies zijn aangepast, maak een nieuw [pixi lock](https://pixi.sh/latest/features/lockfile/) bestand.
+1. Pas de versie aan in `src/talk_with_fews/__init__.py`, de `pyproject.toml` leest deze uit.
+<!-- 1. Pas de `[docs/overig/changelog.qmd](overig/changelog.qmd)` aan met de veranderingen. Vergeet de link naar de pull request niet. -->
+1. Zorg dat de format van je code correct is met `pixi run ruff check`.
+1. Zorg dat alle bestaande testen werken met `pixi run pytest`.
+1. Commit & push je aanpassingen naar GitHub.
+1. Maak een pull request aan, laat iemand het reviewen, wacht op alle acties, deze worden groen, en merge de pull request.
+1. Wacht tot de GitHub-acties op de main branch klaar zijn en er een groen vinkje bij staat.
+1. Maak een nieuwe \'release\' aan op GitHub
+    - Gebruik de versie als titel en pas een versie tag toe.
+    - Als beschrijving gebruik de intro van de `README.md` en veranderingen uit de `changelog.qmd`.
+
+1. Check
+
+    - Is de [wiki](https://hkv-products-services.github.io/talk-with-fews/) bijgewerkt?
+    <!-- - Heeft de GitHub actie alles naar [PyPI](https://pypi.org/project/talk_with_fews) gestuurd? -->
+    <!-- - Werkt de nieuwe versie met:
+        `pip3 install talk_with_fews==<new version>`? -->
+
+1. Vier je nieuwe versie!
