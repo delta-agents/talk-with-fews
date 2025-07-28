@@ -62,6 +62,10 @@ from talk_with_fews.models.flags.io import (
     SeriesFlagsInput,
     SeriesFlagsSummary,
 )
+from talk_with_fews.models.validate_xml import (
+    XMLValidationInput,
+    XMLValidationOutput,
+)
 
 __all__ = [
     # config models
@@ -99,4 +103,6 @@ __all__ = [
     "GetSeriesStatisticsOutput",
     "SeriesFlagsInput",
     "SeriesFlagsSummary",
+    "XMLValidationInput",
+    "XMLValidationOutput",
 ]

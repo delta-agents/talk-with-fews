@@ -21,6 +21,6 @@ env/.env
 .coverage
 .github/chatmodes
 example code/*
-tests/src/tools/schemas/*
+data/fews_schemas/*
 PLAN.md
 FUTURE_PLAN.md
