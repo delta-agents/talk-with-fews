@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Delta Agent Talk with FEWS - Config – Talk with FEWS</title>
+<title>Configuratie Agent – Talk with FEWS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -128,7 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="dropdown-menu" aria-labelledby="nav-menu-documentatie">    
         <li>
     <a class="dropdown-item" href="../../examples/notebooks/fews_config.html">
- <span class="dropdown-text">Delta Agent Talk with FEWS - Config</span></a>
+ <span class="dropdown-text">Configuratie Agent</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../examples/notebooks/fews_webservice.html">
@@ -147,6 +147,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </i> 
 <span class="menu-text"></span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../contributing.html"> 
+<span class="menu-text">Contributing</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -158,15 +162,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#voorbereidingen" id="toc-voorbereidingen" class="nav-link active" data-scroll-target="#voorbereidingen">Voorbereidingen</a></li>
+  <li><a href="#search-workflows" id="toc-search-workflows" class="nav-link" data-scroll-target="#search-workflows">Search workflows</a>
+  <ul class="collapse">
+  <li><a href="#get-workflow-details" id="toc-get-workflow-details" class="nav-link" data-scroll-target="#get-workflow-details">Get workflow details</a></li>
+  <li><a href="#get-transformation-details" id="toc-get-transformation-details" class="nav-link" data-scroll-target="#get-transformation-details">Get transformation details</a></li>
+  </ul></li>
+  <li><a href="#describe-timeseries" id="toc-describe-timeseries" class="nav-link" data-scroll-target="#describe-timeseries">Describe Timeseries</a>
+  <ul class="collapse">
+  <li><a href="#search-timeseries" id="toc-search-timeseries" class="nav-link" data-scroll-target="#search-timeseries">Search Timeseries</a></li>
+  <li><a href="#get-database-schema" id="toc-get-database-schema" class="nav-link" data-scroll-target="#get-database-schema">Get database schema</a></li>
+  <li><a href="#execute-query" id="toc-execute-query" class="nav-link" data-scroll-target="#execute-query">Execute query</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Delta Agent Talk with FEWS - Config</h1>
+<h1 class="title">Configuratie Agent</h1>
 </div>
 
 
@@ -183,41 +204,628 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.deadpoint_analysis <span class="im">import</span> analyze_dead_points</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dependency_analysis <span class="im">import</span> analyze_dependencies</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.get_database_schema <span class="im">import</span> get_database_schema</span>
+<p>De configuratie Agent van ‘Talk with FEWS’ heeft verschillende tools tot zijn beschikking. Het taalmodel kan deze zelf invullen, maar hier wordt per tool een voorbeeld gegeven van de in en output.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.deadpoint_analysis <span class="im">import</span> analyze_dead_points</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dependency_analysis <span class="im">import</span> analyze_dependencies</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.graph_visualize <span class="im">import</span> visualize_graph</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_search <span class="im">import</span> search_timeseries</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="cell-3" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="voorbereidingen" class="level3">
+<h3 class="anchored" data-anchor-id="voorbereidingen">Voorbereidingen</h3>
+<p>In eerste instantie worden de juiste variable opgehaald. Het context object bevat informatie over welke configuratie gebruikt wordt. In de voorbereiding is de configuratie al ingelezen in een database object. Dit is anders dan de normale ‘FEWS database’ waar alle data in zit. In deze notebook is alles met ‘database’ dus de configuratie database.</p>
+<div id="cell-5" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic_ai <span class="im">import</span> format_as_xml</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/.pixi/envs/default/lib/python3.12/site-packages/pydantic/fields.py:1042: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.10/migration/
+  warn(</code></pre>
 </div>
-<div id="cell-4" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-5" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT * FROM endpoints limit 3"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="search-workflows" class="level1">
+<h1>Search workflows</h1>
+<p>Workflows is een logisch start punt om de verschillende tools uit te leggen. Gegeven een (deel) van de workflow naam kan de informatie achter deze workflow worden opgehaald. Ik weet dat ik een workflow wil hebben die <code>im.wiwb.knmi</code> bevat, ik zoek of er workflows zijn die deze naam bevatten.</p>
+<div id="cell-7" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>name_pattern <span class="op">=</span> <span class="st">"im.wiwb.knmi"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic_ai <span class="im">import</span> format_as_xml</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-8" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_search <span class="im">import</span> (</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchOutput,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchInput,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>workflow_search_input <span class="op">=</span> WorkflowSearchInput(name_pattern<span class="op">=</span>name_pattern)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>workflow_search_output: WorkflowSearchOutput <span class="op">=</span> <span class="cf">await</span> search_workflows(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_search_input</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-9" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_search_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;WorkflowDetailsOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;59&lt;/id&gt;
+      &lt;wf_id&gt;wf.im.wiwb.knmi&lt;/wf_id&gt;
+      &lt;desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/desc&gt;
+      &lt;module_config_ids&gt;
+        &lt;example&gt;244&lt;/example&gt;
+      &lt;/module_config_ids&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;61&lt;/id&gt;
+      &lt;wf_id&gt;wf.im.wiwb.knmi.eps&lt;/wf_id&gt;
+      &lt;desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/desc&gt;
+      &lt;module_config_ids&gt;
+        &lt;example&gt;246&lt;/example&gt;
+      &lt;/module_config_ids&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;60&lt;/id&gt;
+      &lt;wf_id&gt;wf.im.wiwb.knmi.harmonie&lt;/wf_id&gt;
+      &lt;desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/desc&gt;
+      &lt;module_config_ids&gt;
+        &lt;example&gt;245&lt;/example&gt;
+      &lt;/module_config_ids&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Workflow Search Results
+Found 3 workflows matching the pattern 'im.wiwb.knmi'.
+
+| ID | Workflow ID | Description | Module Config IDs |
+|----|-------------|-------------|-------------------|
+| 59 | wf.im.wiwb.knmi | Taak om WIWB KNMI metingen te importeren | 244 |
+| 61 | wf.im.wiwb.knmi.eps | Taak om WIWB KNMI Regional EPS verwachtingen te importeren | 246 |
+| 60 | wf.im.wiwb.knmi.harmonie | Taak om WIWB KNMI Harmonie verwachtingen te importeren | 245 |
+&lt;/markdown_content&gt;
+&lt;/WorkflowDetailsOutput&gt;</code></pre>
+</div>
+</div>
+<section id="get-workflow-details" class="level2">
+<h2 class="anchored" data-anchor-id="get-workflow-details">Get workflow details</h2>
+<p>Gegeven een workflow ID (bijvoorbeeld uit <code>search_workflows</code>) kan de bijbehorende informatie over deze workflow worden opgehaald.</p>
+<div id="cell-11" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>workflow_id <span class="op">=</span> workflow_search_output.results[<span class="dv">0</span>].<span class="bu">id</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>workflow_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>59</code></pre>
+</div>
+</div>
+<div id="cell-12" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_details <span class="im">import</span> (</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsOutput,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsInput,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>workflow_details_input <span class="op">=</span> WorkflowDetailsInput(workflow_id<span class="op">=</span>workflow_id)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>workflow_details_output: WorkflowDetailsOutput <span class="op">=</span> <span class="cf">await</span> get_workflow_details(</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_details_input</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-13" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_details_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;WorkflowDetailsOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;59&lt;/id&gt;
+      &lt;wf_id&gt;wf.im.wiwb.knmi&lt;/wf_id&gt;
+      &lt;desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/desc&gt;
+      &lt;wffn&gt;wf.im.wiwb.knmi&lt;/wffn&gt;
+      &lt;module_calls&gt;
+        &lt;example&gt;
+          &lt;mic_id&gt;244&lt;/mic_id&gt;
+          &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+          &lt;ord_nr&gt;0&lt;/ord_nr&gt;
+        &lt;/example&gt;
+      &lt;/module_calls&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Workflow: wf.im.wiwb.knmi
+**Description:** Taak om WIWB KNMI metingen te importeren
+
+### Basic Information
+| Property | Value |
+|----------|--------|
+| ID | 59 |
+| Function Name | wf.im.wiwb.knmi |
+
+### Module Calls and Their Transformations
+
+#### Module: im.wiwb.knmi
+The following transformations are executed in this module:
+
+| Order | Transformation ID | Description |
+|-------|------------------|-------------|
+| 1 | 1357 | im.wiwb.knmi |
+| 2 | 1358 | im.wiwb.knmi |
+| 3 | 1359 | im.wiwb.knmi |
+| 4 | 1360 | im.wiwb.knmi |
+| 5 | 1361 | im.wiwb.knmi |
+| 6 | 1362 | im.wiwb.knmi |
+| 7 | 1363 | im.wiwb.knmi |
+
+### Workflow Structure
+```mermaid
+graph TD
+    WF[wf.im.wiwb.knmi]:::workflow
+    M244[im.wiwb.knmi]:::module
+    WF --&amp;gt; M244
+    T1357[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1357
+    T1358[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1358
+    T1359[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1359
+    T1360[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1360
+    T1361[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1361
+    T1362[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1362
+    T1363[im.wiwb.knmi]:::transformation
+    M244 --&amp;gt; T1363
+
+    classDef workflow fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef module fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef transformation fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+```
+&lt;/markdown_content&gt;
+&lt;/WorkflowDetailsOutput&gt;</code></pre>
+</div>
+</div>
+<div id="cell-14" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(workflow_details_output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>results=[WorkflowDetails(id=59, wf_id='wf.im.wiwb.knmi', desc='Taak om WIWB KNMI metingen te importeren', wffn='wf.im.wiwb.knmi', module_calls=[ModuleInstanceCall(mic_id=244, modins='im.wiwb.knmi', ord_nr=0)])] markdown_content='## Workflow: wf.im.wiwb.knmi\n**Description:** Taak om WIWB KNMI metingen te importeren\n\n### Basic Information\n| Property | Value |\n|----------|--------|\n| ID | 59 |\n| Function Name | wf.im.wiwb.knmi |\n\n### Module Calls and Their Transformations\n\n#### Module: im.wiwb.knmi\nThe following transformations are executed in this module:\n\n| Order | Transformation ID | Description |\n|-------|------------------|-------------|\n| 1 | 1357 | im.wiwb.knmi |\n| 2 | 1358 | im.wiwb.knmi |\n| 3 | 1359 | im.wiwb.knmi |\n| 4 | 1360 | im.wiwb.knmi |\n| 5 | 1361 | im.wiwb.knmi |\n| 6 | 1362 | im.wiwb.knmi |\n| 7 | 1363 | im.wiwb.knmi |\n\n### Workflow Structure\n```mermaid\ngraph TD\n    WF[wf.im.wiwb.knmi]:::workflow\n    M244[im.wiwb.knmi]:::module\n    WF --&gt; M244\n    T1357[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1357\n    T1358[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1358\n    T1359[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1359\n    T1360[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1360\n    T1361[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1361\n    T1362[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1362\n    T1363[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1363\n\n    classDef workflow fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px\n    classDef module fill:#e3f2fd,stroke:#1565c0,stroke-width:2px\n    classDef transformation fill:#f3e5f5,stroke:#4a148c,stroke-width:2px\n```\n'</code></pre>
+</div>
+</div>
+</section>
+<section id="get-transformation-details" class="level2">
+<h2 class="anchored" data-anchor-id="get-transformation-details">Get transformation details</h2>
+<p>Gegeven de transformatie ID kunnen we kijken wat verder met deze workflow te maken heeft. Bijvoorbeeld uit tabel in de <code>get_workflow_details</code> tool.</p>
+<div id="cell-16" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>transformation_id <span class="op">=</span> <span class="dv">1357</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-17" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_details <span class="im">import</span> (</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsInput,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsOutput,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>transformation_details_input <span class="op">=</span> TransformationDetailsInput(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    transformation_id<span class="op">=</span>transformation_id</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>transformation_details_output: TransformationDetailsOutput <span class="op">=</span> (</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_transformation_details(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_details_input)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-18" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    format_as_xml(transformation_details_output, root_tag<span class="op">=</span><span class="st">"TransformationDetailsOutput"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TransformationDetailsOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;1357&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;1&lt;/ord_nr&gt;
+      &lt;config_file&gt;/ModuleConfigFiles/WIWB/im.wiwb.knmi.xml&lt;/config_file&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;time_series_links&gt;
+        &lt;example&gt;
+          &lt;inout&gt;out&lt;/inout&gt;
+          &lt;tss_id&gt;159&lt;/tss_id&gt;
+        &lt;/example&gt;
+      &lt;/time_series_links&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Transformation Details
+**ID:** 1357
+**Description:** im.wiwb.knmi
+**Config File:** /ModuleConfigFiles/WIWB/im.wiwb.knmi.xml
+
+### Basic Information
+| Property | Value |
+|----------|--------|
+| Order Number | 1 |
+| Module Instance | im.wiwb.knmi |
+| Module Config ID | 244 |
+
+### Time Series Connections
+This transformation processes the following time series:
+
+#### Input Time Series
+No input time series connected.
+
+#### Output Time Series
+| ID | Description |
+|----|-------------|
+| 159 | Output time series |
+
+### Transformation Flow
+```mermaid
+graph LR
+    T[im.wiwb.knmi]:::transformation
+    O159[Output TS 159]:::output
+    T --&amp;gt; O159
+
+    classDef transformation fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef input fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+```
+&lt;/markdown_content&gt;
+&lt;/TransformationDetailsOutput&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="describe-timeseries" class="level1">
+<h1>Describe Timeseries</h1>
+<p>Gegeven een timeseries ID kan je bijbehorende informatie over de transformaties ophalen waar deze timeseries in voor komt. Hier gebruiken we een timeseries ID uit <code>get_transformation_details</code>.</p>
+<div id="cell-20" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>timeseries_id <span class="op">=</span> transformation_details_output.results[<span class="dv">0</span>].time_series_links[<span class="dv">0</span>].tss_id</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>timeseries_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>159</code></pre>
+</div>
+</div>
+<div id="cell-21" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_describe <span class="im">import</span> (</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesInput,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesOutput,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>timeseries_describe_input <span class="op">=</span> DescribeTimeSeriesInput(timeseries_id<span class="op">=</span>timeseries_id)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>timeseries_describe_output: DescribeTimeSeriesOutput <span class="op">=</span> <span class="cf">await</span> describe_timeseries(</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_describe_input</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-22" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_describe_output, root_tag<span class="op">=</span><span class="st">"DescribeTimeSeriesOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DescribeTimeSeriesOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;159&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.G.d9&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess /&gt;
+      &lt;description&gt;im.wiwb.knmi•scalar•P.G.d9••external historical•&lt;/description&gt;
+      &lt;endpoint&gt;False&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations /&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Time Series 159
+**Description:** im.wiwb.knmi•scalar•P.G.d9••external historical•
+
+### Properties
+| Property | Value |
+|----------|--------|
+| Module Instance | im.wiwb.knmi |
+| Value Type | scalar |
+| Parameter ID | P.G.d9 |
+| Qualifiers |  |
+| Time Series Type | external historical |
+| Time Step |  |
+
+### Transformations
+No transformations found&lt;/markdown_content&gt;
+&lt;/DescribeTimeSeriesOutput&gt;</code></pre>
+</div>
+</div>
+<section id="search-timeseries" class="level2">
+<h2 class="anchored" data-anchor-id="search-timeseries">Search Timeseries</h2>
+<p>Gegeven een transformatie kunnen we een tijdserie ophalen. Hier moet je wel alle informatie over de transformatie weten. Voor het gemak gebruikten we timeseries uit <code>describe_timeseries</code></p>
+<div id="cell-24" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.base <span class="im">import</span> TimeSeriesProperties</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>timeseries: TimeSeriesProperties <span class="op">=</span> timeseries_describe_output.results[<span class="dv">0</span>]</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries, root_tag<span class="op">=</span><span class="st">"TimeSeriesProperties"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TimeSeriesProperties&gt;
+  &lt;id&gt;159&lt;/id&gt;
+  &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+  &lt;vtype&gt;scalar&lt;/vtype&gt;
+  &lt;parid&gt;P.G.d9&lt;/parid&gt;
+  &lt;qualifiers /&gt;
+  &lt;tstype&gt;external historical&lt;/tstype&gt;
+  &lt;timess /&gt;
+  &lt;description&gt;im.wiwb.knmi•scalar•P.G.d9••external historical•&lt;/description&gt;
+  &lt;endpoint&gt;False&lt;/endpoint&gt;
+  &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+  &lt;transformations /&gt;
+&lt;/TimeSeriesProperties&gt;</code></pre>
+</div>
+</div>
+<div id="cell-25" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from talk_with_fews.tools.config.timeseries_search import search_timeseries</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from talk_with_fews.models.timeseries_search import (</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     TimeSeriesSearchResult,</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     TimeSeriesSearchOutput,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># timeseries = {'id': 14,</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  'modins': 'im.matroos.rws.hist',</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  'vtype': 'scalar',</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  'parid': 'H.B',</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  'qualifiers': '',</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  'tstype': 'external historical',</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  'timess': 'day',</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  'description': 'im.matroos.rws.hist•scalar•H.B••external historical•day',</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  'endpoint': False,</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  'endpoint_desc': None,</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  'transformations': []}</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co"># # timeseries_search_input = TimeSeriesSearchResult(**timeseries.model_dump())</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co"># timeseries_search_input = TimeSeriesSearchResult(**timeseries)</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co"># timeseries_search_output: TimeSeriesSearchOutput = await search_timeseries(</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co">#     ctx=ctx, input=timeseries_search_input</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co"># # </span><span class="al">TODO</span><span class="co">: AttributeError: 'TimeSeriesSearchResult' object has no attribute 'parameter_id'</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co"># # This is correct as the `parameter_id` is not part of the `TimeSeriesProperties` model, its id..</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="get-database-schema" class="level2">
+<h2 class="anchored" data-anchor-id="get-database-schema">Get database schema</h2>
+<p>Om op de juiste manier de tool execute query te gebruiken, is het handig om te weten wat er in de database zit. Hiervoor zijn de schema’s van de configuratie database. Deze tool geeft een overzicht van de beschikbare tabellen en kolommen.</p>
+<div id="cell-27" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.get_database_schema <span class="im">import</span> get_database_schema</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.database_schema <span class="im">import</span> (</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaOutput,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaInput,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>database_schema_input <span class="op">=</span> DatabaseSchemaInput()</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>database_schema_output: DatabaseSchemaOutput <span class="op">=</span> <span class="cf">await</span> get_database_schema(</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>database_schema_input</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-28" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(database_schema_output, root_tag<span class="op">=</span><span class="st">"DatabaseSchemaOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DatabaseSchemaOutput&gt;
+  &lt;tables&gt;
+    &lt;call_stacks&gt;
+      &lt;example&gt;id&lt;/example&gt;
+      &lt;example&gt;wf_id&lt;/example&gt;
+      &lt;example&gt;desc&lt;/example&gt;
+      &lt;example&gt;wffn&lt;/example&gt;
+      &lt;example&gt;parent_id&lt;/example&gt;
+      &lt;example&gt;props_set_id&lt;/example&gt;
+    &lt;/call_stacks&gt;
+    &lt;endpoints&gt;
+      &lt;example&gt;tss_id&lt;/example&gt;
+      &lt;example&gt;desc&lt;/example&gt;
+    &lt;/endpoints&gt;
+    &lt;links&gt;
+      &lt;example&gt;trafo_id&lt;/example&gt;
+      &lt;example&gt;tss_id&lt;/example&gt;
+      &lt;example&gt;inout&lt;/example&gt;
+    &lt;/links&gt;
+    &lt;modins_calls&gt;
+      &lt;example&gt;id&lt;/example&gt;
+      &lt;example&gt;call_stack_id&lt;/example&gt;
+      &lt;example&gt;modins&lt;/example&gt;
+      &lt;example&gt;props_set_id&lt;/example&gt;
+    &lt;/modins_calls&gt;
+    &lt;props_sets&gt;
+      &lt;example&gt;id&lt;/example&gt;
+      &lt;example&gt;key&lt;/example&gt;
+      &lt;example&gt;value&lt;/example&gt;
+    &lt;/props_sets&gt;
+    &lt;trafos&gt;
+      &lt;example&gt;id&lt;/example&gt;
+      &lt;example&gt;mic_id&lt;/example&gt;
+      &lt;example&gt;ord_nr&lt;/example&gt;
+      &lt;example&gt;desc&lt;/example&gt;
+      &lt;example&gt;config_file&lt;/example&gt;
+    &lt;/trafos&gt;
+    &lt;ts_sets&gt;
+      &lt;example&gt;id&lt;/example&gt;
+      &lt;example&gt;modins&lt;/example&gt;
+      &lt;example&gt;vtype&lt;/example&gt;
+      &lt;example&gt;parid&lt;/example&gt;
+      &lt;example&gt;qualifiers&lt;/example&gt;
+      &lt;example&gt;tstype&lt;/example&gt;
+      &lt;example&gt;timess&lt;/example&gt;
+    &lt;/ts_sets&gt;
+  &lt;/tables&gt;
+  &lt;relationships&gt;
+    &lt;example&gt;call_stacks.parent_id → call_stacks.id&lt;/example&gt;
+    &lt;example&gt;call_stacks.props_set_id → props_sets.id&lt;/example&gt;
+    &lt;example&gt;endpoints.tss_id → ts_sets.id&lt;/example&gt;
+    &lt;example&gt;links.tss_id → ts_sets.id&lt;/example&gt;
+    &lt;example&gt;links.trafo_id → trafos.id&lt;/example&gt;
+    &lt;example&gt;modins_calls.call_stack_id → call_stacks.id&lt;/example&gt;
+    &lt;example&gt;modins_calls.props_set_id → props_sets.id&lt;/example&gt;
+    &lt;example&gt;trafos.mic_id → modins_calls.id&lt;/example&gt;
+  &lt;/relationships&gt;
+  &lt;sample_data&gt;
+    &lt;call_stacks&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;wf_id&gt;wf.im.afvalwater&lt;/wf_id&gt;
+        &lt;desc&gt;Taak om Afvalwaterdata van zuiveringen en rioolgemalen te importeren&lt;/desc&gt;
+        &lt;wffn&gt;wf.im.afvalwater&lt;/wffn&gt;
+        &lt;parent_id&gt;null&lt;/parent_id&gt;
+        &lt;props_set_id&gt;null&lt;/props_set_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;2&lt;/id&gt;
+        &lt;wf_id&gt;wf.im.afvalwater.individueel&lt;/wf_id&gt;
+        &lt;desc&gt;Taak om Afvalwaterdata van zuiveringen en rioolgemalen handmatig te importeren&lt;/desc&gt;
+        &lt;wffn&gt;wf.im.afvalwater.individueel&lt;/wffn&gt;
+        &lt;parent_id&gt;null&lt;/parent_id&gt;
+        &lt;props_set_id&gt;null&lt;/props_set_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;3&lt;/id&gt;
+        &lt;wf_id&gt;wf.ex.afvalwater&lt;/wf_id&gt;
+        &lt;desc&gt;Taak om Afvalwaterdata van zuiveringen en rioolgemalen uit FEWS te exporteren&lt;/desc&gt;
+        &lt;wffn&gt;wf.ex.afvalwater&lt;/wffn&gt;
+        &lt;parent_id&gt;null&lt;/parent_id&gt;
+        &lt;props_set_id&gt;null&lt;/props_set_id&gt;
+      &lt;/example&gt;
+    &lt;/call_stacks&gt;
+    &lt;endpoints&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;1&lt;/tss_id&gt;
+        &lt;desc&gt;filters&lt;/desc&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;2&lt;/tss_id&gt;
+        &lt;desc&gt;filters&lt;/desc&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;3&lt;/tss_id&gt;
+        &lt;desc&gt;filters&lt;/desc&gt;
+      &lt;/example&gt;
+    &lt;/endpoints&gt;
+    &lt;links&gt;
+      &lt;example&gt;
+        &lt;trafo_id&gt;1&lt;/trafo_id&gt;
+        &lt;tss_id&gt;113&lt;/tss_id&gt;
+        &lt;inout&gt;in&lt;/inout&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;trafo_id&gt;1&lt;/trafo_id&gt;
+        &lt;tss_id&gt;423&lt;/tss_id&gt;
+        &lt;inout&gt;out&lt;/inout&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;trafo_id&gt;2&lt;/trafo_id&gt;
+        &lt;tss_id&gt;423&lt;/tss_id&gt;
+        &lt;inout&gt;in&lt;/inout&gt;
+      &lt;/example&gt;
+    &lt;/links&gt;
+    &lt;modins_calls&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;call_stack_id&gt;1&lt;/call_stack_id&gt;
+        &lt;modins&gt;im.afvalwater&lt;/modins&gt;
+        &lt;props_set_id&gt;null&lt;/props_set_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;2&lt;/id&gt;
+        &lt;call_stack_id&gt;1&lt;/call_stack_id&gt;
+        &lt;modins&gt;im.afvalwater.xmlpi&lt;/modins&gt;
+        &lt;props_set_id&gt;null&lt;/props_set_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;3&lt;/id&gt;
+        &lt;call_stack_id&gt;2&lt;/call_stack_id&gt;
+        &lt;modins&gt;im.afvalwater.individueel&lt;/modins&gt;
+        &lt;props_set_id&gt;null&lt;/props_set_id&gt;
+      &lt;/example&gt;
+    &lt;/modins_calls&gt;
+    &lt;props_sets&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;key&gt;PAR_IN&lt;/key&gt;
+        &lt;value&gt;Qafval.G&lt;/value&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;key&gt;PAR_OUT&lt;/key&gt;
+        &lt;value&gt;Qafval.G.h&lt;/value&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;key&gt;LOCSET&lt;/key&gt;
+        &lt;value&gt;ls.awloc&lt;/value&gt;
+      &lt;/example&gt;
+    &lt;/props_sets&gt;
+    &lt;trafos&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;mic_id&gt;116&lt;/mic_id&gt;
+        &lt;ord_nr&gt;1&lt;/ord_nr&gt;
+        &lt;desc&gt;mean wathte_meetpunten per peilgebied&lt;/desc&gt;
+        &lt;config_file&gt;/ModuleConfigFiles/Oppervlaktewater/Peilevaluatie.xml&lt;/config_file&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;2&lt;/id&gt;
+        &lt;mic_id&gt;116&lt;/mic_id&gt;
+        &lt;ord_nr&gt;2&lt;/ord_nr&gt;
+        &lt;desc&gt;interpolate mean wathte_meetpunten per peilgebied&lt;/desc&gt;
+        &lt;config_file&gt;/ModuleConfigFiles/Oppervlaktewater/Peilevaluatie.xml&lt;/config_file&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;3&lt;/id&gt;
+        &lt;mic_id&gt;116&lt;/mic_id&gt;
+        &lt;ord_nr&gt;3&lt;/ord_nr&gt;
+        &lt;desc&gt;waterstand per dag&lt;/desc&gt;
+        &lt;config_file&gt;/ModuleConfigFiles/Oppervlaktewater/Peilevaluatie.xml&lt;/config_file&gt;
+      &lt;/example&gt;
+    &lt;/trafos&gt;
+    &lt;ts_sets&gt;
+      &lt;example&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;modins&gt;Validatie&lt;/modins&gt;
+        &lt;vtype&gt;scalar&lt;/vtype&gt;
+        &lt;parid&gt;V.B.m&lt;/parid&gt;
+        &lt;qualifiers /&gt;
+        &lt;tstype&gt;external historical&lt;/tstype&gt;
+        &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;2&lt;/id&gt;
+        &lt;modins&gt;Validatie&lt;/modins&gt;
+        &lt;vtype&gt;scalar&lt;/vtype&gt;
+        &lt;parid&gt;V.B.m&lt;/parid&gt;
+        &lt;qualifiers&gt;positief&lt;/qualifiers&gt;
+        &lt;tstype&gt;external historical&lt;/tstype&gt;
+        &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;id&gt;3&lt;/id&gt;
+        &lt;modins&gt;Validatie&lt;/modins&gt;
+        &lt;vtype&gt;scalar&lt;/vtype&gt;
+        &lt;parid&gt;V.B.m&lt;/parid&gt;
+        &lt;qualifiers&gt;negatief&lt;/qualifiers&gt;
+        &lt;tstype&gt;external historical&lt;/tstype&gt;
+        &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+      &lt;/example&gt;
+    &lt;/ts_sets&gt;
+  &lt;/sample_data&gt;
+&lt;/DatabaseSchemaOutput&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="execute-query" class="level2">
+<h2 class="anchored" data-anchor-id="execute-query">Execute query</h2>
+<p>Deze tool geeft alle mogelijke vrijheid: het taalmodel kan elke SQL query uitvoeren.</p>
+<div id="cell-30" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT * FROM endpoints limit 3"</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-31" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQLQueryOutput&gt;
   &lt;results&gt;
@@ -245,6 +853,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

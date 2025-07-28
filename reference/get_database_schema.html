@@ -128,7 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="dropdown-menu" aria-labelledby="nav-menu-documentatie">    
         <li>
     <a class="dropdown-item" href="../examples/notebooks/fews_config.html">
- <span class="dropdown-text">Delta Agent Talk with FEWS - Config</span></a>
+ <span class="dropdown-text">Configuratie Agent</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/notebooks/fews_webservice.html">
@@ -146,6 +146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="https://github.com/HKV-products-services/talk_with_fews"> <i class="bi bi-github" role="img" aria-label="GitHub">
 </i> 
 <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../contributing.html"> 
+<span class="menu-text">Contributing</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -179,16 +183,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="talk_with_fews.tools.get_database_schema" class="level1">
 <h1>get_database_schema</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.get_database_schema(ctx, <span class="bu">input</span><span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.get_database_schema(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Get the database schema information to understand the structure of the FEWS configuration database.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 8%">
-<col style="width: 21%">
-<col style="width: 56%">
-<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 55%">
+<col style="width: 12%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -207,9 +211,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>input</td>
-<td>dict</td>
+<td>DatabaseSchemaInput</td>
 <td>Optional dict with parameters (not used currently)</td>
-<td><code>None</code></td>
+<td><em>required</em></td>
 </tr>
 </tbody>
 </table>
