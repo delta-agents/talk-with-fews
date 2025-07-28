@@ -31,9 +31,11 @@ def get_runtime_ctx() -> RunContext:
         _schema, \
         _cache_FewsWebServices_db, \
         _ingest_locations_output, \
-        _ingest_parameters_output
+        _ingest_parameters_output, \
+        _cache_fews_schemas_dir
     db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
     webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
+    fews_schemas_dir = os.environ.get("FEWS_SCHEMAS_DIR", "data/fews_schemas")
     if webservice_url is not None and webservice_url.endswith("/"):
         webservice_url = webservice_url[:-1]
 
@@ -65,6 +67,7 @@ def get_runtime_ctx() -> RunContext:
     # TODO: not yet happy with this, should be a tool, but also run on startup? then it shouldn't be a tool?
     deps.ingest_locations_output = _ingest_locations_output
     deps.ingest_parameters_output = _ingest_parameters_output
+    deps.cache_fews_schemas_dir = fews_schemas_dir
     return CtxWithDeps(deps)
 
 

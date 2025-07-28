@@ -98,10 +98,7 @@ class EnhancedFEWSXMLValidator:
         self._schema_cache = {}
 
     async def validate_xml(
-        self,
-        xml_content: str,
-        schema_url: Optional[str] = None,
-        validation_mode: str = "lax",
+        self, xml_content: str, schema_url: Optional[str] = None
     ) -> XMLValidationOutput:
         """
         Validate XML against FEWS schemas with enhanced capabilities.
@@ -141,7 +138,7 @@ class EnhancedFEWSXMLValidator:
 
         # 3. Validate XML
         is_valid, errors, warnings = await self._validate_xml_content(
-            xml_content, schema, validation_mode
+            xml_content, schema
         )
 
         return XMLValidationOutput(
@@ -172,7 +169,7 @@ class EnhancedFEWSXMLValidator:
         return schema
 
     async def _validate_xml_content(
-        self, xml_content: str, schema: xmlschema.XMLSchema, validation_mode: str
+        self, xml_content: str, schema: xmlschema.XMLSchema
     ) -> Tuple[bool, List[ValidationError], List[ValidationWarning]]:
         """Validate XML content against schema"""
         errors = []
@@ -694,13 +691,11 @@ async def validate_xml(ctx, input: XMLValidationInput) -> XMLValidationOutput:
     4. Provides comprehensive validation results
     """
     # Get schema cache directory from context
-    schemas_dir = getattr(ctx.deps, "cache_fews_schemas_dir", "data/fews_schemas")
+    schemas_dir = ctx.deps.cache_fews_schemas_dir
 
     # Create validator instance
     validator = EnhancedFEWSXMLValidator(schemas_dir)
 
     return await validator.validate_xml(
-        xml_content=input.xml_content,
-        schema_url=input.schema_url,
-        validation_mode=input.validation_mode,
+        xml_content=input.xml_content, schema_url=input.schema_url
     )

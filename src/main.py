@@ -13,6 +13,12 @@ from talk_with_fews.routers.tools_router_TalkWithWebservice import (
 from talk_with_fews.routers.tools_router_TalkWithWebservice import (
     mcp as mcp_talk_with_webservice,
 )
+from talk_with_fews.routers.tools_router_TalkWithValidator import (
+    router as router_talk_with_validator,
+)
+from talk_with_fews.routers.tools_router_TalkWithValidator import (
+    mcp as mcp_talk_with_validator,
+)
 
 from typing import AsyncIterator
 from dotenv import load_dotenv
@@ -31,6 +37,10 @@ mcp_app_webservice = mcp_talk_with_webservice.http_app(
     path="/", transport="streamable-http", stateless_http=True
 )
 
+mcp_app_validator = mcp_talk_with_validator.http_app(
+    path="/", transport="streamable-http", stateless_http=True
+)
+
 
 @asynccontextmanager
 async def combined_lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -38,6 +48,7 @@ async def combined_lifespan(app: FastAPI) -> AsyncIterator[None]:
     async with (
         mcp_app_config.lifespan(mcp_app_config),
         mcp_app_webservice.lifespan(mcp_app_webservice),
+        mcp_app_validator.lifespan(mcp_app_validator),
     ):
         yield
 
@@ -68,3 +79,9 @@ app.include_router(router_talk_with_webservice)
 
 # Mount MCP at /mcp
 app.mount("/mcp/TalkWithWebservice", mcp_app_webservice)
+
+# Include the tools router
+app.include_router(router_talk_with_validator)
+
+# Mount MCP at /mcp
+app.mount("/mcp/TalkWithValidator", mcp_app_validator)

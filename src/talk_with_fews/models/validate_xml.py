@@ -31,9 +31,6 @@ class XMLValidationInput(BaseModel):
     schema_url: Optional[str] = Field(
         None, description="Specific schema URL or path. If None, auto-discover from XML"
     )
-    validation_mode: str = Field(
-        "lax", description="Validation mode: 'strict', 'lax', or 'skip'"
-    )
 
 
 class XMLValidationOutput(BaseModel):
