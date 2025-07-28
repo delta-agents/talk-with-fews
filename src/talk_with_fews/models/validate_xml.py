@@ -13,6 +13,9 @@ class ValidationError(BaseModel):
     """Individual validation error"""
 
     reason: str = Field(..., description="Error description")
+    xpath: Optional[str] = Field(
+        None, description="Debug information about element discovery path"
+    )
 
 
 class ValidationWarning(BaseModel):

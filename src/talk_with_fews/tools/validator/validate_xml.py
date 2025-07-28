@@ -180,7 +180,7 @@ class EnhancedFEWSXMLValidator:
 
         try:
             # Try to wrap the XML snippet with proper root element and namespace
-            wrapped_xml = self._wrap_xml_snippet(xml_content, schema)
+            wrapped_xml, debug_info = self._wrap_xml_snippet(xml_content, schema)
 
             # Validate XML
             schema.validate(wrapped_xml)
@@ -192,11 +192,17 @@ class EnhancedFEWSXMLValidator:
             errors.append(
                 ValidationError(
                     reason=error_reason,
+                    xpath=debug_info,
                 )
             )
         except Exception as e:
             is_valid = False
-            errors.append(ValidationError(reason=f"Validation failed: {str(e)}"))
+            errors.append(
+                ValidationError(
+                    reason=f"Validation failed: {str(e)}",
+                    xpath=debug_info if "debug_info" in locals() else None,
+                )
+            )
 
         return is_valid, errors, warnings
 
@@ -218,7 +224,7 @@ class EnhancedFEWSXMLValidator:
 
             # Determine the appropriate root element from schema
             # Strategy: Find the root element that can contain the snippet's root element
-            appropriate_root = self._find_appropriate_root_element(
+            appropriate_root, debug_info = self._find_appropriate_root_element(
                 schema, snippet_root_tag
             )
 
@@ -230,9 +236,9 @@ class EnhancedFEWSXMLValidator:
                         xml_content = self._add_namespace_prefixes(
                             xml_content, schema, "fews"
                         )
-                    return xml_content
+                    return xml_content, debug_info
                 else:
-                    # We need to wrap the snippet
+                    # We need to wrap the snippet with the appropriate parent structure
                     namespace_prefix = "fews" if target_namespace else ""
                     namespace_decl = (
                         f'xmlns:{namespace_prefix}="{target_namespace}"'
@@ -246,13 +252,25 @@ class EnhancedFEWSXMLValidator:
                             xml_content, schema, namespace_prefix
                         )
 
-                    # Wrap with the appropriate root element
-                    if namespace_decl:
-                        wrapped_xml = f"<{namespace_prefix}:{appropriate_root} {namespace_decl}>\n{xml_content}\n</{namespace_prefix}:{appropriate_root}>"
+                    # For nested snippets, we need to wrap with the intermediate parent
+                    # If snippet_root_tag is 'general', we need to wrap with 'export' first
+                    if (
+                        snippet_root_tag == "general"
+                        and appropriate_root == "timeSeriesExportRun"
+                    ):
+                        # Wrap with export first, then timeSeriesExportRun
+                        if namespace_decl:
+                            wrapped_xml = f"<{namespace_prefix}:{appropriate_root} {namespace_decl}>\n<{namespace_prefix}:export>\n{xml_content}\n</{namespace_prefix}:export>\n</{namespace_prefix}:{appropriate_root}>"
+                        else:
+                            wrapped_xml = f"<{appropriate_root}>\n<export>\n{xml_content}\n</export>\n</{appropriate_root}>"
                     else:
-                        wrapped_xml = f"<{appropriate_root}>\n{xml_content}\n</{appropriate_root}>"
+                        # Standard wrapping with the appropriate root element
+                        if namespace_decl:
+                            wrapped_xml = f"<{namespace_prefix}:{appropriate_root} {namespace_decl}>\n{xml_content}\n</{namespace_prefix}:{appropriate_root}>"
+                        else:
+                            wrapped_xml = f"<{appropriate_root}>\n{xml_content}\n</{appropriate_root}>"
 
-                    return wrapped_xml
+                    return wrapped_xml, debug_info
             else:
                 # No appropriate root found, try using the first schema root element
                 root_element_obj = root_elements[0]
@@ -287,7 +305,7 @@ class EnhancedFEWSXMLValidator:
                 else:
                     wrapped_xml = f"<{root_element}>\n{xml_content}\n</{root_element}>"
 
-                return wrapped_xml
+                return wrapped_xml, debug_info
 
         except Exception as e:
             print(f"Warning: Failed to wrap XML snippet: {e}")
@@ -330,57 +348,260 @@ class EnhancedFEWSXMLValidator:
 
     def _find_appropriate_root_element(
         self, schema: xmlschema.XMLSchema, snippet_root_tag: str
-    ) -> Optional[str]:
+    ) -> tuple[Optional[str], Optional[str]]:
         """Find the appropriate root element from schema that can contain the snippet's root element"""
         try:
-            # Strategy: Look through schema components to find which root element
-            # can contain the snippet's root element as a child
+            # print(f"DEBUG: Looking for parent of '{snippet_root_tag}'")
 
-            # Get all global elements from the schema
+            # Use xmlschema's built-in capabilities to find element relationships
+            # Strategy: Use iter_components() to find all elements that can contain our snippet
+
+            # First, check if our snippet element exists as a global element
+            if snippet_root_tag in schema.elements:
+                # print(f"DEBUG: '{snippet_root_tag}' is a global element")
+                # If it's global, we need to find what can contain it
+                result = self._find_what_contains_global_element(
+                    schema, snippet_root_tag
+                )
+                return result, f"'{snippet_root_tag}' is a global element"
+
+            # If not global, search through all global elements to find which one contains our snippet
+            # Also search recursively through their child elements
             for elem_name, elem_obj in schema.elements.items():
                 if hasattr(elem_obj, "type") and elem_obj.type:
-                    # Check if this element's type can contain our snippet root
-                    if self._can_contain_element(elem_obj.type, snippet_root_tag):
-                        # Extract local name from qualified name
-                        if "}" in elem_name:
-                            return elem_name.split("}")[-1]
-                        else:
-                            return elem_name
+                    # Check if this element directly contains our snippet
+                    if self._element_contains_child_via_xmlschema(
+                        elem_obj, snippet_root_tag
+                    ):
+                        local_name = (
+                            elem_name.split("}")[-1] if "}" in elem_name else elem_name
+                        )
+                        # print(f"DEBUG: Found direct parent '{local_name}' for '{snippet_root_tag}'")
+                        return (
+                            local_name,
+                            f"Found direct parent '{local_name}' for '{snippet_root_tag}'",
+                        )
 
-            # If no match found, return None to use fallback strategy
-            return None
+                    # Also check if any child of this element can contain our snippet
+                    debug_info = self._any_child_contains_element_recursive(
+                        elem_obj, snippet_root_tag
+                    )
+                    if debug_info:
+                        local_name = (
+                            elem_name.split("}")[-1] if "}" in elem_name else elem_name
+                        )
+                        # print(f"DEBUG: Found indirect parent '{local_name}' for '{snippet_root_tag}'")
+                        return (
+                            local_name,
+                            f"Found indirect parent '{local_name}' for '{snippet_root_tag}'. {debug_info}",
+                        )
+
+            # print(f"DEBUG: No parent found for '{snippet_root_tag}'")
+            return None, f"No parent found for '{snippet_root_tag}'"
 
         except Exception as e:
             print(f"Warning: Error finding appropriate root element: {e}")
+            return None, f"Error finding parent: {str(e)}"
+
+    def _find_what_contains_global_element(
+        self, schema: xmlschema.XMLSchema, element_name: str
+    ) -> Optional[str]:
+        """Find what global element can contain the given global element"""
+        try:
+            # Search through all global elements to see which ones can contain our element
+            for elem_name, elem_obj in schema.elements.items():
+                if hasattr(elem_obj, "type") and elem_obj.type:
+                    if self._element_contains_child_via_xmlschema(
+                        elem_obj, element_name
+                    ):
+                        local_name = (
+                            elem_name.split("}")[-1] if "}" in elem_name else elem_name
+                        )
+                        print(f"DEBUG: '{local_name}' can contain '{element_name}'")
+                        return local_name
+
+            return None
+
+        except Exception as e:
+            print(f"DEBUG: Error finding what contains {element_name}: {e}")
+            return None
+
+    def _element_contains_child_via_xmlschema(
+        self, element_obj, child_name: str
+    ) -> bool:
+        """Check if an element can contain a child using xmlschema's built-in methods"""
+        try:
+            if hasattr(element_obj, "type") and element_obj.type:
+                # Use xmlschema's iter_elements() method to get all possible child elements
+                child_elements = []
+
+                # Get all elements that this type can contain
+                if hasattr(element_obj.type, "iter_elements"):
+                    for child_elem in element_obj.type.iter_elements():
+                        if hasattr(child_elem, "name") and child_elem.name:
+                            # Extract local name (remove namespace prefix if present)
+                            local_name = (
+                                child_elem.name.split("}")[-1]
+                                if "}" in child_elem.name
+                                else child_elem.name
+                            )
+                            child_elements.append(local_name)
+
+                # Also try to get elements from the content model
+                if hasattr(element_obj.type, "content") and element_obj.type.content:
+                    if hasattr(element_obj.type.content, "iter_elements"):
+                        for child_elem in element_obj.type.content.iter_elements():
+                            if hasattr(child_elem, "name") and child_elem.name:
+                                local_name = (
+                                    child_elem.name.split("}")[-1]
+                                    if "}" in child_elem.name
+                                    else child_elem.name
+                                )
+                                child_elements.append(local_name)
+
+                # Also check model group if it exists
+                if (
+                    hasattr(element_obj.type, "model_group")
+                    and element_obj.type.model_group
+                ):
+                    if hasattr(element_obj.type.model_group, "iter_elements"):
+                        for child_elem in element_obj.type.model_group.iter_elements():
+                            if hasattr(child_elem, "name") and child_elem.name:
+                                local_name = (
+                                    child_elem.name.split("}")[-1]
+                                    if "}" in child_elem.name
+                                    else child_elem.name
+                                )
+                                child_elements.append(local_name)
+
+                # print(f"DEBUG: Element {element_obj.name} can contain: {child_elements}")
+                return child_name in child_elements
+
+            return False
+
+        except Exception as e:
+            print(f"DEBUG: Error checking element {element_obj.name}: {e}")
+            return False
+
+    def _any_child_contains_element_recursive(
+        self, element_obj, target_name: str
+    ) -> Optional[str]:
+        """Recursively check if any child of this element can contain the target element"""
+        try:
+            if hasattr(element_obj, "type") and element_obj.type:
+                # Get all child elements from this element's type
+                child_elements = []
+
+                if hasattr(element_obj.type, "iter_elements"):
+                    for child_elem in element_obj.type.iter_elements():
+                        if hasattr(child_elem, "name") and child_elem.name:
+                            local_name = (
+                                child_elem.name.split("}")[-1]
+                                if "}" in child_elem.name
+                                else child_elem.name
+                            )
+                            child_elements.append((local_name, child_elem))
+
+                if hasattr(element_obj.type, "content") and element_obj.type.content:
+                    if hasattr(element_obj.type.content, "iter_elements"):
+                        for child_elem in element_obj.type.content.iter_elements():
+                            if hasattr(child_elem, "name") and child_elem.name:
+                                local_name = (
+                                    child_elem.name.split("}")[-1]
+                                    if "}" in child_elem.name
+                                    else child_elem.name
+                                )
+                                child_elements.append((local_name, child_elem))
+
+                if (
+                    hasattr(element_obj.type, "model_group")
+                    and element_obj.type.model_group
+                ):
+                    if hasattr(element_obj.type.model_group, "iter_elements"):
+                        for child_elem in element_obj.type.model_group.iter_elements():
+                            if hasattr(child_elem, "name") and child_elem.name:
+                                local_name = (
+                                    child_elem.name.split("}")[-1]
+                                    if "}" in child_elem.name
+                                    else child_elem.name
+                                )
+                                child_elements.append((local_name, child_elem))
+
+                # Check if any child can contain our target
+                for child_name, child_elem in child_elements:
+                    if self._element_contains_child_via_xmlschema(
+                        child_elem, target_name
+                    ):
+                        # print(f"DEBUG: Child '{child_name}' can contain '{target_name}'")
+                        return f"Child '{child_name}' can contain '{target_name}'"
+
+                    # Recursively check this child's children
+                    recursive_result = self._any_child_contains_element_recursive(
+                        child_elem, target_name
+                    )
+                    if recursive_result:
+                        # print(f"DEBUG: Child '{child_name}' has a descendant that can contain '{target_name}'")
+                        return f"Child '{child_name}' has a descendant that can contain '{target_name}'. {recursive_result}"
+
+            return None
+
+        except Exception as e:
+            print(f"DEBUG: Error in recursive search: {e}")
             return None
 
     def _can_contain_element(self, type_obj, element_name: str) -> bool:
         """Check if a schema type can contain an element with the given name"""
         try:
-            # This is a simplified check - in a full implementation, you'd traverse
-            # the schema type hierarchy more thoroughly
+            # Recursively traverse the schema type to find the element
+            return self._find_element_in_type(type_obj, element_name)
+        except Exception:
+            return False
 
-            # Check if the type has content that includes our element
+    def _find_element_in_type(self, type_obj, element_name: str) -> bool:
+        """Recursively search for an element in a schema type"""
+        try:
+            # Check if this type directly contains the element
             if hasattr(type_obj, "content") and type_obj.content:
                 if hasattr(type_obj.content, "iter_elements"):
                     for elem in type_obj.content.iter_elements():
-                        if (
-                            hasattr(elem, "name")
-                            and elem.name
-                            and element_name in elem.name
-                        ):
-                            return True
+                        if hasattr(elem, "name") and elem.name:
+                            # Extract local name (remove namespace prefix if present)
+                            local_name = (
+                                elem.name.split("}")[-1]
+                                if "}" in elem.name
+                                else elem.name
+                            )
+                            if local_name == element_name:
+                                return True
 
             # Check if it's a complex type with model group
             if hasattr(type_obj, "model_group") and type_obj.model_group:
                 if hasattr(type_obj.model_group, "iter_elements"):
                     for elem in type_obj.model_group.iter_elements():
-                        if (
-                            hasattr(elem, "name")
-                            and elem.name
-                            and element_name in elem.name
-                        ):
-                            return True
+                        if hasattr(elem, "name") and elem.name:
+                            # Extract local name (remove namespace prefix if present)
+                            local_name = (
+                                elem.name.split("}")[-1]
+                                if "}" in elem.name
+                                else elem.name
+                            )
+                            if local_name == element_name:
+                                return True
+
+            # Check if this type extends or restricts another type
+            if hasattr(type_obj, "base_type") and type_obj.base_type:
+                if self._find_element_in_type(type_obj.base_type, element_name):
+                    return True
+
+            # Check if this type has a content type that we can traverse
+            if hasattr(type_obj, "content_type") and type_obj.content_type:
+                if self._find_element_in_type(type_obj.content_type, element_name):
+                    return True
+
+            # Check if this type has a simple content type
+            if hasattr(type_obj, "simple_type") and type_obj.simple_type:
+                if self._find_element_in_type(type_obj.simple_type, element_name):
+                    return True
 
             return False
 
