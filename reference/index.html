@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>index – talk_with_fews</title>
+<title>index – Talk with FEWS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -78,7 +78,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">talk_with_fews</span>
+    <span class="navbar-title">Talk with FEWS</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -88,13 +88,17 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-examples" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Examples</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-documentatie" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Documentatie</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-examples">    
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-documentatie">    
         <li>
-    <a class="dropdown-item" href="../examples/notebooks/introduction.html">
- <span class="dropdown-text">Introduction to talk_with_fews</span></a>
+    <a class="dropdown-item" href="../examples/notebooks/fews_config.html">
+ <span class="dropdown-text">Delta Agent Talk with FEWS - Config</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../examples/notebooks/fews_webservice.html">
+ <span class="dropdown-text">Delta Agent Talk with FEWS - Webservice</span></a>
   </li>  
     </ul>
   </li>
@@ -127,7 +131,10 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#api-reference" id="toc-api-reference" class="nav-link active" data-scroll-target="#api-reference">API Reference</a>
   <ul class="collapse">
-  <li><a href="#talk_with_fews" id="toc-talk_with_fews" class="nav-link" data-scroll-target="#talk_with_fews">talk_with_fews</a></li>
+  <li><a href="#config-tools" id="toc-config-tools" class="nav-link" data-scroll-target="#config-tools">Config tools</a></li>
+  <li><a href="#webservice-tools" id="toc-webservice-tools" class="nav-link" data-scroll-target="#webservice-tools">Webservice tools</a></li>
+  <li><a href="#config-tool-models" id="toc-config-tool-models" class="nav-link" data-scroll-target="#config-tool-models">Config tool models</a></li>
+  <li><a href="#webservice-tool-models" id="toc-webservice-tool-models" class="nav-link" data-scroll-target="#webservice-tool-models">Webservice tool models</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -140,8 +147,233 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="api-reference" class="level1 doc doc-index">
 <h1 class="doc doc-index">API Reference</h1>
-<section id="talk_with_fews" class="level2">
-<h2 class="anchored" data-anchor-id="talk_with_fews">talk_with_fews</h2>
+<section id="config-tools" class="level2">
+<h2 class="anchored" data-anchor-id="config-tools">Config tools</h2>
+<p>Tools beschikbaar voor de config agent.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="../reference/analyze_dead_points.html#talk_with_fews.tools.analyze_dead_points">analyze_dead_points</a></td>
+<td>Identify “dead points” in the FEWS configuration - time series sets that are</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/analyze_dependencies.html#talk_with_fews.tools.analyze_dependencies">analyze_dependencies</a></td>
+<td>Analyze dependencies for a specific entity, showing both upstream and downstream relationships.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/get_database_schema.html#talk_with_fews.tools.get_database_schema">get_database_schema</a></td>
+<td>Get the database schema information to understand the structure of the FEWS configuration database.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/visualize_graph.html#talk_with_fews.tools.visualize_graph">visualize_graph</a></td>
+<td>Generate a graph visualization of FEWS entities and their relationships.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/execute_query.html#talk_with_fews.tools.execute_query">execute_query</a></td>
+<td>Execute a SQL query on the FEWS configuration database.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/describe_timeseries.html#talk_with_fews.tools.describe_timeseries">describe_timeseries</a></td>
+<td>Get a complete description of a time series, including its basic properties and optionally</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/search_timeseries.html#talk_with_fews.tools.search_timeseries">search_timeseries</a></td>
+<td>Search for time series sets by parameter, qualifier, module, or endpoint status.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/get_transformation_details.html#talk_with_fews.tools.get_transformation_details">get_transformation_details</a></td>
+<td>Get detailed information about a specific transformation, including its input and output time series.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/search_transformations.html#talk_with_fews.tools.search_transformations">search_transformations</a></td>
+<td>Search for transformations matching the given criteria.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/find_workflow_call_hierarchy.html#talk_with_fews.tools.find_workflow_call_hierarchy">find_workflow_call_hierarchy</a></td>
+<td>Trace workflow call stacks.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/search_workflows.html#talk_with_fews.tools.search_workflows">search_workflows</a></td>
+<td>Search for workflows by name pattern.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/get_workflow_details.html#talk_with_fews.tools.get_workflow_details">get_workflow_details</a></td>
+<td>Get detailed information about a specific workflow, including its module instance calls</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="webservice-tools" class="level2">
+<h2 class="anchored" data-anchor-id="webservice-tools">Webservice tools</h2>
+<p>Tools beschikbaar voor de webservice agent.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="../reference/get_parameters.html#talk_with_fews.tools.get_parameters">get_parameters</a></td>
+<td>Retrieve parameter details from a web service and format the results.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/get_locations.html#talk_with_fews.tools.get_locations">get_locations</a></td>
+<td>Retrieve a given number of location details from a web service and format the results.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/execute_query_webservice.html#talk_with_fews.tools.execute_query_webservice">execute_query_webservice</a></td>
+<td>Execute a SQL query on the FewsWebService cached database.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/get_series_headers.html#talk_with_fews.tools.get_series_headers">get_series_headers</a></td>
+<td>Retrieve series headers with incremental caching from FEWS webservice.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/get_series_statistics.html#talk_with_fews.tools.get_series_statistics">get_series_statistics</a></td>
+<td>Retrieve series statistics from FEWS webservice.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="config-tool-models" class="level2">
+<h2 class="anchored" data-anchor-id="config-tool-models">Config tool models</h2>
+<p>Models gebruikt in de config tools.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="../reference/DescribeTimeSeriesInput.html#talk_with_fews.models.DescribeTimeSeriesInput">DescribeTimeSeriesInput</a></td>
+<td>Model for the input of the describe_timeseries tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/DescribeTimeSeriesOutput.html#talk_with_fews.models.DescribeTimeSeriesOutput">DescribeTimeSeriesOutput</a></td>
+<td>Model for the output of the describe_timeseries tool.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/TimeSeriesSearchOutput.html#talk_with_fews.models.TimeSeriesSearchOutput">TimeSeriesSearchOutput</a></td>
+<td>Model for the output of the search_timeseries tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/TransformationSearchInput.html#talk_with_fews.models.TransformationSearchInput">TransformationSearchInput</a></td>
+<td>Model for the input of the search_transformations tool.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/TransformationSearchOutput.html#talk_with_fews.models.TransformationSearchOutput">TransformationSearchOutput</a></td>
+<td>Model for the output of the search_transformations tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/TransformationDetailsOutput.html#talk_with_fews.models.TransformationDetailsOutput">TransformationDetailsOutput</a></td>
+<td>Model for the output of the get_transformation_details tool.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/WorkflowSearchInput.html#talk_with_fews.models.WorkflowSearchInput">WorkflowSearchInput</a></td>
+<td>Input for workflow search.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/WorkflowSearchOutput.html#talk_with_fews.models.WorkflowSearchOutput">WorkflowSearchOutput</a></td>
+<td>Model for the output of the search_workflows tool.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/WorkflowDetailsInput.html#talk_with_fews.models.WorkflowDetailsInput">WorkflowDetailsInput</a></td>
+<td>Model for the input of the get_workflow_details tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/WorkflowDetailsOutput.html#talk_with_fews.models.WorkflowDetailsOutput">WorkflowDetailsOutput</a></td>
+<td>Model for the output of the get_workflow_details tool.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/DeadPointsAnalysisOutput.html#talk_with_fews.models.DeadPointsAnalysisOutput">DeadPointsAnalysisOutput</a></td>
+<td>Model for the output of the analyze_dead_points tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/DependencyAnalysisInput.html#talk_with_fews.models.DependencyAnalysisInput">DependencyAnalysisInput</a></td>
+<td>Model for the input of the analyze_dependencies tool.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/DependencyAnalysisOutput.html#talk_with_fews.models.DependencyAnalysisOutput">DependencyAnalysisOutput</a></td>
+<td>Model for the output of the analyze_dependencies tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/DatabaseSchemaOutput.html#talk_with_fews.models.DatabaseSchemaOutput">DatabaseSchemaOutput</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/GraphVisualizationInput.html#talk_with_fews.models.GraphVisualizationInput">GraphVisualizationInput</a></td>
+<td>Model for the input of graph visualization tools.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GraphVisualizationOutput.html#talk_with_fews.models.GraphVisualizationOutput">GraphVisualizationOutput</a></td>
+<td>Model for the output of graph visualization tools.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/SQLQueryInput.html#talk_with_fews.models.SQLQueryInput">SQLQueryInput</a></td>
+<td>Input for SQL query.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/SQLQueryOutput.html#talk_with_fews.models.SQLQueryOutput">SQLQueryOutput</a></td>
+<td>Output from SQL query.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/TransformationDetailsInput.html#talk_with_fews.models.TransformationDetailsInput">TransformationDetailsInput</a></td>
+<td>Model for the input of the get_transformation_details tool.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/TransformationDetailsOutput.html#talk_with_fews.models.TransformationDetailsOutput">TransformationDetailsOutput</a></td>
+<td>Model for the output of the get_transformation_details tool.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="webservice-tool-models" class="level2">
+<h2 class="anchored" data-anchor-id="webservice-tool-models">Webservice tool models</h2>
+<p>Models gebruikt in de webservice tools.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="../reference/GetParameterInput.html#talk_with_fews.models.GetParameterInput">GetParameterInput</a></td>
+<td>Model representing a parameter search result.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GetParameterOutput.html#talk_with_fews.models.GetParameterOutput">GetParameterOutput</a></td>
+<td>Model for the output of the parameter_details</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/GetLocationInput.html#talk_with_fews.models.GetLocationInput">GetLocationInput</a></td>
+<td>GetLocationInput defines the input parameters for retrieving location search results.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GetLocationOutput.html#talk_with_fews.models.GetLocationOutput">GetLocationOutput</a></td>
+<td>Model for the output of the location_details</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/GetSeriesDataInput.html#talk_with_fews.models.GetSeriesDataInput">GetSeriesDataInput</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GetSeriesDataOutput.html#talk_with_fews.models.GetSeriesDataOutput">GetSeriesDataOutput</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/GetSeriesHeadersInput.html#talk_with_fews.models.GetSeriesHeadersInput">GetSeriesHeadersInput</a></td>
+<td>GetSeriesHeadersInput defines the input parameters for retrieving series headers.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GetSeriesHeadersOutput.html#talk_with_fews.models.GetSeriesHeadersOutput">GetSeriesHeadersOutput</a></td>
+<td>GetSeriesHeadersOutput provides a minimal but meaningful response for series headers.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/GetSeriesStatisticsInput.html#talk_with_fews.models.GetSeriesStatisticsInput">GetSeriesStatisticsInput</a></td>
+<td>GetSeriesStatisticsInput defines the input parameters for retrieving series statistics.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GetSeriesStatisticsOutput.html#talk_with_fews.models.GetSeriesStatisticsOutput">GetSeriesStatisticsOutput</a></td>
+<td>GetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/SeriesFlagsInput.html#talk_with_fews.models.SeriesFlagsInput">SeriesFlagsInput</a></td>
+<td>Input parameters for flag analysis</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/SeriesFlagsSummary.html#talk_with_fews.models.SeriesFlagsSummary">SeriesFlagsSummary</a></td>
+<td>Summary of FEWS flags in a timeseries</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>
