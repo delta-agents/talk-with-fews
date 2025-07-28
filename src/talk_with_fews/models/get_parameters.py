@@ -6,7 +6,20 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
+from pydantic_ai import format_as_xml
 from talk_with_fews.models.base import Parameter  # , Location
+
+
+class TalkWithFewsBase(BaseModel):
+    def to_xml(self) -> str:
+        """Convert the output to an XML string."""
+        return format_as_xml(self, root_tag="GetParameterOutput")
+
+    def __repr__(self):
+        return self.to_xml()
+
+    def json(self):
+        return self.to_xml()
 
 
 class GetParameterInput(BaseModel):
@@ -29,7 +42,7 @@ class GetParameterInput(BaseModel):
     )
 
 
-class GetParameterOutput(BaseModel):
+class GetParameterOutput(TalkWithFewsBase):
     """Model for the output of the parameter_details
       tool.
 
