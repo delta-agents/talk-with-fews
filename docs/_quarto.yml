@@ -16,6 +16,8 @@ website:
       - icon: github
         href: https://github.com/HKV-products-services/talk_with_fews
         aria-label: GitHub
+      - text: "Contributing"
+        file: contributing.qmd
 format:
   html:
     theme: cosmo
@@ -62,7 +64,7 @@ quartodoc:
         - get_series_headers
         - get_series_statistics
     - title: Config tool models
-      desc: Models gebruikt in de config tools.
+      desc: Data modellen per Config tool.
       package: talk_with_fews.models
       contents:
         - DescribeTimeSeriesInput
@@ -87,7 +89,7 @@ quartodoc:
         - TransformationDetailsOutput
     - title: Webservice tool models
       package: talk_with_fews.models
-      desc: Models gebruikt in de webservice tools.
+      desc: Data modellen per webservice tool.
       contents:
         - GetParameterInput
         - GetParameterOutput

@@ -7,12 +7,15 @@ from talk_with_fews.utils.schema_utils import (
     extract_db_schema_as_dict,
     get_table_relationships,
 )
-from talk_with_fews.models.database_schema import DatabaseSchemaOutput
+from talk_with_fews.models.database_schema import (
+    DatabaseSchemaOutput,
+    DatabaseSchemaInput,
+)
 
 
 @log_tool_call
 async def get_database_schema(
-    ctx: RunContext[Deps], input: dict = None
+    ctx: RunContext[Deps], input: DatabaseSchemaInput
 ) -> DatabaseSchemaOutput:
     """
     Get the database schema information to understand the structure of the FEWS configuration database.
