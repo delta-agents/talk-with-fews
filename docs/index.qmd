@@ -1,5 +1,5 @@
 ---
-title: "talk_with_fews"
+title: "Talk with FEWS"
 ---
 
-This package contains a template for python projects. This is developed by HKV and is published under the GNU GPL-3 license.
+Dit pakket documentatie voor praten met FEWS. Dit is ontwikkeld door HKV en wordt gepubliceerd onder de GNU GPL-3 licentie.

@@ -58,6 +58,7 @@ async def get_parameters_mcp(
 ) -> GetParameterOutput:
     ctx = get_runtime_ctx()
     return await get_parameters(ctx, input)
+     
 
 
 # get_parameter_details tool registration

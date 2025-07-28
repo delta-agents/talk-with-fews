@@ -3,7 +3,7 @@ project:
   type: website
 
 website:
-  title: "talk_with_fews"
+  title: "Talk with FEWS"
   navbar:
     left:
       - text: "Examples"
