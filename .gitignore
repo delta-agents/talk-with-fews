@@ -22,3 +22,5 @@ env/.env
 .github/chatmodes
 example code/*
 tests/src/tools/schemas/*
+PLAN.md
+FUTURE_PLAN.md

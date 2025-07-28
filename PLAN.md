@@ -1,254 +1,512 @@
-# Plan: Timeseries Data Retrieval Implementation
+# Plan: FEWS Quality Flag Analysis Tool Implementation
 
 ## Overview
-This plan outlines the implementation of a new get_series_data tool that allows users to retrieve timeseries data from the FEWS webservice for specific location-parameter combinations. The tool will leverage our existing series_headers table to validate requests and provide efficient data retrieval, returning data in a row-oriented CSV format.
+This plan outlines the implementation of a tool that analyzes FEWS quality flags and flag sources to provide insights into data quality. The tool will build upon our existing `get_series_data` functionality and focus specifically on analyzing the standardized FEWS flag system.
+
+IMPORTANT: This tool ONLY analyzes existing flags and flag sources set by FEWS. It does NOT:
+- Compute any patterns in the measurement values
+- Detect any anomalies or trends
+- Set or modify any flags
+- Make any quality judgments
 
 ## Architecture
 
 ### System Architecture Diagram
 ```mermaid
 graph TD
-    A[User Request] --> B[get_series_data.py]
-    B --> C{Validate Request}
-    C -->|Valid| D[Query FEWS Webservice]
-    C -->|Invalid| E[Return Error]
-    D --> F[Parse XML Response]
-    F --> G[Format to CSV]
-    G --> H[Return Data]
+    A[User Request] --> B[analyze_series_flags.py]
+    B --> C[get_series_data.py]
+    C --> D[Parse Quality Flags]
+    D --> E[Analyze Flag Sources]
+    E --> F[Generate Report]
 
-    subgraph "Local Cache"
-        I[series_headers Table]
-        J[locations Table]
-        K[parameters Table]
+    subgraph "Flag Analysis"
+        D --> H[Flag Counts]
+        D --> I[Origin Analysis]
+        D --> J[Quality Analysis]
+        E --> K[Flag Source Summary]
     end
 
     subgraph "FEWS Webservice"
-        L[Timeseries Data Endpoint]
-        M[XML Response]
+        C --> M[Timeseries Data]
     end
-
-    C --> I
-    D --> L
-    L --> M
-    M --> F
 ```
 
 ## Implementation Details
 
-### 1. Data Model
+### 1. Data Models
 
-#### GetSeriesDataInput
+#### Standard FEWS Flag Mappings
 ```python
-class GetSeriesDataInput(BaseModel):
-    location_id: str = Field(..., description="Location ID to fetch data for")
-    parameter_id: str = Field(..., description="Parameter ID to fetch data for")
-    start_time: datetime = Field(..., description="Start time for data retrieval")
-    end_time: datetime = Field(..., description="End time for data retrieval")
+QUALITY_FLAGS = {
+    0: FlagDefinition(
+        flag=0,
+        origin="Original",
+        quality="Reliable",
+        description="Original value, passes all validation criteria"
+    ),
+    1: FlagDefinition(
+        flag=1,
+        origin="Corrected",
+        quality="Reliable",
+        description="Original value corrected through interpolation or manual editing"
+    ),
+    2: FlagDefinition(
+        flag=2,
+        origin="Completed",
+        quality="Reliable",
+        description="Original value was missing. Value has been filled in through interpolation, transformation (e.g. stage discharge) or a model"
+    ),
+    3: FlagDefinition(
+        flag=3,
+        origin="Original",
+        quality="Doubtful",
+        description="Observed value retrieved from external data source. Value is valid, but marked as suspect due to soft validation limits being exceeded"
+    ),
+    4: FlagDefinition(
+        flag=4,
+        origin="Corrected",
+        quality="Doubtful",
+        description="Original value was removed and corrected. However, the corrected value is doubtful due to validation limits"
+    ),
+    5: FlagDefinition(
+        flag=5,
+        origin="Completed",
+        quality="Doubtful",
+        description="Original value was missing. Value has been filled in as above, but resulting value is doubtful due to limits in transformation/interpolation or input value used for transformation being doubtful"
+    ),
+    6: FlagDefinition(
+        flag=6,
+        origin="Original",
+        quality="Unreliable",
+        description="Observed value retrieved from external data source. Value is invalid due to validation limits set. Value is marked as unreliable and will not be used in transformations and model calculations"
+    ),
+    7: FlagDefinition(
+        flag=7,
+        origin="Corrected",
+        quality="Unreliable",
+        description="Original value was removed and corrected. However, corrected value is unreliable"
+    ),
+    8: FlagDefinition(
+        flag=8,
+        origin="Completed",
+        quality="Unreliable",
+        description="Original value was missing. Value has been filled in as above, but resulting value is unreliable"
+    ),
+    9: FlagDefinition(
+        flag=9,
+        origin="Original",
+        quality="Unreliable",
+        description="Missing value in originally observed series. Note this is a special form of both Original/Unreliable and Original/Reliable"
+    )
+}
+
+FLAG_SOURCES = {
+    # Primary Validation Sources
+    "IMP": FlagSourceDefinition(
+        code="IMP",
+        description="Flag is imported",
+        validation_type="primary"
+    ),
+    "SN": FlagSourceDefinition(
+        code="SN",
+        description="Soft minimum exceeded",
+        validation_type="primary"
+    ),
+    "HN": FlagSourceDefinition(
+        code="HN",
+        description="Hard minimum exceeded",
+        validation_type="primary"
+    ),
+    "SX": FlagSourceDefinition(
+        code="SX",
+        description="Soft maximum exceeded",
+        validation_type="primary"
+    ),
+    "HX": FlagSourceDefinition(
+        code="HX",
+        description="Hard maximum exceeded",
+        validation_type="primary"
+    ),
+    "ROR": FlagSourceDefinition(
+        code="ROR",
+        description="Rate of rise",
+        validation_type="primary"
+    ),
+    "ROF": FlagSourceDefinition(
+        code="ROF",
+        description="Rate of fall",
+        validation_type="primary"
+    ),
+    "SR": FlagSourceDefinition(
+        code="SR",
+        description="Same reading",
+        validation_type="primary"
+    ),
+    "TS": FlagSourceDefinition(
+        code="TS",
+        description="Temporary shift",
+        validation_type="primary"
+    ),
+    "OSC": FlagSourceDefinition(
+        code="OSC",
+        description="Oscillation",
+        validation_type="primary"
+    ),
+
+    # Secondary Validation Sources
+    "SC": FlagSourceDefinition(
+        code="SC",
+        description="Secondary validation, series comparison",
+        validation_type="secondary"
+    ),
+    "FC": FlagSourceDefinition(
+        code="FC",
+        description="Secondary validation, flag comparison",
+        validation_type="secondary"
+    ),
+    "MK": FlagSourceDefinition(
+        code="MK",
+        description="Secondary validation, Mann-Kendall test",
+        validation_type="secondary"
+    ),
+    "SVP": FlagSourceDefinition(
+        code="SVP",
+        description="Secondary validation, Flag persistency",
+        validation_type="secondary"
+    ),
+    "SFP": FlagSourceDefinition(
+        code="SFP",
+        description="Start flag persistency",
+        validation_type="secondary"
+    ),
+    "MAN": FlagSourceDefinition(
+        code="MAN",
+        description="Manual edit",
+        validation_type="secondary"
+    ),
+    "CA": FlagSourceDefinition(
+        code="CA",
+        description="Conditional aggregation",
+        validation_type="secondary"
+    )
+}
 ```
 
-#### TimeseriesValue
+#### SeriesFlagsInput
 ```python
-class TimeseriesValue(BaseModel):
-    datetime: datetime
-    location_id: str
-    station_name: str
-    parameter_id: str
-    moduleinstance_id: str
-    value: float
+class SeriesFlagsInput(BaseModel):
+    location_id: str = Field(..., description="Location ID to analyze")
+    parameter_id: str = Field(..., description="Parameter ID to analyze")
+    start_time: datetime = Field(..., description="Start time for analysis")
+    end_time: datetime = Field(..., description="End time for analysis")
+```
+
+#### FlagDefinition
+```python
+class FlagDefinition(BaseModel):
+    """Standard FEWS flag definition"""
     flag: int
+    origin: str  # Original/Corrected/Completed
+    quality: str  # Reliable/Doubtful/Unreliable
+    description: str
 ```
 
-#### GetSeriesDataOutput
+#### FlagSourceDefinition
 ```python
-class GetSeriesDataOutput(BaseModel):
-    values: List[TimeseriesValue]
-    metadata: dict  # Contains header information like units, coordinates, etc.
-    csv_data: str   # CSV formatted string with the specified columns
+class FlagSourceDefinition(BaseModel):
+    """Standard FEWS flag source definition"""
+    code: str  # e.g., 'IMP', 'SN', 'HN', etc.
+    description: str
+    validation_type: str = Field(
+        ...,
+        description="Type of validation (primary/secondary/custom)",
+        example="primary"
+    )
 ```
 
-### 2. XML Structure
-
-The FEWS webservice returns data in the following XML format:
-```xml
-<TimeSeries xmlns="http://www.wldelft.nl/fews/PI">
-    <timeZone>0.0</timeZone>
-    <series>
-        <header>
-            <type>accumulative</type>
-            <moduleInstanceId>im.wiwb.knmi</moduleInstanceId>
-            <locationId>KNMIUUR278</locationId>
-            <parameterId>Eref.d</parameterId>
-            <timeStep unit="second" multiplier="86400"/>
-            <startDate date="2025-01-01" time="00:00:00"/>
-            <endDate date="2025-02-01" time="00:00:00"/>
-            <missVal>-999.0</missVal>
-            <stationName>Heino</stationName>
-            <lat>52.43386123567003</lat>
-            <lon>6.2617263290456675</lon>
-            <x>214472.0</x>
-            <y>494367.0</y>
-            <z>0.0</z>
-            <units>mm</units>
-        </header>
-        <event date="2025-01-01" time="00:00:00" value="0.1" flag="0"/>
-        <!-- More events... -->
-    </series>
-</TimeSeries>
-```
-
-### 3. CSV Output Format
-
-The tool will output data in the following CSV format:
-```csv
-datetime,location_id,station_name,parameter_id,moduleinstance_id,value,flag
-2025-01-01T00:00:00Z,KNMIUUR278,Heino,Eref.d,im.wiwb.knmi,0.1,0
-2025-01-02T00:00:00Z,KNMIUUR278,Heino,Eref.d,im.wiwb.knmi,0.0,0
-...
-```
-
-### 4. Implementation Steps
-
-1. **XML Parsing Function**
+#### FlagCount
 ```python
-def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesValue]]:
+class FlagCount(BaseModel):
+    """Count of a specific FEWS flag occurrence"""
+    flag: int
+    count: int
+    percentage: float
+```
+
+#### FlagSourceCount
+```python
+class FlagSourceCount(BaseModel):
+    """Count of a specific FEWS flag source occurrence"""
+    source: FlagSourceDefinition
+    count: int
+    percentage: float
+```
+
+#### QualityThresholds
+```python
+class QualityThresholds(BaseModel):
+    """Standard FEWS quality percentage thresholds for reporting"""
+    EXCELLENT = 95.0  # Green (00FF00)
+    VERY_GOOD = 90.0  # Light green (D0F5A9)
+    GOOD = 80.0       # Orange (F2F5A9)
+    MODERATE = 50.0   # Light red (F5DA81)
+    POOR = 0.0        # Red (F79F81)
+```
+
+#### FlagCounts
+```python
+class FlagCounts(BaseModel):
+    """Counts of FEWS flags and sources in the timeseries"""
+    # Basic counts
+    total_values: int
+    missing_values: int
+
+    # Quality level counts from flags
+    reliable_count: int
+    doubtful_count: int
+    unreliable_count: int
+
+    # Quality level percentages
+    reliable_percentage: float
+    doubtful_percentage: float
+    unreliable_percentage: float
+
+    # Flag source counts
+    primary_source_counts: Dict[str, int]    # e.g., {"SN": 10, "HN": 5}
+    secondary_source_counts: Dict[str, int]  # e.g., {"SC": 2, "MK": 1}
+
+    # Flag source percentages
+    primary_source_percentages: Dict[str, float]    # e.g., {"SN": 10.0, "HN": 5.0}
+    secondary_source_percentages: Dict[str, float]  # e.g., {"SC": 2.0, "MK": 1.0}
+```
+
+#### SeriesFlagsSummary
+```python
+class SeriesFlagsSummary(BaseModel):
+    """Summary of FEWS flags in a timeseries"""
+    # Basic information
+    total_values: int
+    period: DateRange
+
+    # Standard FEWS flag definitions
+    flag_definitions: Dict[int, FlagDefinition]
+    flag_source_definitions: Dict[str, FlagSourceDefinition]
+
+    # Actual counts from timeseries
+    flag_counts: List[FlagCount]
+    flag_source_counts: List[FlagSourceCount]
+
+    # Summary counts
+    counts: FlagCounts
+```
+
+#### DataGaps
+```python
+class DataGaps(BaseModel):
+    """Analysis of missing data periods"""
+    total_gaps: int
+    total_missing_values: int
+    missing_percentage: float
+    longest_gap: int
+    gap_periods: List[DateRange]
+```
+
+#### DateRange
+```python
+class DateRange(BaseModel):
+    """A period between two dates"""
+    start: datetime
+    end: datetime
+    duration: timedelta
+```
+
+### 2. Error Handling
+
+1. **Input Validation**
+```python
+class SeriesFlagsError(Exception):
+    """Base exception for series flags analysis"""
+    pass
+
+class InvalidTimeRangeError(SeriesFlagsError):
+    """Invalid time range specified"""
+    pass
+
+class CustomFlagsConfigError(SeriesFlagsError):
+    """Error in custom flags configuration"""
+    pass
+
+class DataRetrievalError(SeriesFlagsError):
+    """Error retrieving data from get_series_data"""
+    pass
+```
+
+2. **Time Range Validation**
+```python
+def validate_time_range(start_time: datetime, end_time: datetime) -> None:
     """
-    Parse FEWS XML response into metadata and timeseries values.
-    Handles missing values internally based on the missVal from header.
+    Validate the analysis time range.
+
+    Checks:
+    - start_time < end_time
+    - Range not too large (configurable max duration)
+    - Dates not in future
+    """
+```
+
+3. **Custom Flags Validation**
+```python
+def validate_custom_flags_config(config_path: str) -> None:
+    """
+    Validate custom flags configuration XML.
+
+    Checks:
+    - File exists and is readable
+    - Valid XML structure
+    - Required elements present
+    - No duplicate flag IDs
+    """
+```
+
+### 3. Implementation Steps
+
+1. **Flag Counting Function**
+```python
+async def count_series_flags(
+    values: List[TimeseriesValue]
+) -> Dict[str, Any]:
+    """
+    Count occurrences of existing FEWS flags in timeseries.
+
+    This function ONLY counts flags that are already set in the timeseries.
+    It does NOT:
+    - Analyze the measurement values
+    - Compute any statistics
+    - Set or modify any flags
 
     Returns:
-        Tuple[dict, List[TimeseriesValue]]: Metadata and list of values
+        Dict containing counts of existing flags
     """
-    root = ET.fromstring(xml_content)
-    ns = {'pi': 'http://www.wldelft.nl/fews/PI'}
-
-    # Parse header information
-    header = root.find('.//pi:header', ns)
-    missing_value = float(header.find('pi:missVal', ns).text)
-    metadata = {
-        'moduleinstance_id': header.find('pi:moduleInstanceId', ns).text,
-        'station_name': header.find('pi:stationName', ns).text,
-        # ... other metadata ...
-    }
-
-    # Parse events
-    values = []
-    for event in root.findall('.//pi:event', ns):
-        date = event.get('date')
-        time = event.get('time')
-        value = float(event.get('value'))
-
-        # Handle missing values: if value equals missing_value indicator, set to None
-        value = None if value == missing_value else value
-
-        values.append(TimeseriesValue(
-            datetime=f"{date}T{time}Z",
-            location_id=metadata['location_id'],
-            station_name=metadata['station_name'],
-            parameter_id=metadata['parameter_id'],
-            moduleinstance_id=metadata['moduleinstance_id'],
-            value=value,
-            flag=int(event.get('flag'))
-        ))
-
-    return metadata, values
 ```
 
-2. **CSV Conversion Function**
+2. **Flag Source Counting Function**
 ```python
-def convert_to_csv(values: List[TimeseriesValue]) -> str:
+async def count_flag_sources(
+    values: List[TimeseriesValue]
+) -> Dict[str, Any]:
     """
-    Convert timeseries values to CSV format.
+    Count occurrences of existing FEWS flag sources.
+
+    This function ONLY counts flag sources that are already set.
+    It does NOT:
+    - Determine new flag sources
+    - Analyze measurement values
+    - Set or modify any flag sources
+
+    Returns:
+        Dict containing counts of existing flag sources
     """
-    headers = ['datetime', 'location_id', 'station_name', 'parameter_id',
-               'moduleinstance_id', 'value', 'flag']
-
-    output = StringIO()
-    writer = csv.DictWriter(output, fieldnames=headers)
-    writer.writeheader()
-
-    for value in values:
-        writer.writerow(value.dict())
-
-    return output.getvalue()
 ```
 
 3. **Main Tool Implementation**
 ```python
-def get_series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
-    # 1. Validate request using series_headers table
-    validate_series_exists(input.location_id, input.parameter_id)
+async def analyze_series_flags(
+    ctx: RunContext[Deps],
+    input: SeriesFlagsInput
+) -> SeriesFlagsSummary:
+    """
+    Summarize FEWS flags in a timeseries.
 
-    # 2. Construct URL with proper datetime format
-    url = (f"{base_url}?locationIds={input.location_id}"
-           f"&parameterIds={input.parameter_id}"
-           f"&startTime={input.start_time.isoformat()}Z"
-           f"&endTime={input.end_time.isoformat()}Z"
-           f"&documentFormat=PI_XML")
+    This tool ONLY:
+    1. Retrieves timeseries with flags from FEWS
+    2. Counts occurrences of existing flags
+    3. Groups and summarizes these counts
+    4. Formats results for reporting
 
-    # 3. Fetch and parse data
-    xml_content = fetch_from_webservice(url)
-    metadata, values = parse_timeseries_xml(xml_content)
+    It does NOT:
+    - Analyze measurement values
+    - Detect patterns or anomalies
+    - Set or modify any flags
+    """
+    # 1. Get timeseries with flags
+    series_data = await get_series_data(ctx, input)
 
-    # 4. Convert to CSV
-    csv_data = convert_to_csv(values)
+    # 2. Count flags and sources
+    flag_counts = await count_series_flags(series_data.values)
+    source_counts = await count_flag_sources(series_data.values)
 
-    return GetSeriesDataOutput(
-        values=values,
-        metadata=metadata,
-        csv_data=csv_data
+    # 3. Create summary
+    return SeriesFlagsSummary(
+        total_values=len(series_data.values),
+        period=DateRange(start=input.start_time, end=input.end_time),
+        flag_definitions=get_fews_flag_definitions(),
+        flag_source_definitions=get_fews_source_definitions(),
+        flag_counts=flag_counts["counts"],
+        flag_source_counts=source_counts["counts"],
+        counts=create_flag_counts(flag_counts, source_counts)
     )
 ```
 
-### 5. Error Handling
+### 4. Output Format
 
-1. **XML Parsing Errors**
-   - Invalid XML structure
-   - Missing required elements
-   - Namespace handling
-   - Date/time format validation
-   - Missing value format validation
+The tool will provide a structured analysis report in markdown format:
 
-2. **Data Validation**
-   - Missing value handling (as specified in header, e.g. -999.0)
-   - Proper conversion between None and missing_value indicator
-   - Invalid numeric values
-   - DateTime parsing errors
-   - Flag validation
+1. **Flag Distribution Table**
+```markdown
+| Flag | Origin    | Quality    | Count | Percentage | Description |
+|------|-----------|------------|-------|------------|-------------|
+| 0    | Original  | Reliable   | 800   | 80%        | Original value |
+| 3    | Original  | Doubtful   | 100   | 10%        | Soft validation |
+...
+```
 
-### 6. Testing Strategy
+2. **Flag Source Distribution**
+```markdown
+| Source | Description | Count | Percentage |
+|--------|-------------|-------|------------|
+| IMP    | Imported    | 850   | 85%        |
+| SN     | Soft min    | 50    | 5%         |
+| HX     | Hard max    | 30    | 3%         |
+...
+```
+
+3. **Quality Summary**
+```markdown
+| Quality Level | Count | Percentage |
+|--------------|-------|------------|
+| Reliable     | 850   | 85%        |
+| Doubtful     | 100   | 10%        |
+| Unreliable   | 50    | 5%         |
+```
+
+### 5. Testing Strategy
 
 1. **Unit Tests**
-   - XML parsing with different data structures
-   - CSV conversion accuracy
-   - DateTime handling
-   - Missing value handling
+   - Flag counting accuracy
+   - Flag source identification
+   - Percentage calculations
+   - Summary generation
 
 2. **Integration Tests**
-   - Full workflow with webservice
-   - Error handling scenarios
-   - Large dataset handling
+   - Full workflow testing
+   - Different flag combinations
+   - Custom flag sources
+   - Missing data handling
 
 ## Dependencies
 
-- `xml.etree.ElementTree` for XML parsing
+- Existing `get_series_data` tool
 - `pydantic` for data validation
-- `datetime` for time handling
-- `csv` for CSV formatting
-- Existing series_headers table for validation
+- Standard Python libraries for calculations
 
 ## Future Enhancements
 
-1. **Performance Optimization**
-   - Streaming parser for large XML responses
-   - Batch processing for multiple series
-   - Response compression
+1. **Extended Analysis**
+   - Historical flag distribution trends
+   - Flag source frequency analysis
+   - Flag transition patterns (from existing flags only)
 
-2. **Output Formats**
-   - Support for JSON output
-   - Support for Excel output
-   - Support for Arrow/Parquet format
-
-3. **Data Quality**
-   - Extended flag information
-   - Quality metadata
-   - Data gap detection
+2. **Reporting**
+   - Export to csv
+   - Automated quality reports
