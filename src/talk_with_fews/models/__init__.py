@@ -21,7 +21,10 @@ from talk_with_fews.models.dependency_analysis import (
     DependencyAnalysisInput,
     DependencyAnalysisOutput,
 )
-from talk_with_fews.models.database_schema import DatabaseSchemaOutput
+from talk_with_fews.models.database_schema import (
+    DatabaseSchemaOutput,
+    DatabaseSchemaInput,
+)
 from talk_with_fews.models.graph import (
     GraphVisualizationInput,
     GraphVisualizationOutput,
@@ -75,6 +78,7 @@ __all__ = [
     "DeadPointsAnalysisOutput",
     "DependencyAnalysisInput",
     "DependencyAnalysisOutput",
+    "DatabaseSchemaInput",
     "DatabaseSchemaOutput",
     "GraphVisualizationInput",
     "GraphVisualizationOutput",

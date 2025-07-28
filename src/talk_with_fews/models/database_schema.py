@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field
 from typing import Dict, List, Any
 
 
+class DatabaseSchemaInput(BaseModel):
+    """
+    Input model for get_database_schema tool.
+    Currently, no parameters are required, but this can be extended in the future.
+    """
+
+
 class DatabaseSchemaOutput(BaseModel):
     tables: Dict[str, List[str]] = Field(
         ..., description="Table names and their columns"
