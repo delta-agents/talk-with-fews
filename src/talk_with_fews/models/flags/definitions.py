@@ -1,11 +1,5 @@
 """
 Base models for FEWS flag definitions.
-
-These models define the structure of FEWS quality flags and their sources.
-They do NOT:
-- Compute any patterns
-- Analyze measurement values
-- Set or modify flags
 """
 
 from pydantic import BaseModel, Field

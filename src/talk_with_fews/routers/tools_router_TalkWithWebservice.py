@@ -171,7 +171,6 @@ async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     "Example Use Cases: "
     "- Monitor data quality across different periods "
     "- Compare quality between locations/parameters "
-    "- Track data corrections and completions "
     "- Identify problematic data sources"
 )
 async def analyze_series_flags_mcp(input: SeriesFlagsInput) -> SeriesFlagsSummary:

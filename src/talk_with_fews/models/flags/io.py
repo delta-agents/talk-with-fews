@@ -2,10 +2,6 @@
 Input/Output models for FEWS flag analysis.
 
 These models define the input parameters and output structure.
-They do NOT:
-- Compute any patterns
-- Analyze measurement values
-- Set or modify flags
 """
 
 from datetime import datetime, timedelta

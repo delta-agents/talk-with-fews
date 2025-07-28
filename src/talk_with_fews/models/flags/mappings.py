@@ -63,6 +63,7 @@ QUALITY_FLAGS = {
         quality="Unreliable",
         description="Original value was missing. Value has been filled in as above, but resulting value is unreliable",
     ),
+    # Note: Upstream documentation describes Flag 9 as ambiguous between Original/Unreliable and Original/Reliable.
     9: FlagDefinition(
         flag=9,
         origin="Original",

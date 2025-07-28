@@ -1,11 +1,5 @@
 """
 Models for counting FEWS flag occurrences.
-
-These models are used to track counts and percentages of flags.
-They do NOT:
-- Compute any patterns
-- Analyze measurement values
-- Set or modify flags
 """
 
 from pydantic import BaseModel, Field
@@ -29,9 +23,15 @@ class FlagCounts(BaseModel):
     missing_values: int = Field(..., description="Number of missing values (flag 9)")
 
     # Quality level counts from flags
-    reliable_count: int = Field(..., description="Number of reliable values")
-    doubtful_count: int = Field(..., description="Number of doubtful values")
-    unreliable_count: int = Field(..., description="Number of unreliable values")
+    reliable_count: int = Field(
+        ..., description="Number of reliable values (flag 0, 1, 2)"
+    )
+    doubtful_count: int = Field(
+        ..., description="Number of doubtful values (flag 3, 4, 5)"
+    )
+    unreliable_count: int = Field(
+        ..., description="Number of unreliable values (flag 6, 7, 8)"
+    )
 
     # Quality level percentages
     reliable_percentage: float = Field(..., description="Percentage of reliable values")

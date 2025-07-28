@@ -79,7 +79,6 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
         else:
             event_datetime = event_datetime.replace(tzinfo=timezone.utc)
 
-        # Create value with optional flag source (requires FEWS API support)
         value_data = {
             "datetime": event_datetime,
             "location_id": metadata["location_id"],

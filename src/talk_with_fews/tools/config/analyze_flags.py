@@ -1,13 +1,7 @@
 """
 Tool for analyzing FEWS quality flags.
 
-This tool counts and summarizes existing flags in timeseries data.
-It does NOT:
-- Compute any patterns
-- Analyze measurement values
-- Set or modify flags
-
-Note: Flag source analysis requires FEWS API support (feature request pending).
+Note: Flag source analysis requires FEWS API support.
 """
 
 from collections import Counter
@@ -49,11 +43,7 @@ async def count_series_flags(values: List[TimeseriesValue]) -> Dict[str, Any]:
     """
     Count occurrences of existing FEWS flags in timeseries.
 
-    This function ONLY counts flags that are already set in the timeseries.
-    It does NOT:
-    - Analyze the measurement values
-    - Compute any statistics
-    - Set or modify any flags
+    This function counts flags that are already set in the timeseries.
 
     Args:
         values: List of timeseries values with flags
@@ -110,16 +100,11 @@ async def analyze_series_flags(
     """
     Summarize FEWS flags in a timeseries.
 
-    This tool ONLY:
+    This tool:
     1. Retrieves timeseries with flags from FEWS
     2. Counts occurrences of existing flags
     3. Groups and summarizes these counts
     4. Formats results for reporting
-
-    It does NOT:
-    - Analyze measurement values
-    - Detect patterns or anomalies
-    - Set or modify any flags
 
     Note: Flag source analysis requires FEWS API support (feature request pending).
 
