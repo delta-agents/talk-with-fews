@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -7,6 +6,7 @@ import logging
 
 logger = logging.getLogger("fews_agent")
 logger.setLevel(logging.WARNING)
+
 
 def setup_dot_env():
     logger.info("Setting up .env file")
