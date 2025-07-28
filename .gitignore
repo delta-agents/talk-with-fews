@@ -21,3 +21,5 @@ env/.env
 .coverage
 .github/chatmodes
 example code/*
+PLAN.md
+FUTURE_PLAN.md

@@ -1,5 +1,7 @@
 """
 Get timeseries data from FEWS webservice for specific location-parameter combinations.
+
+Note: Flag source retrieval requires FEWS API support (feature request pending).
 """
 
 import xml.etree.ElementTree as ET
@@ -27,6 +29,8 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
     """
     Parse FEWS XML response into metadata and timeseries values.
     Handles missing values internally based on the missVal from header.
+
+    Note: Flag source parsing requires FEWS API support (feature request pending).
 
     Returns:
         Tuple[dict, List[TimeseriesValue]]: Metadata and list of values
@@ -75,17 +79,22 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
         else:
             event_datetime = event_datetime.replace(tzinfo=timezone.utc)
 
-        values.append(
-            TimeseriesValue(
-                datetime=event_datetime,
-                location_id=metadata["location_id"],
-                station_name=metadata["station_name"],
-                parameter_id=metadata["parameter_id"],
-                moduleinstance_id=metadata["moduleinstance_id"],
-                value=value,
-                flag=int(event.get("flag")),
-            )
-        )
+        value_data = {
+            "datetime": event_datetime,
+            "location_id": metadata["location_id"],
+            "station_name": metadata["station_name"],
+            "parameter_id": metadata["parameter_id"],
+            "moduleinstance_id": metadata["moduleinstance_id"],
+            "value": value,
+            "flag": int(event.get("flag")),
+        }
+
+        # Add flag source if present in XML (requires FEWS API support)
+        flag_source = event.get("flagSource")
+        if flag_source:
+            value_data["flag_source"] = flag_source
+
+        values.append(TimeseriesValue(**value_data))
 
     return metadata, values
 
@@ -93,7 +102,9 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
 def convert_to_csv(values: List[TimeseriesValue]) -> str:
     """
     Convert timeseries values to CSV format.
+    Only includes flag_source column if any value has a flag source.
     """
+    # Base headers without flag_source
     headers = [
         "datetime",
         "location_id",
@@ -104,11 +115,17 @@ def convert_to_csv(values: List[TimeseriesValue]) -> str:
         "flag",
     ]
 
+    # Check if any value has a flag_source
+    if any(value.flag_source is not None for value in values):
+        headers.append("flag_source")
+
     # Create CSV string manually to ensure consistent line endings
     lines = [",".join(headers)]
     for value in values:
         data = value.model_dump()
-        lines.append(",".join("" if data[h] is None else str(data[h]) for h in headers))
+        lines.append(
+            ",".join("" if data.get(h) is None else str(data[h]) for h in headers)
+        )
 
     return "\n".join(lines)
 
@@ -119,6 +136,8 @@ async def get_series_data(
 ) -> GetSeriesDataOutput:
     """
     Retrieve timeseries data for a specific location-parameter combination.
+
+    Note: Flag source retrieval requires FEWS API support (feature request pending).
 
     Args:
         ctx: Runtime context with webservice URL
@@ -136,6 +155,10 @@ async def get_series_data(
         f"&endTime={format_datetime(input.end_time)}"
         f"&documentFormat=PI_XML"
     )
+
+    # Add flag source parameter if requested (requires FEWS API support)
+    if input.include_flag_sources:
+        url += "&includeFlagSources=true"
 
     # Fetch data from webservice
     async with httpx.AsyncClient() as client:
