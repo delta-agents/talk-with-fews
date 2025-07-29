@@ -92,8 +92,7 @@ class XMLTemplateGenerator:
             raise ValueError(f"Target element '{target_element}' not found in schema")
 
         # Generate template for just the target element
-        target_namespace = schema.target_namespace
-        namespace_prefix = "fews" if target_namespace else ""
+        namespace_prefix = ""  # Don't use namespace prefixes
 
         return self._generate_element_xml(target_structure, namespace_prefix, 0)
 
@@ -358,12 +357,10 @@ class XMLTemplateGenerator:
     ) -> str:
         """Create XML template from structure"""
         target_namespace = schema.target_namespace
-        namespace_prefix = "fews" if target_namespace else ""
+        namespace_prefix = ""  # Don't use namespace prefixes
 
         # Create namespace declaration
-        namespace_decl = (
-            f'xmlns:{namespace_prefix}="{target_namespace}"' if target_namespace else ""
-        )
+        namespace_decl = f'xmlns="{target_namespace}"' if target_namespace else ""
 
         # Generate XML content
         xml_content = self._generate_element_xml(structure, namespace_prefix, 0)
@@ -375,7 +372,7 @@ class XMLTemplateGenerator:
 
         # Wrap with root element and namespace
         if namespace_decl:
-            template = f"<{namespace_prefix}:{root_element_name} {namespace_decl}>\n{xml_content}\n</{namespace_prefix}:{root_element_name}>"
+            template = f"<{root_element_name} {namespace_decl}>\n{xml_content}\n</{root_element_name}>"
         else:
             template = f"<{root_element_name}>\n{xml_content}\n</{root_element_name}>"
 
