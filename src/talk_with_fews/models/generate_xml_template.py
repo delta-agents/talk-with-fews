@@ -22,7 +22,7 @@ class XMLTemplateInput(BaseModel):
         description="Specific sub-element to generate template for (e.g., 'general', 'timeSeriesSet'). If specified, generates only this element's template.",
     )
     include_optional: bool = Field(
-        True, description="Whether to include optional elements in the template"
+        False, description="Whether to include optional elements in the template"
     )
     include_attributes: bool = Field(
         True, description="Whether to include attributes in the template"
