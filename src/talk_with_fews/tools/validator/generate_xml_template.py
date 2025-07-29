@@ -26,6 +26,7 @@ class XMLTemplateGenerator:
         self,
         schema_url: str,
         root_element: Optional[str] = None,
+        target_element: Optional[str] = None,
         include_optional: bool = True,
         include_attributes: bool = True,
     ) -> str:
@@ -35,6 +36,7 @@ class XMLTemplateGenerator:
         Args:
             schema_url: Path to the XSD schema file
             root_element: Specific root element to generate template for (if None, uses first available)
+            target_element: Specific sub-element to generate template for (e.g., 'general', 'timeSeriesSet')
             include_optional: Whether to include optional elements
             include_attributes: Whether to include attributes
 
@@ -51,15 +53,69 @@ class XMLTemplateGenerator:
                 raise ValueError("No root elements found in schema")
             root_element = root_elements[0].name
 
-        # Generate template structure
-        template_structure = self._generate_element_structure(
+        if target_element:
+            # Generate partial template for specific sub-element
+            return await self._generate_partial_template(
+                schema,
+                root_element,
+                target_element,
+                include_optional,
+                include_attributes,
+            )
+        else:
+            # Generate full template
+            template_structure = self._generate_element_structure(
+                schema, root_element, include_optional, include_attributes
+            )
+            return self._create_xml_template(template_structure, schema)
+
+    async def _generate_partial_template(
+        self,
+        schema: xmlschema.XMLSchema,
+        root_element: str,
+        target_element: str,
+        include_optional: bool,
+        include_attributes: bool,
+    ) -> str:
+        """Generate a partial template for a specific sub-element"""
+        # First, get the full structure to find the target element
+        full_structure = self._generate_element_structure(
             schema, root_element, include_optional, include_attributes
         )
 
-        # Create XML template
-        xml_template = self._create_xml_template(template_structure, schema)
+        # Find the target element in the structure
+        target_structure = self._find_element_in_structure(
+            full_structure, target_element
+        )
 
-        return xml_template
+        if not target_structure:
+            raise ValueError(f"Target element '{target_element}' not found in schema")
+
+        # Generate template for just the target element
+        target_namespace = schema.target_namespace
+        namespace_prefix = "fews" if target_namespace else ""
+
+        return self._generate_element_xml(target_structure, namespace_prefix, 0)
+
+    def _find_element_in_structure(
+        self, structure: Dict[str, Any], target_name: str
+    ) -> Optional[Dict[str, Any]]:
+        """Recursively find an element in the structure by name"""
+        # Check if current element matches
+        element_name = structure["name"]
+        if "}" in element_name:
+            element_name = element_name.split("}")[-1]
+
+        if element_name.lower() == target_name.lower():
+            return structure
+
+        # Search in children
+        for child in structure.get("children", []):
+            result = self._find_element_in_structure(child, target_name)
+            if result:
+                return result
+
+        return None
 
     async def _load_schema(self, schema_path: str) -> xmlschema.XMLSchema:
         """Load schema from local cache with caching"""
@@ -404,6 +460,7 @@ async def generate_xml_template(ctx, input: XMLTemplateInput) -> XMLTemplateOutp
     template = await generator.generate_template(
         schema_url=input.schema_url,
         root_element=input.root_element,
+        target_element=input.target_element,
         include_optional=input.include_optional,
         include_attributes=input.include_attributes,
     )
@@ -420,6 +477,7 @@ async def generate_xml_template(ctx, input: XMLTemplateInput) -> XMLTemplateOutp
         template=template,
         schema_location=input.schema_url,
         root_element=root_element,
+        target_element=input.target_element,
         includes_optional=input.include_optional,
         includes_attributes=input.include_attributes,
     )
