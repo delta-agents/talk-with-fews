@@ -10,7 +10,6 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.agent import AgentRunResult
 
-from talk_with_fews.agents.fews_config_agent import FEWSConfigAgent
 from talk_with_fews.models.base import Deps
 
 # Import logging utilities from the dedicated module
@@ -32,7 +31,7 @@ from talk_with_fews.utils.schema_utils import (
 from talk_with_fews.models.base import AgentResponse
 
 
-class FEWSWebserviceAgent(FEWSConfigAgent):
+class FEWSWebserviceAgent:
     """
     Agent for querying and analyzing FEWS Webservice.
 

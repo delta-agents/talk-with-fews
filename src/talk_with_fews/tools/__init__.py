@@ -23,6 +23,8 @@ from talk_with_fews.tools.webservice.sql_query_webservice import (
 from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
 from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
 
+# VALIDATOR
+from talk_with_fews.tools.validator.validate_xml import validate_xml
 
 __all__ = [
     # Config tools
@@ -44,4 +46,6 @@ __all__ = [
     "execute_query_webservice",
     "get_series_headers",
     "get_series_statistics",
+    # Validator tools
+    "validate_xml",
 ]
