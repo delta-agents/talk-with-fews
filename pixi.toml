@@ -13,6 +13,11 @@ license-file = "LICENSE"
 install = "pre-commit install"
 start = { cmd = "uvicorn main:app --host 0.0.0.0 --port 8000" }
 
+# Schema management tasks
+regenerate-schema-enum = { cmd = "python generate_fews_schema_options.py", cwd = "scripts" }
+download-schemas = { cmd = "python download_fews_schemas.py", cwd = "scripts" }
+update-schemas = { depends-on = ["download-schemas", "regenerate-schema-enum"] }
+
 # Docs
 quartodoc-build = { cmd = "quartodoc build && rm objects.json", cwd = "docs" ,inputs = [
     "docs/_quarto.yml",

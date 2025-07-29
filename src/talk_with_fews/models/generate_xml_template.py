@@ -7,12 +7,15 @@ using xmlschema package.
 
 from typing import Optional
 from pydantic import BaseModel, Field
+from .fews_schema_options import FEWSSchemaOption
 
 
 class XMLTemplateInput(BaseModel):
     """Input model for XML template generation"""
 
-    schema_url: str = Field(..., description="Path to the XSD schema file")
+    schema_option: FEWSSchemaOption = Field(
+        ..., description="FEWS schema option to use for template generation"
+    )
     root_element: Optional[str] = Field(
         None,
         description="Specific root element to generate template for (if None, uses first available)",

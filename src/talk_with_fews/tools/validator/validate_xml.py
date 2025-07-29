@@ -696,6 +696,13 @@ async def validate_xml(ctx, input: XMLValidationInput) -> XMLValidationOutput:
     # Create validator instance
     validator = EnhancedFEWSXMLValidator(schemas_dir)
 
+    # Convert enum to schema URL if provided
+    schema_url = None
+    if input.schema_option:
+        schema_url = (
+            f"data/fews_schemas/fewsdocs_deltares_nl/{input.schema_option.value}"
+        )
+
     return await validator.validate_xml(
-        xml_content=input.xml_content, schema_url=input.schema_url
+        xml_content=input.xml_content, schema_url=schema_url
     )

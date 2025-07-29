@@ -25,7 +25,7 @@ class FEWSSchemaDownloader:
     preserving the directory structure locally.
     """
 
-    def __init__(self, base_download_dir: str = "data/fews_schemas"):
+    def __init__(self, base_download_dir: str = "../data/fews_schemas"):
         """
         Initialize the schema downloader.
 
@@ -265,7 +265,7 @@ class FEWSSchemaDownloader:
 
 def download_fews_schemas(
     base_urls: List[str] = None,
-    download_dir: str = "data/fews_schemas",
+    download_dir: str = "../data/fews_schemas",
     max_depth: int = 5,
 ) -> dict:
     """

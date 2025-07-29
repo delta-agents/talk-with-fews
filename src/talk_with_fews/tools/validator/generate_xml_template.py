@@ -453,9 +453,12 @@ async def generate_xml_template(ctx, input: XMLTemplateInput) -> XMLTemplateOutp
     # Create generator instance
     generator = XMLTemplateGenerator(schemas_dir)
 
+    # Convert enum to full schema path
+    schema_url = f"data/fews_schemas/fewsdocs_deltares_nl/{input.schema_option.value}"
+
     # Generate template
     template = await generator.generate_template(
-        schema_url=input.schema_url,
+        schema_url=schema_url,
         root_element=input.root_element,
         target_element=input.target_element,
         include_optional=input.include_optional,
@@ -463,7 +466,7 @@ async def generate_xml_template(ctx, input: XMLTemplateInput) -> XMLTemplateOutp
     )
 
     # Determine root element from schema
-    schema = await generator._load_schema(input.schema_url)
+    schema = await generator._load_schema(schema_url)
     root_element = input.root_element
     if not root_element and schema.root_elements:
         root_element = schema.root_elements[0].name
@@ -472,7 +475,7 @@ async def generate_xml_template(ctx, input: XMLTemplateInput) -> XMLTemplateOutp
 
     return XMLTemplateOutput(
         template=template,
-        schema_location=input.schema_url,
+        schema_location=schema_url,
         root_element=root_element,
         target_element=input.target_element,
         includes_optional=input.include_optional,

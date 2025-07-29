@@ -7,6 +7,7 @@ including auto-schema discovery and validation results.
 
 from typing import List, Optional
 from pydantic import BaseModel, Field
+from .fews_schema_options import FEWSSchemaOption
 
 
 class ValidationError(BaseModel):
@@ -28,8 +29,9 @@ class XMLValidationInput(BaseModel):
     """Enhanced input model for XML validation"""
 
     xml_content: str = Field(..., description="XML content to validate")
-    schema_url: Optional[str] = Field(
-        None, description="Specific schema URL or path. If None, auto-discover from XML"
+    schema_option: Optional[FEWSSchemaOption] = Field(
+        None,
+        description="FEWS schema option to use for validation. If None, auto-discover from XML",
     )
 
 
