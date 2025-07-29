@@ -80,4 +80,4 @@ html5lib = ">=1.1,<2"
 
 [pypi-dependencies]
 talk_with_fews = { path = "src", editable = true }
-pydantic-ai = { version = "==0.4.8", extras = [] }
+pydantic-ai-slim = { version = "==0.4.9", extras = ["openai"] }

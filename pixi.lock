@@ -358,8 +358,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/fa/b1/b59d405d64d31999244643d88c45c8241c58f17cc887e73bcb90602327f8/protobuf-6.31.1-cp39-abi3-manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/89/4b/7782438b551dbb0468892a276b8c789b8bbdb25ea5c5eb27faadd753e037/pyarrow-21.0.0-cp313-cp313-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a6/3e/a7c93524eb5b8f48596e0ddc4848328145974dce12e641a87f7035909041/pydantic_ai_slim-0.4.8-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/12/e1/fa5dd1a98350790e2f952ea9778f09f1fd6be31eee885b5c096514ff535e/pydantic_graph-0.4.8-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c0/4d/701f5fcf9c0d388dad9d94ba272d333c7efa6231ddee1babc59d26dc14d2/streamlit-1.47.1-py3-none-any.whl
@@ -652,8 +652,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/6a/c9/b9689a2a250264a84e66c46d8862ba788ee7a641cdca39bccf64f59284b7/protobuf-6.31.1-cp39-abi3-macosx_10_9_universal2.whl
       - pypi: https://files.pythonhosted.org/packages/ce/e8/e87d9e3b2489302b3a1aea709aaca4b781c5252fcb812a17ab6275a9a484/pyarrow-21.0.0-cp313-cp313-macosx_12_0_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a6/3e/a7c93524eb5b8f48596e0ddc4848328145974dce12e641a87f7035909041/pydantic_ai_slim-0.4.8-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/12/e1/fa5dd1a98350790e2f952ea9778f09f1fd6be31eee885b5c096514ff535e/pydantic_graph-0.4.8-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c0/4d/701f5fcf9c0d388dad9d94ba272d333c7efa6231ddee1babc59d26dc14d2/streamlit-1.47.1-py3-none-any.whl
@@ -946,8 +946,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/6a/c9/b9689a2a250264a84e66c46d8862ba788ee7a641cdca39bccf64f59284b7/protobuf-6.31.1-cp39-abi3-macosx_10_9_universal2.whl
       - pypi: https://files.pythonhosted.org/packages/16/ca/c7eaa8e62db8fb37ce942b1ea0c6d7abfe3786ca193957afa25e71b81b66/pyarrow-21.0.0-cp313-cp313-macosx_12_0_arm64.whl
       - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a6/3e/a7c93524eb5b8f48596e0ddc4848328145974dce12e641a87f7035909041/pydantic_ai_slim-0.4.8-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/12/e1/fa5dd1a98350790e2f952ea9778f09f1fd6be31eee885b5c096514ff535e/pydantic_graph-0.4.8-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c0/4d/701f5fcf9c0d388dad9d94ba272d333c7efa6231ddee1babc59d26dc14d2/streamlit-1.47.1-py3-none-any.whl
@@ -1251,8 +1251,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/44/3a/b15c4347dd4bf3a1b0ee882f384623e2063bb5cf9fa9d57990a4f7df2fb6/protobuf-6.31.1-cp310-abi3-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/01/63/581f2076465e67b23bc5a37d4a2abff8362d389d29d8105832e82c9c811c/pyarrow-21.0.0-cp313-cp313-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a6/3e/a7c93524eb5b8f48596e0ddc4848328145974dce12e641a87f7035909041/pydantic_ai_slim-0.4.8-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/12/e1/fa5dd1a98350790e2f952ea9778f09f1fd6be31eee885b5c096514ff535e/pydantic_graph-0.4.8-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c0/4d/701f5fcf9c0d388dad9d94ba272d333c7efa6231ddee1babc59d26dc14d2/streamlit-1.47.1-py3-none-any.whl
@@ -8397,17 +8397,17 @@ packages:
   - uvicorn>=0.32.0 ; extra == 'examples'
   - logfire>=2.3 ; extra == 'logfire'
   requires_python: '>=3.9'
-- pypi: https://files.pythonhosted.org/packages/a6/3e/a7c93524eb5b8f48596e0ddc4848328145974dce12e641a87f7035909041/pydantic_ai_slim-0.4.8-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
   name: pydantic-ai-slim
-  version: 0.4.8
-  sha256: 34f50350714247bd0a1e8af4bb07c2478f14ab09cd9e01d4a2a9897ff7af00bb
+  version: 0.4.9
+  sha256: d30e2c12d64d3ccc67fa2a0b7ad3a0e0dc8c4aa43fd236cf400dadf92adb2972
   requires_dist:
   - eval-type-backport>=0.2.0
   - exceptiongroup ; python_full_version < '3.11'
   - griffe>=1.3.2
   - httpx>=0.27
   - opentelemetry-api>=1.28.0
-  - pydantic-graph==0.4.8
+  - pydantic-graph==0.4.9
   - pydantic>=2.10
   - typing-inspection>=0.4.0
   - fasta2a>=0.4.1 ; extra == 'a2a'
@@ -8419,9 +8419,8 @@ packages:
   - prompt-toolkit>=3 ; extra == 'cli'
   - rich>=13 ; extra == 'cli'
   - cohere>=5.16.0 ; sys_platform != 'emscripten' and extra == 'cohere'
-  - tokenizers<=0.21.2 ; extra == 'cohere'
   - ddgs>=9.0.0 ; extra == 'duckduckgo'
-  - pydantic-evals==0.4.8 ; extra == 'evals'
+  - pydantic-evals==0.4.9 ; extra == 'evals'
   - google-genai>=1.24.0 ; extra == 'google'
   - groq>=0.19.0 ; extra == 'groq'
   - huggingface-hub[inference]>=0.33.5 ; extra == 'huggingface'
@@ -8503,10 +8502,10 @@ packages:
   - pkg:pypi/pydantic-core?source=hash-mapping
   size: 1905166
   timestamp: 1746625395940
-- pypi: https://files.pythonhosted.org/packages/12/e1/fa5dd1a98350790e2f952ea9778f09f1fd6be31eee885b5c096514ff535e/pydantic_graph-0.4.8-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
   name: pydantic-graph
-  version: 0.4.8
-  sha256: 6e7282d07896d96c7678bcf17cef7643718b05cda15024a11e8a22e3b5dfb42f
+  version: 0.4.9
+  sha256: ec2fd743135979be29d03eb5fbb12e7691e56fa3ef1c8960cc66e0ad29c8149a
   requires_dist:
   - httpx>=0.27
   - logfire-api>=1.2.0
