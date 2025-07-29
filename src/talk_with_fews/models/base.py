@@ -249,6 +249,7 @@ class Deps:
         schema: Comprehensive database schema information
         tracker: Tool call tracker
         webservice_url: Optional URL for the web service if applicable
+        cache_fews_schemas_dir: Directory containing cached FEWS schemas
     """
 
     def __init__(
@@ -265,3 +266,4 @@ class Deps:
         self.cache_FewsWebServices_db: Optional[duckdb.DuckDBPyConnection] = None
         self.ingest_locations_output: Optional[IngestLocationsOutput] = None
         self.ingest_parameters_output: Optional[IngestParameterOutput] = None
+        self.cache_fews_schemas_dir: Optional[str] = None

@@ -15,7 +15,8 @@ from talk_with_fews.models.base import Deps
 # Import logging utilities from the dedicated module
 from talk_with_fews.utils.logging_utils import logger, setup_logging
 
-from talk_with_fews.tools import validate_xml
+from talk_with_fews.tools.validator.validate_xml import validate_xml
+from talk_with_fews.tools.validator.generate_xml_template import generate_xml_template
 
 from talk_with_fews.utils.utils import connect_to_database
 
@@ -90,8 +91,7 @@ class FEWSValidatorAgent:
         system_prompt = (
             "You are the FEWS Validator Agent for analyzing Flood Early Warning System Validator. "
             "Your capabilities include validating XML against FEWS schemas. "
-            "Common questions are about validating XML against FEWS schemas. "
-            "You can visualize data flows only using mermaid diagram syntax.\n\n"
+            "You can also generate XML templates from XSD schemas. "
             "Response Format:\n"
             "- You response shall be in English\n"
             "- Use available tools to gather accurate information first\n"
@@ -108,6 +108,12 @@ class FEWSValidatorAgent:
                 takes_ctx=True,
                 name="validate_xml",
                 description="Validate XML against FEWS schemas. This tool is used to validate XML against FEWS schemas.",
+            ),
+            Tool(
+                generate_xml_template,
+                takes_ctx=True,
+                name="generate_xml_template",
+                description="Generate XML templates from XSD schemas using xmlschema package. This tool creates valid XML templates based on schema definitions.",
             ),
         ]
 
