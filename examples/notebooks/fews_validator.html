@@ -262,10 +262,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="6526a1d8" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;is_valid&gt;True&lt;/is_valid&gt;
-&lt;errors /&gt;
-&lt;warnings /&gt;
-&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;</code></pre>
+<pre><code>&lt;examples&gt;
+  &lt;is_valid&gt;True&lt;/is_valid&gt;
+  &lt;errors /&gt;
+  &lt;warnings /&gt;
+  &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;
+&lt;/examples&gt;</code></pre>
 </div>
 </div>
 <p>De tool resultaat laat zien dat de XML snippet niet valide is, en dat er eerst een <code>locationId</code> wordt verwacht, waar het nu een <code>parameterId</code> aangeboden krijgt.</p>
@@ -295,10 +297,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;is_valid&gt;True&lt;/is_valid&gt;
-&lt;errors /&gt;
-&lt;warnings /&gt;
-&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;</code></pre>
+<pre><code>&lt;examples&gt;
+  &lt;is_valid&gt;True&lt;/is_valid&gt;
+  &lt;errors /&gt;
+  &lt;warnings /&gt;
+  &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;
+&lt;/examples&gt;</code></pre>
 </div>
 </div>
 <p>Het resultaat is nu dat de XML snippet succesvol valideert zonder errors or warnings.</p>
@@ -328,10 +332,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;is_valid&gt;True&lt;/is_valid&gt;
-&lt;errors /&gt;
-&lt;warnings /&gt;
-&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;</code></pre>
+<pre><code>&lt;examples&gt;
+  &lt;is_valid&gt;True&lt;/is_valid&gt;
+  &lt;errors /&gt;
+  &lt;warnings /&gt;
+  &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;
+&lt;/examples&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'
@@ -448,31 +454,33 @@ Tip: Use the 'get_available_elements' tool to get a complete list of available e
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_available_elements_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;
-&lt;root_element&gt;{http://www.wldelft.nl/fews}timeSeriesExportRun&lt;/root_element&gt;
-&lt;target_element&gt;general&lt;/target_element&gt;
-&lt;available_elements&gt;
-  &lt;item&gt;backupServerUrl&lt;/item&gt;
-  &lt;item&gt;binDir&lt;/item&gt;
-  &lt;item&gt;coldStartDataExportRelativeStartTime&lt;/item&gt;
-  &lt;item&gt;columnSeparator&lt;/item&gt;
-  &lt;item&gt;connectionTimeOutMillis&lt;/item&gt;
-  &lt;item&gt;convertAnnotationEnumerationPropertyValuesToLabels&lt;/item&gt;
-  &lt;item&gt;convertDatum&lt;/item&gt;
-  &lt;item&gt;convertValuesToEnumerationLabels&lt;/item&gt;
-  &lt;item&gt;creationTime&lt;/item&gt;
-  &lt;item&gt;dataFeedId&lt;/item&gt;
-  &lt;item&gt;dateTimePattern&lt;/item&gt;
-  &lt;item&gt;dbChangeViewPeriod&lt;/item&gt;
-  &lt;item&gt;decimalSeparator&lt;/item&gt;
-  &lt;item&gt;description&lt;/item&gt;
-  &lt;item&gt;disableDataFeedInfo&lt;/item&gt;
-&lt;/available_elements&gt;
-&lt;total_count&gt;57&lt;/total_count&gt;
-&lt;limit&gt;15&lt;/limit&gt;
-&lt;offset&gt;0&lt;/offset&gt;
-&lt;has_more&gt;True&lt;/has_more&gt;
-&lt;next_offset&gt;15&lt;/next_offset&gt;</code></pre>
+<pre><code>&lt;examples&gt;
+  &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;
+  &lt;root_element&gt;{http://www.wldelft.nl/fews}timeSeriesExportRun&lt;/root_element&gt;
+  &lt;target_element&gt;general&lt;/target_element&gt;
+  &lt;available_elements&gt;
+    &lt;example&gt;backupServerUrl&lt;/example&gt;
+    &lt;example&gt;binDir&lt;/example&gt;
+    &lt;example&gt;coldStartDataExportRelativeStartTime&lt;/example&gt;
+    &lt;example&gt;columnSeparator&lt;/example&gt;
+    &lt;example&gt;connectionTimeOutMillis&lt;/example&gt;
+    &lt;example&gt;convertAnnotationEnumerationPropertyValuesToLabels&lt;/example&gt;
+    &lt;example&gt;convertDatum&lt;/example&gt;
+    &lt;example&gt;convertValuesToEnumerationLabels&lt;/example&gt;
+    &lt;example&gt;creationTime&lt;/example&gt;
+    &lt;example&gt;dataFeedId&lt;/example&gt;
+    &lt;example&gt;dateTimePattern&lt;/example&gt;
+    &lt;example&gt;dbChangeViewPeriod&lt;/example&gt;
+    &lt;example&gt;decimalSeparator&lt;/example&gt;
+    &lt;example&gt;description&lt;/example&gt;
+    &lt;example&gt;disableDataFeedInfo&lt;/example&gt;
+  &lt;/available_elements&gt;
+  &lt;total_count&gt;57&lt;/total_count&gt;
+  &lt;limit&gt;15&lt;/limit&gt;
+  &lt;offset&gt;0&lt;/offset&gt;
+  &lt;has_more&gt;True&lt;/has_more&gt;
+  &lt;next_offset&gt;15&lt;/next_offset&gt;
+&lt;/examples&gt;</code></pre>
 </div>
 </div>
 <p>We zien dat er in totaal 93 elementen in de XSD schema bestaan binnen het target element <code>general</code>. En we laten er de eerste 15 zien, waarbij we tegelijk aangegeven dat er meer beschikbaar zijn. Op deze manier kan de tool er gepagineerd door heen stappen. Zonder gelijk heel veel terug te krijgen.</p>
