@@ -39,7 +39,7 @@
     "href": "reference/GetParameterOutput.html",
     "title": "GetParameterOutput",
     "section": "",
-    "text": "models.GetParameterOutput()\nModel for the output of the parameter_details tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\njson\n\n\n\nto_xml\nConvert the output to an XML string.\n\n\n\n\n\nmodels.GetParameterOutput.json()\n\n\n\nmodels.GetParameterOutput.to_xml()\nConvert the output to an XML string."
+    "text": "models.GetParameterOutput()\nModel for the output of the parameter_details tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters"
   },
   {
     "objectID": "reference/GetParameterOutput.html#attributes",
@@ -49,18 +49,11 @@
     "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters"
   },
   {
-    "objectID": "reference/GetParameterOutput.html#methods",
-    "href": "reference/GetParameterOutput.html#methods",
-    "title": "GetParameterOutput",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\njson\n\n\n\nto_xml\nConvert the output to an XML string.\n\n\n\n\n\nmodels.GetParameterOutput.json()\n\n\n\nmodels.GetParameterOutput.to_xml()\nConvert the output to an XML string."
-  },
-  {
     "objectID": "reference/DependencyAnalysisInput.html",
     "href": "reference/DependencyAnalysisInput.html",
     "title": "DependencyAnalysisInput",
     "section": "",
-    "text": "models.DependencyAnalysisInput()\nModel for the input of the analyze_dependencies tool.\nThis model defines the required parameters to analyze dependencies.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)"
+    "text": "models.DependencyAnalysisInput()\nModel for the input of the analyze_dependencies tool.\nThis model defines the required parameters to analyze dependencies.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DependencyAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/DependencyAnalysisInput.html#attributes",
@@ -70,11 +63,18 @@
     "text": "Name\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)"
   },
   {
+    "objectID": "reference/DependencyAnalysisInput.html#methods",
+    "href": "reference/DependencyAnalysisInput.html#methods",
+    "title": "DependencyAnalysisInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DependencyAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
+  },
+  {
     "objectID": "reference/WorkflowCallHierarchyInput.html",
     "href": "reference/WorkflowCallHierarchyInput.html",
     "title": "WorkflowCallHierarchyInput",
     "section": "",
-    "text": "models.WorkflowCallHierarchyInput()\nModel representing the details of a workflow call hierarchy.\nA workflow is a sequence of module instance calls that define a process in FEWS. The workflow call hierarchy provides a structured view of the workflows and their relationships.\n\n\n\n\n\nName\nDescription\n\n\n\n\nroot_workflow_id"
+    "text": "models.WorkflowCallHierarchyInput()\nModel representing the details of a workflow call hierarchy.\nA workflow is a sequence of module instance calls that define a process in FEWS. The workflow call hierarchy provides a structured view of the workflows and their relationships.\n\n\n\n\n\nName\nDescription\n\n\n\n\nroot_workflow_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.WorkflowCallHierarchyInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/WorkflowCallHierarchyInput.html#attributes",
@@ -82,6 +82,13 @@
     "title": "WorkflowCallHierarchyInput",
     "section": "",
     "text": "Name\nDescription\n\n\n\n\nroot_workflow_id"
+  },
+  {
+    "objectID": "reference/WorkflowCallHierarchyInput.html#methods",
+    "href": "reference/WorkflowCallHierarchyInput.html#methods",
+    "title": "WorkflowCallHierarchyInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.WorkflowCallHierarchyInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/GetLocationOutput.html",
@@ -137,7 +144,7 @@
     "href": "reference/GetSeriesDataInput.html",
     "title": "GetSeriesDataInput",
     "section": "",
-    "text": "models.GetSeriesDataInput()\n\n\n\n\n\nName\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
+    "text": "models.GetSeriesDataInput()\n\n\n\n\n\nName\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GetSeriesDataInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/GetSeriesDataInput.html#attributes",
@@ -145,6 +152,13 @@
     "title": "GetSeriesDataInput",
     "section": "",
     "text": "Name\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
+  },
+  {
+    "objectID": "reference/GetSeriesDataInput.html#methods",
+    "href": "reference/GetSeriesDataInput.html#methods",
+    "title": "GetSeriesDataInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GetSeriesDataInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/analyze_dependencies.html",
@@ -193,7 +207,7 @@
     "href": "reference/GetLocationInput.html",
     "title": "GetLocationInput",
     "section": "",
-    "text": "models.GetLocationInput()\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nnumber_of_locations\nOptional[int]\nThe maximum number of locations to retrieve.\n\n\nfilter_locations_name\nOptional[str]\nAn optional name filter for locations names, using the SQL LIKE functionality.\n\n\n\nThis model allows flexible querying of location data, supporting both general and name-specific searches, and limiting the number of results returned.\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nvalidate_number_of_locations\n\n\n\n\n\n\nmodels.GetLocationInput.validate_number_of_locations(values)"
+    "text": "models.GetLocationInput()\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nnumber_of_locations\nOptional[int]\nThe maximum number of locations to retrieve.\n\n\nfilter_locations_name\nOptional[str]\nAn optional name filter for locations names, using the SQL LIKE functionality.\n\n\n\nThis model allows flexible querying of location data, supporting both general and name-specific searches, and limiting the number of results returned.\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\nvalidate_number_of_locations\n\n\n\n\n\n\nmodels.GetLocationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict.\n\n\n\nmodels.GetLocationInput.validate_number_of_locations(values)"
   },
   {
     "objectID": "reference/GetLocationInput.html#attributes",
@@ -207,14 +221,14 @@
     "href": "reference/GetLocationInput.html#methods",
     "title": "GetLocationInput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nvalidate_number_of_locations\n\n\n\n\n\n\nmodels.GetLocationInput.validate_number_of_locations(values)"
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\nvalidate_number_of_locations\n\n\n\n\n\n\nmodels.GetLocationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict.\n\n\n\nmodels.GetLocationInput.validate_number_of_locations(values)"
   },
   {
     "objectID": "reference/WorkflowDetailsInput.html",
     "href": "reference/WorkflowDetailsInput.html",
     "title": "WorkflowDetailsInput",
     "section": "",
-    "text": "models.WorkflowDetailsInput()\nModel for the input of the get_workflow_details tool.\nThis model defines the required parameters to get details about a specific workflow.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nworkflow_id\nint\nThe unique identifier of the workflow to describe"
+    "text": "models.WorkflowDetailsInput()\nModel for the input of the get_workflow_details tool.\nThis model defines the required parameters to get details about a specific workflow.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nworkflow_id\nint\nThe unique identifier of the workflow to describe\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.WorkflowDetailsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/WorkflowDetailsInput.html#attributes",
@@ -222,6 +236,13 @@
     "title": "WorkflowDetailsInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\nworkflow_id\nint\nThe unique identifier of the workflow to describe"
+  },
+  {
+    "objectID": "reference/WorkflowDetailsInput.html#methods",
+    "href": "reference/WorkflowDetailsInput.html#methods",
+    "title": "WorkflowDetailsInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.WorkflowDetailsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/search_timeseries.html",
@@ -501,7 +522,7 @@
     "href": "reference/GetAvailableElementsInput.html",
     "title": "GetAvailableElementsInput",
     "section": "",
-    "text": "models.GetAvailableElementsInput()\nInput model for getting available elements from a schema\n\n\n\n\n\nName\nDescription\n\n\n\n\nlimit\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
+    "text": "models.GetAvailableElementsInput()\nInput model for getting available elements from a schema\n\n\n\n\n\nName\nDescription\n\n\n\n\nlimit\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GetAvailableElementsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/GetAvailableElementsInput.html#attributes",
@@ -509,6 +530,13 @@
     "title": "GetAvailableElementsInput",
     "section": "",
     "text": "Name\nDescription\n\n\n\n\nlimit\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
+  },
+  {
+    "objectID": "reference/GetAvailableElementsInput.html#methods",
+    "href": "reference/GetAvailableElementsInput.html#methods",
+    "title": "GetAvailableElementsInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GetAvailableElementsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/get_database_schema.html",
@@ -718,7 +746,7 @@
     "href": "examples/notebooks/fews_webservice.html#sec-get-series-headers",
     "title": "Webservice Agent",
     "section": "Get Series Headers",
-    "text": "Get Series Headers\nDe headers van de series zijn de metadata. Hiermee kunnen we een koppeling maken tussen locaties en parameter. Eén locatie of één parameter wordt opgegeven om hiervoor de bijbehorende metadata op te halen. We geven voor beide een voorbeeld:\n\nlocation_id = get_location_output.locations[0].locationId\nlocation_id\n\n'KNMIUUR278'\n\n\n\nfrom talk_with_fews.tools import get_series_headers\nfrom talk_with_fews.models import GetSeriesHeadersInput, GetSeriesHeadersOutput\n\nget_series_headers_input = GetSeriesHeadersInput(location_id=location_id)\nget_series_headers_output: GetSeriesHeadersOutput = await get_series_headers(\n    ctx=ctx, input=get_series_headers_input\n)\nprint(format_as_xml(get_series_headers_output, root_tag=\"GetSeriesHeadersOutput\"))\n\n&lt;GetSeriesHeadersOutput&gt;\n  &lt;count&gt;4&lt;/count&gt;\n  &lt;summary&gt;Found 4 parameters at location Heino.&lt;/summary&gt;\n  &lt;sample_ids&gt;|   id | type          | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |\n|-----:|:--------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|\n|    1 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 16:41:36.620000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    4 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | P.G.h         | second         |                86400 |         0 |            |              | 2025-07-30 16:41:36.628000 | Heino           |        52.4339 |        6.26173 | Gemeten neerslag [mm] - uur          | mm               | accumulative     |\n|    3 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | T.air.G       | second         |                 3600 |         0 |            |              | 2025-07-30 16:41:36.626000 | Heino           |        52.4339 |        6.26173 | Temperatuur lucht [ï¿½C]             | oC               | instantaneous    |\n|    2 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | TCC.O.h       | second         |                86400 |         0 |            |              | 2025-07-30 16:41:36.623000 | Heino           |        52.4339 |        6.26173 | Cloud cover observation - uur        | -                | instantaneous    |&lt;/sample_ids&gt;\n  &lt;available_filters&gt;\n    &lt;parameters&gt;\n      &lt;example&gt;Eref.d&lt;/example&gt;\n      &lt;example&gt;P.G.h&lt;/example&gt;\n      &lt;example&gt;T.air.G&lt;/example&gt;\n      &lt;example&gt;TCC.O.h&lt;/example&gt;\n    &lt;/parameters&gt;\n    &lt;model_types /&gt;\n  &lt;/available_filters&gt;\n  &lt;follow_up_suggestions&gt;\n    &lt;example&gt;No follow-up suggestions available yet.&lt;/example&gt;\n  &lt;/follow_up_suggestions&gt;\n&lt;/GetSeriesHeadersOutput&gt;\n\n\n\nparameter_id = get_parameter_output.parameters[0].id\nparameter_id\n\n'Eref.d'\n\n\n\nget_series_headers_input = GetSeriesHeadersInput(parameter_id=parameter_id)\nget_series_headers_output: GetSeriesHeadersOutput = await get_series_headers(\n    ctx=ctx, input=get_series_headers_input\n)\nprint(format_as_xml(get_series_headers_output, root_tag=\"GetSeriesHeadersOutput\"))\n\n&lt;GetSeriesHeadersOutput&gt;\n  &lt;count&gt;7&lt;/count&gt;\n  &lt;summary&gt;Found timeseries for Eref.d across 7 locations&lt;/summary&gt;\n  &lt;sample_ids&gt;|   id | type         | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |\n|-----:|:-------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|\n|    8 | accumulative | im.wiwb.knmi       | KNMIUUR235   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 16:41:37.107000 | De Kooy         |        52.9167 |        4.78333 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    7 | accumulative | im.wiwb.knmi       | KNMIUUR260   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 16:41:37.104000 | De Bilt         |        52.0992 |        5.1767  | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    6 | accumulative | im.wiwb.knmi       | KNMIUUR269   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 16:41:37.102000 | Lelystad        |        52.4618 |        5.52147 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    5 | accumulative | im.wiwb.knmi       | KNMIUUR275   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 16:41:37.100000 | Deelen          |        52.0605 |        5.88704 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    1 | accumulative | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 16:41:36.620000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |&lt;/sample_ids&gt;\n  &lt;available_filters&gt;\n    &lt;locations&gt;\n      &lt;example&gt;KNMIUUR235&lt;/example&gt;\n      &lt;example&gt;KNMIUUR260&lt;/example&gt;\n      &lt;example&gt;KNMIUUR269&lt;/example&gt;\n      &lt;example&gt;KNMIUUR275&lt;/example&gt;\n      &lt;example&gt;KNMIUUR278&lt;/example&gt;\n      &lt;example&gt;KNMIUUR280&lt;/example&gt;\n      &lt;example&gt;KNMIUUR290&lt;/example&gt;\n    &lt;/locations&gt;\n    &lt;model_types /&gt;\n  &lt;/available_filters&gt;\n  &lt;follow_up_suggestions&gt;\n    &lt;example&gt;No follow-up suggestions available yet.&lt;/example&gt;\n  &lt;/follow_up_suggestions&gt;\n&lt;/GetSeriesHeadersOutput&gt;"
+    "text": "Get Series Headers\nDe headers van de series zijn de metadata. Hiermee kunnen we een koppeling maken tussen locaties en parameter. Eén locatie of één parameter wordt opgegeven om hiervoor de bijbehorende metadata op te halen. We geven voor beide een voorbeeld:\n\nlocation_id = get_location_output.locations[0].locationId\nlocation_id\n\n'KNMIUUR278'\n\n\n\nfrom talk_with_fews.tools import get_series_headers\nfrom talk_with_fews.models import GetSeriesHeadersInput, GetSeriesHeadersOutput\n\nget_series_headers_input = GetSeriesHeadersInput(location_id=location_id)\nget_series_headers_output: GetSeriesHeadersOutput = await get_series_headers(\n    ctx=ctx, input=get_series_headers_input\n)\nprint(format_as_xml(get_series_headers_output, root_tag=\"GetSeriesHeadersOutput\"))\n\n&lt;GetSeriesHeadersOutput&gt;\n  &lt;count&gt;4&lt;/count&gt;\n  &lt;summary&gt;Found 4 parameters at location Heino.&lt;/summary&gt;\n  &lt;sample_ids&gt;|   id | type          | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |\n|-----:|:--------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|\n|    1 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 20:49:09.683000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    4 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | P.G.h         | second         |                86400 |         0 |            |              | 2025-07-30 20:49:09.692000 | Heino           |        52.4339 |        6.26173 | Gemeten neerslag [mm] - uur          | mm               | accumulative     |\n|    3 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | T.air.G       | second         |                 3600 |         0 |            |              | 2025-07-30 20:49:09.689000 | Heino           |        52.4339 |        6.26173 | Temperatuur lucht [ï¿½C]             | oC               | instantaneous    |\n|    2 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | TCC.O.h       | second         |                86400 |         0 |            |              | 2025-07-30 20:49:09.687000 | Heino           |        52.4339 |        6.26173 | Cloud cover observation - uur        | -                | instantaneous    |&lt;/sample_ids&gt;\n  &lt;available_filters&gt;\n    &lt;parameters&gt;\n      &lt;example&gt;Eref.d&lt;/example&gt;\n      &lt;example&gt;P.G.h&lt;/example&gt;\n      &lt;example&gt;T.air.G&lt;/example&gt;\n      &lt;example&gt;TCC.O.h&lt;/example&gt;\n    &lt;/parameters&gt;\n    &lt;model_types /&gt;\n  &lt;/available_filters&gt;\n  &lt;follow_up_suggestions&gt;\n    &lt;example&gt;No follow-up suggestions available yet.&lt;/example&gt;\n  &lt;/follow_up_suggestions&gt;\n&lt;/GetSeriesHeadersOutput&gt;\n\n\n\nparameter_id = get_parameter_output.parameters[0].id\nparameter_id\n\n'Eref.d'\n\n\n\nget_series_headers_input = GetSeriesHeadersInput(parameter_id=parameter_id)\nget_series_headers_output: GetSeriesHeadersOutput = await get_series_headers(\n    ctx=ctx, input=get_series_headers_input\n)\nprint(format_as_xml(get_series_headers_output, root_tag=\"GetSeriesHeadersOutput\"))\n\n&lt;GetSeriesHeadersOutput&gt;\n  &lt;count&gt;7&lt;/count&gt;\n  &lt;summary&gt;Found timeseries for Eref.d across 7 locations&lt;/summary&gt;\n  &lt;sample_ids&gt;|   id | type         | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |\n|-----:|:-------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|\n|    8 | accumulative | im.wiwb.knmi       | KNMIUUR235   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 20:49:10.166000 | De Kooy         |        52.9167 |        4.78333 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    7 | accumulative | im.wiwb.knmi       | KNMIUUR260   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 20:49:10.163000 | De Bilt         |        52.0992 |        5.1767  | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    6 | accumulative | im.wiwb.knmi       | KNMIUUR269   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 20:49:10.161000 | Lelystad        |        52.4618 |        5.52147 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    5 | accumulative | im.wiwb.knmi       | KNMIUUR275   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 20:49:10.159000 | Deelen          |        52.0605 |        5.88704 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |\n|    1 | accumulative | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-30 20:49:09.683000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |&lt;/sample_ids&gt;\n  &lt;available_filters&gt;\n    &lt;locations&gt;\n      &lt;example&gt;KNMIUUR235&lt;/example&gt;\n      &lt;example&gt;KNMIUUR260&lt;/example&gt;\n      &lt;example&gt;KNMIUUR269&lt;/example&gt;\n      &lt;example&gt;KNMIUUR275&lt;/example&gt;\n      &lt;example&gt;KNMIUUR278&lt;/example&gt;\n      &lt;example&gt;KNMIUUR280&lt;/example&gt;\n      &lt;example&gt;KNMIUUR290&lt;/example&gt;\n    &lt;/locations&gt;\n    &lt;model_types /&gt;\n  &lt;/available_filters&gt;\n  &lt;follow_up_suggestions&gt;\n    &lt;example&gt;No follow-up suggestions available yet.&lt;/example&gt;\n  &lt;/follow_up_suggestions&gt;\n&lt;/GetSeriesHeadersOutput&gt;"
   },
   {
     "objectID": "examples/notebooks/fews_webservice.html#sec-execute-query-webservice",
@@ -753,7 +781,7 @@
     "href": "reference/DescribeTimeSeriesInput.html",
     "title": "DescribeTimeSeriesInput",
     "section": "",
-    "text": "models.DescribeTimeSeriesInput()\nModel for the input of the describe_timeseries tool.\nThis model defines the required parameters to describe a specific time series.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series"
+    "text": "models.DescribeTimeSeriesInput()\nModel for the input of the describe_timeseries tool.\nThis model defines the required parameters to describe a specific time series.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DescribeTimeSeriesInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/DescribeTimeSeriesInput.html#attributes",
@@ -761,6 +789,13 @@
     "title": "DescribeTimeSeriesInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series"
+  },
+  {
+    "objectID": "reference/DescribeTimeSeriesInput.html#methods",
+    "href": "reference/DescribeTimeSeriesInput.html#methods",
+    "title": "DescribeTimeSeriesInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DescribeTimeSeriesInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/search_transformations.html",
@@ -802,7 +837,7 @@
     "href": "reference/TransformationDetailsInput.html",
     "title": "TransformationDetailsInput",
     "section": "",
-    "text": "models.TransformationDetailsInput()\nModel for the input of the get_transformation_details tool.\nThis model defines the required parameters to get details about a specific transformation.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe"
+    "text": "models.TransformationDetailsInput()\nModel for the input of the get_transformation_details tool.\nThis model defines the required parameters to get details about a specific transformation.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationDetailsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/TransformationDetailsInput.html#attributes",
@@ -810,6 +845,13 @@
     "title": "TransformationDetailsInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe"
+  },
+  {
+    "objectID": "reference/TransformationDetailsInput.html#methods",
+    "href": "reference/TransformationDetailsInput.html#methods",
+    "title": "TransformationDetailsInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationDetailsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/TransformationSearchOutput.html",
@@ -865,7 +907,7 @@
     "href": "reference/GetSeriesHeadersInput.html",
     "title": "GetSeriesHeadersInput",
     "section": "",
-    "text": "models.GetSeriesHeadersInput()\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\nSupports querying by parameter_id OR location_id (not both) for incremental caching.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
+    "text": "models.GetSeriesHeadersInput()\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\nSupports querying by parameter_id OR location_id (not both) for incremental caching.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict.\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
   },
   {
     "objectID": "reference/GetSeriesHeadersInput.html#attributes",
@@ -879,7 +921,7 @@
     "href": "reference/GetSeriesHeadersInput.html#methods",
     "title": "GetSeriesHeadersInput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict.\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
   },
   {
     "objectID": "reference/SeriesFlagsSummary.html",
@@ -935,7 +977,7 @@
     "href": "reference/WorkflowSearchInput.html",
     "title": "WorkflowSearchInput",
     "section": "",
-    "text": "models.WorkflowSearchInput()\nInput for workflow search.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nname_pattern\nstr\nPattern to search for in workflow name or description"
+    "text": "models.WorkflowSearchInput()\nInput for workflow search.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nname_pattern\nstr\nPattern to search for in workflow name or description\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.WorkflowSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/WorkflowSearchInput.html#attributes",
@@ -943,6 +985,13 @@
     "title": "WorkflowSearchInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\nname_pattern\nstr\nPattern to search for in workflow name or description"
+  },
+  {
+    "objectID": "reference/WorkflowSearchInput.html#methods",
+    "href": "reference/WorkflowSearchInput.html#methods",
+    "title": "WorkflowSearchInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.WorkflowSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/search_workflows.html",
@@ -970,7 +1019,7 @@
     "href": "reference/GetParameterInput.html",
     "title": "GetParameterInput",
     "section": "",
-    "text": "models.GetParameterInput()\nModel representing a parameter search result.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nnumber_of_parameters\nOptional[int]\nThe maximum number of parameters to retrieve.\n\n\nfilter_parameters_name\nOptional[str]\nAn optional name filter for parameters names, using the SQL LIKE functionality.\n\n\n\nA parameter search result extends the base time series properties with optional transformation information for search results."
+    "text": "models.GetParameterInput()\nModel representing a parameter search result.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nnumber_of_parameters\nOptional[int]\nThe maximum number of parameters to retrieve.\n\n\nfilter_parameters_name\nOptional[str]\nAn optional name filter for parameters names, using the SQL LIKE functionality.\n\n\n\nA parameter search result extends the base time series properties with optional transformation information for search results.\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GetParameterInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/GetParameterInput.html#attributes",
@@ -978,6 +1027,13 @@
     "title": "GetParameterInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\nnumber_of_parameters\nOptional[int]\nThe maximum number of parameters to retrieve.\n\n\nfilter_parameters_name\nOptional[str]\nAn optional name filter for parameters names, using the SQL LIKE functionality.\n\n\n\nA parameter search result extends the base time series properties with optional transformation information for search results."
+  },
+  {
+    "objectID": "reference/GetParameterInput.html#methods",
+    "href": "reference/GetParameterInput.html#methods",
+    "title": "GetParameterInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GetParameterInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/WorkflowDetailsOutput.html",
@@ -998,7 +1054,7 @@
     "href": "reference/GraphVisualizationInput.html",
     "title": "GraphVisualizationInput",
     "section": "",
-    "text": "models.GraphVisualizationInput()\nModel for the input of graph visualization tools.\nThis model defines the parameters for creating a graph visualization.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nroot_entity_type\nstr\nType of the root entity to visualize\n\n\nroot_entity_id\nint\nID of the root entity\n\n\nlayout\nOptional[GraphLayout]\nOptional layout parameters\n\n\ninclude_properties\nbool\nWhether to include detailed properties in the visualization\n\n\nmax_nodes\nOptional[int]\nMaximum number of nodes to include (for performance)"
+    "text": "models.GraphVisualizationInput()\nModel for the input of graph visualization tools.\nThis model defines the parameters for creating a graph visualization.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nroot_entity_type\nstr\nType of the root entity to visualize\n\n\nroot_entity_id\nint\nID of the root entity\n\n\nlayout\nOptional[GraphLayout]\nOptional layout parameters\n\n\ninclude_properties\nbool\nWhether to include detailed properties in the visualization\n\n\nmax_nodes\nOptional[int]\nMaximum number of nodes to include (for performance)\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GraphVisualizationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/GraphVisualizationInput.html#attributes",
@@ -1006,6 +1062,13 @@
     "title": "GraphVisualizationInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\nroot_entity_type\nstr\nType of the root entity to visualize\n\n\nroot_entity_id\nint\nID of the root entity\n\n\nlayout\nOptional[GraphLayout]\nOptional layout parameters\n\n\ninclude_properties\nbool\nWhether to include detailed properties in the visualization\n\n\nmax_nodes\nOptional[int]\nMaximum number of nodes to include (for performance)"
+  },
+  {
+    "objectID": "reference/GraphVisualizationInput.html#methods",
+    "href": "reference/GraphVisualizationInput.html#methods",
+    "title": "GraphVisualizationInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.GraphVisualizationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/analyze_dead_points.html",
@@ -1075,7 +1138,7 @@
     "href": "reference/SQLQueryInput.html",
     "title": "SQLQueryInput",
     "section": "",
-    "text": "models.SQLQueryInput()\nInput for SQL query.\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nquery\nstr\nSQL query to execute"
+    "text": "models.SQLQueryInput()\nInput for SQL query.\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nquery\nstr\nSQL query to execute\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.SQLQueryInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/SQLQueryInput.html#attributes",
@@ -1083,6 +1146,13 @@
     "title": "SQLQueryInput",
     "section": "",
     "text": "Name\nType\nDescription\n\n\n\n\nquery\nstr\nSQL query to execute"
+  },
+  {
+    "objectID": "reference/SQLQueryInput.html#methods",
+    "href": "reference/SQLQueryInput.html#methods",
+    "title": "SQLQueryInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.SQLQueryInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/DependencyAnalysisOutput.html",
@@ -1103,7 +1173,7 @@
     "href": "reference/XMLValidationInput.html",
     "title": "XMLValidationInput",
     "section": "",
-    "text": "models.XMLValidationInput()\nEnhanced input model for XML validation\n\n\n\n\n\nName\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content"
+    "text": "models.XMLValidationInput()\nEnhanced input model for XML validation\n\n\n\n\n\nName\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLValidationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/XMLValidationInput.html#attributes",
@@ -1111,6 +1181,13 @@
     "title": "XMLValidationInput",
     "section": "",
     "text": "Name\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content"
+  },
+  {
+    "objectID": "reference/XMLValidationInput.html#methods",
+    "href": "reference/XMLValidationInput.html#methods",
+    "title": "XMLValidationInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLValidationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/GetSeriesHeadersOutput.html",
@@ -1173,7 +1250,7 @@
     "href": "reference/DeadPointsAnalysisInput.html",
     "title": "DeadPointsAnalysisInput",
     "section": "",
-    "text": "models.DeadPointsAnalysisInput()\n\n\n\n\n\nName\nDescription\n\n\n\n\ninclude_producers"
+    "text": "models.DeadPointsAnalysisInput()\n\n\n\n\n\nName\nDescription\n\n\n\n\ninclude_producers\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DeadPointsAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/DeadPointsAnalysisInput.html#attributes",
@@ -1183,11 +1260,18 @@
     "text": "Name\nDescription\n\n\n\n\ninclude_producers"
   },
   {
+    "objectID": "reference/DeadPointsAnalysisInput.html#methods",
+    "href": "reference/DeadPointsAnalysisInput.html#methods",
+    "title": "DeadPointsAnalysisInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DeadPointsAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
+  },
+  {
     "objectID": "reference/XMLTemplateInput.html",
     "href": "reference/XMLTemplateInput.html",
     "title": "XMLTemplateInput",
     "section": "",
-    "text": "models.XMLTemplateInput()\nInput model for XML template generation\n\n\n\n\n\nName\nDescription\n\n\n\n\ninclude_attributes\n\n\n\ninclude_optional\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
+    "text": "models.XMLTemplateInput()\nInput model for XML template generation\n\n\n\n\n\nName\nDescription\n\n\n\n\ninclude_attributes\n\n\n\ninclude_optional\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLTemplateInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/XMLTemplateInput.html#attributes",
@@ -1197,11 +1281,18 @@
     "text": "Name\nDescription\n\n\n\n\ninclude_attributes\n\n\n\ninclude_optional\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
   },
   {
+    "objectID": "reference/XMLTemplateInput.html#methods",
+    "href": "reference/XMLTemplateInput.html#methods",
+    "title": "XMLTemplateInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLTemplateInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
+  },
+  {
     "objectID": "reference/TransformationSearchInput.html",
     "href": "reference/TransformationSearchInput.html",
     "title": "TransformationSearchInput",
     "section": "",
-    "text": "models.TransformationSearchInput()\nModel for the input of the search_transformations tool.\nThis model defines the parameters to search for transformations.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results"
+    "text": "models.TransformationSearchInput()\nModel for the input of the search_transformations tool.\nThis model defines the parameters to search for transformations.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
     "objectID": "reference/TransformationSearchInput.html#attributes",
@@ -1211,11 +1302,18 @@
     "text": "Name\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results"
   },
   {
+    "objectID": "reference/TransformationSearchInput.html#methods",
+    "href": "reference/TransformationSearchInput.html#methods",
+    "title": "TransformationSearchInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
+  },
+  {
     "objectID": "reference/GetSeriesStatisticsInput.html",
     "href": "reference/GetSeriesStatisticsInput.html",
     "title": "GetSeriesStatisticsInput",
     "section": "",
-    "text": "models.GetSeriesStatisticsInput()\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\nSupports querying by parameter_id AND location_i for incremental caching.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesStatisticsInput.validate_exclusive_fields(values)"
+    "text": "models.GetSeriesStatisticsInput()\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\nSupports querying by parameter_id AND location_id for incremental caching.\nThis model can handle both object input and string input that represents a dict.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesStatisticsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict.\n\n\n\nmodels.GetSeriesStatisticsInput.validate_exclusive_fields(values)"
   },
   {
     "objectID": "reference/GetSeriesStatisticsInput.html#attributes",
@@ -1229,7 +1327,7 @@
     "href": "reference/GetSeriesStatisticsInput.html#methods",
     "title": "GetSeriesStatisticsInput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesStatisticsInput.validate_exclusive_fields(values)"
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesStatisticsInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict.\n\n\n\nmodels.GetSeriesStatisticsInput.validate_exclusive_fields(values)"
   },
   {
     "objectID": "reference/find_workflow_call_hierarchy.html",
