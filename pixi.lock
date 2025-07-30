@@ -357,7 +357,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/1d/5a/3f8d078dbf55d18442f6a2ecedf6786d81d7245844b2b20ce2b8ad6f0307/opentelemetry_api-1.35.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fa/b1/b59d405d64d31999244643d88c45c8241c58f17cc887e73bcb90602327f8/protobuf-6.31.1-cp39-abi3-manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/89/4b/7782438b551dbb0468892a276b8c789b8bbdb25ea5c5eb27faadd753e037/pyarrow-21.0.0-cp313-cp313-manylinux_2_28_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
@@ -651,7 +650,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/1d/5a/3f8d078dbf55d18442f6a2ecedf6786d81d7245844b2b20ce2b8ad6f0307/opentelemetry_api-1.35.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/6a/c9/b9689a2a250264a84e66c46d8862ba788ee7a641cdca39bccf64f59284b7/protobuf-6.31.1-cp39-abi3-macosx_10_9_universal2.whl
       - pypi: https://files.pythonhosted.org/packages/ce/e8/e87d9e3b2489302b3a1aea709aaca4b781c5252fcb812a17ab6275a9a484/pyarrow-21.0.0-cp313-cp313-macosx_12_0_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
@@ -945,7 +943,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/1d/5a/3f8d078dbf55d18442f6a2ecedf6786d81d7245844b2b20ce2b8ad6f0307/opentelemetry_api-1.35.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/6a/c9/b9689a2a250264a84e66c46d8862ba788ee7a641cdca39bccf64f59284b7/protobuf-6.31.1-cp39-abi3-macosx_10_9_universal2.whl
       - pypi: https://files.pythonhosted.org/packages/16/ca/c7eaa8e62db8fb37ce942b1ea0c6d7abfe3786ca193957afa25e71b81b66/pyarrow-21.0.0-cp313-cp313-macosx_12_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
@@ -1250,7 +1247,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/1d/5a/3f8d078dbf55d18442f6a2ecedf6786d81d7245844b2b20ce2b8ad6f0307/opentelemetry_api-1.35.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/44/3a/b15c4347dd4bf3a1b0ee882f384623e2063bb5cf9fa9d57990a4f7df2fb6/protobuf-6.31.1-cp310-abi3-win_amd64.whl
       - pypi: https://files.pythonhosted.org/packages/01/63/581f2076465e67b23bc5a37d4a2abff8362d389d29d8105832e82c9c811c/pyarrow-21.0.0-cp313-cp313-win_amd64.whl
-      - pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ab/4c/b888e6cf58bd9db9c93f40d1c6be8283ff49d88919231afe93a6bcf61626/pydeck-0.9.1-py2.py3-none-any.whl
@@ -8378,25 +8374,6 @@ packages:
   - pkg:pypi/pydantic?source=hash-mapping
   size: 307333
   timestamp: 1749927245525
-- pypi: https://files.pythonhosted.org/packages/09/7f/58a7836289e4e1c3c6eb6dcdac77a801fe09a2a8f707b1d2ee2f0c6fc81e/pydantic_ai-0.0.5-py3-none-any.whl
-  name: pydantic-ai
-  version: 0.0.5
-  sha256: b5c1b512686ecacbeecb87e357d6b4bacf3547c82d7595720f05a9377053daa4
-  requires_dist:
-  - eval-type-backport>=0.2.0
-  - griffe>=1.3.2
-  - httpx>=0.27.2
-  - logfire-api>=1.2.0
-  - openai>=1.54.3
-  - pydantic>=2.10
-  - asyncpg>=0.30.0 ; extra == 'examples'
-  - fastapi>=0.115.4 ; extra == 'examples'
-  - logfire[asyncpg,fastapi]>=2.3 ; extra == 'examples'
-  - python-multipart>=0.0.17 ; extra == 'examples'
-  - rich>=13.9.2 ; extra == 'examples'
-  - uvicorn>=0.32.0 ; extra == 'examples'
-  - logfire>=2.3 ; extra == 'logfire'
-  requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl
   name: pydantic-ai-slim
   version: 0.4.9
