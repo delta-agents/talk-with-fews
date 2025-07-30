@@ -40,10 +40,10 @@ class SeriesFlagsSummary(BaseModel):
     total_values: int = Field(..., description="Total number of values")
     # this was a date range, but we now use ISO 8601 strings as needs to be serializable
     start_date: str = Field(
-        ..., description="Start date of the analysis period in ISO 8601 format"
+        ..., description="Start date time of the analysis period in ISO 8601 format"
     )
     end_date: str = Field(
-        ..., description="End date of the analysis period in ISO 8601 format"
+        ..., description="End date time of the analysis period in ISO 8601 format"
     )
 
     # Standard FEWS flag definitions
