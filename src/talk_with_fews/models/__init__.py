@@ -16,7 +16,11 @@ from talk_with_fews.models.workflow_details import (
     WorkflowDetailsInput,
     WorkflowDetailsOutput,
 )
-from talk_with_fews.models.deadpoint import DeadPointsAnalysisOutput
+from talk_with_fews.models.workflow_hierarchy import WorkflowCallHierarchyInput
+from talk_with_fews.models.dead_point_analysis import (
+    DeadPointsAnalysisInput,
+    DeadPointsAnalysisOutput,
+)
 from talk_with_fews.models.dependency_analysis import (
     DependencyAnalysisInput,
     DependencyAnalysisOutput,
@@ -87,6 +91,8 @@ __all__ = [
     "WorkflowSearchOutput",
     "WorkflowDetailsInput",
     "WorkflowDetailsOutput",
+    "WorkflowCallHierarchyInput",
+    "DeadPointsAnalysisInput",
     "DeadPointsAnalysisOutput",
     "DependencyAnalysisInput",
     "DependencyAnalysisOutput",

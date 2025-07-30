@@ -11,18 +11,14 @@ from datetime import datetime, timezone, timedelta
 import httpx
 from pydantic_ai import RunContext
 
-from ...models.get_series_data import (
+from talk_with_fews.models.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
     TimeseriesValue,
 )
-from ...models.base import Deps
-from ...utils.logging_utils import log_tool_call
-
-
-def format_datetime(dt):
-    """Format datetime to FEWS webservice format (yyyy-MM-dd'T'HH:mm:ss'Z')."""
-    return dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+from talk_with_fews.models.base import Deps
+from talk_with_fews.utils.logging_utils import log_tool_call
+from talk_with_fews.utils.utils import format_datetime
 
 
 async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesValue]]:

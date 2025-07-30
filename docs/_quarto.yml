@@ -65,6 +65,8 @@ quartodoc:
         - execute_query_webservice
         - get_series_headers
         - get_series_statistics
+        - get_series_data
+        - analyze_series_flags
     - title: Validator tools
       desc: Tools beschikbaar voor de validator agent.
       package: talk_with_fews.tools
@@ -86,7 +88,9 @@ quartodoc:
         - WorkflowSearchOutput
         - WorkflowDetailsInput
         - WorkflowDetailsOutput
+        - WorkflowCallHierarchyInput
         - DeadPointsAnalysisOutput
+        - DeadPointsAnalysisInput
         - DependencyAnalysisInput
         - DependencyAnalysisOutput
         - DatabaseSchemaOutput

@@ -10,13 +10,15 @@ from typing import Dict, List, Any
 
 from pydantic_ai import RunContext
 
-from ...models.base import Deps
-from ...models.flags.counts import FlagCount, FlagCounts
-from ...models.flags.errors import UnknownFlagError, InvalidTimeRangeError
-from ...models.flags.io import SeriesFlagsInput, SeriesFlagsSummary, DateRange
-from ...models.flags.mappings import QUALITY_FLAGS
-from ...models.get_series_data import TimeseriesValue
-from ...tools.webservice.get_series_data import get_series_data
+from talk_with_fews.models.base import Deps
+from talk_with_fews.models.flags.counts import FlagCount, FlagCounts
+from talk_with_fews.models.flags.errors import UnknownFlagError, InvalidTimeRangeError
+from talk_with_fews.models.flags.io import SeriesFlagsInput, SeriesFlagsSummary
+from talk_with_fews.models.flags.mappings import QUALITY_FLAGS
+from talk_with_fews.models.get_series_data import TimeseriesValue
+from talk_with_fews.tools.webservice.get_series_data import get_series_data
+from talk_with_fews.utils.logging_utils import log_tool_call
+from talk_with_fews.utils.utils import format_datetime
 
 
 def validate_time_range(start_time: datetime, end_time: datetime) -> None:
@@ -94,6 +96,7 @@ async def count_series_flags(values: List[TimeseriesValue]) -> Dict[str, Any]:
     }
 
 
+@log_tool_call
 async def analyze_series_flags(
     ctx: RunContext[Deps], input: SeriesFlagsInput
 ) -> SeriesFlagsSummary:
@@ -131,11 +134,8 @@ async def analyze_series_flags(
     # 4. Create summary
     return SeriesFlagsSummary(
         total_values=flag_analysis["total_values"],
-        period=DateRange(
-            start=input.start_time,
-            end=input.end_time,
-            duration=input.end_time - input.start_time,
-        ),
+        start_date=format_datetime(input.start_time),
+        end_date=format_datetime(input.end_time),
         flag_definitions=QUALITY_FLAGS,
         flag_counts=flag_analysis["counts"],
         counts=FlagCounts(

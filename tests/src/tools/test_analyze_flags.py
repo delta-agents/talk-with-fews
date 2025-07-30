@@ -17,7 +17,7 @@ from talk_with_fews.models.flags.errors import UnknownFlagError, InvalidTimeRang
 from talk_with_fews.models.flags.io import SeriesFlagsInput
 from talk_with_fews.models.get_series_data import TimeseriesValue
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
-from talk_with_fews.tools.config.analyze_flags import (
+from talk_with_fews.tools.webservice.analyze_flags import (
     count_series_flags,
     analyze_series_flags,
 )
@@ -142,8 +142,13 @@ async def test_analyze_series_flags_with_real_data(
     # Basic validation
     assert result.total_values > 0
     assert len(result.flag_counts) > 0
-    assert result.period.start == input.start_time
-    assert result.period.end == input.end_time
+    assert (
+        datetime.fromisoformat(result.start_date.replace("Z", "+00:00"))
+        == input.start_time
+    )
+    assert (
+        datetime.fromisoformat(result.end_date.replace("Z", "+00:00")) == input.end_time
+    )
 
     # Validate flag ranges
     for flag_count in result.flag_counts:
@@ -152,9 +157,7 @@ async def test_analyze_series_flags_with_real_data(
 
     # Print summary for manual verification
     print(f"\n=== FEWS Flag Analysis Results: {location_id} - {parameter_id} ===")
-    print(
-        f"\nAnalysis Period: {result.period.start.date()} to {result.period.end.date()}"
-    )
+    print(f"\nAnalysis Period: {result.start_date} to {result.end_date}")
     print(f"Total Values: {result.total_values}")
     print("\nQuality Distribution:")
     print(

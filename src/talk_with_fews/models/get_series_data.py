@@ -42,8 +42,8 @@ class TimeseriesValue(BaseModel):
 class GetSeriesDataInput(BaseModel):
     location_id: str = Field(..., description="Location ID to fetch data for")
     parameter_id: str = Field(..., description="Parameter ID to fetch data for")
-    start_time: Annotated[datetime, Field(description="Start time for data retrieval")]
-    end_time: Annotated[datetime, Field(description="End time for data retrieval")]
+    start_time: datetime = Field(description="Start time for data retrieval")
+    end_time: datetime = Field(description="End time for data retrieval")
     include_flag_sources: bool = Field(
         False, description="Whether to request flag sources. Requires FEWS API support."
     )

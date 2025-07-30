@@ -26,8 +26,8 @@ from talk_with_fews.models.workflow_details import (
     WorkflowDetailsInput,
     WorkflowDetailsOutput,
 )
-from talk_with_fews.tools.config.deadpoint_analysis import analyze_dead_points
-from talk_with_fews.models.deadpoint import DeadPointsAnalysisOutput
+from talk_with_fews.tools.config.dead_point_analysis import analyze_dead_points
+from talk_with_fews.models.dead_point_analysis import DeadPointsAnalysisOutput
 from talk_with_fews.tools.config.dependency_analysis import analyze_dependencies
 from talk_with_fews.models.dependency_analysis import (
     DependencyAnalysisInput,
