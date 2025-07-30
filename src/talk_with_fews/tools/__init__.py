@@ -1,5 +1,5 @@
 # CONFIG
-from talk_with_fews.tools.config.deadpoint_analysis import analyze_dead_points
+from talk_with_fews.tools.config.dead_point_analysis import analyze_dead_points
 from talk_with_fews.tools.config.dependency_analysis import analyze_dependencies
 from talk_with_fews.tools.config.get_database_schema import get_database_schema
 from talk_with_fews.tools.config.graph_visualize import visualize_graph

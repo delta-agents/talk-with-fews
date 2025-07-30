@@ -2,25 +2,26 @@ from pydantic_ai import RunContext, ModelRetry
 from talk_with_fews.models.base import Deps
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
+from talk_with_fews.models.workflow_hierarchy import WorkflowCallHierarchyInput
 from talk_with_fews.tools.config.sql_query import execute_query
 from talk_with_fews.utils.logging_utils import logger
 
 
 @log_tool_call
 async def find_workflow_call_hierarchy(
-    ctx: RunContext[Deps], input: dict
+    ctx: RunContext[Deps], input: WorkflowCallHierarchyInput
 ) -> SQLQueryOutput:
     """
     Trace workflow call stacks.
 
     Args:
         ctx: RunContext with database connection
-        input: Dictionary with root_workflow_id
+        input: WorkflowCallHierarchy model instance
 
     Returns:
         SQLQueryOutput: Workflow call hierarchy
     """
-    root_workflow_id = input.get("root_workflow_id")
+    root_workflow_id = input.root_workflow_id
     if not root_workflow_id:
         logger.warning("find_workflow_call_hierarchy called without root_workflow_id")
         raise ModelRetry("root_workflow_id is required")

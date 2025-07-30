@@ -34,6 +34,12 @@ class DeadPointProducer(BaseModel):
     workflow_id: str = Field(..., description="ID of the workflow")
 
 
+class DeadPointsAnalysisInput(BaseModel):
+    include_producers: bool = Field(
+        True, description="Whether to include producers of dead points"
+    )
+
+
 class DeadPointsAnalysisOutput(BaseModel):
     """Model for the output of the analyze_dead_points tool."""
 
