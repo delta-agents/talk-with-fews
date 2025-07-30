@@ -69,7 +69,7 @@ quartodoc:
       package: talk_with_fews.tools
       contents:
         - validate_xml
-        - genenerate_xml_template
+        - generate_xml_template
         - get_available_elements
     - title: Config tool models
       desc: Data modellen per Config tool.
