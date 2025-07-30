@@ -86,7 +86,7 @@ quartodoc:
         - WorkflowSearchOutput
         - WorkflowDetailsInput
         - WorkflowDetailsOutput
-        - WorkflowCallHierarchy
+        - WorkflowCallHierarchyInput
         - DeadPointsAnalysisOutput
         - DeadPointsAnalysisInput
         - DependencyAnalysisInput
