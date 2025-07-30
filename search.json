@@ -70,53 +70,81 @@
     "text": "Name\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)"
   },
   {
-    "objectID": "reference/GetSeriesStatisticsOutput.html",
-    "href": "reference/GetSeriesStatisticsOutput.html",
-    "title": "GetSeriesStatisticsOutput",
+    "objectID": "reference/GetLocationOutput.html",
+    "href": "reference/GetLocationOutput.html",
+    "title": "GetLocationOutput",
     "section": "",
-    "text": "models.GetSeriesStatisticsOutput()\nGetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.\nDesigned for cost optimization in AI applications while providing actionable information and enabling follow-up questions.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncount\n\n\n\ndescription\n\n\n\nfirst_value_time\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value"
+    "text": "models.GetLocationOutput()\nModel for the output of the location_details tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocations\n\n\n\nmarkdown_content"
   },
   {
-    "objectID": "reference/GetSeriesStatisticsOutput.html#attributes",
-    "href": "reference/GetSeriesStatisticsOutput.html#attributes",
-    "title": "GetSeriesStatisticsOutput",
+    "objectID": "reference/GetLocationOutput.html#attributes",
+    "href": "reference/GetLocationOutput.html#attributes",
+    "title": "GetLocationOutput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncount\n\n\n\ndescription\n\n\n\nfirst_value_time\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value"
+    "text": "Name\nDescription\n\n\n\n\nlocations\n\n\n\nmarkdown_content"
   },
   {
-    "objectID": "reference/GetSeriesDataInput.html",
-    "href": "reference/GetSeriesDataInput.html",
-    "title": "GetSeriesDataInput",
+    "objectID": "reference/GetAvailableElementsOutput.html",
+    "href": "reference/GetAvailableElementsOutput.html",
+    "title": "GetAvailableElementsOutput",
     "section": "",
-    "text": "models.GetSeriesDataInput()\n\n\n\n\n\nName\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
+    "text": "models.GetAvailableElementsOutput()\nOutput model for getting available elements from a schema\n\n\n\n\n\nName\nDescription\n\n\n\n\navailable_elements\n\n\n\nhas_more\n\n\n\nlimit\n\n\n\nnext_offset\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_location\n\n\n\ntarget_element\n\n\n\ntotal_count"
   },
   {
-    "objectID": "reference/GetSeriesDataInput.html#attributes",
-    "href": "reference/GetSeriesDataInput.html#attributes",
-    "title": "GetSeriesDataInput",
+    "objectID": "reference/GetAvailableElementsOutput.html#attributes",
+    "href": "reference/GetAvailableElementsOutput.html#attributes",
+    "title": "GetAvailableElementsOutput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
+    "text": "Name\nDescription\n\n\n\n\navailable_elements\n\n\n\nhas_more\n\n\n\nlimit\n\n\n\nnext_offset\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_location\n\n\n\ntarget_element\n\n\n\ntotal_count"
   },
   {
-    "objectID": "reference/analyze_dependencies.html",
-    "href": "reference/analyze_dependencies.html",
-    "title": "analyze_dependencies",
+    "objectID": "reference/get_series_headers.html",
+    "href": "reference/get_series_headers.html",
+    "title": "get_series_headers",
     "section": "",
-    "text": "tools.analyze_dependencies(ctx, input)\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDependencyAnalysisInput\nDependencyAnalysisInput containing entity details and analysis direction\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nDependencyAnalysisOutput\nDependencyAnalysisOutput\nA complete description of dependencies including: - Structured data about the dependencies - Pre-formatted markdown content for display"
+    "text": "tools.get_series_headers(ctx, input)\nRetrieve series headers with incremental caching from FEWS webservice.\nThis tool implements the incremental caching strategy: first check local cache, then trigger ingestion if needed, and return minimal but meaningful output.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with series headers summary and follow-up suggestions"
   },
   {
-    "objectID": "reference/analyze_dependencies.html#parameters",
-    "href": "reference/analyze_dependencies.html#parameters",
-    "title": "analyze_dependencies",
+    "objectID": "reference/get_series_headers.html#parameters",
+    "href": "reference/get_series_headers.html#parameters",
+    "title": "get_series_headers",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDependencyAnalysisInput\nDependencyAnalysisInput containing entity details and analysis direction\nrequired"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired"
   },
   {
-    "objectID": "reference/analyze_dependencies.html#returns",
-    "href": "reference/analyze_dependencies.html#returns",
-    "title": "analyze_dependencies",
+    "objectID": "reference/get_series_headers.html#returns",
+    "href": "reference/get_series_headers.html#returns",
+    "title": "get_series_headers",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nDependencyAnalysisOutput\nDependencyAnalysisOutput\nA complete description of dependencies including: - Structured data about the dependencies - Pre-formatted markdown content for display"
+    "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with series headers summary and follow-up suggestions"
+  },
+  {
+    "objectID": "reference/GetSeriesHeadersOutput.html",
+    "href": "reference/GetSeriesHeadersOutput.html",
+    "title": "GetSeriesHeadersOutput",
+    "section": "",
+    "text": "models.GetSeriesHeadersOutput()\nGetSeriesHeadersOutput provides a minimal but meaningful response for series headers.\nDesigned for cost optimization in AI applications while providing actionable information and enabling follow-up questions.\n\n\n\n\n\nName\nDescription\n\n\n\n\navailable_filters\n\n\n\ncount\n\n\n\nfollow_up_suggestions\n\n\n\nsample_ids\n\n\n\nsummary"
+  },
+  {
+    "objectID": "reference/GetSeriesHeadersOutput.html#attributes",
+    "href": "reference/GetSeriesHeadersOutput.html#attributes",
+    "title": "GetSeriesHeadersOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\navailable_filters\n\n\n\ncount\n\n\n\nfollow_up_suggestions\n\n\n\nsample_ids\n\n\n\nsummary"
+  },
+  {
+    "objectID": "reference/XMLValidationInput.html",
+    "href": "reference/XMLValidationInput.html",
+    "title": "XMLValidationInput",
+    "section": "",
+    "text": "models.XMLValidationInput()\nEnhanced input model for XML validation\n\n\n\n\n\nName\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content"
+  },
+  {
+    "objectID": "reference/XMLValidationInput.html#attributes",
+    "href": "reference/XMLValidationInput.html#attributes",
+    "title": "XMLValidationInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content"
   },
   {
     "objectID": "reference/DependencyAnalysisOutput.html",
@@ -270,7 +298,7 @@
     "href": "reference/index.html",
     "title": "API Reference",
     "section": "",
-    "text": "Tools beschikbaar voor de config agent.\n\n\n\nanalyze_dead_points\nIdentify “dead points” in the FEWS configuration - time series sets that are\n\n\nanalyze_dependencies\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\nget_database_schema\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\nvisualize_graph\nGenerate a graph visualization of FEWS entities and their relationships.\n\n\nexecute_query\nExecute a SQL query on the FEWS configuration database.\n\n\ndescribe_timeseries\nGet a complete description of a time series, including its basic properties and optionally\n\n\nsearch_timeseries\nSearch for time series sets by parameter, qualifier, module, or endpoint status.\n\n\nget_transformation_details\nGet detailed information about a specific transformation, including its input and output time series.\n\n\nsearch_transformations\nSearch for transformations matching the given criteria.\n\n\nfind_workflow_call_hierarchy\nTrace workflow call stacks.\n\n\nsearch_workflows\nSearch for workflows by name pattern.\n\n\nget_workflow_details\nGet detailed information about a specific workflow, including its module instance calls\n\n\n\n\n\n\nTools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nRetrieve series headers with incremental caching from FEWS webservice.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice.\n\n\n\n\n\n\nData modellen per Config tool.\n\n\n\nDescribeTimeSeriesInput\nModel for the input of the describe_timeseries tool.\n\n\nDescribeTimeSeriesOutput\nModel for the output of the describe_timeseries tool.\n\n\nTimeSeriesSearchOutput\nModel for the output of the search_timeseries tool.\n\n\nTransformationSearchInput\nModel for the input of the search_transformations tool.\n\n\nTransformationSearchOutput\nModel for the output of the search_transformations tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\nWorkflowSearchInput\nInput for workflow search.\n\n\nWorkflowSearchOutput\nModel for the output of the search_workflows tool.\n\n\nWorkflowDetailsInput\nModel for the input of the get_workflow_details tool.\n\n\nWorkflowDetailsOutput\nModel for the output of the get_workflow_details tool.\n\n\nDeadPointsAnalysisOutput\nModel for the output of the analyze_dead_points tool.\n\n\nDependencyAnalysisInput\nModel for the input of the analyze_dependencies tool.\n\n\nDependencyAnalysisOutput\nModel for the output of the analyze_dependencies tool.\n\n\nDatabaseSchemaOutput\n\n\n\nGraphVisualizationInput\nModel for the input of graph visualization tools.\n\n\nGraphVisualizationOutput\nModel for the output of graph visualization tools.\n\n\nSQLQueryInput\nInput for SQL query.\n\n\nSQLQueryOutput\nOutput from SQL query.\n\n\nTransformationDetailsInput\nModel for the input of the get_transformation_details tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\n\n\n\n\nData modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the location_details\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput provides a minimal but meaningful response for series headers.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsSummary\nSummary of FEWS flags in a timeseries"
+    "text": "Tools beschikbaar voor de config agent.\n\n\n\nanalyze_dead_points\nIdentify “dead points” in the FEWS configuration - time series sets that are\n\n\nanalyze_dependencies\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\nget_database_schema\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\nvisualize_graph\nGenerate a graph visualization of FEWS entities and their relationships.\n\n\nexecute_query\nExecute a SQL query on the FEWS configuration database.\n\n\ndescribe_timeseries\nGet a complete description of a time series, including its basic properties and optionally\n\n\nsearch_timeseries\nSearch for time series sets by parameter, qualifier, module, or endpoint status.\n\n\nget_transformation_details\nGet detailed information about a specific transformation, including its input and output time series.\n\n\nsearch_transformations\nSearch for transformations matching the given criteria.\n\n\nfind_workflow_call_hierarchy\nTrace workflow call stacks.\n\n\nsearch_workflows\nSearch for workflows by name pattern.\n\n\nget_workflow_details\nGet detailed information about a specific workflow, including its module instance calls\n\n\n\n\n\n\nTools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nRetrieve series headers with incremental caching from FEWS webservice.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice.\n\n\n\n\n\n\nTools beschikbaar voor de validator agent.\n\n\n\nvalidate_xml\nEnhanced XML validation using local FEWS schemas.\n\n\ngenerate_xml_template\nGenerate XML template from XSD schema.\n\n\nget_available_elements\nGet available elements from a FEWS schema with pagination support.\n\n\n\n\n\n\nData modellen per Config tool.\n\n\n\nDescribeTimeSeriesInput\nModel for the input of the describe_timeseries tool.\n\n\nDescribeTimeSeriesOutput\nModel for the output of the describe_timeseries tool.\n\n\nTimeSeriesSearchOutput\nModel for the output of the search_timeseries tool.\n\n\nTransformationSearchInput\nModel for the input of the search_transformations tool.\n\n\nTransformationSearchOutput\nModel for the output of the search_transformations tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\nWorkflowSearchInput\nInput for workflow search.\n\n\nWorkflowSearchOutput\nModel for the output of the search_workflows tool.\n\n\nWorkflowDetailsInput\nModel for the input of the get_workflow_details tool.\n\n\nWorkflowDetailsOutput\nModel for the output of the get_workflow_details tool.\n\n\nDeadPointsAnalysisOutput\nModel for the output of the analyze_dead_points tool.\n\n\nDependencyAnalysisInput\nModel for the input of the analyze_dependencies tool.\n\n\nDependencyAnalysisOutput\nModel for the output of the analyze_dependencies tool.\n\n\nDatabaseSchemaOutput\n\n\n\nGraphVisualizationInput\nModel for the input of graph visualization tools.\n\n\nGraphVisualizationOutput\nModel for the output of graph visualization tools.\n\n\nSQLQueryInput\nInput for SQL query.\n\n\nSQLQueryOutput\nOutput from SQL query.\n\n\nTransformationDetailsInput\nModel for the input of the get_transformation_details tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\n\n\n\n\nData modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the location_details\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput provides a minimal but meaningful response for series headers.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsSummary\nSummary of FEWS flags in a timeseries\n\n\n\n\n\n\nData modellen per validator tool.\n\n\n\nXMLValidationInput\nEnhanced input model for XML validation\n\n\nXMLValidationOutput\nEnhanced output model for XML validation results\n\n\nXMLTemplateInput\nInput model for XML template generation\n\n\nXMLTemplateOutput\nOutput model for XML template generation\n\n\nGetAvailableElementsInput\nInput model for getting available elements from a schema\n\n\nGetAvailableElementsOutput\nOutput model for getting available elements from a schema"
   },
   {
     "objectID": "reference/index.html#config-tools",
@@ -287,6 +315,13 @@
     "text": "Tools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nRetrieve series headers with incremental caching from FEWS webservice.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice."
   },
   {
+    "objectID": "reference/index.html#validator-tools",
+    "href": "reference/index.html#validator-tools",
+    "title": "API Reference",
+    "section": "",
+    "text": "Tools beschikbaar voor de validator agent.\n\n\n\nvalidate_xml\nEnhanced XML validation using local FEWS schemas.\n\n\ngenerate_xml_template\nGenerate XML template from XSD schema.\n\n\nget_available_elements\nGet available elements from a FEWS schema with pagination support."
+  },
+  {
     "objectID": "reference/index.html#config-tool-models",
     "href": "reference/index.html#config-tool-models",
     "title": "API Reference",
@@ -301,186 +336,158 @@
     "text": "Data modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the location_details\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput provides a minimal but meaningful response for series headers.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsSummary\nSummary of FEWS flags in a timeseries"
   },
   {
-    "objectID": "reference/DeadPointsAnalysisOutput.html",
-    "href": "reference/DeadPointsAnalysisOutput.html",
-    "title": "DeadPointsAnalysisOutput",
+    "objectID": "reference/index.html#validator-tool-models",
+    "href": "reference/index.html#validator-tool-models",
+    "title": "API Reference",
     "section": "",
-    "text": "models.DeadPointsAnalysisOutput()\nModel for the output of the analyze_dead_points tool.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncount\n\n\n\ndead_points\n\n\n\nmarkdown_content\n\n\n\nmodule_summary\n\n\n\nparameters_affected\n\n\n\nproducers\n\n\n\nrecommendations\n\n\n\nunique_modules"
+    "text": "Data modellen per validator tool.\n\n\n\nXMLValidationInput\nEnhanced input model for XML validation\n\n\nXMLValidationOutput\nEnhanced output model for XML validation results\n\n\nXMLTemplateInput\nInput model for XML template generation\n\n\nXMLTemplateOutput\nOutput model for XML template generation\n\n\nGetAvailableElementsInput\nInput model for getting available elements from a schema\n\n\nGetAvailableElementsOutput\nOutput model for getting available elements from a schema"
   },
   {
-    "objectID": "reference/DeadPointsAnalysisOutput.html#attributes",
-    "href": "reference/DeadPointsAnalysisOutput.html#attributes",
-    "title": "DeadPointsAnalysisOutput",
+    "objectID": "reference/XMLValidationOutput.html",
+    "href": "reference/XMLValidationOutput.html",
+    "title": "XMLValidationOutput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncount\n\n\n\ndead_points\n\n\n\nmarkdown_content\n\n\n\nmodule_summary\n\n\n\nparameters_affected\n\n\n\nproducers\n\n\n\nrecommendations\n\n\n\nunique_modules"
+    "text": "models.XMLValidationOutput()\nEnhanced output model for XML validation results\n\n\n\n\n\nName\nDescription\n\n\n\n\nerrors\n\n\n\nis_valid\n\n\n\nschema_location\n\n\n\nwarnings"
   },
   {
-    "objectID": "reference/SeriesFlagsSummary.html",
-    "href": "reference/SeriesFlagsSummary.html",
-    "title": "SeriesFlagsSummary",
+    "objectID": "reference/XMLValidationOutput.html#attributes",
+    "href": "reference/XMLValidationOutput.html#attributes",
+    "title": "XMLValidationOutput",
     "section": "",
-    "text": "models.SeriesFlagsSummary()\nSummary of FEWS flags in a timeseries\n\n\n\n\n\nName\nDescription\n\n\n\n\ncounts\n\n\n\nflag_counts\n\n\n\nflag_definitions\n\n\n\nperiod\n\n\n\ntotal_values"
+    "text": "Name\nDescription\n\n\n\n\nerrors\n\n\n\nis_valid\n\n\n\nschema_location\n\n\n\nwarnings"
   },
   {
-    "objectID": "reference/SeriesFlagsSummary.html#attributes",
-    "href": "reference/SeriesFlagsSummary.html#attributes",
-    "title": "SeriesFlagsSummary",
+    "objectID": "reference/get_transformation_details.html",
+    "href": "reference/get_transformation_details.html",
+    "title": "get_transformation_details",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncounts\n\n\n\nflag_counts\n\n\n\nflag_definitions\n\n\n\nperiod\n\n\n\ntotal_values"
+    "text": "tools.get_transformation_details(ctx, input)\nGet detailed information about a specific transformation, including its input and output time series.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
   },
   {
-    "objectID": "reference/GetSeriesHeadersInput.html",
-    "href": "reference/GetSeriesHeadersInput.html",
-    "title": "GetSeriesHeadersInput",
+    "objectID": "reference/get_transformation_details.html#parameters",
+    "href": "reference/get_transformation_details.html#parameters",
+    "title": "get_transformation_details",
     "section": "",
-    "text": "models.GetSeriesHeadersInput()\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\nSupports querying by parameter_id OR location_id (not both) for incremental caching.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired"
   },
   {
-    "objectID": "reference/GetSeriesHeadersInput.html#attributes",
-    "href": "reference/GetSeriesHeadersInput.html#attributes",
-    "title": "GetSeriesHeadersInput",
+    "objectID": "reference/get_transformation_details.html#returns",
+    "href": "reference/get_transformation_details.html#returns",
+    "title": "get_transformation_details",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id"
+    "text": "Name\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
   },
   {
-    "objectID": "reference/GetSeriesHeadersInput.html#methods",
-    "href": "reference/GetSeriesHeadersInput.html#methods",
-    "title": "GetSeriesHeadersInput",
+    "objectID": "reference/get_parameters.html",
+    "href": "reference/get_parameters.html",
+    "title": "get_parameters",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
+    "text": "tools.get_parameters(ctx, input)\nRetrieve parameter details from a web service and format the results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetParameterInput\nParameterDetailsInput containing request parameters\nrequired\n\n\n\nReturns: ParameterDetailsOutput: Retrieved parameter details with formatted markdown content"
   },
   {
-    "objectID": "reference/execute_query_webservice.html",
-    "href": "reference/execute_query_webservice.html",
-    "title": "execute_query_webservice",
+    "objectID": "reference/get_parameters.html#parameters",
+    "href": "reference/get_parameters.html#parameters",
+    "title": "get_parameters",
     "section": "",
-    "text": "tools.execute_query_webservice(ctx, input)\nExecute a SQL query on the FewsWebService cached database.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetParameterInput\nParameterDetailsInput containing request parameters\nrequired\n\n\n\nReturns: ParameterDetailsOutput: Retrieved parameter details with formatted markdown content"
   },
   {
-    "objectID": "reference/execute_query_webservice.html#parameters",
-    "href": "reference/execute_query_webservice.html#parameters",
-    "title": "execute_query_webservice",
+    "objectID": "reference/GraphVisualizationOutput.html",
+    "href": "reference/GraphVisualizationOutput.html",
+    "title": "GraphVisualizationOutput",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired"
+    "text": "models.GraphVisualizationOutput()\nModel for the output of graph visualization tools.\nThis model provides the graph data needed for visualization.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nnodes\nList[GraphNode]\nList of nodes in the graph\n\n\nedges\nList[GraphEdge]\nList of edges in the graph\n\n\nlayout\nGraphLayout\nLayout parameters used\n\n\nmarkdown_content\nOptional[str]\nOptional markdown representation of the graph"
   },
   {
-    "objectID": "reference/execute_query_webservice.html#returns",
-    "href": "reference/execute_query_webservice.html#returns",
-    "title": "execute_query_webservice",
+    "objectID": "reference/GraphVisualizationOutput.html#attributes",
+    "href": "reference/GraphVisualizationOutput.html#attributes",
+    "title": "GraphVisualizationOutput",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
+    "text": "Name\nType\nDescription\n\n\n\n\nnodes\nList[GraphNode]\nList of nodes in the graph\n\n\nedges\nList[GraphEdge]\nList of edges in the graph\n\n\nlayout\nGraphLayout\nLayout parameters used\n\n\nmarkdown_content\nOptional[str]\nOptional markdown representation of the graph"
   },
   {
-    "objectID": "reference/GetSeriesDataOutput.html",
-    "href": "reference/GetSeriesDataOutput.html",
-    "title": "GetSeriesDataOutput",
+    "objectID": "reference/get_locations.html",
+    "href": "reference/get_locations.html",
+    "title": "get_locations",
     "section": "",
-    "text": "models.GetSeriesDataOutput()\n\n\n\n\n\nName\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
+    "text": "tools.get_locations(ctx, input)\nRetrieve a given number of location details from a web service and format the results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional name to filter locations by their name\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
   },
   {
-    "objectID": "reference/GetSeriesDataOutput.html#attributes",
-    "href": "reference/GetSeriesDataOutput.html#attributes",
-    "title": "GetSeriesDataOutput",
+    "objectID": "reference/get_locations.html#parameters",
+    "href": "reference/get_locations.html#parameters",
+    "title": "get_locations",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional name to filter locations by their name\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
   },
   {
-    "objectID": "reference/TransformationDetailsInput.html",
-    "href": "reference/TransformationDetailsInput.html",
-    "title": "TransformationDetailsInput",
+    "objectID": "reference/XMLTemplateOutput.html",
+    "href": "reference/XMLTemplateOutput.html",
+    "title": "XMLTemplateOutput",
     "section": "",
-    "text": "models.TransformationDetailsInput()\nModel for the input of the get_transformation_details tool.\nThis model defines the required parameters to get details about a specific transformation.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe"
+    "text": "models.XMLTemplateOutput()\nOutput model for XML template generation\n\n\n\n\n\nName\nDescription\n\n\n\n\nincludes_attributes\n\n\n\nincludes_optional\n\n\n\nroot_element\n\n\n\nschema_location\n\n\n\ntarget_element\n\n\n\ntemplate"
   },
   {
-    "objectID": "reference/TransformationDetailsInput.html#attributes",
-    "href": "reference/TransformationDetailsInput.html#attributes",
-    "title": "TransformationDetailsInput",
+    "objectID": "reference/XMLTemplateOutput.html#attributes",
+    "href": "reference/XMLTemplateOutput.html#attributes",
+    "title": "XMLTemplateOutput",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe"
+    "text": "Name\nDescription\n\n\n\n\nincludes_attributes\n\n\n\nincludes_optional\n\n\n\nroot_element\n\n\n\nschema_location\n\n\n\ntarget_element\n\n\n\ntemplate"
   },
   {
-    "objectID": "reference/search_transformations.html",
-    "href": "reference/search_transformations.html",
-    "title": "search_transformations",
+    "objectID": "reference/validate_xml.html",
+    "href": "reference/validate_xml.html",
+    "title": "validate_xml",
     "section": "",
-    "text": "tools.search_transformations(ctx, input_data)\nSearch for transformations matching the given criteria.\nThis tool searches for transformations based on their description and optionally filters by workflow name and module configuration. It supports limiting the depth of hierarchical results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput_data\nTransformationSearchInput\nSearch criteria including description pattern and optional filters\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nTransformationSearchOutput\nTransformationSearchOutput containing matching transformations"
+    "text": "validate_xml\ntools.validate_xml(ctx, input)\nEnhanced XML validation using local FEWS schemas.\nThis tool: 1. Uses locally cached FEWS schemas for validation (already downloaded) 2. Auto-discovers appropriate schema if not specified 3. Supports XPath evaluation 4. Provides comprehensive validation results"
   },
   {
-    "objectID": "reference/search_transformations.html#parameters",
-    "href": "reference/search_transformations.html#parameters",
-    "title": "search_transformations",
+    "objectID": "reference/generate_xml_template.html",
+    "href": "reference/generate_xml_template.html",
+    "title": "generate_xml_template",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput_data\nTransformationSearchInput\nSearch criteria including description pattern and optional filters\nrequired"
+    "text": "generate_xml_template\ntools.generate_xml_template(ctx, input)\nGenerate XML template from XSD schema.\nThis tool uses xmlschema to analyze XSD schemas and generate valid XML templates with proper structure and example values."
   },
   {
-    "objectID": "reference/search_transformations.html#returns",
-    "href": "reference/search_transformations.html#returns",
-    "title": "search_transformations",
+    "objectID": "reference/GetAvailableElementsInput.html",
+    "href": "reference/GetAvailableElementsInput.html",
+    "title": "GetAvailableElementsInput",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nTransformationSearchOutput\nTransformationSearchOutput containing matching transformations"
+    "text": "models.GetAvailableElementsInput()\nInput model for getting available elements from a schema\n\n\n\n\n\nName\nDescription\n\n\n\n\nlimit\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
   },
   {
-    "objectID": "reference/DescribeTimeSeriesInput.html",
-    "href": "reference/DescribeTimeSeriesInput.html",
-    "title": "DescribeTimeSeriesInput",
+    "objectID": "reference/GetAvailableElementsInput.html#attributes",
+    "href": "reference/GetAvailableElementsInput.html#attributes",
+    "title": "GetAvailableElementsInput",
     "section": "",
-    "text": "models.DescribeTimeSeriesInput()\nModel for the input of the describe_timeseries tool.\nThis model defines the required parameters to describe a specific time series.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series"
+    "text": "Name\nDescription\n\n\n\n\nlimit\n\n\n\noffset\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
   },
   {
-    "objectID": "reference/DescribeTimeSeriesInput.html#attributes",
-    "href": "reference/DescribeTimeSeriesInput.html#attributes",
-    "title": "DescribeTimeSeriesInput",
+    "objectID": "reference/get_database_schema.html",
+    "href": "reference/get_database_schema.html",
+    "title": "get_database_schema",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series"
+    "text": "tools.get_database_schema(ctx, input)\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDatabaseSchemaInput\nOptional dict with parameters (not used currently)\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nDatabaseSchemaOutput\nDict[str, Any]: Database schema information"
   },
   {
-    "objectID": "examples/notebooks/fews_webservice.html",
-    "href": "examples/notebooks/fews_webservice.html",
-    "title": "Delta Agent Talk with FEWS - Webservice",
+    "objectID": "reference/get_database_schema.html#parameters",
+    "href": "reference/get_database_schema.html#parameters",
+    "title": "get_database_schema",
     "section": "",
-    "text": "from setup_quarto import setup_dot_env\n\nctx = setup_dot_env()\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/.pixi/envs/default/lib/python3.13/site-packages/pydantic/fields.py:1093: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/\n  warn(\n\n\nfrom talk_with_fews.tools.webservice.get_parameters import get_parameters\nfrom talk_with_fews.tools.webservice.get_locations import get_locations\nfrom talk_with_fews.tools.webservice.sql_query_webservice import (\n    execute_query_webservice,\n)\nfrom talk_with_fews.tools.webservice.get_series_headers import get_series_headers\nfrom talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics\n\n# WEB SERVICE\nfrom talk_with_fews.tools.webservice.get_locations import get_locations\n\n\nfrom talk_with_fews.models.get_locations import GetLocationInput, GetLocationOutput\n\nget_location_input = GetLocationInput(\n    number_of_locations=2, filter_locations_name=\"Ede\"\n)\n\nget_location_output: GetLocationOutput = await get_locations(\n    ctx=ctx, input=get_location_input\n)\n\n\nfrom pydantic_ai import format_as_xml\n\nprint(format_as_xml(get_location_output, root_tag=\"SQLQueryOutput\"))\n\n&lt;SQLQueryOutput&gt;\n  &lt;locations&gt;\n    &lt;item&gt;\n      &lt;locationId&gt;Nederrijn km 879.00&lt;/locationId&gt;\n      &lt;shortName&gt;Nederrijn 879 km&lt;/shortName&gt;\n      &lt;lat&gt;51.95300073925345&lt;/lat&gt;\n      &lt;lon&gt;5.946999976270893&lt;/lon&gt;\n      &lt;x&gt;193482.4298&lt;/x&gt;\n      &lt;y&gt;440654.9422&lt;/y&gt;\n      &lt;z&gt;null&lt;/z&gt;\n      &lt;geoDatum&gt;Rijks Driehoekstelsel&lt;/geoDatum&gt;\n      &lt;attributes&gt;null&lt;/attributes&gt;\n    &lt;/item&gt;\n    &lt;item&gt;\n      &lt;locationId&gt;Nederrijn km 880.00&lt;/locationId&gt;\n      &lt;shortName&gt;Nederrijn 880 km&lt;/shortName&gt;\n      &lt;lat&gt;51.96000074426104&lt;/lat&gt;\n      &lt;lon&gt;5.937999987101551&lt;/lon&gt;\n      &lt;x&gt;192857.8404&lt;/x&gt;\n      &lt;y&gt;441428.995&lt;/y&gt;\n      &lt;z&gt;null&lt;/z&gt;\n      &lt;geoDatum&gt;Rijks Driehoekstelsel&lt;/geoDatum&gt;\n      &lt;attributes&gt;null&lt;/attributes&gt;\n    &lt;/item&gt;\n  &lt;/locations&gt;\n  &lt;markdown_content&gt;## Locations\n\nFound 2 locations.\n\n| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum | geom |\n|-------------|------------|----------|-----------|---|---|----------| ---- |\n| Nederrijn km 879.00 | Nederrijn 879 km | 51.95300073925345 | 5.946999976270893 | 193482.4298 | 440654.9422 | Rijks Driehoekstelsel |\n| Nederrijn km 880.00 | Nederrijn 880 km | 51.96000074426104 | 5.937999987101551 | 192857.8404 | 441428.995 | Rijks Driehoekstelsel |\n&lt;/markdown_content&gt;\n&lt;/SQLQueryOutput&gt;"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDatabaseSchemaInput\nOptional dict with parameters (not used currently)\nrequired"
   },
   {
-    "objectID": "examples/notebooks/fews_validator.html",
-    "href": "examples/notebooks/fews_validator.html",
-    "title": "XML Validation",
+    "objectID": "reference/get_database_schema.html#returns",
+    "href": "reference/get_database_schema.html#returns",
+    "title": "get_database_schema",
     "section": "",
-    "text": "from pydantic_ai import format_as_xml\nfrom setup_quarto import setup_dot_env\n\nctx = setup_dot_env()\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/.pixi/envs/default/lib/python3.13/site-packages/pydantic/fields.py:1093: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/\n  warn(\n\n\n\n# xml snippet on root level with direct parent with missing nested elements\n# snippet should be based on pi-timeseries.xsd\nxml_snippet = \"\"\"\n&lt;series&gt;\n    &lt;header&gt;\n        &lt;type&gt;instantaneous&lt;/type&gt;\n        \n        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;\n        &lt;timeStep unit=\"second\" multiplier=\"3600\"/&gt;\n        &lt;startDate date=\"2006-08-23\" time=\"17:00:00\"/&gt;\n        &lt;endDate date=\"2006-08-24\" time=\"00:00:00\"/&gt;\n        &lt;missVal&gt;-8888.0&lt;/missVal&gt;\n    &lt;/header&gt;\n    &lt;event date=\"2006-08-23\" time=\"17:00:00\" value=\"8.66\"/&gt;\n&lt;/series&gt;\n\"\"\"\n\n\nfrom talk_with_fews.tools.validator.validate_xml import validate_xml\nfrom talk_with_fews.models.validate_xml import XMLValidationOutput, XMLValidationInput\nfrom talk_with_fews.models.fews_schema_options import FEWSSchemaOption\n\nxml_validation_input = XMLValidationInput(\n    xml_content=xml_snippet, schema_option=FEWSSchemaOption.PI_TIMESERIES\n)\nxml_validation_output: XMLValidationOutput = await validate_xml(\n    ctx=ctx, input=xml_validation_input\n)\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_sharedtypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_sharedtypes.xsd'\n  schema = xmlschema.XMLSchema(str(full_path), validation=\"lax\")\n\n\n\nprint(format_as_xml(xml_validation_output))\n\n&lt;is_valid&gt;True&lt;/is_valid&gt;\n&lt;errors /&gt;\n&lt;warnings /&gt;\n&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;\n\n\n\n# xml snippet with indirect parent to root with missing nested elements\nxml_snippet = \"\"\"\n    &lt;general&gt;\n        &lt;exportType&gt;SomeValidExportType&lt;/exportType&gt;\n        &lt;folder&gt;MyExportFolder&lt;/folder&gt;\n        &lt;exportFileName&gt;\n            &lt;prefix&gt;\n                &lt;timeZeroFormattingString&gt;yyyyMMddHHmm&lt;/timeZeroFormattingString&gt;\n            &lt;/prefix&gt;\n        &lt;/exportFileName&gt;\n        &lt;idMapId&gt;MyIdMap&lt;/idMapId&gt;\n        &lt;forecastSelectionPeriod end=\"0\" unit=\"day\"/&gt;\n    &lt;/general&gt;\n\"\"\"\n\nxml_validation_input = XMLValidationInput(\n    xml_content=xml_snippet, schema_option=FEWSSchemaOption.TIME_SERIES_EXPORT_RUN\n)\nxml_validation_output: XMLValidationOutput = await validate_xml(\n    ctx=ctx, input=xml_validation_input\n)\n\nprint(format_as_xml(xml_validation_output))\n\n&lt;is_valid&gt;True&lt;/is_valid&gt;\n&lt;errors /&gt;\n&lt;warnings /&gt;\n&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;\n\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'\n  schema = xmlschema.XMLSchema(str(full_path), validation=\"lax\")\n\n\n\nXML Templating\n\n# partial xml template generation\n\nfrom talk_with_fews.tools.validator.generate_xml_template import generate_xml_template\nfrom talk_with_fews.models.generate_xml_template import (\n    XMLTemplateInput,\n    XMLTemplateOutput,\n)\nfrom talk_with_fews.models.fews_schema_options import FEWSSchemaOption\n\nxml_template_input = XMLTemplateInput(\n    schema_option=FEWSSchemaOption.TIME_SERIES_IMPORT_RUN, target_element=\"general\"\n)\nxml_template_output: XMLTemplateOutput = await generate_xml_template(\n    ctx=ctx, input=xml_template_input\n)\n\nprint(xml_template_output.template)\n\n&lt;general&gt;\n  &lt;importTypeStandard&gt;example_value&lt;/importTypeStandard&gt;\n  &lt;importType&gt;example_value&lt;/importType&gt;\n  &lt;parserClassName&gt;example_value&lt;/parserClassName&gt;\n  &lt;folder/&gt;\n  &lt;fileNameForecastCreationDateTimePattern/&gt;\n  &lt;fileNameForecastCreationDateTimePatternFromZip/&gt;\n  &lt;jdbcDriverClass&gt;example_value&lt;/jdbcDriverClass&gt;\n  &lt;jdbcConnectionString&gt;example_value&lt;/jdbcConnectionString&gt;\n  &lt;serverUrl&gt;example_value&lt;/serverUrl&gt;\n  &lt;oauth2Config&gt;\n    &lt;authUrl&gt;example_value&lt;/authUrl&gt;\n  &lt;/oauth2Config&gt;\n  &lt;relativeViewPeriod/&gt;\n  &lt;startDateTime/&gt;\n  &lt;endDateTime/&gt;\n  &lt;forecastSearchPeriod/&gt;\n  &lt;externalForecastTimesSearchRelativePeriod/&gt;\n  &lt;externalForecastTimesCardinalTimeStep/&gt;\n  &lt;logErrorsAsWarnings&gt;true&lt;/logErrorsAsWarnings&gt;\n  &lt;logErrorsAsWarningsToFileOnly&gt;true&lt;/logErrorsAsWarningsToFileOnly&gt;\n  &lt;maximumVerticalSnapDistance/&gt;\n  &lt;mapLocationsByLayerSigmaCoordinate&gt;true&lt;/mapLocationsByLayerSigmaCoordinate&gt;\n  &lt;dataFeedId/&gt;\n  &lt;disableDataFeedInfo/&gt;\n  &lt;columnSeparator/&gt;\n  &lt;decimalSeparator/&gt;\n&lt;/general&gt;\n\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/generate_xml_template.py:133: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'\n  schema = xmlschema.XMLSchema(str(full_path), validation=\"lax\")\n\n\n\n# full xml template generation\n# should be really careful with this, it can hang\nxml_template_input = XMLTemplateInput(\n    schema_option=FEWSSchemaOption.TIME_SERIES_IMPORT_RUN, include_optional=True\n)\nxml_template_output: XMLTemplateOutput = await generate_xml_template(\n    ctx=ctx, input=xml_template_input\n)\n\n\nprint(xml_template_output.template)\n\n&lt;timeSeriesImportRun xmlns=\"http://www.wldelft.nl/fews\"&gt;\n&lt;timeSeriesImportRun&gt;\n  &lt;import&gt;\n    &lt;general&gt;\n      &lt;description&gt;example_value&lt;/description&gt;\n      &lt;importTypeStandard&gt;example_value&lt;/importTypeStandard&gt;\n      &lt;importType&gt;example_value&lt;/importType&gt;\n      &lt;parserClassName&gt;example_value&lt;/parserClassName&gt;\n      &lt;binDir&gt;example_value&lt;/binDir&gt;\n      &lt;moduleDataSetName&gt;example_value&lt;/moduleDataSetName&gt;\n      &lt;folder/&gt;\n      &lt;fileNameDateTimeFilter&gt;\n        &lt;timeStep/&gt;\n        &lt;dateTimePattern/&gt;\n        &lt;preFixLength&gt;1&lt;/preFixLength&gt;\n        &lt;postFixLength&gt;1&lt;/postFixLength&gt;\n      &lt;/fileNameDateTimeFilter&gt;\n      &lt;fileNamePatternFilter/&gt;\n      &lt;fileNameEnsembleMemberIndexPattern/&gt;\n      &lt;fileNameObservationDateTimePattern/&gt;\n      &lt;fileNameForecastCreationDateTimePattern/&gt;\n      &lt;fileNameForecastCreationDateTimePatternFromZip/&gt;\n      &lt;fileNameLocationIdPattern/&gt;\n      &lt;fileNameParameterIdPattern/&gt;\n      &lt;maxAllowedFolderSizeMB&gt;1&lt;/maxAllowedFolderSizeMB&gt;\n      &lt;failedFolder/&gt;\n      &lt;backupFolder/&gt;\n      &lt;suspendedFolder/&gt;\n      &lt;importTriggeringFile/&gt;\n      &lt;groupImportPattern&gt;\n        &lt;numberOfFiles&gt;1&lt;/numberOfFiles&gt;\n        &lt;fileNameDateTimePattern/&gt;\n        &lt;waitingTime/&gt;\n      &lt;/groupImportPattern&gt;\n      &lt;deleteImportedFiles&gt;true&lt;/deleteImportedFiles&gt;\n      &lt;ftpPassiveMode&gt;true&lt;/ftpPassiveMode&gt;\n      &lt;jdbcDriverClass&gt;example_value&lt;/jdbcDriverClass&gt;\n      &lt;jdbcBinDir/&gt;\n      &lt;jdbcConnectionString&gt;example_value&lt;/jdbcConnectionString&gt;\n      &lt;jdbcConnectionTimeOutMillis/&gt;\n      &lt;serverUrl&gt;example_value&lt;/serverUrl&gt;\n      &lt;backupServerUrl&gt;example_value&lt;/backupServerUrl&gt;\n      &lt;fileNamePatternFilter/&gt;\n      &lt;fileNameObservationDateTimePattern/&gt;\n      &lt;connectionTimeOutMillis&gt;1&lt;/connectionTimeOutMillis&gt;\n      &lt;oauth2Config&gt;\n        &lt;authUrl&gt;example_value&lt;/authUrl&gt;\n        &lt;clientId&gt;example_value&lt;/clientId&gt;\n        &lt;clientSecret&gt;example_value&lt;/clientSecret&gt;\n        &lt;scope&gt;example_value&lt;/scope&gt;\n        &lt;audience&gt;example_value&lt;/audience&gt;\n        &lt;issuer&gt;example_value&lt;/issuer&gt;\n        &lt;refreshToken&gt;example_value&lt;/refreshToken&gt;\n      &lt;/oauth2Config&gt;\n      &lt;relativeViewPeriod/&gt;\n      &lt;startDateTime/&gt;\n      &lt;endDateTime/&gt;\n      &lt;onlyGaps&gt;true&lt;/onlyGaps&gt;\n      &lt;forecastSearchPeriod/&gt;\n      &lt;externalForecastTimesSearchRelativePeriod/&gt;\n      &lt;externalForecastTimesCardinalTimeStep/&gt;\n      &lt;forecastMaxAge/&gt;\n      &lt;table/&gt;\n      &lt;validate&gt;true&lt;/validate&gt;\n      &lt;logErrorsAsWarnings&gt;true&lt;/logErrorsAsWarnings&gt;\n      &lt;logErrorsAsWarningsToFileOnly&gt;true&lt;/logErrorsAsWarningsToFileOnly&gt;\n      &lt;logWarningsForUnmappableTimeSeries&gt;true&lt;/logWarningsForUnmappableTimeSeries&gt;\n      &lt;failOnUnmappableTimeSeries&gt;true&lt;/failOnUnmappableTimeSeries&gt;\n      &lt;logWarningsForUnmappableLocations&gt;true&lt;/logWarningsForUnmappableLocations&gt;\n      &lt;logWarningsForUnmappableParameters&gt;true&lt;/logWarningsForUnmappableParameters&gt;\n      &lt;logWarningsForUnmappableQualifiers&gt;true&lt;/logWarningsForUnmappableQualifiers&gt;\n      &lt;failOnUnmappableLocations&gt;true&lt;/failOnUnmappableLocations&gt;\n      &lt;maxLogWarnings&gt;1&lt;/maxLogWarnings&gt;\n      &lt;logWarningsToSeparateFile&gt;true&lt;/logWarningsToSeparateFile&gt;\n      &lt;ignoreFileNotFoundWarnings&gt;true&lt;/ignoreFileNotFoundWarnings&gt;\n      &lt;idMapId/&gt;\n      &lt;moduleInstanceAware&gt;true&lt;/moduleInstanceAware&gt;\n      &lt;useStandardName&gt;true&lt;/useStandardName&gt;\n      &lt;maximumSnapDistance/&gt;\n      &lt;maximumVerticalSnapDistance/&gt;\n      &lt;mapLocationsByLayerSigmaCoordinate&gt;true&lt;/mapLocationsByLayerSigmaCoordinate&gt;\n      &lt;unitConversionsId/&gt;\n      &lt;disableImportOnMissingUnitConversion&gt;true&lt;/disableImportOnMissingUnitConversion&gt;\n      &lt;flagConversionsId/&gt;\n      &lt;flagSourceConversionsId/&gt;\n      &lt;missingValue&gt;1.0&lt;/missingValue&gt;\n      &lt;missingValueText&gt;example_value&lt;/missingValueText&gt;\n      &lt;traceValue&gt;1.0&lt;/traceValue&gt;\n      &lt;importTimeZone/&gt;\n      &lt;gridStartPoint&gt;1&lt;/gridStartPoint&gt;\n      &lt;geoDatum/&gt;\n      &lt;importTypeConfig/&gt;\n      &lt;dataFeedId/&gt;\n      &lt;disableDataFeedInfo/&gt;\n      &lt;convertDatum&gt;true&lt;/convertDatum&gt;\n      &lt;skipMissingValues&gt;true&lt;/skipMissingValues&gt;\n      &lt;skipEmptyTextValues&gt;true&lt;/skipEmptyTextValues&gt;\n      &lt;ignoreNonExistingLocationSets&gt;true&lt;/ignoreNonExistingLocationSets&gt;\n      &lt;reportChangedValues&gt;true&lt;/reportChangedValues&gt;\n      &lt;actionLogEventTypeId/&gt;\n      &lt;comment&gt;\n        &lt;dateTimePattern/&gt;\n        &lt;timeZone/&gt;\n        &lt;commentForFirstValue/&gt;\n        &lt;commentForAllValues/&gt;\n      &lt;/comment&gt;\n      &lt;synchLevel&gt;1&lt;/synchLevel&gt;\n      &lt;expiryTime/&gt;\n      &lt;relativeForecastTime/&gt;\n      &lt;skipFirstLinesCount&gt;1&lt;/skipFirstLinesCount&gt;\n      &lt;gotoLineWhichStartsWith&gt;example_value&lt;/gotoLineWhichStartsWith&gt;\n      &lt;commentIgnoreFilter&gt;\n        &lt;ignoreCommentPattern/&gt;\n        &lt;ignoreComment/&gt;\n      &lt;/commentIgnoreFilter&gt;\n      &lt;ignoreEmptyComments&gt;true&lt;/ignoreEmptyComments&gt;\n      &lt;mergeWithExistingSampleData&gt;true&lt;/mergeWithExistingSampleData&gt;\n      &lt;rejectCompleteSampleOnUnmappableId&gt;true&lt;/rejectCompleteSampleOnUnmappableId&gt;\n      &lt;rejectCompleteSampleOnDuplicateValues&gt;true&lt;/rejectCompleteSampleOnDuplicateValues&gt;\n      &lt;overwriteAnnotations&gt;true&lt;/overwriteAnnotations&gt;\n      &lt;trimPeriodWhenLastImportedTimeStepAfterPeriod&gt;true&lt;/trimPeriodWhenLastImportedTimeStepAfterPeriod&gt;\n      &lt;columnSeparator/&gt;\n      &lt;decimalSeparator/&gt;\n      &lt;dateTimePattern/&gt;\n      &lt;charset/&gt;\n    &lt;/general&gt;\n    &lt;tolerance/&gt;\n    &lt;delay/&gt;\n    &lt;startTimeShift&gt;\n      &lt;locationSetId/&gt;\n      &lt;locationId/&gt;\n      &lt;parameterId/&gt;\n      &lt;relativePeriod/&gt;\n    &lt;/startTimeShift&gt;\n    &lt;properties/&gt;\n    &lt;timeSeriesSet/&gt;\n    &lt;temporary&gt;true&lt;/temporary&gt;\n    &lt;locationId/&gt;\n    &lt;locationSetId/&gt;\n    &lt;annotationLocationSetId/&gt;\n    &lt;externUnit/&gt;\n    &lt;gribRecordTimeIgnore/&gt;\n    &lt;interpolateSerie/&gt;\n    &lt;minimumAgeForImport/&gt;\n  &lt;/import&gt;\n&lt;/timeSeriesImportRun&gt;\n&lt;/timeSeriesImportRun&gt;"
+    "text": "Name\nType\nDescription\n\n\n\n\n\nDatabaseSchemaOutput\nDict[str, Any]: Database schema information"
   },
   {
-    "objectID": "contributing.html",
-    "href": "contributing.html",
-    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Talk with FEWS",
     "section": "",
-    "text": "Het ontwikkelen van de Talk with Fews bestaat uit twee delen. Eerst ontwikkelt HKV de basisfunctionaliteit. Deze ontwikkeling is voor iedereen te volgen op GitHub, maar toevoegingen worden nog niet geaccepteerd. Daarna blijft het project open source beschikbaar en kan het verder worden ontwikkeld. De term ‘ontwikkelaars’ duidt in de eerste ontwikkelfase op het team van HKV, later op anderen die een bijdrage willen leveren. Een bijdrage kan uiteenlopen van een vraag tot een grote wijziging via een pull request.\nEen bijdrage kan een van de volgend zaken zijn:\n\nJe hebt een vraag\nJe denkt een probleem (bug) te hebben gevonden (of onverwachte functionaliteit)\nJe wilt een aanpassing maken (bug fixen, nieuwe functionaliteit, update aan de documentatie)\nJe wilt een nieuwe versie publiceren\n\nDe onderstaande secties behandelen de stappen per geval.\n\n\n\nGebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan.\nVoeg het \"Question” label toe; voeg andere labels toe waar nodig.\n\n\n\n\n\nGebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag/probleem heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan. Zorg dat je genoeg informatie meegeeft zodat andere ontwikkelaars je probleem begrijpen en genoeg context hebben om je te helpen. Afhankelijk van je probleem, kan je de SHA hashcode van de commit die problemen veroorzaakt toevoegen. Denk daarnaast ook aan versie- en besturingssysteeminformatie.\nVoeg labels toe die relevant zijn voor je probleem.\n\n\n\n\n\n(Belangrijk) Communiceer aan de rest van de ontwikkelaars voor je begint dat je een aanpassing wilt maken. Dit laat je weten door een issue aan te maken.\n(Belangrijk) Bereik consensus over je idee.\nDe hoofdontwikkelaars hebben rechten om nieuwe branches aan te maken. Als je deze rechten niet hebt, maak een 'fork' (kopie) in je eigen account. In deze fork maak je een eigen branch van de laatste commit in main. Probeer om veranderingen die in de tussentijd worden doorgevoerd op main al mee te nemen. Dit doe je door te pullen van de 'upstream' repository, (zie instructies hier en hier);\nVoor Visual Studio Code staat er een voorbeeldconfiguratie.\nInstalleer de benodigde python packages in een pixi omgeving met pixi install, volg de uitleg van de pixi. Pixi zorgt er voor dat iedereen dezelfde versies van python packages heeft.\nZorg dat de format van je code correct is met pixi run pre-commit. Pre-commit haalt opmaak fouten uit je code en zorgt voor een fijne manier van samenwerken. Hier onder vallen een aantal zaken als spaties, haakjes etc, maar ook docstrings. Door het installeren van pre-commit met de volgende commando: pre-commit install --hook-type pre-commit --hook-type pre-push runt deze lokaal automatisch met git commit actie.\nZorg dat alle bestaande testen werken met pixi run pytest. Met pixi run pytest wordt (lokaal) een html overzicht gegenereerd in de map tests/hidden_test_cov/index.html.\nZorg dat alle documentatie automatisch genereert met pixi run quarto-render. Quarto is al onderdeel van de zojuist aangemaakte pixi omgeving.\nVoeg bij nieuwe functionaliteit altijd nieuwe tests toe.\nUpdate en voeg documentatie toe. Gebruik Google Style Python docstrings. Zorg dat je code leesbaar en begrijpelijk is voor anderen. De pydoclint checkt de doctring format voor je.\nHeb je nieuwe termen toegevoegd? Update dan de vertalingen in tabel\nPush je branch. naar (jouw fork van) de Talk with Fews repo op GitHub;\nMaak een pull request aan, bijvoorbeeld volgens deze instructies. Pull requests die worden ontvangen, krijgen altijd een review.\n\nAls je het idee heb dat je iets nuttig heb toegevoegd, maar je weet niet hoe je tests schrijft of runt of hoe je documentatie aanmaakt: geen probleem. Maak een pull request en dan kijken we hoe we kunnen helpen.\n\n\n\nDit is een stukje voor de hoofdontwikkelaars van Talk with Fews.\n\nCheckout HEAD van de main branch met git checkout main en git pull.\nBeslis welke nieuwe versie (major, minor or patch) gebruikt gaat worden. We gebruiken semantic versioning.\nOmdat je niet direct naar de main branch kan schrijven (protected), maak een nieuwe branch aan met git checkout -b release-&lt;version&gt;.\nIndien dependencies zijn aangepast, maak een nieuw pixi lock bestand.\nPas de versie aan in src/talk_with_fews/__init__.py, de pyproject.toml leest deze uit. \nZorg dat de format van je code correct is met pixi run ruff check.\nZorg dat alle bestaande testen werken met pixi run pytest.\nCommit & push je aanpassingen naar GitHub.\nMaak een pull request aan, laat iemand het reviewen, wacht op alle acties, deze worden groen, en merge de pull request.\nWacht tot de GitHub-acties op de main branch klaar zijn en er een groen vinkje bij staat.\nMaak een nieuwe 'release' aan op GitHub\n\nGebruik de versie als titel en pas een versie tag toe.\nAls beschrijving gebruik de intro van de README.md en veranderingen uit de changelog.qmd.\n\nCheck\n\nIs de wiki bijgewerkt?  \n\nVier je nieuwe versie!"
-  },
-  {
-    "objectID": "contributing.html#je-hebt-een-vraag",
-    "href": "contributing.html#je-hebt-een-vraag",
-    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
-    "section": "",
-    "text": "Gebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan.\nVoeg het \"Question” label toe; voeg andere labels toe waar nodig."
-  },
-  {
-    "objectID": "contributing.html#je-denkt-een-probleem-bug-te-hebben-gevonden",
-    "href": "contributing.html#je-denkt-een-probleem-bug-te-hebben-gevonden",
-    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
-    "section": "",
-    "text": "Gebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag/probleem heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan. Zorg dat je genoeg informatie meegeeft zodat andere ontwikkelaars je probleem begrijpen en genoeg context hebben om je te helpen. Afhankelijk van je probleem, kan je de SHA hashcode van de commit die problemen veroorzaakt toevoegen. Denk daarnaast ook aan versie- en besturingssysteeminformatie.\nVoeg labels toe die relevant zijn voor je probleem."
-  },
-  {
-    "objectID": "contributing.html#je-wilt-een-aanpassing-maken",
-    "href": "contributing.html#je-wilt-een-aanpassing-maken",
-    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
-    "section": "",
-    "text": "(Belangrijk) Communiceer aan de rest van de ontwikkelaars voor je begint dat je een aanpassing wilt maken. Dit laat je weten door een issue aan te maken.\n(Belangrijk) Bereik consensus over je idee.\nDe hoofdontwikkelaars hebben rechten om nieuwe branches aan te maken. Als je deze rechten niet hebt, maak een 'fork' (kopie) in je eigen account. In deze fork maak je een eigen branch van de laatste commit in main. Probeer om veranderingen die in de tussentijd worden doorgevoerd op main al mee te nemen. Dit doe je door te pullen van de 'upstream' repository, (zie instructies hier en hier);\nVoor Visual Studio Code staat er een voorbeeldconfiguratie.\nInstalleer de benodigde python packages in een pixi omgeving met pixi install, volg de uitleg van de pixi. Pixi zorgt er voor dat iedereen dezelfde versies van python packages heeft.\nZorg dat de format van je code correct is met pixi run pre-commit. Pre-commit haalt opmaak fouten uit je code en zorgt voor een fijne manier van samenwerken. Hier onder vallen een aantal zaken als spaties, haakjes etc, maar ook docstrings. Door het installeren van pre-commit met de volgende commando: pre-commit install --hook-type pre-commit --hook-type pre-push runt deze lokaal automatisch met git commit actie.\nZorg dat alle bestaande testen werken met pixi run pytest. Met pixi run pytest wordt (lokaal) een html overzicht gegenereerd in de map tests/hidden_test_cov/index.html.\nZorg dat alle documentatie automatisch genereert met pixi run quarto-render. Quarto is al onderdeel van de zojuist aangemaakte pixi omgeving.\nVoeg bij nieuwe functionaliteit altijd nieuwe tests toe.\nUpdate en voeg documentatie toe. Gebruik Google Style Python docstrings. Zorg dat je code leesbaar en begrijpelijk is voor anderen. De pydoclint checkt de doctring format voor je.\nHeb je nieuwe termen toegevoegd? Update dan de vertalingen in tabel\nPush je branch. naar (jouw fork van) de Talk with Fews repo op GitHub;\nMaak een pull request aan, bijvoorbeeld volgens deze instructies. Pull requests die worden ontvangen, krijgen altijd een review.\n\nAls je het idee heb dat je iets nuttig heb toegevoegd, maar je weet niet hoe je tests schrijft of runt of hoe je documentatie aanmaakt: geen probleem. Maak een pull request en dan kijken we hoe we kunnen helpen."
-  },
-  {
-    "objectID": "contributing.html#je-wilt-een-nieuwe-versie-publiceren",
-    "href": "contributing.html#je-wilt-een-nieuwe-versie-publiceren",
-    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
-    "section": "",
-    "text": "Dit is een stukje voor de hoofdontwikkelaars van Talk with Fews.\n\nCheckout HEAD van de main branch met git checkout main en git pull.\nBeslis welke nieuwe versie (major, minor or patch) gebruikt gaat worden. We gebruiken semantic versioning.\nOmdat je niet direct naar de main branch kan schrijven (protected), maak een nieuwe branch aan met git checkout -b release-&lt;version&gt;.\nIndien dependencies zijn aangepast, maak een nieuw pixi lock bestand.\nPas de versie aan in src/talk_with_fews/__init__.py, de pyproject.toml leest deze uit. \nZorg dat de format van je code correct is met pixi run ruff check.\nZorg dat alle bestaande testen werken met pixi run pytest.\nCommit & push je aanpassingen naar GitHub.\nMaak een pull request aan, laat iemand het reviewen, wacht op alle acties, deze worden groen, en merge de pull request.\nWacht tot de GitHub-acties op de main branch klaar zijn en er een groen vinkje bij staat.\nMaak een nieuwe 'release' aan op GitHub\n\nGebruik de versie als titel en pas een versie tag toe.\nAls beschrijving gebruik de intro van de README.md en veranderingen uit de changelog.qmd.\n\nCheck\n\nIs de wiki bijgewerkt?  \n\nVier je nieuwe versie!"
+    "text": "Documentatie voor Talk with FEWS tools.\nDit is ontwikkeld door HKV en wordt gepubliceerd onder de GNU GPL-3 licentie."
   },
   {
     "objectID": "examples/notebooks/fews_config.html",
@@ -525,32 +532,109 @@
     "text": "Execute query\nDeze tool geeft alle mogelijke vrijheid: het taalmodel kan elke SQL query uitvoeren.\n\nfrom talk_with_fews.tools.config.sql_query import execute_query\nfrom talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput\n\nsql_query_input = SQLQueryInput(\n    query=\"SELECT * FROM endpoints limit 3\",\n)\n\nsql_query_output: SQLQueryOutput = await execute_query(ctx=ctx, input=sql_query_input)\n\n\nprint(format_as_xml(sql_query_output, root_tag=\"SQLQueryOutput\"))\n\n&lt;SQLQueryOutput&gt;\n  &lt;results&gt;\n    &lt;item&gt;\n      &lt;tss_id&gt;1&lt;/tss_id&gt;\n      &lt;desc&gt;filters&lt;/desc&gt;\n    &lt;/item&gt;\n    &lt;item&gt;\n      &lt;tss_id&gt;2&lt;/tss_id&gt;\n      &lt;desc&gt;filters&lt;/desc&gt;\n    &lt;/item&gt;\n    &lt;item&gt;\n      &lt;tss_id&gt;3&lt;/tss_id&gt;\n      &lt;desc&gt;filters&lt;/desc&gt;\n    &lt;/item&gt;\n  &lt;/results&gt;\n  &lt;column_names&gt;\n    &lt;item&gt;tss_id&lt;/item&gt;\n    &lt;item&gt;desc&lt;/item&gt;\n  &lt;/column_names&gt;\n  &lt;row_count&gt;3&lt;/row_count&gt;\n  &lt;query_executed&gt;SELECT * FROM endpoints limit 3&lt;/query_executed&gt;\n&lt;/SQLQueryOutput&gt;"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Talk with FEWS",
+    "objectID": "contributing.html",
+    "href": "contributing.html",
+    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
     "section": "",
-    "text": "Documentatie voor talk with FEWS tools.\nDit is ontwikkeld door HKV en wordt gepubliceerd onder de GNU GPL-3 licentie."
+    "text": "Het ontwikkelen van de Talk with Fews bestaat uit twee delen. Eerst ontwikkelt HKV de basisfunctionaliteit. Deze ontwikkeling is voor iedereen te volgen op GitHub, maar toevoegingen worden nog niet geaccepteerd. Daarna blijft het project open source beschikbaar en kan het verder worden ontwikkeld. De term ‘ontwikkelaars’ duidt in de eerste ontwikkelfase op het team van HKV, later op anderen die een bijdrage willen leveren. Een bijdrage kan uiteenlopen van een vraag tot een grote wijziging via een pull request.\nEen bijdrage kan een van de volgend zaken zijn:\n\nJe hebt een vraag\nJe denkt een probleem (bug) te hebben gevonden (of onverwachte functionaliteit)\nJe wilt een aanpassing maken (bug fixen, nieuwe functionaliteit, update aan de documentatie)\nJe wilt een nieuwe versie publiceren\n\nDe onderstaande secties behandelen de stappen per geval.\n\n\n\nGebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan.\nVoeg het \"Question” label toe; voeg andere labels toe waar nodig.\n\n\n\n\n\nGebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag/probleem heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan. Zorg dat je genoeg informatie meegeeft zodat andere ontwikkelaars je probleem begrijpen en genoeg context hebben om je te helpen. Afhankelijk van je probleem, kan je de SHA hashcode van de commit die problemen veroorzaakt toevoegen. Denk daarnaast ook aan versie- en besturingssysteeminformatie.\nVoeg labels toe die relevant zijn voor je probleem.\n\n\n\n\n\n(Belangrijk) Communiceer aan de rest van de ontwikkelaars voor je begint dat je een aanpassing wilt maken. Dit laat je weten door een issue aan te maken.\n(Belangrijk) Bereik consensus over je idee.\nDe hoofdontwikkelaars hebben rechten om nieuwe branches aan te maken. Als je deze rechten niet hebt, maak een 'fork' (kopie) in je eigen account. In deze fork maak je een eigen branch van de laatste commit in main. Probeer om veranderingen die in de tussentijd worden doorgevoerd op main al mee te nemen. Dit doe je door te pullen van de 'upstream' repository, (zie instructies hier en hier);\nVoor Visual Studio Code staat er een voorbeeldconfiguratie.\nInstalleer de benodigde python packages in een pixi omgeving met pixi install, volg de uitleg van de pixi. Pixi zorgt er voor dat iedereen dezelfde versies van python packages heeft.\nZorg dat de format van je code correct is met pixi run pre-commit. Pre-commit haalt opmaak fouten uit je code en zorgt voor een fijne manier van samenwerken. Hier onder vallen een aantal zaken als spaties, haakjes etc, maar ook docstrings. Door het installeren van pre-commit met de volgende commando: pre-commit install --hook-type pre-commit --hook-type pre-push runt deze lokaal automatisch met git commit actie.\nZorg dat alle bestaande testen werken met pixi run pytest. Met pixi run pytest wordt (lokaal) een html overzicht gegenereerd in de map tests/hidden_test_cov/index.html.\nZorg dat alle documentatie automatisch genereert met pixi run quarto-render. Quarto is al onderdeel van de zojuist aangemaakte pixi omgeving.\nVoeg bij nieuwe functionaliteit altijd nieuwe tests toe.\nUpdate en voeg documentatie toe. Gebruik Google Style Python docstrings. Zorg dat je code leesbaar en begrijpelijk is voor anderen. De pydoclint checkt de doctring format voor je.\nHeb je nieuwe termen toegevoegd? Update dan de vertalingen in tabel\nPush je branch. naar (jouw fork van) de Talk with Fews repo op GitHub;\nMaak een pull request aan, bijvoorbeeld volgens deze instructies. Pull requests die worden ontvangen, krijgen altijd een review.\n\nAls je het idee heb dat je iets nuttig heb toegevoegd, maar je weet niet hoe je tests schrijft of runt of hoe je documentatie aanmaakt: geen probleem. Maak een pull request en dan kijken we hoe we kunnen helpen.\n\n\n\nDit is een stukje voor de hoofdontwikkelaars van Talk with Fews.\n\nCheckout HEAD van de main branch met git checkout main en git pull.\nBeslis welke nieuwe versie (major, minor or patch) gebruikt gaat worden. We gebruiken semantic versioning.\nOmdat je niet direct naar de main branch kan schrijven (protected), maak een nieuwe branch aan met git checkout -b release-&lt;version&gt;.\nIndien dependencies zijn aangepast, maak een nieuw pixi lock bestand.\nPas de versie aan in src/talk_with_fews/__init__.py, de pyproject.toml leest deze uit. \nZorg dat de format van je code correct is met pixi run ruff check.\nZorg dat alle bestaande testen werken met pixi run pytest.\nCommit & push je aanpassingen naar GitHub.\nMaak een pull request aan, laat iemand het reviewen, wacht op alle acties, deze worden groen, en merge de pull request.\nWacht tot de GitHub-acties op de main branch klaar zijn en er een groen vinkje bij staat.\nMaak een nieuwe 'release' aan op GitHub\n\nGebruik de versie als titel en pas een versie tag toe.\nAls beschrijving gebruik de intro van de README.md en veranderingen uit de changelog.qmd.\n\nCheck\n\nIs de wiki bijgewerkt?  \n\nVier je nieuwe versie!"
   },
   {
-    "objectID": "reference/get_database_schema.html",
-    "href": "reference/get_database_schema.html",
-    "title": "get_database_schema",
+    "objectID": "contributing.html#je-hebt-een-vraag",
+    "href": "contributing.html#je-hebt-een-vraag",
+    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
     "section": "",
-    "text": "tools.get_database_schema(ctx, input)\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDatabaseSchemaInput\nOptional dict with parameters (not used currently)\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nDatabaseSchemaOutput\nDict[str, Any]: Database schema information"
+    "text": "Gebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan.\nVoeg het \"Question” label toe; voeg andere labels toe waar nodig."
   },
   {
-    "objectID": "reference/get_database_schema.html#parameters",
-    "href": "reference/get_database_schema.html#parameters",
-    "title": "get_database_schema",
+    "objectID": "contributing.html#je-denkt-een-probleem-bug-te-hebben-gevonden",
+    "href": "contributing.html#je-denkt-een-probleem-bug-te-hebben-gevonden",
+    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDatabaseSchemaInput\nOptional dict with parameters (not used currently)\nrequired"
+    "text": "Gebruik de zoekfunctie hier om te kijken of iemand anders dezelfde vraag/probleem heeft.\nAls je niks vergelijkbaars kan vinden, maak een nieuwe issue aan. Zorg dat je genoeg informatie meegeeft zodat andere ontwikkelaars je probleem begrijpen en genoeg context hebben om je te helpen. Afhankelijk van je probleem, kan je de SHA hashcode van de commit die problemen veroorzaakt toevoegen. Denk daarnaast ook aan versie- en besturingssysteeminformatie.\nVoeg labels toe die relevant zijn voor je probleem."
   },
   {
-    "objectID": "reference/get_database_schema.html#returns",
-    "href": "reference/get_database_schema.html#returns",
-    "title": "get_database_schema",
+    "objectID": "contributing.html#je-wilt-een-aanpassing-maken",
+    "href": "contributing.html#je-wilt-een-aanpassing-maken",
+    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nDatabaseSchemaOutput\nDict[str, Any]: Database schema information"
+    "text": "(Belangrijk) Communiceer aan de rest van de ontwikkelaars voor je begint dat je een aanpassing wilt maken. Dit laat je weten door een issue aan te maken.\n(Belangrijk) Bereik consensus over je idee.\nDe hoofdontwikkelaars hebben rechten om nieuwe branches aan te maken. Als je deze rechten niet hebt, maak een 'fork' (kopie) in je eigen account. In deze fork maak je een eigen branch van de laatste commit in main. Probeer om veranderingen die in de tussentijd worden doorgevoerd op main al mee te nemen. Dit doe je door te pullen van de 'upstream' repository, (zie instructies hier en hier);\nVoor Visual Studio Code staat er een voorbeeldconfiguratie.\nInstalleer de benodigde python packages in een pixi omgeving met pixi install, volg de uitleg van de pixi. Pixi zorgt er voor dat iedereen dezelfde versies van python packages heeft.\nZorg dat de format van je code correct is met pixi run pre-commit. Pre-commit haalt opmaak fouten uit je code en zorgt voor een fijne manier van samenwerken. Hier onder vallen een aantal zaken als spaties, haakjes etc, maar ook docstrings. Door het installeren van pre-commit met de volgende commando: pre-commit install --hook-type pre-commit --hook-type pre-push runt deze lokaal automatisch met git commit actie.\nZorg dat alle bestaande testen werken met pixi run pytest. Met pixi run pytest wordt (lokaal) een html overzicht gegenereerd in de map tests/hidden_test_cov/index.html.\nZorg dat alle documentatie automatisch genereert met pixi run quarto-render. Quarto is al onderdeel van de zojuist aangemaakte pixi omgeving.\nVoeg bij nieuwe functionaliteit altijd nieuwe tests toe.\nUpdate en voeg documentatie toe. Gebruik Google Style Python docstrings. Zorg dat je code leesbaar en begrijpelijk is voor anderen. De pydoclint checkt de doctring format voor je.\nHeb je nieuwe termen toegevoegd? Update dan de vertalingen in tabel\nPush je branch. naar (jouw fork van) de Talk with Fews repo op GitHub;\nMaak een pull request aan, bijvoorbeeld volgens deze instructies. Pull requests die worden ontvangen, krijgen altijd een review.\n\nAls je het idee heb dat je iets nuttig heb toegevoegd, maar je weet niet hoe je tests schrijft of runt of hoe je documentatie aanmaakt: geen probleem. Maak een pull request en dan kijken we hoe we kunnen helpen."
+  },
+  {
+    "objectID": "contributing.html#je-wilt-een-nieuwe-versie-publiceren",
+    "href": "contributing.html#je-wilt-een-nieuwe-versie-publiceren",
+    "title": "Richtlijnen voor bijdragen aan Talk with Fews",
+    "section": "",
+    "text": "Dit is een stukje voor de hoofdontwikkelaars van Talk with Fews.\n\nCheckout HEAD van de main branch met git checkout main en git pull.\nBeslis welke nieuwe versie (major, minor or patch) gebruikt gaat worden. We gebruiken semantic versioning.\nOmdat je niet direct naar de main branch kan schrijven (protected), maak een nieuwe branch aan met git checkout -b release-&lt;version&gt;.\nIndien dependencies zijn aangepast, maak een nieuw pixi lock bestand.\nPas de versie aan in src/talk_with_fews/__init__.py, de pyproject.toml leest deze uit. \nZorg dat de format van je code correct is met pixi run ruff check.\nZorg dat alle bestaande testen werken met pixi run pytest.\nCommit & push je aanpassingen naar GitHub.\nMaak een pull request aan, laat iemand het reviewen, wacht op alle acties, deze worden groen, en merge de pull request.\nWacht tot de GitHub-acties op de main branch klaar zijn en er een groen vinkje bij staat.\nMaak een nieuwe 'release' aan op GitHub\n\nGebruik de versie als titel en pas een versie tag toe.\nAls beschrijving gebruik de intro van de README.md en veranderingen uit de changelog.qmd.\n\nCheck\n\nIs de wiki bijgewerkt?  \n\nVier je nieuwe versie!"
+  },
+  {
+    "objectID": "examples/notebooks/fews_validator.html",
+    "href": "examples/notebooks/fews_validator.html",
+    "title": "Validator Agent",
+    "section": "",
+    "text": "De validator Agent van ‘Talk with FEWS’ heeft verschillende tools tot zijn beschikking. Het taalmodel kan deze zelf invullen, maar hier wordt per tool een voorbeeld gegeven van de in en output."
+  },
+  {
+    "objectID": "examples/notebooks/fews_validator.html#validate-xml-snippet",
+    "href": "examples/notebooks/fews_validator.html#validate-xml-snippet",
+    "title": "Validator Agent",
+    "section": "Validate XML snippet",
+    "text": "Validate XML snippet\nDelft FEWS configuratie is voor een groot gedeelte opgebouwd rond XML bestanden. Deze XML bestanden moeten voldoen aan een bepaalde structuur. Deze structuur wordt bepaald door de bijbehorende XSD schema.\nLaten we beginnen met een XML snippet van een time series definitie. Er mist een element in deze snippet welke we hopen te detecteren door onze validatie tool.\n\nxml_snippet = \"\"\"\n&lt;series&gt;\n    &lt;header&gt;\n        &lt;type&gt;instantaneous&lt;/type&gt;\n        \n        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;\n        &lt;timeStep unit=\"second\" multiplier=\"3600\"/&gt;\n        &lt;startDate date=\"2006-08-23\" time=\"17:00:00\"/&gt;\n        &lt;endDate date=\"2006-08-24\" time=\"00:00:00\"/&gt;\n        &lt;missVal&gt;-8888.0&lt;/missVal&gt;\n    &lt;/header&gt;\n    &lt;event date=\"2006-08-23\" time=\"17:00:00\" value=\"8.66\"/&gt;\n&lt;/series&gt;\n\"\"\"\n\nNu we onze XML snippet hebben ingevuld, gaan we hiermee de tool op de juiste manier aanroepen. Voor een taalmodel is het van belang dat het toegang heeft tot voldoende informatie om de tool op de juiste manier aan te roepen.\nDit doen wij via zogenaamd model: een soort sjabloon waarin je vastlegt welke gegevens er nodig zijn en welk type ze moeten hebben. Voordat de tool aangeroepen wordt wordt er gecontroleerd of de aangeleverde informatie voldoet aan de regels van het model.\nVoor hetgeen uit de tool komt, hebben we ook een sjabloon met de gegevens die er uit de tool komen. Op deze manier heeft een taalmodel inzichtelijk, zonder de tool aan te roepen, wat de tool doet, op welke manier het ingevuld moet worden en wat er uit de tool terug komt.\nLaten we de validate XML tool aanroepen met onze XML snippet en het bijbehorende XSD schema.\nXMLValidationInput(\n    xml_content=xml_snippet, \n    schema_option=FEWSSchemaOption.PI_TIMESERIES\n)\n\nfrom talk_with_fews.tools.validator.validate_xml import validate_xml\nfrom talk_with_fews.models.validate_xml import XMLValidationOutput, XMLValidationInput\nfrom talk_with_fews.models.fews_schema_options import FEWSSchemaOption\n\nxml_validation_input = XMLValidationInput(\n    xml_content=xml_snippet, schema_option=FEWSSchemaOption.PI_TIMESERIES\n)\nxml_validation_output: XMLValidationOutput = await validate_xml(\n    ctx=ctx, input=xml_validation_input\n)\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_sharedtypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_sharedtypes.xsd'\n  schema = xmlschema.XMLSchema(str(full_path), validation=\"lax\")\n\n\nLaten we afdrukken wat het resultaat is van de XML snippet validatie\n\nprint(format_as_xml(xml_validation_output))\n\n&lt;is_valid&gt;True&lt;/is_valid&gt;\n&lt;errors /&gt;\n&lt;warnings /&gt;\n&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;\n\n\nDe tool resultaat laat zien dat de XML snippet niet valide is, en dat er eerst een locationId wordt verwacht, waar het nu een parameterId aangeboden krijgt.\nWanneer de XML snippet opnieuw invullen, inclusief een locationId krijgen we het volgende.\n\nxml_snippet = \"\"\"\n&lt;series&gt;\n    &lt;header&gt;\n        &lt;type&gt;instantaneous&lt;/type&gt;\n        &lt;locationId&gt;1234567890&lt;/locationId&gt;\n        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;\n        &lt;timeStep unit=\"second\" multiplier=\"3600\"/&gt;\n        &lt;startDate date=\"2006-08-23\" time=\"17:00:00\"/&gt;\n        &lt;endDate date=\"2006-08-24\" time=\"00:00:00\"/&gt;\n        &lt;missVal&gt;-8888.0&lt;/missVal&gt;\n    &lt;/header&gt;\n    &lt;event date=\"2006-08-23\" time=\"17:00:00\" value=\"8.66\"/&gt;\n&lt;/series&gt;\n\"\"\"\n\nxml_validation_input = XMLValidationInput(\n    xml_content=xml_snippet, schema_option=FEWSSchemaOption.PI_TIMESERIES\n)\nxml_validation_output: XMLValidationOutput = await validate_xml(\n    ctx=ctx, input=xml_validation_input\n)\n\nprint(format_as_xml(xml_validation_output))\n\n&lt;is_valid&gt;True&lt;/is_valid&gt;\n&lt;errors /&gt;\n&lt;warnings /&gt;\n&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;\n\n\nHet resultaat is nu dat de XML snippet succesvol valideert zonder errors or warnings.\nHieronder nog een voorbeeld dat laat zien dat deze partiele validatie ook nog goed gaat voor XML snippets dieper in een XML bestand, exclusief een directe verwijzing naar zijn directe parent element.\n\n# xml snippet with indirect parent to root with missing nested elements\nxml_snippet = \"\"\"\n    &lt;general&gt;\n        &lt;exportType&gt;SomeValidExportType&lt;/exportType&gt;\n        &lt;folder&gt;MyExportFolder&lt;/folder&gt;\n        &lt;exportFileName&gt;\n            &lt;prefix&gt;\n                &lt;timeZeroFormattingString&gt;yyyyMMddHHmm&lt;/timeZeroFormattingString&gt;\n            &lt;/prefix&gt;\n        &lt;/exportFileName&gt;\n        &lt;idMapId&gt;MyIdMap&lt;/idMapId&gt;\n        &lt;forecastSelectionPeriod end=\"0\" unit=\"day\"/&gt;\n    &lt;/general&gt;\n\"\"\"\n\nxml_validation_input = XMLValidationInput(\n    xml_content=xml_snippet, schema_option=FEWSSchemaOption.TIME_SERIES_EXPORT_RUN\n)\nxml_validation_output: XMLValidationOutput = await validate_xml(\n    ctx=ctx, input=xml_validation_input\n)\n\nprint(format_as_xml(xml_validation_output))\n\n&lt;is_valid&gt;True&lt;/is_valid&gt;\n&lt;errors /&gt;\n&lt;warnings /&gt;\n&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;\n\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'\n  schema = xmlschema.XMLSchema(str(full_path), validation=\"lax\")\n\n\nBinnen de error beschrijving staat als onderdeel van de xpath de route welke de validator heeft afgelegd om deze snippet binnen het XSD schema te valideren.\nHet heeft dus gevonden dat onze snippet onderdeel is van de general element, en dat via export teruggeleid heeft naar de timeSeriesExportRun, de root element van dit XSD schema."
+  },
+  {
+    "objectID": "examples/notebooks/fews_validator.html#genereer-xml-snippet-template",
+    "href": "examples/notebooks/fews_validator.html#genereer-xml-snippet-template",
+    "title": "Validator Agent",
+    "section": "Genereer XML snippet Template",
+    "text": "Genereer XML snippet Template\nDeze tool maakt het mogelijk om een template op te zetten voor een bepaald gedeelte binnen je XML bestand .\nHieronder laten we zien hoe we een template kunnen laten genereren voor de general element binnen het schema van de timeSeriesExportRun.\n\n# partial xml template generation\n\nfrom talk_with_fews.tools.validator.generate_xml_template import generate_xml_template\nfrom talk_with_fews.models.generate_xml_template import (\n    XMLTemplateInput,\n    XMLTemplateOutput,\n)\nfrom talk_with_fews.models.fews_schema_options import FEWSSchemaOption\n\nxml_template_input = XMLTemplateInput(\n    schema_option=FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element=\"general\"\n)\nxml_template_output: XMLTemplateOutput = await generate_xml_template(\n    ctx=ctx, input=xml_template_input\n)\n\nprint(xml_template_output.template)\n\n&lt;general&gt;\n  &lt;exportTypeStandard&gt;example_value&lt;/exportTypeStandard&gt;\n  &lt;exportType&gt;example_value&lt;/exportType&gt;\n  &lt;serializerClassName&gt;example_value&lt;/serializerClassName&gt;\n  &lt;folder/&gt;\n  &lt;exportFileName&gt;\n    &lt;name&gt;example_value&lt;/name&gt;\n    &lt;useExternalLocationIdAsName&gt;true&lt;/useExternalLocationIdAsName&gt;\n  &lt;/exportFileName&gt;\n  &lt;serverUrl&gt;example_value&lt;/serverUrl&gt;\n  &lt;user&gt;example_value&lt;/user&gt;\n  &lt;password&gt;example_value&lt;/password&gt;\n  &lt;encryptedPassword&gt;example_value&lt;/encryptedPassword&gt;\n  &lt;exportMissingValue&gt;1.0&lt;/exportMissingValue&gt;\n  &lt;exportMissingValueString&gt;example_value&lt;/exportMissingValueString&gt;\n  &lt;dataFeedId/&gt;\n  &lt;disableDataFeedInfo/&gt;\n  &lt;columnSeparator/&gt;\n  &lt;decimalSeparator/&gt;\n&lt;/general&gt;\n\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/generate_xml_template.py:219: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'\n  schema = xmlschema.XMLSchema(str(full_path), validation=\"lax\")\n\n\nOp het moment wanneer de target_element niet goed ingevuld wordt, retourneren we een ModelRetry, waarin we een suggestie aanleveren gebasseerd op wat geprobeerd is.\nHier is het target_element ingevuld als genral in plaats van general:\n\ntry:\n    xml_template_input = XMLTemplateInput(\n        schema_option=FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element=\"genral\"\n    )\n    xml_template_output: XMLTemplateOutput = await generate_xml_template(\n        ctx=ctx, input=xml_template_input\n    )\n\n    print(xml_template_output.template)\nexcept Exception as e:\n    print(e)\n\nTarget element 'genral' not found in schema 'timeSeriesExportRun.xsd'.\n\nSimilar elements found:\n  - general\n\n\nPlease try again with one of the suggested elements.\n\nTip: Use the 'get_available_elements' tool to get a complete list of available elements in this schema.\n\n\nZie dat een duidelijke ModelRetry teruggeeft met een suggestie voor het het taalmodel of Agent om de tool op een andere manier aan te roepen:\nModelRetry: Target element 'genral' not found in schema 'timeSeriesExportRun.xsd'.\n\nSimilar elements found:\n  - general\n\n\nPlease try again with one of the suggested elements."
+  },
+  {
+    "objectID": "examples/notebooks/fews_validator.html#get-available-elements",
+    "href": "examples/notebooks/fews_validator.html#get-available-elements",
+    "title": "Validator Agent",
+    "section": "Get available elements",
+    "text": "Get available elements\nDeze tool maakt het mogelijk om een lijst te krijgen van alle elementen die beschikbaar zijn in een bepaald schema.\nHieronder laten we zien hoe we een lijst kunnen krijgen van alle elementen die beschikbaar zijn in het schema van de timeSeriesExportRun.\n\nfrom talk_with_fews.tools.validator.get_available_elements import get_available_elements\nfrom talk_with_fews.models.get_available_elements import (\n    GetAvailableElementsInput,\n    GetAvailableElementsOutput,\n)\n\nget_available_elements_input = GetAvailableElementsInput(\n    schema_option=FEWSSchemaOption.TIME_SERIES_EXPORT_RUN,\n    limit=15,\n    offset=0,\n    target_element=\"general\",\n)\nget_available_elements_output: GetAvailableElementsOutput = (\n    await get_available_elements(ctx=ctx, input=get_available_elements_input)\n)\n\nprint(format_as_xml(get_available_elements_output))\n\n&lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;\n&lt;root_element&gt;{http://www.wldelft.nl/fews}timeSeriesExportRun&lt;/root_element&gt;\n&lt;target_element&gt;general&lt;/target_element&gt;\n&lt;available_elements&gt;\n  &lt;item&gt;backupServerUrl&lt;/item&gt;\n  &lt;item&gt;binDir&lt;/item&gt;\n  &lt;item&gt;coldStartDataExportRelativeStartTime&lt;/item&gt;\n  &lt;item&gt;columnSeparator&lt;/item&gt;\n  &lt;item&gt;connectionTimeOutMillis&lt;/item&gt;\n  &lt;item&gt;convertAnnotationEnumerationPropertyValuesToLabels&lt;/item&gt;\n  &lt;item&gt;convertDatum&lt;/item&gt;\n  &lt;item&gt;convertValuesToEnumerationLabels&lt;/item&gt;\n  &lt;item&gt;creationTime&lt;/item&gt;\n  &lt;item&gt;dataFeedId&lt;/item&gt;\n  &lt;item&gt;dateTimePattern&lt;/item&gt;\n  &lt;item&gt;dbChangeViewPeriod&lt;/item&gt;\n  &lt;item&gt;decimalSeparator&lt;/item&gt;\n  &lt;item&gt;description&lt;/item&gt;\n  &lt;item&gt;disableDataFeedInfo&lt;/item&gt;\n&lt;/available_elements&gt;\n&lt;total_count&gt;57&lt;/total_count&gt;\n&lt;limit&gt;15&lt;/limit&gt;\n&lt;offset&gt;0&lt;/offset&gt;\n&lt;has_more&gt;True&lt;/has_more&gt;\n&lt;next_offset&gt;15&lt;/next_offset&gt;\n\n\nWe zien dat er in totaal 93 elementen in de XSD schema bestaan binnen het target element general. En we laten er de eerste 15 zien, waarbij we tegelijk aangegeven dat er meer beschikbaar zijn. Op deze manier kan de tool er gepagineerd door heen stappen. Zonder gelijk heel veel terug te krijgen."
+  },
+  {
+    "objectID": "examples/notebooks/fews_webservice.html",
+    "href": "examples/notebooks/fews_webservice.html",
+    "title": "Delta Agent Talk with FEWS - Webservice",
+    "section": "",
+    "text": "from setup_quarto import setup_dot_env\n\nctx = setup_dot_env()\n\n/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/.pixi/envs/default/lib/python3.13/site-packages/pydantic/fields.py:1093: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/\n  warn(\n\n\nfrom talk_with_fews.tools.webservice.get_parameters import get_parameters\nfrom talk_with_fews.tools.webservice.get_locations import get_locations\nfrom talk_with_fews.tools.webservice.sql_query_webservice import (\n    execute_query_webservice,\n)\nfrom talk_with_fews.tools.webservice.get_series_headers import get_series_headers\nfrom talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics\n\n# WEB SERVICE\nfrom talk_with_fews.tools.webservice.get_locations import get_locations\n\n\nfrom talk_with_fews.models.get_locations import GetLocationInput, GetLocationOutput\n\nget_location_input = GetLocationInput(\n    number_of_locations=2, filter_locations_name=\"Ede\"\n)\n\nget_location_output: GetLocationOutput = await get_locations(\n    ctx=ctx, input=get_location_input\n)\n\n\nfrom pydantic_ai import format_as_xml\n\nprint(format_as_xml(get_location_output, root_tag=\"SQLQueryOutput\"))\n\n&lt;SQLQueryOutput&gt;\n  &lt;locations&gt;\n    &lt;item&gt;\n      &lt;locationId&gt;Nederrijn km 879.00&lt;/locationId&gt;\n      &lt;shortName&gt;Nederrijn 879 km&lt;/shortName&gt;\n      &lt;lat&gt;51.95300073925345&lt;/lat&gt;\n      &lt;lon&gt;5.946999976270893&lt;/lon&gt;\n      &lt;x&gt;193482.4298&lt;/x&gt;\n      &lt;y&gt;440654.9422&lt;/y&gt;\n      &lt;z&gt;null&lt;/z&gt;\n      &lt;geoDatum&gt;Rijks Driehoekstelsel&lt;/geoDatum&gt;\n      &lt;attributes&gt;null&lt;/attributes&gt;\n    &lt;/item&gt;\n    &lt;item&gt;\n      &lt;locationId&gt;Nederrijn km 880.00&lt;/locationId&gt;\n      &lt;shortName&gt;Nederrijn 880 km&lt;/shortName&gt;\n      &lt;lat&gt;51.96000074426104&lt;/lat&gt;\n      &lt;lon&gt;5.937999987101551&lt;/lon&gt;\n      &lt;x&gt;192857.8404&lt;/x&gt;\n      &lt;y&gt;441428.995&lt;/y&gt;\n      &lt;z&gt;null&lt;/z&gt;\n      &lt;geoDatum&gt;Rijks Driehoekstelsel&lt;/geoDatum&gt;\n      &lt;attributes&gt;null&lt;/attributes&gt;\n    &lt;/item&gt;\n  &lt;/locations&gt;\n  &lt;markdown_content&gt;## Locations\n\nFound 2 locations.\n\n| Location ID | Short Name | Latitude | Longitude | X | Y | Geo Datum | geom |\n|-------------|------------|----------|-----------|---|---|----------| ---- |\n| Nederrijn km 879.00 | Nederrijn 879 km | 51.95300073925345 | 5.946999976270893 | 193482.4298 | 440654.9422 | Rijks Driehoekstelsel |\n| Nederrijn km 880.00 | Nederrijn 880 km | 51.96000074426104 | 5.937999987101551 | 192857.8404 | 441428.995 | Rijks Driehoekstelsel |\n&lt;/markdown_content&gt;\n&lt;/SQLQueryOutput&gt;"
+  },
+  {
+    "objectID": "reference/DescribeTimeSeriesInput.html",
+    "href": "reference/DescribeTimeSeriesInput.html",
+    "title": "DescribeTimeSeriesInput",
+    "section": "",
+    "text": "models.DescribeTimeSeriesInput()\nModel for the input of the describe_timeseries tool.\nThis model defines the required parameters to describe a specific time series.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series"
+  },
+  {
+    "objectID": "reference/DescribeTimeSeriesInput.html#attributes",
+    "href": "reference/DescribeTimeSeriesInput.html#attributes",
+    "title": "DescribeTimeSeriesInput",
+    "section": "",
+    "text": "Name\nType\nDescription\n\n\n\n\ntimeseries_id\nint\nThe unique identifier of the time series to describe\n\n\ninclude_transformations\nbool\nWhether to include information about transformations using this time series"
+  },
+  {
+    "objectID": "reference/search_transformations.html",
+    "href": "reference/search_transformations.html",
+    "title": "search_transformations",
+    "section": "",
+    "text": "tools.search_transformations(ctx, input_data)\nSearch for transformations matching the given criteria.\nThis tool searches for transformations based on their description and optionally filters by workflow name and module configuration. It supports limiting the depth of hierarchical results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput_data\nTransformationSearchInput\nSearch criteria including description pattern and optional filters\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nTransformationSearchOutput\nTransformationSearchOutput containing matching transformations"
+  },
+  {
+    "objectID": "reference/search_transformations.html#parameters",
+    "href": "reference/search_transformations.html#parameters",
+    "title": "search_transformations",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput_data\nTransformationSearchInput\nSearch criteria including description pattern and optional filters\nrequired"
+  },
+  {
+    "objectID": "reference/search_transformations.html#returns",
+    "href": "reference/search_transformations.html#returns",
+    "title": "search_transformations",
+    "section": "",
+    "text": "Name\nType\nDescription\n\n\n\n\n\nTransformationSearchOutput\nTransformationSearchOutput containing matching transformations"
   },
   {
     "objectID": "reference/SeriesFlagsInput.html",
@@ -567,6 +651,20 @@
     "text": "Name\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
   },
   {
+    "objectID": "reference/TransformationDetailsInput.html",
+    "href": "reference/TransformationDetailsInput.html",
+    "title": "TransformationDetailsInput",
+    "section": "",
+    "text": "models.TransformationDetailsInput()\nModel for the input of the get_transformation_details tool.\nThis model defines the required parameters to get details about a specific transformation.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe"
+  },
+  {
+    "objectID": "reference/TransformationDetailsInput.html#attributes",
+    "href": "reference/TransformationDetailsInput.html#attributes",
+    "title": "TransformationDetailsInput",
+    "section": "",
+    "text": "Name\nType\nDescription\n\n\n\n\ntransformation_id\nint\nThe unique identifier of the transformation to describe"
+  },
+  {
     "objectID": "reference/TransformationSearchOutput.html",
     "href": "reference/TransformationSearchOutput.html",
     "title": "TransformationSearchOutput",
@@ -581,67 +679,88 @@
     "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
   },
   {
-    "objectID": "reference/get_locations.html",
-    "href": "reference/get_locations.html",
-    "title": "get_locations",
+    "objectID": "reference/GetSeriesDataOutput.html",
+    "href": "reference/GetSeriesDataOutput.html",
+    "title": "GetSeriesDataOutput",
     "section": "",
-    "text": "tools.get_locations(ctx, input)\nRetrieve a given number of location details from a web service and format the results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional name to filter locations by their name\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
+    "text": "models.GetSeriesDataOutput()\n\n\n\n\n\nName\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
   },
   {
-    "objectID": "reference/get_locations.html#parameters",
-    "href": "reference/get_locations.html#parameters",
-    "title": "get_locations",
+    "objectID": "reference/GetSeriesDataOutput.html#attributes",
+    "href": "reference/GetSeriesDataOutput.html#attributes",
+    "title": "GetSeriesDataOutput",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional name to filter locations by their name\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
+    "text": "Name\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
   },
   {
-    "objectID": "reference/GraphVisualizationOutput.html",
-    "href": "reference/GraphVisualizationOutput.html",
-    "title": "GraphVisualizationOutput",
+    "objectID": "reference/execute_query_webservice.html",
+    "href": "reference/execute_query_webservice.html",
+    "title": "execute_query_webservice",
     "section": "",
-    "text": "models.GraphVisualizationOutput()\nModel for the output of graph visualization tools.\nThis model provides the graph data needed for visualization.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nnodes\nList[GraphNode]\nList of nodes in the graph\n\n\nedges\nList[GraphEdge]\nList of edges in the graph\n\n\nlayout\nGraphLayout\nLayout parameters used\n\n\nmarkdown_content\nOptional[str]\nOptional markdown representation of the graph"
+    "text": "tools.execute_query_webservice(ctx, input)\nExecute a SQL query on the FewsWebService cached database.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
   },
   {
-    "objectID": "reference/GraphVisualizationOutput.html#attributes",
-    "href": "reference/GraphVisualizationOutput.html#attributes",
-    "title": "GraphVisualizationOutput",
+    "objectID": "reference/execute_query_webservice.html#parameters",
+    "href": "reference/execute_query_webservice.html#parameters",
+    "title": "execute_query_webservice",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nnodes\nList[GraphNode]\nList of nodes in the graph\n\n\nedges\nList[GraphEdge]\nList of edges in the graph\n\n\nlayout\nGraphLayout\nLayout parameters used\n\n\nmarkdown_content\nOptional[str]\nOptional markdown representation of the graph"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired"
   },
   {
-    "objectID": "reference/get_parameters.html",
-    "href": "reference/get_parameters.html",
-    "title": "get_parameters",
+    "objectID": "reference/execute_query_webservice.html#returns",
+    "href": "reference/execute_query_webservice.html#returns",
+    "title": "execute_query_webservice",
     "section": "",
-    "text": "tools.get_parameters(ctx, input)\nRetrieve parameter details from a web service and format the results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetParameterInput\nParameterDetailsInput containing request parameters\nrequired\n\n\n\nReturns: ParameterDetailsOutput: Retrieved parameter details with formatted markdown content"
+    "text": "Name\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
   },
   {
-    "objectID": "reference/get_parameters.html#parameters",
-    "href": "reference/get_parameters.html#parameters",
-    "title": "get_parameters",
+    "objectID": "reference/GetSeriesHeadersInput.html",
+    "href": "reference/GetSeriesHeadersInput.html",
+    "title": "GetSeriesHeadersInput",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetParameterInput\nParameterDetailsInput containing request parameters\nrequired\n\n\n\nReturns: ParameterDetailsOutput: Retrieved parameter details with formatted markdown content"
+    "text": "models.GetSeriesHeadersInput()\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\nSupports querying by parameter_id OR location_id (not both) for incremental caching.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
   },
   {
-    "objectID": "reference/get_transformation_details.html",
-    "href": "reference/get_transformation_details.html",
-    "title": "get_transformation_details",
+    "objectID": "reference/GetSeriesHeadersInput.html#attributes",
+    "href": "reference/GetSeriesHeadersInput.html#attributes",
+    "title": "GetSeriesHeadersInput",
     "section": "",
-    "text": "tools.get_transformation_details(ctx, input)\nGet detailed information about a specific transformation, including its input and output time series.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
+    "text": "Name\nDescription\n\n\n\n\nlocation_id\n\n\n\nparameter_id"
   },
   {
-    "objectID": "reference/get_transformation_details.html#parameters",
-    "href": "reference/get_transformation_details.html#parameters",
-    "title": "get_transformation_details",
+    "objectID": "reference/GetSeriesHeadersInput.html#methods",
+    "href": "reference/GetSeriesHeadersInput.html#methods",
+    "title": "GetSeriesHeadersInput",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired"
+    "text": "Name\nDescription\n\n\n\n\nvalidate_exclusive_fields\n\n\n\n\n\n\nmodels.GetSeriesHeadersInput.validate_exclusive_fields(values)"
   },
   {
-    "objectID": "reference/get_transformation_details.html#returns",
-    "href": "reference/get_transformation_details.html#returns",
-    "title": "get_transformation_details",
+    "objectID": "reference/SeriesFlagsSummary.html",
+    "href": "reference/SeriesFlagsSummary.html",
+    "title": "SeriesFlagsSummary",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
+    "text": "models.SeriesFlagsSummary()\nSummary of FEWS flags in a timeseries\n\n\n\n\n\nName\nDescription\n\n\n\n\ncounts\n\n\n\nflag_counts\n\n\n\nflag_definitions\n\n\n\nperiod\n\n\n\ntotal_values"
+  },
+  {
+    "objectID": "reference/SeriesFlagsSummary.html#attributes",
+    "href": "reference/SeriesFlagsSummary.html#attributes",
+    "title": "SeriesFlagsSummary",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncounts\n\n\n\nflag_counts\n\n\n\nflag_definitions\n\n\n\nperiod\n\n\n\ntotal_values"
+  },
+  {
+    "objectID": "reference/DeadPointsAnalysisOutput.html",
+    "href": "reference/DeadPointsAnalysisOutput.html",
+    "title": "DeadPointsAnalysisOutput",
+    "section": "",
+    "text": "models.DeadPointsAnalysisOutput()\nModel for the output of the analyze_dead_points tool.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncount\n\n\n\ndead_points\n\n\n\nmarkdown_content\n\n\n\nmodule_summary\n\n\n\nparameters_affected\n\n\n\nproducers\n\n\n\nrecommendations\n\n\n\nunique_modules"
+  },
+  {
+    "objectID": "reference/DeadPointsAnalysisOutput.html#attributes",
+    "href": "reference/DeadPointsAnalysisOutput.html#attributes",
+    "title": "DeadPointsAnalysisOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncount\n\n\n\ndead_points\n\n\n\nmarkdown_content\n\n\n\nmodule_summary\n\n\n\nparameters_affected\n\n\n\nproducers\n\n\n\nrecommendations\n\n\n\nunique_modules"
   },
   {
     "objectID": "reference/get_workflow_details.html",
@@ -833,53 +952,74 @@
     "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput with series headers summary and follow-up suggestions"
   },
   {
-    "objectID": "reference/GetSeriesHeadersOutput.html",
-    "href": "reference/GetSeriesHeadersOutput.html",
-    "title": "GetSeriesHeadersOutput",
+    "objectID": "reference/analyze_dependencies.html",
+    "href": "reference/analyze_dependencies.html",
+    "title": "analyze_dependencies",
     "section": "",
-    "text": "models.GetSeriesHeadersOutput()\nGetSeriesHeadersOutput provides a minimal but meaningful response for series headers.\nDesigned for cost optimization in AI applications while providing actionable information and enabling follow-up questions.\n\n\n\n\n\nName\nDescription\n\n\n\n\navailable_filters\n\n\n\ncount\n\n\n\nfollow_up_suggestions\n\n\n\nsample_ids\n\n\n\nsummary"
+    "text": "tools.analyze_dependencies(ctx, input)\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDependencyAnalysisInput\nDependencyAnalysisInput containing entity details and analysis direction\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nDependencyAnalysisOutput\nDependencyAnalysisOutput\nA complete description of dependencies including: - Structured data about the dependencies - Pre-formatted markdown content for display"
   },
   {
-    "objectID": "reference/GetSeriesHeadersOutput.html#attributes",
-    "href": "reference/GetSeriesHeadersOutput.html#attributes",
-    "title": "GetSeriesHeadersOutput",
+    "objectID": "reference/analyze_dependencies.html#parameters",
+    "href": "reference/analyze_dependencies.html#parameters",
+    "title": "analyze_dependencies",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\navailable_filters\n\n\n\ncount\n\n\n\nfollow_up_suggestions\n\n\n\nsample_ids\n\n\n\nsummary"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nDependencyAnalysisInput\nDependencyAnalysisInput containing entity details and analysis direction\nrequired"
   },
   {
-    "objectID": "reference/get_series_headers.html",
-    "href": "reference/get_series_headers.html",
-    "title": "get_series_headers",
+    "objectID": "reference/analyze_dependencies.html#returns",
+    "href": "reference/analyze_dependencies.html#returns",
+    "title": "analyze_dependencies",
     "section": "",
-    "text": "tools.get_series_headers(ctx, input)\nRetrieve series headers with incremental caching from FEWS webservice.\nThis tool implements the incremental caching strategy: first check local cache, then trigger ingestion if needed, and return minimal but meaningful output.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with series headers summary and follow-up suggestions"
+    "text": "Name\nType\nDescription\n\n\n\n\nDependencyAnalysisOutput\nDependencyAnalysisOutput\nA complete description of dependencies including: - Structured data about the dependencies - Pre-formatted markdown content for display"
   },
   {
-    "objectID": "reference/get_series_headers.html#parameters",
-    "href": "reference/get_series_headers.html#parameters",
-    "title": "get_series_headers",
+    "objectID": "reference/GetSeriesDataInput.html",
+    "href": "reference/GetSeriesDataInput.html",
+    "title": "GetSeriesDataInput",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired"
+    "text": "models.GetSeriesDataInput()\n\n\n\n\n\nName\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
   },
   {
-    "objectID": "reference/get_series_headers.html#returns",
-    "href": "reference/get_series_headers.html#returns",
-    "title": "get_series_headers",
+    "objectID": "reference/GetSeriesDataInput.html#attributes",
+    "href": "reference/GetSeriesDataInput.html#attributes",
+    "title": "GetSeriesDataInput",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with series headers summary and follow-up suggestions"
+    "text": "Name\nDescription\n\n\n\n\nend_time\n\n\n\ninclude_flag_sources\n\n\n\nlocation_id\n\n\n\nparameter_id\n\n\n\nstart_time"
   },
   {
-    "objectID": "reference/GetLocationOutput.html",
-    "href": "reference/GetLocationOutput.html",
-    "title": "GetLocationOutput",
+    "objectID": "reference/get_available_elements.html",
+    "href": "reference/get_available_elements.html",
+    "title": "get_available_elements",
     "section": "",
-    "text": "models.GetLocationOutput()\nModel for the output of the location_details tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nlocations\n\n\n\nmarkdown_content"
+    "text": "get_available_elements\ntools.get_available_elements(ctx, input)\nGet available elements from a FEWS schema with pagination support.\nThis tool analyzes a FEWS XSD schema and returns available element names that can be used as target_element in template generation. Supports pagination to handle large schemas efficiently."
   },
   {
-    "objectID": "reference/GetLocationOutput.html#attributes",
-    "href": "reference/GetLocationOutput.html#attributes",
-    "title": "GetLocationOutput",
+    "objectID": "reference/GetSeriesStatisticsOutput.html",
+    "href": "reference/GetSeriesStatisticsOutput.html",
+    "title": "GetSeriesStatisticsOutput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nlocations\n\n\n\nmarkdown_content"
+    "text": "models.GetSeriesStatisticsOutput()\nGetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.\nDesigned for cost optimization in AI applications while providing actionable information and enabling follow-up questions.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncount\n\n\n\ndescription\n\n\n\nfirst_value_time\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value"
+  },
+  {
+    "objectID": "reference/GetSeriesStatisticsOutput.html#attributes",
+    "href": "reference/GetSeriesStatisticsOutput.html#attributes",
+    "title": "GetSeriesStatisticsOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncount\n\n\n\ndescription\n\n\n\nfirst_value_time\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value"
+  },
+  {
+    "objectID": "reference/XMLTemplateInput.html",
+    "href": "reference/XMLTemplateInput.html",
+    "title": "XMLTemplateInput",
+    "section": "",
+    "text": "models.XMLTemplateInput()\nInput model for XML template generation\n\n\n\n\n\nName\nDescription\n\n\n\n\ninclude_attributes\n\n\n\ninclude_optional\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
+  },
+  {
+    "objectID": "reference/XMLTemplateInput.html#attributes",
+    "href": "reference/XMLTemplateInput.html#attributes",
+    "title": "XMLTemplateInput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ninclude_attributes\n\n\n\ninclude_optional\n\n\n\nroot_element\n\n\n\nschema_option\n\n\n\ntarget_element"
   },
   {
     "objectID": "reference/TransformationSearchInput.html",

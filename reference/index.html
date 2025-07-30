@@ -101,6 +101,7 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="../examples/notebooks/fews_webservice.html">
  <span class="dropdown-text">Delta Agent Talk with FEWS - Webservice</span></a>
   </li>  
+        <li class="dropdown-header">examples/notebooks/fews_validate_xml.ipynb</li>
     </ul>
   </li>
   <li class="nav-item">
@@ -138,8 +139,10 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#config-tools" id="toc-config-tools" class="nav-link" data-scroll-target="#config-tools">Config tools</a></li>
   <li><a href="#webservice-tools" id="toc-webservice-tools" class="nav-link" data-scroll-target="#webservice-tools">Webservice tools</a></li>
+  <li><a href="#validator-tools" id="toc-validator-tools" class="nav-link" data-scroll-target="#validator-tools">Validator tools</a></li>
   <li><a href="#config-tool-models" id="toc-config-tool-models" class="nav-link" data-scroll-target="#config-tool-models">Config tool models</a></li>
   <li><a href="#webservice-tool-models" id="toc-webservice-tool-models" class="nav-link" data-scroll-target="#webservice-tool-models">Webservice tool models</a></li>
+  <li><a href="#validator-tool-models" id="toc-validator-tool-models" class="nav-link" data-scroll-target="#validator-tool-models">Validator tool models</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -232,6 +235,26 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td><a href="../reference/get_series_statistics.html#talk_with_fews.tools.get_series_statistics">get_series_statistics</a></td>
 <td>Retrieve series statistics from FEWS webservice.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="validator-tools" class="level2">
+<h2 class="anchored" data-anchor-id="validator-tools">Validator tools</h2>
+<p>Tools beschikbaar voor de validator agent.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="../reference/validate_xml.html#talk_with_fews.tools.validate_xml">validate_xml</a></td>
+<td>Enhanced XML validation using local FEWS schemas.</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/generate_xml_template.html#talk_with_fews.tools.generate_xml_template">generate_xml_template</a></td>
+<td>Generate XML template from XSD schema.</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/get_available_elements.html#talk_with_fews.tools.get_available_elements">get_available_elements</a></td>
+<td>Get available elements from a FEWS schema with pagination support.</td>
 </tr>
 </tbody>
 </table>
@@ -376,6 +399,38 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td><a href="../reference/SeriesFlagsSummary.html#talk_with_fews.models.SeriesFlagsSummary">SeriesFlagsSummary</a></td>
 <td>Summary of FEWS flags in a timeseries</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="validator-tool-models" class="level2">
+<h2 class="anchored" data-anchor-id="validator-tool-models">Validator tool models</h2>
+<p>Data modellen per validator tool.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="../reference/XMLValidationInput.html#talk_with_fews.models.XMLValidationInput">XMLValidationInput</a></td>
+<td>Enhanced input model for XML validation</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/XMLValidationOutput.html#talk_with_fews.models.XMLValidationOutput">XMLValidationOutput</a></td>
+<td>Enhanced output model for XML validation results</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/XMLTemplateInput.html#talk_with_fews.models.XMLTemplateInput">XMLTemplateInput</a></td>
+<td>Input model for XML template generation</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/XMLTemplateOutput.html#talk_with_fews.models.XMLTemplateOutput">XMLTemplateOutput</a></td>
+<td>Output model for XML template generation</td>
+</tr>
+<tr class="odd">
+<td><a href="../reference/GetAvailableElementsInput.html#talk_with_fews.models.GetAvailableElementsInput">GetAvailableElementsInput</a></td>
+<td>Input model for getting available elements from a schema</td>
+</tr>
+<tr class="even">
+<td><a href="../reference/GetAvailableElementsOutput.html#talk_with_fews.models.GetAvailableElementsOutput">GetAvailableElementsOutput</a></td>
+<td>Output model for getting available elements from a schema</td>
 </tr>
 </tbody>
 </table>
