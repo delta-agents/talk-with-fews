@@ -23,8 +23,10 @@ from talk_with_fews.models.graph import (
     GraphVisualizationInput,
     GraphVisualizationOutput,
 )
+from talk_with_fews.utils.logging_utils import log_tool_call
 
 
+@log_tool_call
 async def visualize_graph(
     ctx: RunContext[Deps], input: GraphVisualizationInput
 ) -> GraphVisualizationOutput:

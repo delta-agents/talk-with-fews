@@ -10,8 +10,10 @@ from talk_with_fews.models.get_available_elements import (
     GetAvailableElementsOutput,
 )
 from .generate_xml_template import XMLTemplateGenerator
+from talk_with_fews.utils.logging_utils import log_tool_call
 
 
+@log_tool_call
 async def get_available_elements(
     ctx, input: GetAvailableElementsInput
 ) -> GetAvailableElementsOutput:

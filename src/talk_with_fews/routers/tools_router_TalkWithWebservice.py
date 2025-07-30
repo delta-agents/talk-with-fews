@@ -34,7 +34,7 @@ from talk_with_fews.models.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
 )
-from talk_with_fews.tools.config.analyze_flags import analyze_series_flags
+from talk_with_fews.tools.webservice.analyze_flags import analyze_series_flags
 from talk_with_fews.models.flags.io import (
     SeriesFlagsInput,
     SeriesFlagsSummary,

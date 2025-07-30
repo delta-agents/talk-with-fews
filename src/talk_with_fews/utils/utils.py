@@ -4,10 +4,14 @@ Utility functions for the FEWS Configuration Agent.
 This module provides utility functions for connecting to the database and formatting results.
 """
 
-from datetime import datetime
 import sqlite3
 import os
 from typing import List, Dict, Any
+
+
+def format_datetime(dt):
+    """Format datetime to FEWS webservice format (yyyy-MM-dd'T'HH:mm:ss'Z')."""
+    return dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
 
 
 def connect_to_database(db_path: str) -> sqlite3.Connection:
@@ -148,25 +152,3 @@ def generate_mermaid_diagram(results: List[Dict[str, Any]], diagram_type: str) -
 
         diagram += "```"
         return diagram
-
-
-def to_iso(date_str, time_str):
-    """
-    Convert a date and time string into ISO 8601 format.
-
-    Args:
-        date_str (str): The date string in the format 'YYYY-MM-DD'.
-        time_str (str): The time string in the format 'HH:MM:SS'.
-    Returns:
-        str: The combined date and time in ISO 8601 format (e.g., '2023-01-01T12:00:00'),
-             or None if the input is invalid or an error occurs.
-    Exceptions:
-        Returns None if the input strings are not in the expected format or are None.
-    """
-    if date_str and time_str:
-        try:
-            dt = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
-            return dt.isoformat()
-        except ValueError:
-            return None
-    return None

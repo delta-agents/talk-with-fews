@@ -5,6 +5,7 @@ This tool retrieves series headers using an incremental caching approach. It fir
 the local DuckDB cache, and if data is not found, it triggers ingestion from the webservice.
 """
 
+from datetime import datetime, timedelta, timezone
 import xml.etree.ElementTree as ET
 
 from pydantic_ai import RunContext, ModelRetry
@@ -14,7 +15,6 @@ from talk_with_fews.models.get_series_statistics import (
     GetSeriesStatisticsOutput,
 )
 from talk_with_fews.utils.logging_utils import log_tool_call, logger
-from talk_with_fews.utils.utils import to_iso
 from talk_with_fews.utils.webservice_utils import get_request
 
 
@@ -102,12 +102,24 @@ async def get_series_statistics(
         last_time = last_value_elem.get("time")
 
         # make into ISO 8601 format
-        first_datetime = to_iso(first_date, first_time)
-        last_datetime = to_iso(last_date, last_time)
+        first_datetime = datetime.strptime(
+            f"{first_date} {first_time}", "%Y-%m-%d %H:%M:%S"
+        )
+        last_datetime = datetime.strptime(
+            f"{last_date} {last_time}", "%Y-%m-%d %H:%M:%S"
+        )
+        timezone_offset = float(root.find("pi:timeZone", namespace).text)
+        tz = timezone(timedelta(hours=timezone_offset))
+        if timezone_offset != 0:
+            first_datetime = first_datetime.replace(tzinfo=tz).astimezone(timezone.utc)
+            last_datetime = last_datetime.replace(tzinfo=tz).astimezone(timezone.utc)
+        else:
+            first_datetime = first_datetime.replace(tzinfo=timezone.utc)
+            last_datetime = last_datetime.replace(tzinfo=timezone.utc)
 
         return GetSeriesStatisticsOutput(
             count=count,
-            description=f"Found {count} series for parameter_id '{parameter_id}' or location_id '{location_id}'",
+            description=f"Found {count} values for parameter_id '{parameter_id}' or location_id '{location_id}'",
             min_value=min_value,
             max_value=max_value,
             first_value_time=first_datetime,

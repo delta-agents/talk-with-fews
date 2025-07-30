@@ -5,6 +5,7 @@ This module defines the models used by the get_series_headers tool to retrieve
 series statistics from the FEWS webservice with incremental caching.
 """
 
+from datetime import datetime
 from pydantic import BaseModel, Field, model_validator, model_validator  # noqa: F811
 from typing import Optional
 
@@ -48,15 +49,11 @@ class GetSeriesStatisticsOutput(BaseModel):
     description: Optional[str] = Field(
         None, description="Short description of the FEWS series or its context"
     )
-    min_value: Optional[str] = Field(
-        None, description="Minimum value across all series"
+    min_value: Optional[str] = Field(None, description="Minimum value across series")
+    max_value: Optional[str] = Field(None, description="Maximum value across series")
+    first_value_time: Optional[datetime] = Field(
+        None, description="Earliest start date among series "
     )
-    max_value: Optional[str] = Field(
-        None, description="Maximum value across all series"
-    )
-    first_value_time: Optional[str] = Field(
-        None, description="Earliest start date among all series (ISO 8601 format)"
-    )
-    last_value_time: Optional[str] = Field(
-        None, description="Latest end date among all series (ISO 8601 format)"
+    last_value_time: Optional[datetime] = Field(
+        None, description="Latest end date among series"
     )
