@@ -12,6 +12,37 @@ from talk_with_fews.models.base import Transformation
 from talk_with_fews.models.base import TimeSeriesProperties
 
 
+class TimeSeriesSearchInput(BaseModel):
+    """Model for the input of the search_timeseries tool.
+
+    This model defines the parameters to search for time series.
+
+    Attributes:
+        parameter_id: Optional pattern to search for in parameter ID
+        qualifier_pattern: Optional pattern to search for in qualifier
+        module_instance: Optional pattern to search for in module instance
+        endpoint: Optional filter for endpoint status
+        include_transformations: Whether to include transformation information
+    """
+
+    parameter_id: Optional[str] = Field(
+        None, description="Pattern to search for in parameter ID"
+    )
+    qualifier_pattern: Optional[str] = Field(
+        None, description="Pattern to search for in qualifier"
+    )
+    module_instance: Optional[str] = Field(
+        None, description="Pattern to search for in module instance"
+    )
+    endpoint: Optional[bool] = Field(
+        None,
+        description="Filter by endpoint status (True for endpoints, False for non-endpoints)",
+    )
+    include_transformations: bool = Field(
+        False, description="Whether to include transformation information"
+    )
+
+
 class TimeSeriesSearchResult(TimeSeriesProperties):
     """Model representing a time series search result.
 

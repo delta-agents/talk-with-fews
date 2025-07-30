@@ -10,7 +10,7 @@ from talk_with_fews.utils.logging_utils import log_tool_call
 
 @log_tool_call
 async def search_transformations(
-    ctx: RunContext[Deps], input_data: TransformationSearchInput
+    ctx: RunContext[Deps], input: TransformationSearchInput
 ) -> TransformationSearchOutput:
     """Search for transformations matching the given criteria.
 
@@ -20,7 +20,7 @@ async def search_transformations(
 
     Args:
         ctx: RunContext with database connection
-        input_data: Search criteria including description pattern and optional filters
+        input: Search criteria including description pattern and optional filters
 
     Returns:
         TransformationSearchOutput containing matching transformations
@@ -41,16 +41,16 @@ async def search_transformations(
     JOIN call_stacks cs ON mc.call_stack_id = cs.id
     WHERE t.desc LIKE ?
     """
-    params = [f"%{input_data.description_pattern}%"]
+    params = [f"%{input.description_pattern}%"]
 
     # Add optional filters
-    if input_data.workflow_name:
+    if input.workflow_name:
         query += " AND cs.wf_id LIKE ?"
-        params.append(f"%{input_data.workflow_name}%")
+        params.append(f"%{input.workflow_name}%")
 
-    if input_data.module_config:
+    if input.module_config:
         query += " AND mc.modins LIKE ?"
-        params.append(f"%{input_data.module_config}%")
+        params.append(f"%{input.module_config}%")
 
     # Execute the query
     cursor = ctx.deps.db_connection.cursor()

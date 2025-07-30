@@ -24,6 +24,7 @@ format:
     theme: cosmo
     toc: true
 
+
 quartodoc:
   style: pkgdown
   dir: reference
