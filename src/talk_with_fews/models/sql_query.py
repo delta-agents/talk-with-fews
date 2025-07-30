@@ -6,9 +6,10 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import List, Dict, Any
 from pydantic import BaseModel, Field
+from talk_with_fews.models.base import LaxBaseModel
 
 
-class SQLQueryInput(BaseModel):
+class SQLQueryInput(LaxBaseModel):
     """
     Input for SQL query.
 

@@ -6,7 +6,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import List, Dict, Optional
 from pydantic import BaseModel, Field
-
+from talk_with_fews.models.base import LaxBaseModel
 from talk_with_fews.models.base import ModuleSummary
 
 
@@ -34,7 +34,7 @@ class DeadPointProducer(BaseModel):
     workflow_id: str = Field(..., description="ID of the workflow")
 
 
-class DeadPointsAnalysisInput(BaseModel):
+class DeadPointsAnalysisInput(LaxBaseModel):
     include_producers: bool = Field(
         True, description="Whether to include producers of dead points"
     )

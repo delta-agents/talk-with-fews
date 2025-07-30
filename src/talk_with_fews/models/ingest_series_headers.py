@@ -7,9 +7,10 @@ and store series headers from the FEWS webservice into the local DuckDB cache.
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
+from talk_with_fews.models.base import LaxBaseModel
 
 
-class IngestSeriesHeadersInput(BaseModel):
+class IngestSeriesHeadersInput(LaxBaseModel):
     """
     IngestSeriesHeadersInput defines the input parameters for ingesting series headers.
 

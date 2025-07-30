@@ -3,6 +3,7 @@
 from datetime import datetime
 from typing import List, Optional, Annotated
 from pydantic import BaseModel, Field
+from talk_with_fews.models.base import LaxBaseModel
 
 
 class TimeseriesValue(BaseModel):
@@ -39,7 +40,7 @@ class TimeseriesValue(BaseModel):
     )
 
 
-class GetSeriesDataInput(BaseModel):
+class GetSeriesDataInput(LaxBaseModel):
     location_id: str = Field(..., description="Location ID to fetch data for")
     parameter_id: str = Field(..., description="Parameter ID to fetch data for")
     start_time: datetime = Field(description="Start time for data retrieval")

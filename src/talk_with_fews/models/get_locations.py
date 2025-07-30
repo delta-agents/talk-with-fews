@@ -7,10 +7,10 @@ This module defines the models used by the agent to query and analyze FEWS confi
 from typing import Optional, List
 from pydantic import BaseModel, Field, model_validator
 from pydantic_ai import ModelRetry
-from talk_with_fews.models.base import Location
+from talk_with_fews.models.base import Location, LaxBaseModel
 
 
-class GetLocationInput(BaseModel):
+class GetLocationInput(LaxBaseModel):
     """
     GetLocationInput defines the input parameters for retrieving location search results.
 

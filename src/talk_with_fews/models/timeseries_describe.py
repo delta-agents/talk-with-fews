@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from talk_with_fews.models.base import TimeSeriesProperties
+from talk_with_fews.models.base import TimeSeriesProperties, LaxBaseModel
 
 
 class DescribeTimeSeriesOutput(BaseModel):
@@ -21,7 +21,7 @@ class DescribeTimeSeriesOutput(BaseModel):
     )
 
 
-class DescribeTimeSeriesInput(BaseModel):
+class DescribeTimeSeriesInput(LaxBaseModel):
     """Model for the input of the describe_timeseries tool.
 
     This model defines the required parameters to describe a specific time series.

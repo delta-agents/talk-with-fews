@@ -7,10 +7,11 @@ from FEWS XSD schemas with pagination support.
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from .fews_schema_options import FEWSSchemaOption
+from talk_with_fews.models.fews_schema_options import FEWSSchemaOption
+from talk_with_fews.models.base import LaxBaseModel
 
 
-class GetAvailableElementsInput(BaseModel):
+class GetAvailableElementsInput(LaxBaseModel):
     """Input model for getting available elements from a schema"""
 
     schema_option: FEWSSchemaOption = Field(

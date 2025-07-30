@@ -7,7 +7,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 from pydantic import BaseModel, Field
 from typing import List
 
-from talk_with_fews.models.base import ModuleInstanceCall
+from talk_with_fews.models.base import ModuleInstanceCall, LaxBaseModel
 
 
 class WorkflowDetails(BaseModel):
@@ -25,7 +25,7 @@ class WorkflowDetails(BaseModel):
     )
 
 
-class WorkflowDetailsInput(BaseModel):
+class WorkflowDetailsInput(LaxBaseModel):
     """Model for the input of the get_workflow_details tool.
 
     This model defines the required parameters to get details about a specific workflow.

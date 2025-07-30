@@ -7,7 +7,8 @@ including auto-schema discovery and validation results.
 
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from .fews_schema_options import FEWSSchemaOption
+from talk_with_fews.models.fews_schema_options import FEWSSchemaOption
+from talk_with_fews.models.base import LaxBaseModel
 
 
 class ValidationError(BaseModel):
@@ -25,7 +26,7 @@ class ValidationWarning(BaseModel):
     reason: str = Field(..., description="Warning description")
 
 
-class XMLValidationInput(BaseModel):
+class XMLValidationInput(LaxBaseModel):
     """Enhanced input model for XML validation"""
 
     xml_content: str = Field(..., description="XML content to validate")

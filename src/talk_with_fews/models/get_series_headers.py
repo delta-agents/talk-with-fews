@@ -8,9 +8,10 @@ series headers from the FEWS webservice with incremental caching.
 from typing import Optional, List, Dict
 from pydantic import BaseModel, Field, model_validator
 from pydantic_ai import ModelRetry
+from talk_with_fews.models.base import LaxBaseModel
 
 
-class GetSeriesHeadersInput(BaseModel):
+class GetSeriesHeadersInput(LaxBaseModel):
     """
     GetSeriesHeadersInput defines the input parameters for retrieving series headers.
 
