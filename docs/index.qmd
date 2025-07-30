@@ -2,6 +2,6 @@
 title: "Talk with FEWS"
 ---
 
-Documentatie voor talk with FEWS tools.
+Documentatie voor Talk with FEWS tools.
 
 Dit is ontwikkeld door HKV en wordt gepubliceerd onder de GNU GPL-3 licentie.

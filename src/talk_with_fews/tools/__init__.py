@@ -25,6 +25,8 @@ from talk_with_fews.tools.webservice.get_series_statistics import get_series_sta
 
 # VALIDATOR
 from talk_with_fews.tools.validator.validate_xml import validate_xml
+from talk_with_fews.tools.validator.generate_xml_template import generate_xml_template
+from talk_with_fews.tools.validator.get_available_elements import get_available_elements
 
 __all__ = [
     # Config tools
@@ -48,4 +50,6 @@ __all__ = [
     "get_series_statistics",
     # Validator tools
     "validate_xml",
+    "generate_xml_template",
+    "get_available_elements",
 ]

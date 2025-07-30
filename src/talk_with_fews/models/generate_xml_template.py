@@ -20,9 +20,9 @@ class XMLTemplateInput(BaseModel):
         None,
         description="Specific root element to generate template for (if None, uses first available)",
     )
-    target_element: Optional[str] = Field(
-        None,
-        description="Specific sub-element to generate template for (e.g., 'general', 'timeSeriesSet'). If specified, generates only this element's template.",
+    target_element: str = Field(
+        ...,
+        description="Specific sub-element to generate template for (e.g., 'general', 'timeSeriesSet'). This field is required to prevent long-running operations.",
     )
     include_optional: bool = Field(
         False, description="Whether to include optional elements in the template"
@@ -38,8 +38,8 @@ class XMLTemplateOutput(BaseModel):
     template: str = Field(..., description="Generated XML template")
     schema_location: str = Field(..., description="Location of the schema file used")
     root_element: str = Field(..., description="Root element name used for generation")
-    target_element: Optional[str] = Field(
-        None, description="Target sub-element that was generated (if partial template)"
+    target_element: str = Field(
+        ..., description="Target sub-element that was generated"
     )
     includes_optional: bool = Field(
         ..., description="Whether optional elements were included"
