@@ -10,6 +10,7 @@ website:
         menu:
           - examples/notebooks/fews_config.ipynb
           - examples/notebooks/fews_webservice.ipynb
+          - examples/notebooks/fews_validator.ipynb
       - text: "Python API"
         file: reference/index.qmd
     right:
@@ -22,6 +23,7 @@ format:
   html:
     theme: cosmo
     toc: true
+
 
 quartodoc:
   style: pkgdown

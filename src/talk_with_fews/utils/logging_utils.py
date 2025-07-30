@@ -61,19 +61,17 @@ def format_sql_query(query):
     return formatted
 
 
-def format_input_for_logging(input_data):
+def format_input_for_logging(input):
     """Format input data for logging in a readable way."""
     try:
-        if hasattr(input_data, "__dict__"):
+        if hasattr(input, "__dict__"):
             # Convert Pydantic model to dict
-            data = (
-                input_data.dict() if hasattr(input_data, "dict") else vars(input_data)
-            )
+            data = input.dict() if hasattr(input, "dict") else vars(input)
             return json.dumps(data, default=str, indent=2)
-        elif isinstance(input_data, dict):
-            return json.dumps(input_data, default=str, indent=2)
+        elif isinstance(input, dict):
+            return json.dumps(input, default=str, indent=2)
         else:
-            return str(input_data)
+            return str(input)
     except Exception as e:
         return f"<Error formatting input: {e}>"
 
@@ -86,36 +84,32 @@ def log_tool_call(func: F) -> F:
     @wraps(func)
     async def wrapper(ctx, *args, **kwargs):
         tool_name = getattr(func, "__name__", str(func))
-        input_data = args[0] if args else kwargs
+        input = args[0] if args else kwargs
 
         # Log the call
         logger.info(f"Calling tool: {tool_name}")
 
         # Format and log the input
-        if isinstance(input_data, dict) and "query" in input_data:
+        if isinstance(input, dict) and "query" in input:
             # For SQL queries in dict format
-            query = input_data["query"]
+            query = input["query"]
             formatted_query = format_sql_query(query)
             logger.info(formatted_query)
-        elif hasattr(input_data, "query"):
+        elif hasattr(input, "query"):
             # For SQLQueryInput objects
-            query = input_data.query
+            query = input.query
             formatted_query = format_sql_query(query)
             logger.info(formatted_query)
-        elif (
-            isinstance(input_data, dict)
-            and "input" in input_data
-            and not input_data["input"]
-        ):
+        elif isinstance(input, dict) and "input" in input and not input["input"]:
             # Skip logging empty input dicts
             pass
-        elif isinstance(input_data, dict):
+        elif isinstance(input, dict):
             # Format other dict inputs
-            formatted_input = format_input_for_logging(input_data)
+            formatted_input = format_input_for_logging(input)
             logger.info(formatted_input)
         else:
             # Format non-dict inputs
-            logger.info(str(input_data))
+            logger.info(str(input))
 
         try:
             # Execute the tool
