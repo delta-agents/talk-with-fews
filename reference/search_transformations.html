@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/notebooks/fews_webservice.html">
- <span class="dropdown-text">Delta Agent Talk with FEWS - Webservice</span></a>
+ <span class="dropdown-text">Webservice Agent</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/notebooks/fews_validator.html">
@@ -189,16 +189,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="talk_with_fews.tools.search_transformations" class="level1">
 <h1>search_transformations</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.search_transformations(ctx, input_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.search_transformations(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Search for transformations matching the given criteria.</p>
 <p>This tool searches for transformations based on their description and optionally filters by workflow name and module configuration. It supports limiting the depth of hierarchical results.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 22%">
-<col style="width: 57%">
+<col style="width: 6%">
+<col style="width: 23%">
+<col style="width: 59%">
 <col style="width: 10%">
 </colgroup>
 <thead>
@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><em>required</em></td>
 </tr>
 <tr class="even">
-<td>input_data</td>
+<td>input</td>
 <td>TransformationSearchInput</td>
 <td>Search criteria including description pattern and optional filters</td>
 <td><em>required</em></td>

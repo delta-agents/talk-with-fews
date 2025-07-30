@@ -104,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -134,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="../../examples/notebooks/fews_webservice.html">
- <span class="dropdown-text">Delta Agent Talk with FEWS - Webservice</span></a>
+ <span class="dropdown-text">Webservice Agent</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../examples/notebooks/fews_validator.html">
@@ -174,17 +175,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#voorbereidingen" id="toc-voorbereidingen" class="nav-link active" data-scroll-target="#voorbereidingen">Voorbereidingen</a></li>
-  <li><a href="#search-workflows" id="toc-search-workflows" class="nav-link" data-scroll-target="#search-workflows">Search workflows</a>
-  <ul class="collapse">
+  <li><a href="#sec-search-workflows" id="toc-sec-search-workflows" class="nav-link" data-scroll-target="#sec-search-workflows">Search workflows</a></li>
   <li><a href="#get-workflow-details" id="toc-get-workflow-details" class="nav-link" data-scroll-target="#get-workflow-details">Get workflow details</a></li>
-  <li><a href="#get-transformation-details" id="toc-get-transformation-details" class="nav-link" data-scroll-target="#get-transformation-details">Get transformation details</a></li>
-  </ul></li>
-  <li><a href="#describe-timeseries" id="toc-describe-timeseries" class="nav-link" data-scroll-target="#describe-timeseries">Describe Timeseries</a>
-  <ul class="collapse">
-  <li><a href="#search-timeseries" id="toc-search-timeseries" class="nav-link" data-scroll-target="#search-timeseries">Search Timeseries</a></li>
+  <li><a href="#sec-get-transformation-details" id="toc-sec-get-transformation-details" class="nav-link" data-scroll-target="#sec-get-transformation-details">Get transformation details</a></li>
+  <li><a href="#describe-timeseries" id="toc-describe-timeseries" class="nav-link" data-scroll-target="#describe-timeseries">Describe Timeseries</a></li>
+  <li><a href="#sec-search-timeseries" id="toc-sec-search-timeseries" class="nav-link" data-scroll-target="#sec-search-timeseries">Search Timeseries</a></li>
+  <li><a href="#sec-search-transformations" id="toc-sec-search-transformations" class="nav-link" data-scroll-target="#sec-search-transformations">Search Transformation</a></li>
   <li><a href="#get-database-schema" id="toc-get-database-schema" class="nav-link" data-scroll-target="#get-database-schema">Get database schema</a></li>
   <li><a href="#execute-query" id="toc-execute-query" class="nav-link" data-scroll-target="#execute-query">Execute query</a></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
@@ -215,42 +213,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.deadpoint_analysis <span class="im">import</span> analyze_dead_points</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dependency_analysis <span class="im">import</span> analyze_dependencies</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.graph_visualize <span class="im">import</span> visualize_graph</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="voorbereidingen" class="level3">
 <h3 class="anchored" data-anchor-id="voorbereidingen">Voorbereidingen</h3>
 <p>In eerste instantie worden de juiste variable opgehaald. Het context object bevat informatie over welke configuratie gebruikt wordt. In de voorbereiding is de configuratie al ingelezen in een database object. Dit is anders dan de normale ‘FEWS database’ waar alle data in zit. In deze notebook is alles met ‘database’ dus de configuratie database.</p>
-<div id="cell-5" class="cell" data-execution_count="1">
+<div id="cell-4" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic_ai <span class="im">import</span> format_as_xml</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/.pixi/envs/default/lib/python3.13/site-packages/pydantic/fields.py:1093: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
-  warn(</code></pre>
-</div>
 </div>
 </section>
-<section id="search-workflows" class="level1">
-<h1>Search workflows</h1>
+<section id="sec-search-workflows" class="level2">
+<h2 class="anchored" data-anchor-id="sec-search-workflows">Search workflows</h2>
+<p>Om meer inzicht te krijgen in de configuratie van FEWS kan naar verschillende dingen gezocht worden.</p>
+<p>De drie zoek mogelijkheden zijn:</p>
+<ul>
+<li><a href="#sec-search-workflows"><code>search_workflows</code></a></li>
+<li><a href="#sec-search-timeseries"><code>search_timeseries</code></a></li>
+<li><a href="#sec-search-transformations"><code>search_transformations</code></a></li>
+</ul>
 <p>Workflows is een logisch start punt om de verschillende tools uit te leggen. Gegeven een (deel) van de workflow naam kan de informatie achter deze workflow worden opgehaald. Ik weet dat ik een workflow wil hebben die <code>im.wiwb.knmi</code> bevat, ik zoek of er workflows zijn die deze naam bevatten.</p>
-<div id="cell-7" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>name_pattern <span class="op">=</span> <span class="st">"im.wiwb.knmi"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-6" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>name_pattern <span class="op">=</span> <span class="st">"im.wiwb.knmi"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_search <span class="im">import</span> (</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchOutput,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchInput,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>workflow_search_input <span class="op">=</span> WorkflowSearchInput(name_pattern<span class="op">=</span>name_pattern)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>workflow_search_output: WorkflowSearchOutput <span class="op">=</span> <span class="cf">await</span> search_workflows(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_search_input</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-7" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_search <span class="im">import</span> (</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchOutput,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchInput,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>workflow_search_input <span class="op">=</span> WorkflowSearchInput(name_pattern<span class="op">=</span>name_pattern)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>workflow_search_output: WorkflowSearchOutput <span class="op">=</span> <span class="cf">await</span> search_workflows(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_search_input</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_search_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-8" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_search_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;WorkflowDetailsOutput&gt;
   &lt;results&gt;
@@ -291,30 +291,31 @@ Found 3 workflows matching the pattern 'im.wiwb.knmi'.
 &lt;/WorkflowDetailsOutput&gt;</code></pre>
 </div>
 </div>
+</section>
 <section id="get-workflow-details" class="level2">
 <h2 class="anchored" data-anchor-id="get-workflow-details">Get workflow details</h2>
 <p>Gegeven een workflow ID (bijvoorbeeld uit <code>search_workflows</code>) kan de bijbehorende informatie over deze workflow worden opgehaald.</p>
-<div id="cell-11" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>workflow_id <span class="op">=</span> workflow_search_output.results[<span class="dv">0</span>].<span class="bu">id</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>workflow_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-10" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>workflow_id <span class="op">=</span> workflow_search_output.results[<span class="dv">0</span>].<span class="bu">id</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>workflow_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>59</code></pre>
 </div>
 </div>
-<div id="cell-12" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_details <span class="im">import</span> (</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsOutput,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsInput,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>workflow_details_input <span class="op">=</span> WorkflowDetailsInput(workflow_id<span class="op">=</span>workflow_id)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>workflow_details_output: WorkflowDetailsOutput <span class="op">=</span> <span class="cf">await</span> get_workflow_details(</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_details_input</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-11" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_details <span class="im">import</span> (</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsOutput,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsInput,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>workflow_details_input <span class="op">=</span> WorkflowDetailsInput(workflow_id<span class="op">=</span>workflow_id)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>workflow_details_output: WorkflowDetailsOutput <span class="op">=</span> <span class="cf">await</span> get_workflow_details(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_details_input</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-13" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_details_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-12" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_details_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;WorkflowDetailsOutput&gt;
   &lt;results&gt;
@@ -385,39 +386,33 @@ graph TD
 &lt;/WorkflowDetailsOutput&gt;</code></pre>
 </div>
 </div>
-<div id="cell-14" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(workflow_details_output)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>results=[WorkflowDetails(id=59, wf_id='wf.im.wiwb.knmi', desc='Taak om WIWB KNMI metingen te importeren', wffn='wf.im.wiwb.knmi', module_calls=[ModuleInstanceCall(mic_id=244, modins='im.wiwb.knmi', ord_nr=0)])] markdown_content='## Workflow: wf.im.wiwb.knmi\n**Description:** Taak om WIWB KNMI metingen te importeren\n\n### Basic Information\n| Property | Value |\n|----------|--------|\n| ID | 59 |\n| Function Name | wf.im.wiwb.knmi |\n\n### Module Calls and Their Transformations\n\n#### Module: im.wiwb.knmi\nThe following transformations are executed in this module:\n\n| Order | Transformation ID | Description |\n|-------|------------------|-------------|\n| 1 | 1357 | im.wiwb.knmi |\n| 2 | 1358 | im.wiwb.knmi |\n| 3 | 1359 | im.wiwb.knmi |\n| 4 | 1360 | im.wiwb.knmi |\n| 5 | 1361 | im.wiwb.knmi |\n| 6 | 1362 | im.wiwb.knmi |\n| 7 | 1363 | im.wiwb.knmi |\n\n### Workflow Structure\n```mermaid\ngraph TD\n    WF[wf.im.wiwb.knmi]:::workflow\n    M244[im.wiwb.knmi]:::module\n    WF --&gt; M244\n    T1357[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1357\n    T1358[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1358\n    T1359[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1359\n    T1360[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1360\n    T1361[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1361\n    T1362[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1362\n    T1363[im.wiwb.knmi]:::transformation\n    M244 --&gt; T1363\n\n    classDef workflow fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px\n    classDef module fill:#e3f2fd,stroke:#1565c0,stroke-width:2px\n    classDef transformation fill:#f3e5f5,stroke:#4a148c,stroke-width:2px\n```\n'</code></pre>
-</div>
-</div>
 </section>
-<section id="get-transformation-details" class="level2">
-<h2 class="anchored" data-anchor-id="get-transformation-details">Get transformation details</h2>
+<section id="sec-get-transformation-details" class="level2">
+<h2 class="anchored" data-anchor-id="sec-get-transformation-details">Get transformation details</h2>
 <p>Gegeven de transformatie ID kunnen we kijken wat verder met deze workflow te maken heeft. Bijvoorbeeld uit tabel in de <code>get_workflow_details</code> tool.</p>
-<div id="cell-16" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>transformation_id <span class="op">=</span> <span class="dv">1357</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-14" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>transformation_id <span class="op">=</span> <span class="dv">1357</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_details <span class="im">import</span> (</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsInput,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsOutput,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>transformation_details_input <span class="op">=</span> TransformationDetailsInput(</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    transformation_id<span class="op">=</span>transformation_id</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>transformation_details_output: TransformationDetailsOutput <span class="op">=</span> (</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_transformation_details(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_details_input)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-15" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_details <span class="im">import</span> (</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsInput,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsOutput,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>transformation_details_input <span class="op">=</span> TransformationDetailsInput(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    transformation_id<span class="op">=</span>transformation_id</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>transformation_details_output: TransformationDetailsOutput <span class="op">=</span> (</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_transformation_details(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_details_input)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-18" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    format_as_xml(transformation_details_output, root_tag<span class="op">=</span><span class="st">"TransformationDetailsOutput"</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-16" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    format_as_xml(transformation_details_output, root_tag<span class="op">=</span><span class="st">"TransformationDetailsOutput"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TransformationDetailsOutput&gt;
   &lt;results&gt;
@@ -475,31 +470,30 @@ graph LR
 </div>
 </div>
 </section>
-</section>
-<section id="describe-timeseries" class="level1">
-<h1>Describe Timeseries</h1>
-<p>Gegeven een timeseries ID kan je bijbehorende informatie over de transformaties ophalen waar deze timeseries in voor komt. Hier gebruiken we een timeseries ID uit <code>get_transformation_details</code>.</p>
-<div id="cell-20" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>timeseries_id <span class="op">=</span> transformation_details_output.results[<span class="dv">0</span>].time_series_links[<span class="dv">0</span>].tss_id</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>timeseries_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<section id="describe-timeseries" class="level2">
+<h2 class="anchored" data-anchor-id="describe-timeseries">Describe Timeseries</h2>
+<p>Gegeven een timeseries ID kan je bijbehorende informatie over de transformaties ophalen waar deze timeseries in voor komt. Hier gebruiken we een timeseries ID uit <a href="#sec-get-transformation-details"><code>get_transformation_details</code></a>.</p>
+<div id="cell-18" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>timeseries_id <span class="op">=</span> transformation_details_output.results[<span class="dv">0</span>].time_series_links[<span class="dv">0</span>].tss_id</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>timeseries_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>159</code></pre>
 </div>
 </div>
-<div id="cell-21" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_describe <span class="im">import</span> (</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesInput,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesOutput,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>timeseries_describe_input <span class="op">=</span> DescribeTimeSeriesInput(timeseries_id<span class="op">=</span>timeseries_id)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>timeseries_describe_output: DescribeTimeSeriesOutput <span class="op">=</span> <span class="cf">await</span> describe_timeseries(</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_describe_input</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-19" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_describe <span class="im">import</span> (</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesInput,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesOutput,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>timeseries_describe_input <span class="op">=</span> DescribeTimeSeriesInput(timeseries_id<span class="op">=</span>timeseries_id)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>timeseries_describe_output: DescribeTimeSeriesOutput <span class="op">=</span> <span class="cf">await</span> describe_timeseries(</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_describe_input</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-22" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_describe_output, root_tag<span class="op">=</span><span class="st">"DescribeTimeSeriesOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-20" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_describe_output, root_tag<span class="op">=</span><span class="st">"DescribeTimeSeriesOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;DescribeTimeSeriesOutput&gt;
   &lt;results&gt;
@@ -535,64 +529,1180 @@ No transformations found&lt;/markdown_content&gt;
 &lt;/DescribeTimeSeriesOutput&gt;</code></pre>
 </div>
 </div>
-<section id="search-timeseries" class="level2">
-<h2 class="anchored" data-anchor-id="search-timeseries">Search Timeseries</h2>
-<p>Gegeven een transformatie kunnen we een tijdserie ophalen. Hier moet je wel alle informatie over de transformatie weten. Voor het gemak gebruikten we timeseries uit <code>describe_timeseries</code></p>
-<div id="cell-24" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.base <span class="im">import</span> TimeSeriesProperties</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>timeseries: TimeSeriesProperties <span class="op">=</span> timeseries_describe_output.results[<span class="dv">0</span>]</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries, root_tag<span class="op">=</span><span class="st">"TimeSeriesProperties"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="sec-search-timeseries" class="level2">
+<h2 class="anchored" data-anchor-id="sec-search-timeseries">Search Timeseries</h2>
+<p>Naast zoeken op workflows en dan via transformaties naar de bijbehorende timeseries, zoals met <a href="#sec-search-workflows"><code>search_workflow</code></a>, kan je ook direct zoeken op timeseries.</p>
+<p>Dit kan op basis van: - parameter_id - qualifier_pattern - module_instance - endpoint - include_transformations</p>
+<p>Hier worden bijbehorende timeseries opgehaald die voldoen aan de opgegeven criteria.</p>
+<div id="cell-22" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_search <span class="im">import</span> search_timeseries</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_search <span class="im">import</span> (</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchInput,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchOutput,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>timeseries_search_input <span class="op">=</span> TimeSeriesSearchInput(module_instance<span class="op">=</span><span class="st">"im.wiwb.knmi"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>timeseries_search_output: TimeSeriesSearchOutput <span class="op">=</span> <span class="cf">await</span> search_timeseries(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_search_input</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-23" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_search_output, root_tag<span class="op">=</span><span class="st">"TimeSeriesSearchOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;TimeSeriesProperties&gt;
-  &lt;id&gt;159&lt;/id&gt;
-  &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
-  &lt;vtype&gt;scalar&lt;/vtype&gt;
-  &lt;parid&gt;P.G.d9&lt;/parid&gt;
-  &lt;qualifiers /&gt;
-  &lt;tstype&gt;external historical&lt;/tstype&gt;
-  &lt;timess /&gt;
-  &lt;description&gt;im.wiwb.knmi•scalar•P.G.d9••external historical•&lt;/description&gt;
-  &lt;endpoint&gt;False&lt;/endpoint&gt;
-  &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
-  &lt;transformations /&gt;
-&lt;/TimeSeriesProperties&gt;</code></pre>
+<pre><code>&lt;TimeSeriesSearchOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;142&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.G.h&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|P.G.h||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;142&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.G.h&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|P.G.h||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;143&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Eref.d&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;dayGMT+1&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|Eref.d||external historical|dayGMT+1&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;143&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Eref.d&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;dayGMT+1&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|Eref.d||external historical|dayGMT+1&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;144&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.G&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|WR.G||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;144&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.G&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|WR.G||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;145&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.G&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|WS.G||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;145&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.G&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|WS.G||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;146&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.G&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|T.air.G||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;146&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.G&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|T.air.G||external historical|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;147&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|T.air.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;147&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|T.air.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;148&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|T.air.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;148&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|T.air.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;149&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|T.air.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;149&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|T.air.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;150&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|P.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;150&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|P.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;151&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|P.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;151&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|P.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;152&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|P.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;152&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|P.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;153&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WR.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;153&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WR.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;154&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WR.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;154&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WR.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;155&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WR.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;155&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WR.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WR.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;156&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WS.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;156&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.f.ensem&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WS.f.ensem||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;157&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WS.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;157&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.f.control&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WS.f.control||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;158&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WS.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;158&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;WS.f.determ&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;6hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|scalar|WS.f.determ||external forecasting|6hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;159&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.G.d9&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess /&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|P.G.d9||external historical|&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;159&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.G.d9&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess /&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|P.G.d9||external historical|&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;357&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;P.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|P.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;357&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;P.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|P.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;358&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|T.air.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;358&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;T.air.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|T.air.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;359&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;PA.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|PA.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;359&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;PA.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|PA.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;360&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;Psnow.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|Psnow.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;360&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;Psnow.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|Psnow.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;361&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;Pgrau.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|Pgrau.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;361&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;Pgrau.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|Pgrau.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;362&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;RH.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|RH.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;362&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;RH.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|RH.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;363&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;Pct.TCDC.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|Pct.TCDC.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;363&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;Pct.TCDC.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|Pct.TCDC.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;491&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;P.G.d9&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;dayGMT-8&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi|scalar|P.G.d9||external historical|dayGMT-8&lt;/description&gt;
+      &lt;endpoint&gt;False&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;522&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;WSU10.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|WSU10.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;523&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;WSV10.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|WSV10.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;524&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;WGU.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|WGU.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;525&lt;/id&gt;
+      &lt;modins&gt;im.wiwb.knmi.forecast&lt;/modins&gt;
+      &lt;vtype&gt;grid&lt;/vtype&gt;
+      &lt;parid&gt;WGV.f.harmonie&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external forecasting&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+      &lt;description&gt;im.wiwb.knmi.forecast|grid|WGV.f.harmonie||external forecasting|hour&lt;/description&gt;
+      &lt;endpoint&gt;True&lt;/endpoint&gt;
+      &lt;endpoint_desc&gt;null&lt;/endpoint_desc&gt;
+      &lt;transformations&gt;null&lt;/transformations&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Time Series Search Results
+Found 55 time series matching the criteria.
+
+| ID | Module Instance | Type | Parameter | Qualifiers | Value Type | Time Step | Endpoint |
+|----|----------------|------|-----------|------------|------------|-----------|----------|
+| 142 | im.wiwb.knmi | external historical | P.G.h |  | scalar | hour | ✓ |
+| 142 | im.wiwb.knmi | external historical | P.G.h |  | scalar | hour | ✓ |
+| 143 | im.wiwb.knmi | external historical | Eref.d |  | scalar | dayGMT+1 | ✓ |
+| 143 | im.wiwb.knmi | external historical | Eref.d |  | scalar | dayGMT+1 | ✓ |
+| 144 | im.wiwb.knmi | external historical | WR.G |  | scalar | hour | ✓ |
+| 144 | im.wiwb.knmi | external historical | WR.G |  | scalar | hour | ✓ |
+| 145 | im.wiwb.knmi | external historical | WS.G |  | scalar | hour | ✓ |
+| 145 | im.wiwb.knmi | external historical | WS.G |  | scalar | hour | ✓ |
+| 146 | im.wiwb.knmi | external historical | T.air.G |  | scalar | hour | ✓ |
+| 146 | im.wiwb.knmi | external historical | T.air.G |  | scalar | hour | ✓ |
+| 147 | im.wiwb.knmi.forecast | external forecasting | T.air.f.ensem |  | scalar | 6hour | ✓ |
+| 147 | im.wiwb.knmi.forecast | external forecasting | T.air.f.ensem |  | scalar | 6hour | ✓ |
+| 148 | im.wiwb.knmi.forecast | external forecasting | T.air.f.control |  | scalar | 6hour | ✓ |
+| 148 | im.wiwb.knmi.forecast | external forecasting | T.air.f.control |  | scalar | 6hour | ✓ |
+| 149 | im.wiwb.knmi.forecast | external forecasting | T.air.f.determ |  | scalar | 6hour | ✓ |
+| 149 | im.wiwb.knmi.forecast | external forecasting | T.air.f.determ |  | scalar | 6hour | ✓ |
+| 150 | im.wiwb.knmi.forecast | external forecasting | P.f.ensem |  | scalar | 6hour | ✓ |
+| 150 | im.wiwb.knmi.forecast | external forecasting | P.f.ensem |  | scalar | 6hour | ✓ |
+| 151 | im.wiwb.knmi.forecast | external forecasting | P.f.control |  | scalar | 6hour | ✓ |
+| 151 | im.wiwb.knmi.forecast | external forecasting | P.f.control |  | scalar | 6hour | ✓ |
+| 152 | im.wiwb.knmi.forecast | external forecasting | P.f.determ |  | scalar | 6hour | ✓ |
+| 152 | im.wiwb.knmi.forecast | external forecasting | P.f.determ |  | scalar | 6hour | ✓ |
+| 153 | im.wiwb.knmi.forecast | external forecasting | WR.f.ensem |  | scalar | 6hour | ✓ |
+| 153 | im.wiwb.knmi.forecast | external forecasting | WR.f.ensem |  | scalar | 6hour | ✓ |
+| 154 | im.wiwb.knmi.forecast | external forecasting | WR.f.control |  | scalar | 6hour | ✓ |
+| 154 | im.wiwb.knmi.forecast | external forecasting | WR.f.control |  | scalar | 6hour | ✓ |
+| 155 | im.wiwb.knmi.forecast | external forecasting | WR.f.determ |  | scalar | 6hour | ✓ |
+| 155 | im.wiwb.knmi.forecast | external forecasting | WR.f.determ |  | scalar | 6hour | ✓ |
+| 156 | im.wiwb.knmi.forecast | external forecasting | WS.f.ensem |  | scalar | 6hour | ✓ |
+| 156 | im.wiwb.knmi.forecast | external forecasting | WS.f.ensem |  | scalar | 6hour | ✓ |
+| 157 | im.wiwb.knmi.forecast | external forecasting | WS.f.control |  | scalar | 6hour | ✓ |
+| 157 | im.wiwb.knmi.forecast | external forecasting | WS.f.control |  | scalar | 6hour | ✓ |
+| 158 | im.wiwb.knmi.forecast | external forecasting | WS.f.determ |  | scalar | 6hour | ✓ |
+| 158 | im.wiwb.knmi.forecast | external forecasting | WS.f.determ |  | scalar | 6hour | ✓ |
+| 159 | im.wiwb.knmi | external historical | P.G.d9 |  | scalar |  | ✓ |
+| 159 | im.wiwb.knmi | external historical | P.G.d9 |  | scalar |  | ✓ |
+| 357 | im.wiwb.knmi.forecast | external forecasting | P.f.harmonie |  | grid | hour | ✓ |
+| 357 | im.wiwb.knmi.forecast | external forecasting | P.f.harmonie |  | grid | hour | ✓ |
+| 358 | im.wiwb.knmi.forecast | external forecasting | T.air.f.harmonie |  | grid | hour | ✓ |
+| 358 | im.wiwb.knmi.forecast | external forecasting | T.air.f.harmonie |  | grid | hour | ✓ |
+| 359 | im.wiwb.knmi.forecast | external forecasting | PA.f.harmonie |  | grid | hour | ✓ |
+| 359 | im.wiwb.knmi.forecast | external forecasting | PA.f.harmonie |  | grid | hour | ✓ |
+| 360 | im.wiwb.knmi.forecast | external forecasting | Psnow.f.harmonie |  | grid | hour | ✓ |
+| 360 | im.wiwb.knmi.forecast | external forecasting | Psnow.f.harmonie |  | grid | hour | ✓ |
+| 361 | im.wiwb.knmi.forecast | external forecasting | Pgrau.f.harmonie |  | grid | hour | ✓ |
+| 361 | im.wiwb.knmi.forecast | external forecasting | Pgrau.f.harmonie |  | grid | hour | ✓ |
+| 362 | im.wiwb.knmi.forecast | external forecasting | RH.f.harmonie |  | grid | hour | ✓ |
+| 362 | im.wiwb.knmi.forecast | external forecasting | RH.f.harmonie |  | grid | hour | ✓ |
+| 363 | im.wiwb.knmi.forecast | external forecasting | Pct.TCDC.f.harmonie |  | grid | hour | ✓ |
+| 363 | im.wiwb.knmi.forecast | external forecasting | Pct.TCDC.f.harmonie |  | grid | hour | ✓ |
+| 491 | im.wiwb.knmi | external historical | P.G.d9 |  | scalar | dayGMT-8 |  |
+| 522 | im.wiwb.knmi.forecast | external forecasting | WSU10.f.harmonie |  | grid | hour | ✓ |
+| 523 | im.wiwb.knmi.forecast | external forecasting | WSV10.f.harmonie |  | grid | hour | ✓ |
+| 524 | im.wiwb.knmi.forecast | external forecasting | WGU.f.harmonie |  | grid | hour | ✓ |
+| 525 | im.wiwb.knmi.forecast | external forecasting | WGV.f.harmonie |  | grid | hour | ✓ |
+&lt;/markdown_content&gt;
+&lt;/TimeSeriesSearchOutput&gt;</code></pre>
 </div>
 </div>
+</section>
+<section id="sec-search-transformations" class="level2">
+<h2 class="anchored" data-anchor-id="sec-search-transformations">Search Transformation</h2>
+<p>Als laatste van de searches: <a href="#sec-search-workflows"><code>search_workflows</code></a>,<a href="#sec-search-timeseries"><code>search_workflows</code></a>, kan je ook zoeken op transformaties. Dit is als configurator iets minder intuïtief, maar kan handig zijn voor de AI-agent om door te zoeken naar andere transformaties.</p>
+<p>Dit kan op basis van: - description_pattern - workflow_name - module_config - max_depth</p>
 <div id="cell-25" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from talk_with_fews.tools.config.timeseries_search import search_timeseries</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from talk_with_fews.models.timeseries_search import (</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     TimeSeriesSearchResult,</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     TimeSeriesSearchOutput,</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># timeseries = {'id': 14,</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  'modins': 'im.matroos.rws.hist',</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  'vtype': 'scalar',</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  'parid': 'H.B',</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  'qualifiers': '',</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  'tstype': 'external historical',</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  'timess': 'day',</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  'description': 'im.matroos.rws.hist•scalar•H.B••external historical•day',</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  'endpoint': False,</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  'endpoint_desc': None,</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  'transformations': []}</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co"># # timeseries_search_input = TimeSeriesSearchResult(**timeseries.model_dump())</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co"># timeseries_search_input = TimeSeriesSearchResult(**timeseries)</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co"># timeseries_search_output: TimeSeriesSearchOutput = await search_timeseries(</span></span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co">#     ctx=ctx, input=timeseries_search_input</span></span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co"># # </span><span class="al">TODO</span><span class="co">: AttributeError: 'TimeSeriesSearchResult' object has no attribute 'parameter_id'</span></span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co"># # This is correct as the `parameter_id` is not part of the `TimeSeriesProperties` model, its id..</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_search <span class="im">import</span> (</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    TransformationSearchInput,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    TransformationSearchOutput,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>transformation_search_input <span class="op">=</span> TransformationSearchInput(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    description_pattern<span class="op">=</span><span class="st">"im.wiwb.knmi"</span>, workflow_name<span class="op">=</span><span class="st">"wf.im.wiwb.knmi"</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>transformation_search_output: TransformationSearchOutput <span class="op">=</span> <span class="cf">await</span> search_transformations(</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_search_input</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-26" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(transformation_search_output, root_tag<span class="op">=</span><span class="st">"TimeSeriesSearchOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TimeSeriesSearchOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;1357&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;1&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1358&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;2&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1359&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;3&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1360&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;4&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1361&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;5&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1362&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;6&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1363&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi&lt;/desc&gt;
+      &lt;ord_nr&gt;7&lt;/ord_nr&gt;
+      &lt;mic_id&gt;244&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi&lt;/modins&gt;
+      &lt;workflow_id&gt;59&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1376&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;1&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1377&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;2&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1378&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;3&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1379&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;4&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1380&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;5&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1381&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;6&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1382&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;7&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1383&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;8&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1384&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;9&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1385&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;10&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1386&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;11&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1364&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;1&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1365&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;2&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1366&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;3&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1367&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;4&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1368&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;5&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1369&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;6&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1370&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;7&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1371&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;8&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1372&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;9&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1373&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;10&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1374&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;11&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1375&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.eps&lt;/desc&gt;
+      &lt;ord_nr&gt;12&lt;/ord_nr&gt;
+      &lt;mic_id&gt;246&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.eps&lt;/modins&gt;
+      &lt;workflow_id&gt;61&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Transformation Search Results
+
+Found 30 transformations matching the criteria.
+
+| Workflow | Module Config | Transformation | Order | Description |
+|----------|---------------|----------------|-------|-------------|
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1357 | 1 | im.wiwb.knmi |
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1358 | 2 | im.wiwb.knmi |
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1359 | 3 | im.wiwb.knmi |
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1360 | 4 | im.wiwb.knmi |
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1361 | 5 | im.wiwb.knmi |
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1362 | 6 | im.wiwb.knmi |
+| wf.im.wiwb.knmi | im.wiwb.knmi | 1363 | 7 | im.wiwb.knmi |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1376 | 1 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1377 | 2 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1378 | 3 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1379 | 4 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1380 | 5 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1381 | 6 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1382 | 7 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1383 | 8 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1384 | 9 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1385 | 10 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1386 | 11 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1364 | 1 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1365 | 2 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1366 | 3 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1367 | 4 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1368 | 5 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1369 | 6 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1370 | 7 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1371 | 8 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1372 | 9 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1373 | 10 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1374 | 11 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1375 | 12 | im.wiwb.knmi.eps |
+&lt;/markdown_content&gt;
+&lt;/TimeSeriesSearchOutput&gt;</code></pre>
+</div>
 </div>
 </section>
 <section id="get-database-schema" class="level2">
 <h2 class="anchored" data-anchor-id="get-database-schema">Get database schema</h2>
 <p>Om op de juiste manier de tool execute query te gebruiken, is het handig om te weten wat er in de database zit. Hiervoor zijn de schema’s van de configuratie database. Deze tool geeft een overzicht van de beschikbare tabellen en kolommen.</p>
-<div id="cell-27" class="cell" data-execution_count="17">
+<div id="cell-28" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.get_database_schema <span class="im">import</span> get_database_schema</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.database_schema <span class="im">import</span> (</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaOutput,</span>
@@ -605,7 +1715,7 @@ No transformations found&lt;/markdown_content&gt;
 <span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>database_schema_input</span>
 <span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-28" class="cell" data-execution_count="18">
+<div id="cell-29" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(database_schema_output, root_tag<span class="op">=</span><span class="st">"DatabaseSchemaOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;DatabaseSchemaOutput&gt;
@@ -820,7 +1930,7 @@ No transformations found&lt;/markdown_content&gt;
 <section id="execute-query" class="level2">
 <h2 class="anchored" data-anchor-id="execute-query">Execute query</h2>
 <p>Deze tool geeft alle mogelijke vrijheid: het taalmodel kan elke SQL query uitvoeren.</p>
-<div id="cell-30" class="cell" data-execution_count="19">
+<div id="cell-31" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -830,7 +1940,7 @@ No transformations found&lt;/markdown_content&gt;
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-31" class="cell" data-execution_count="20">
+<div id="cell-32" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQLQueryOutput&gt;
@@ -859,7 +1969,6 @@ No transformations found&lt;/markdown_content&gt;
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

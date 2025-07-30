@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/notebooks/fews_webservice.html">
- <span class="dropdown-text">Delta Agent Talk with FEWS - Webservice</span></a>
+ <span class="dropdown-text">Webservice Agent</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../examples/notebooks/fews_validator.html">
@@ -189,16 +189,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="talk_with_fews.tools.visualize_graph" class="level1">
 <h1>visualize_graph</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.visualize_graph(ctx, input_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.visualize_graph(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Generate a graph visualization of FEWS entities and their relationships.</p>
 <p>This tool creates a graph visualization starting from a root entity (time series, transformation, or workflow) and shows its relationships with other entities. The output is formatted as a Mermaid diagram in markdown.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 21%">
-<col style="width: 58%">
+<col style="width: 7%">
+<col style="width: 22%">
+<col style="width: 60%">
 <col style="width: 10%">
 </colgroup>
 <thead>
@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><em>required</em></td>
 </tr>
 <tr class="even">
-<td>input_data</td>
+<td>input</td>
 <td>GraphVisualizationInput</td>
 <td>Visualization parameters including root entity and layout settings</td>
 <td><em>required</em></td>
