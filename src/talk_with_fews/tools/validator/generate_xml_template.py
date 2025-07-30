@@ -601,6 +601,7 @@ async def generate_xml_template(ctx, input: XMLTemplateInput) -> XMLTemplateOutp
 
                 error_message += (
                     "\n\nPlease try again with one of the suggested elements."
+                    "\n\nTip: Use the 'get_available_elements' tool to get a complete list of available elements in this schema."
                 )
 
                 # Raise ModelRetry without the original exception context to avoid deep stack traces
