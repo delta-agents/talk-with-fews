@@ -6,6 +6,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import List, Dict, Any
 from pydantic import BaseModel, Field
+from talk_with_fews.models.base import LaxBaseModel
 
 
 class DependencyAnalysisOutput(BaseModel):
@@ -24,7 +25,7 @@ class DependencyAnalysisOutput(BaseModel):
     )
 
 
-class DependencyAnalysisInput(BaseModel):
+class DependencyAnalysisInput(LaxBaseModel):
     """Model for the input of the analyze_dependencies tool.
 
     This model defines the required parameters to analyze dependencies.

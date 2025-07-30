@@ -7,12 +7,14 @@ This module defines the models used by the agent to query and analyze FEWS confi
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-from talk_with_fews.models.base import Transformation
+from talk_with_fews.models.base import (
+    Transformation,
+    TimeSeriesProperties,
+    LaxBaseModel,
+)
 
-from talk_with_fews.models.base import TimeSeriesProperties
 
-
-class TimeSeriesSearchInput(BaseModel):
+class TimeSeriesSearchInput(LaxBaseModel):
     """Model for the input of the search_timeseries tool.
 
     This model defines the parameters to search for time series.

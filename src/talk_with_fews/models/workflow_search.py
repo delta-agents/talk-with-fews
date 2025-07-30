@@ -7,6 +7,8 @@ This module defines the models used by the agent to query and analyze FEWS confi
 from typing import List
 from pydantic import BaseModel, Field
 
+from talk_with_fews.models.base import LaxBaseModel
+
 
 class WorkflowSearchResult(BaseModel):
     """Model representing a workflow search result."""
@@ -19,7 +21,7 @@ class WorkflowSearchResult(BaseModel):
     )
 
 
-class WorkflowSearchInput(BaseModel):
+class WorkflowSearchInput(LaxBaseModel):
     """
     Input for workflow search.
 

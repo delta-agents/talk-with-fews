@@ -6,17 +6,20 @@ series statistics from the FEWS webservice with incremental caching.
 """
 
 from datetime import datetime
-from pydantic import BaseModel, Field, model_validator, model_validator  # noqa: F811
+from pydantic import BaseModel, Field, model_validator
 from typing import Optional
 
 from pydantic_ai import ModelRetry
+from talk_with_fews.models.base import LaxBaseModel
 
 
-class GetSeriesStatisticsInput(BaseModel):
+class GetSeriesStatisticsInput(LaxBaseModel):
     """
     GetSeriesStatisticsInput defines the input parameters for retrieving series statistics.
 
-    Supports querying by parameter_id AND location_i for incremental caching.
+    Supports querying by parameter_id AND location_id for incremental caching.
+
+    This model can handle both object input and string input that represents a dict.
     """
 
     parameter_id: str = Field(
@@ -31,9 +34,7 @@ class GetSeriesStatisticsInput(BaseModel):
     def validate_exclusive_fields(cls, values):
         parameter_id, location_id = values.parameter_id, values.location_id
         if not (parameter_id and location_id):
-            raise ModelRetry(
-                "Either 'parameter_id' and 'location_id' must be provided."
-            )
+            raise ModelRetry("Both 'parameter_id' and 'location_id' must be provided.")
         return values
 
 

@@ -77,7 +77,8 @@ beautifulsoup4 = ">=4.12.0,<5"
 pip = ">=25.1.1,<26"
 lxml = ">=6.0.0,<7"
 html5lib = ">=1.1,<2"
-pydantic-ai = "0.2.14"
+pydantic-ai = ">=0.2"
+nodejs = ">=24.4.1,<24.5"
 
 [pypi-dependencies]
 talk_with_fews = { path = "src", editable = true }

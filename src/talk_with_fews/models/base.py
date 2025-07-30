@@ -1,3 +1,11 @@
+"""
+Base models for the FEWS Configuration Agent.
+
+This module defines the base models used by the agent to query and analyze FEWS configurations.
+"""
+
+import ast
+import json
 import sqlite3
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
@@ -7,6 +15,43 @@ from talk_with_fews.models.ingest_webservice import (
     IngestLocationsOutput,
     IngestParameterOutput,
 )
+
+
+class LaxBaseModel(BaseModel):
+    """
+    Base model that supports flexible input formats including strings.
+
+    Inherit from this class to get automatic string-to-dict conversion support.
+    """
+
+    @classmethod
+    def model_validate(cls, obj: Any, *args, **kwargs):
+        """
+        Custom validation that can handle string input representing a dict.
+        """
+        if isinstance(obj, str):
+            try:
+                # First try to parse as JSON
+                parsed = json.loads(obj)
+            except json.JSONDecodeError:
+                try:
+                    # If JSON fails, try to parse as Python literal (handles single quotes)
+                    parsed = ast.literal_eval(obj)
+                except (ValueError, SyntaxError) as e:
+                    raise ValueError(
+                        f"Invalid string format. Expected JSON or Python dict literal. Error: {e}"
+                    )
+
+            if not isinstance(parsed, dict):
+                raise ValueError("String must represent a dictionary")
+
+            # Extract the 'input' key if it exists
+            if "input" in parsed:
+                parsed = parsed["input"]
+
+            obj = parsed
+
+        return super().model_validate(obj, *args, **kwargs)
 
 
 class Transformation(BaseModel):

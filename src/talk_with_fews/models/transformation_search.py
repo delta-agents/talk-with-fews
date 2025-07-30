@@ -7,6 +7,8 @@ This module defines the models used by the agent to query and analyze FEWS confi
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
+from talk_with_fews.models.base import LaxBaseModel
+
 
 class TransformationSearchResult(BaseModel):
     """Model representing a transformation search result.
@@ -32,7 +34,7 @@ class TransformationSearchResult(BaseModel):
     workflow_desc: str = Field(..., description="Description of the workflow")
 
 
-class TransformationSearchInput(BaseModel):
+class TransformationSearchInput(LaxBaseModel):
     """Model for the input of the search_transformations tool.
 
     This model defines the parameters to search for transformations.
