@@ -183,6 +183,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-search-transformations" id="toc-sec-search-transformations" class="nav-link" data-scroll-target="#sec-search-transformations">Search Transformation</a></li>
   <li><a href="#get-database-schema" id="toc-get-database-schema" class="nav-link" data-scroll-target="#get-database-schema">Get database schema</a></li>
   <li><a href="#execute-query" id="toc-execute-query" class="nav-link" data-scroll-target="#execute-query">Execute query</a></li>
+  <li><a href="#find-workflow-call-hierarchy" id="toc-find-workflow-call-hierarchy" class="nav-link" data-scroll-target="#find-workflow-call-hierarchy">Find Workflow Call Hierarchy</a></li>
+  <li><a href="#analyze-dependencies" id="toc-analyze-dependencies" class="nav-link" data-scroll-target="#analyze-dependencies">Analyze Dependencies</a></li>
+  <li><a href="#analyse-dead-points" id="toc-analyse-dead-points" class="nav-link" data-scroll-target="#analyse-dead-points">Analyse Dead Points</a></li>
+  <li><a href="#sec-visualize-graph" id="toc-sec-visualize-graph" class="nav-link" data-scroll-target="#sec-visualize-graph">Visualize graph</a></li>
   </ul>
 </nav>
     </div>
@@ -209,19 +213,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>De configuratie Agent van ‘Talk with FEWS’ heeft verschillende tools tot zijn beschikking. Het taalmodel kan deze zelf invullen, maar hier wordt per tool een voorbeeld gegeven van de in en output.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: </span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.deadpoint_analysis <span class="im">import</span> analyze_dead_points</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dependency_analysis <span class="im">import</span> analyze_dependencies</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.graph_visualize <span class="im">import</span> visualize_graph</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="voorbereidingen" class="level3">
 <h3 class="anchored" data-anchor-id="voorbereidingen">Voorbereidingen</h3>
 <p>In eerste instantie worden de juiste variable opgehaald. Het context object bevat informatie over welke configuratie gebruikt wordt. In de voorbereiding is de configuratie al ingelezen in een database object. Dit is anders dan de normale ‘FEWS database’ waar alle data in zit. In deze notebook is alles met ‘database’ dus de configuratie database.</p>
-<div id="cell-4" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic_ai <span class="im">import</span> format_as_xml</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-3" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic_ai <span class="im">import</span> format_as_xml</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-search-workflows" class="level2">
@@ -233,24 +232,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="#sec-search-timeseries"><code>search_timeseries</code></a></li>
 <li><a href="#sec-search-transformations"><code>search_transformations</code></a></li>
 </ul>
-<p>Workflows is een logisch start punt om de verschillende tools uit te leggen. Gegeven een (deel) van de workflow naam kan de informatie achter deze workflow worden opgehaald. Ik weet dat ik een workflow wil hebben die <code>im.wiwb.knmi</code> bevat, ik zoek of er workflows zijn die deze naam bevatten.</p>
-<div id="cell-6" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>name_pattern <span class="op">=</span> <span class="st">"im.wiwb.knmi"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Workflows is een logisch start punt om de verschillende tools uit te leggen.</p>
+<p>Gegeven een (deel) van de workflow naam kan de informatie achter deze workflow worden opgehaald.</p>
+<p>Bijvoorbeeld: een workflow die <code>im.wiwb.knmi</code> bevat, laten we zoek of er workflows zijn die deze naam bevatten.</p>
+<div id="cell-5" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>name_pattern <span class="op">=</span> <span class="st">"im.wiwb.knmi"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-7" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_search <span class="im">import</span> (</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchOutput,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchInput,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>workflow_search_input <span class="op">=</span> WorkflowSearchInput(name_pattern<span class="op">=</span>name_pattern)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>workflow_search_output: WorkflowSearchOutput <span class="op">=</span> <span class="cf">await</span> search_workflows(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_search_input</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-6" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_search <span class="im">import</span> (</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchOutput,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchInput,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>workflow_search_input <span class="op">=</span> WorkflowSearchInput(name_pattern<span class="op">=</span>name_pattern)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>workflow_search_output: WorkflowSearchOutput <span class="op">=</span> <span class="cf">await</span> search_workflows(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_search_input</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_search_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-7" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_search_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;WorkflowDetailsOutput&gt;
   &lt;results&gt;
@@ -295,27 +296,27 @@ Found 3 workflows matching the pattern 'im.wiwb.knmi'.
 <section id="get-workflow-details" class="level2">
 <h2 class="anchored" data-anchor-id="get-workflow-details">Get workflow details</h2>
 <p>Gegeven een workflow ID (bijvoorbeeld uit <code>search_workflows</code>) kan de bijbehorende informatie over deze workflow worden opgehaald.</p>
-<div id="cell-10" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>workflow_id <span class="op">=</span> workflow_search_output.results[<span class="dv">0</span>].<span class="bu">id</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>workflow_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-9" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>workflow_id <span class="op">=</span> workflow_search_output.results[<span class="dv">0</span>].<span class="bu">id</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>workflow_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>59</code></pre>
 </div>
 </div>
-<div id="cell-11" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_details <span class="im">import</span> (</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsOutput,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsInput,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>workflow_details_input <span class="op">=</span> WorkflowDetailsInput(workflow_id<span class="op">=</span>workflow_id)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>workflow_details_output: WorkflowDetailsOutput <span class="op">=</span> <span class="cf">await</span> get_workflow_details(</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_details_input</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-10" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_details <span class="im">import</span> (</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsOutput,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsInput,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>workflow_details_input <span class="op">=</span> WorkflowDetailsInput(workflow_id<span class="op">=</span>workflow_id)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>workflow_details_output: WorkflowDetailsOutput <span class="op">=</span> <span class="cf">await</span> get_workflow_details(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_details_input</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-12" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_details_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-11" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(workflow_details_output, root_tag<span class="op">=</span><span class="st">"WorkflowDetailsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;WorkflowDetailsOutput&gt;
   &lt;results&gt;
@@ -390,29 +391,29 @@ graph TD
 <section id="sec-get-transformation-details" class="level2">
 <h2 class="anchored" data-anchor-id="sec-get-transformation-details">Get transformation details</h2>
 <p>Gegeven de transformatie ID kunnen we kijken wat verder met deze workflow te maken heeft. Bijvoorbeeld uit tabel in de <code>get_workflow_details</code> tool.</p>
-<div id="cell-14" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>transformation_id <span class="op">=</span> <span class="dv">1357</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-13" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>transformation_id <span class="op">=</span> <span class="dv">1357</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-15" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_details <span class="im">import</span> (</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsInput,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsOutput,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>transformation_details_input <span class="op">=</span> TransformationDetailsInput(</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    transformation_id<span class="op">=</span>transformation_id</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>transformation_details_output: TransformationDetailsOutput <span class="op">=</span> (</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_transformation_details(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_details_input)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-14" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_details <span class="im">import</span> (</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsInput,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsOutput,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>transformation_details_input <span class="op">=</span> TransformationDetailsInput(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    transformation_id<span class="op">=</span>transformation_id</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>transformation_details_output: TransformationDetailsOutput <span class="op">=</span> (</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_transformation_details(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_details_input)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-16" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    format_as_xml(transformation_details_output, root_tag<span class="op">=</span><span class="st">"TransformationDetailsOutput"</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-15" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    format_as_xml(transformation_details_output, root_tag<span class="op">=</span><span class="st">"TransformationDetailsOutput"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TransformationDetailsOutput&gt;
   &lt;results&gt;
@@ -473,27 +474,27 @@ graph LR
 <section id="describe-timeseries" class="level2">
 <h2 class="anchored" data-anchor-id="describe-timeseries">Describe Timeseries</h2>
 <p>Gegeven een timeseries ID kan je bijbehorende informatie over de transformaties ophalen waar deze timeseries in voor komt. Hier gebruiken we een timeseries ID uit <a href="#sec-get-transformation-details"><code>get_transformation_details</code></a>.</p>
-<div id="cell-18" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>timeseries_id <span class="op">=</span> transformation_details_output.results[<span class="dv">0</span>].time_series_links[<span class="dv">0</span>].tss_id</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>timeseries_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-17" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>timeseries_id <span class="op">=</span> transformation_details_output.results[<span class="dv">0</span>].time_series_links[<span class="dv">0</span>].tss_id</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>timeseries_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>159</code></pre>
 </div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_describe <span class="im">import</span> (</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesInput,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesOutput,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>timeseries_describe_input <span class="op">=</span> DescribeTimeSeriesInput(timeseries_id<span class="op">=</span>timeseries_id)</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>timeseries_describe_output: DescribeTimeSeriesOutput <span class="op">=</span> <span class="cf">await</span> describe_timeseries(</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_describe_input</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-18" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_describe <span class="im">import</span> (</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesInput,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesOutput,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>timeseries_describe_input <span class="op">=</span> DescribeTimeSeriesInput(timeseries_id<span class="op">=</span>timeseries_id)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>timeseries_describe_output: DescribeTimeSeriesOutput <span class="op">=</span> <span class="cf">await</span> describe_timeseries(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_describe_input</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-20" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_describe_output, root_tag<span class="op">=</span><span class="st">"DescribeTimeSeriesOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-19" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_describe_output, root_tag<span class="op">=</span><span class="st">"DescribeTimeSeriesOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;DescribeTimeSeriesOutput&gt;
   &lt;results&gt;
@@ -535,21 +536,21 @@ No transformations found&lt;/markdown_content&gt;
 <p>Naast zoeken op workflows en dan via transformaties naar de bijbehorende timeseries, zoals met <a href="#sec-search-workflows"><code>search_workflow</code></a>, kan je ook direct zoeken op timeseries.</p>
 <p>Dit kan op basis van: - parameter_id - qualifier_pattern - module_instance - endpoint - include_transformations</p>
 <p>Hier worden bijbehorende timeseries opgehaald die voldoen aan de opgegeven criteria.</p>
-<div id="cell-22" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_search <span class="im">import</span> search_timeseries</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_search <span class="im">import</span> (</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchInput,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchOutput,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>timeseries_search_input <span class="op">=</span> TimeSeriesSearchInput(module_instance<span class="op">=</span><span class="st">"im.wiwb.knmi"</span>)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>timeseries_search_output: TimeSeriesSearchOutput <span class="op">=</span> <span class="cf">await</span> search_timeseries(</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_search_input</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-21" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_search <span class="im">import</span> search_timeseries</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_search <span class="im">import</span> (</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchInput,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchOutput,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>timeseries_search_input <span class="op">=</span> TimeSeriesSearchInput(module_instance<span class="op">=</span><span class="st">"im.wiwb.knmi"</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>timeseries_search_output: TimeSeriesSearchOutput <span class="op">=</span> <span class="cf">await</span> search_timeseries(</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>timeseries_search_input</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_search_output, root_tag<span class="op">=</span><span class="st">"TimeSeriesSearchOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-22" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(timeseries_search_output, root_tag<span class="op">=</span><span class="st">"TimeSeriesSearchOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TimeSeriesSearchOutput&gt;
   &lt;results&gt;
@@ -1337,23 +1338,30 @@ Found 55 time series matching the criteria.
 <section id="sec-search-transformations" class="level2">
 <h2 class="anchored" data-anchor-id="sec-search-transformations">Search Transformation</h2>
 <p>Als laatste van de searches: <a href="#sec-search-workflows"><code>search_workflows</code></a>,<a href="#sec-search-timeseries"><code>search_workflows</code></a>, kan je ook zoeken op transformaties. Dit is als configurator iets minder intuïtief, maar kan handig zijn voor de AI-agent om door te zoeken naar andere transformaties.</p>
-<p>Dit kan op basis van: - description_pattern - workflow_name - module_config - max_depth</p>
-<div id="cell-25" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_search <span class="im">import</span> (</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    TransformationSearchInput,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    TransformationSearchOutput,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>transformation_search_input <span class="op">=</span> TransformationSearchInput(</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    description_pattern<span class="op">=</span><span class="st">"im.wiwb.knmi"</span>, workflow_name<span class="op">=</span><span class="st">"wf.im.wiwb.knmi"</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>transformation_search_output: TransformationSearchOutput <span class="op">=</span> <span class="cf">await</span> search_transformations(</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_search_input</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Dit kan op basis van description_pattern, met als filter opties: - workflow_name - module_config - max_depth</p>
+<p>We gebruiken hier de zelfde name pattern als bij de workflow search, namelijk:</p>
+<div id="cell-24" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>name_pattern</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>'im.wiwb.knmi'</code></pre>
 </div>
-<div id="cell-26" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(transformation_search_output, root_tag<span class="op">=</span><span class="st">"TimeSeriesSearchOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-25" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_search <span class="im">import</span> (</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    TransformationSearchInput,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    TransformationSearchOutput,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>transformation_search_input <span class="op">=</span> TransformationSearchInput(</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    description_pattern<span class="op">=</span>name_pattern</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>transformation_search_output: TransformationSearchOutput <span class="op">=</span> <span class="cf">await</span> search_transformations(</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>transformation_search_input</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-26" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(transformation_search_output, root_tag<span class="op">=</span><span class="st">"TimeSeriesSearchOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TimeSeriesSearchOutput&gt;
   &lt;results&gt;
@@ -1426,116 +1434,6 @@ Found 55 time series matching the criteria.
       &lt;workflow_id&gt;59&lt;/workflow_id&gt;
       &lt;workflow_name&gt;wf.im.wiwb.knmi&lt;/workflow_name&gt;
       &lt;workflow_desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1376&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;1&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1377&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;2&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1378&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;3&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1379&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;4&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1380&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;5&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1381&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;6&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1382&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;7&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1383&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;8&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1384&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;9&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1385&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;10&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
-    &lt;/example&gt;
-    &lt;example&gt;
-      &lt;id&gt;1386&lt;/id&gt;
-      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
-      &lt;ord_nr&gt;11&lt;/ord_nr&gt;
-      &lt;mic_id&gt;245&lt;/mic_id&gt;
-      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
-      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
-      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
-      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
     &lt;/example&gt;
     &lt;example&gt;
       &lt;id&gt;1364&lt;/id&gt;
@@ -1657,6 +1555,116 @@ Found 55 time series matching the criteria.
       &lt;workflow_name&gt;wf.im.wiwb.knmi.eps&lt;/workflow_name&gt;
       &lt;workflow_desc&gt;Taak om WIWB KNMI Regional EPS verwachtingen te importeren&lt;/workflow_desc&gt;
     &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1376&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;1&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1377&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;2&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1378&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;3&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1379&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;4&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1380&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;5&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1381&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;6&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1382&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;7&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1383&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;8&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1384&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;9&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1385&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;10&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1386&lt;/id&gt;
+      &lt;desc&gt;im.wiwb.knmi.harmonie&lt;/desc&gt;
+      &lt;ord_nr&gt;11&lt;/ord_nr&gt;
+      &lt;mic_id&gt;245&lt;/mic_id&gt;
+      &lt;modins&gt;im.wiwb.knmi.harmonie&lt;/modins&gt;
+      &lt;workflow_id&gt;60&lt;/workflow_id&gt;
+      &lt;workflow_name&gt;wf.im.wiwb.knmi.harmonie&lt;/workflow_name&gt;
+      &lt;workflow_desc&gt;Taak om WIWB KNMI Harmonie verwachtingen te importeren&lt;/workflow_desc&gt;
+    &lt;/example&gt;
   &lt;/results&gt;
   &lt;markdown_content&gt;## Transformation Search Results
 
@@ -1671,17 +1679,6 @@ Found 30 transformations matching the criteria.
 | wf.im.wiwb.knmi | im.wiwb.knmi | 1361 | 5 | im.wiwb.knmi |
 | wf.im.wiwb.knmi | im.wiwb.knmi | 1362 | 6 | im.wiwb.knmi |
 | wf.im.wiwb.knmi | im.wiwb.knmi | 1363 | 7 | im.wiwb.knmi |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1376 | 1 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1377 | 2 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1378 | 3 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1379 | 4 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1380 | 5 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1381 | 6 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1382 | 7 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1383 | 8 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1384 | 9 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1385 | 10 | im.wiwb.knmi.harmonie |
-| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1386 | 11 | im.wiwb.knmi.harmonie |
 | wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1364 | 1 | im.wiwb.knmi.eps |
 | wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1365 | 2 | im.wiwb.knmi.eps |
 | wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1366 | 3 | im.wiwb.knmi.eps |
@@ -1694,6 +1691,17 @@ Found 30 transformations matching the criteria.
 | wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1373 | 10 | im.wiwb.knmi.eps |
 | wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1374 | 11 | im.wiwb.knmi.eps |
 | wf.im.wiwb.knmi.eps | im.wiwb.knmi.eps | 1375 | 12 | im.wiwb.knmi.eps |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1376 | 1 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1377 | 2 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1378 | 3 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1379 | 4 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1380 | 5 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1381 | 6 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1382 | 7 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1383 | 8 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1384 | 9 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1385 | 10 | im.wiwb.knmi.harmonie |
+| wf.im.wiwb.knmi.harmonie | im.wiwb.knmi.harmonie | 1386 | 11 | im.wiwb.knmi.harmonie |
 &lt;/markdown_content&gt;
 &lt;/TimeSeriesSearchOutput&gt;</code></pre>
 </div>
@@ -1701,22 +1709,22 @@ Found 30 transformations matching the criteria.
 </section>
 <section id="get-database-schema" class="level2">
 <h2 class="anchored" data-anchor-id="get-database-schema">Get database schema</h2>
-<p>Om op de juiste manier de tool execute query te gebruiken, is het handig om te weten wat er in de database zit. Hiervoor zijn de schema’s van de configuratie database. Deze tool geeft een overzicht van de beschikbare tabellen en kolommen.</p>
-<div id="cell-28" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.get_database_schema <span class="im">import</span> get_database_schema</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.database_schema <span class="im">import</span> (</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaOutput,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaInput,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>database_schema_input <span class="op">=</span> DatabaseSchemaInput()</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>database_schema_output: DatabaseSchemaOutput <span class="op">=</span> <span class="cf">await</span> get_database_schema(</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>database_schema_input</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>De tools hier boven waren vooral gericht op het ophalen van informatie over de configuratie. Vanaf hier worden specifiekere tools besproken die helpen bij het werken met de configuratie database. Om op de juiste manier de tool execute query te gebruiken, is het handig om te weten wat er in de database zit. Hiervoor zijn de schema’s van de configuratie database. Deze tool geeft een overzicht van de beschikbare tabellen en kolommen.</p>
+<div id="cell-28" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.get_database_schema <span class="im">import</span> get_database_schema</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.database_schema <span class="im">import</span> (</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaOutput,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaInput,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>database_schema_input <span class="op">=</span> DatabaseSchemaInput()</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>database_schema_output: DatabaseSchemaOutput <span class="op">=</span> <span class="cf">await</span> get_database_schema(</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>database_schema_input</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-29" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(database_schema_output, root_tag<span class="op">=</span><span class="st">"DatabaseSchemaOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-29" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(database_schema_output, root_tag<span class="op">=</span><span class="st">"DatabaseSchemaOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;DatabaseSchemaOutput&gt;
   &lt;tables&gt;
@@ -1929,19 +1937,19 @@ Found 30 transformations matching the criteria.
 </section>
 <section id="execute-query" class="level2">
 <h2 class="anchored" data-anchor-id="execute-query">Execute query</h2>
-<p>Deze tool geeft alle mogelijke vrijheid: het taalmodel kan elke SQL query uitvoeren.</p>
-<div id="cell-31" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT * FROM endpoints limit 3"</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Deze tool geeft alle mogelijke vrijheid: het taalmodel kan elke SQL query uitvoeren. Dit geeft het AI model alle vrijheid om de database te doorzoeken.</p>
+<div id="cell-31" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT * FROM endpoints limit 3"</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-32" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-32" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQLQueryOutput&gt;
   &lt;results&gt;
@@ -1965,6 +1973,1533 @@ Found 30 transformations matching the criteria.
   &lt;row_count&gt;3&lt;/row_count&gt;
   &lt;query_executed&gt;SELECT * FROM endpoints limit 3&lt;/query_executed&gt;
 &lt;/SQLQueryOutput&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="find-workflow-call-hierarchy" class="level2">
+<h2 class="anchored" data-anchor-id="find-workflow-call-hierarchy">Find Workflow Call Hierarchy</h2>
+<p>Om de workflows te begrijpen is het handig om te weten welke workflows aan elkaar gerelateerd zijn. Deze tool geeft een overzicht van de workflow hiërarchie, oftewel welke workflows aan elkaar gerelateerd zijn. Dit kan lang door gaan, daarom is er een <code>max_depth</code> parameter die aangeeft hoe diep de hiërarchie moet worden opgehaald.</p>
+<div id="cell-34" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>root_workflow_id <span class="op">=</span> workflow_search_output.results[<span class="dv">0</span>].<span class="bu">id</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>root_workflow_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>59</code></pre>
+</div>
+</div>
+<div id="cell-35" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_hierarchy <span class="im">import</span> (</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    WorkflowCallHierarchyInput,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryOutput <span class="im">as</span> sql_query_output</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>workflow_call_hierarchy_input <span class="op">=</span> WorkflowCallHierarchyInput(</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    root_workflow_id<span class="op">=</span>root_workflow_id</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>workflow_call_hierarchy_output: sql_query_output <span class="op">=</span> <span class="cf">await</span> find_workflow_call_hierarchy(</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>workflow_call_hierarchy_input</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-36" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    format_as_xml(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        workflow_call_hierarchy_output, root_tag<span class="op">=</span><span class="st">"WorkflowCallHierarchyOutput"</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;WorkflowCallHierarchyOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;id&gt;59&lt;/id&gt;
+      &lt;wf_id&gt;wf.im.wiwb.knmi&lt;/wf_id&gt;
+      &lt;desc&gt;Taak om WIWB KNMI metingen te importeren&lt;/desc&gt;
+      &lt;parent_id&gt;null&lt;/parent_id&gt;
+      &lt;level&gt;0&lt;/level&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;column_names&gt;
+    &lt;example&gt;id&lt;/example&gt;
+    &lt;example&gt;wf_id&lt;/example&gt;
+    &lt;example&gt;desc&lt;/example&gt;
+    &lt;example&gt;parent_id&lt;/example&gt;
+    &lt;example&gt;level&lt;/example&gt;
+  &lt;/column_names&gt;
+  &lt;row_count&gt;1&lt;/row_count&gt;
+  &lt;query_executed&gt;
+    WITH RECURSIVE workflow_hierarchy AS (
+        SELECT id, wf_id, desc, parent_id, 0 AS level
+        FROM call_stacks
+        WHERE id = 59
+
+        UNION ALL
+
+        SELECT cs.id, cs.wf_id, cs.desc, cs.parent_id, wh.level + 1
+        FROM call_stacks cs
+        JOIN workflow_hierarchy wh ON cs.parent_id = wh.id
+    )
+    SELECT id, wf_id, desc, parent_id, level
+    FROM workflow_hierarchy
+    ORDER BY level, wf_id
+    &lt;/query_executed&gt;
+&lt;/WorkflowCallHierarchyOutput&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="analyze-dependencies" class="level2">
+<h2 class="anchored" data-anchor-id="analyze-dependencies">Analyze Dependencies</h2>
+<p>Deze tool geeft een overzicht van de afhankelijkheden tussen de verschillende workflows. Hierbij kun je aangeven welke richting van afhankelijkheden je wilt analyseren: upstream, downstream, of beide. ook geef je aan welke entiteit je wilt analyseren: timeseries, transformation, of workflow. Dit is eigenlijk een voorbereide versie van de <code>execute_query</code> tool, maar dan specifiek gericht op het analyseren van afhankelijkheden.</p>
+<div id="cell-38" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dependency_analysis <span class="im">import</span> analyze_dependencies</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.dependency_analysis <span class="im">import</span> (</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    DependencyAnalysisInput,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    DependencyAnalysisOutput,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>analyze_dependencies_input <span class="op">=</span> DependencyAnalysisInput(</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    entity_type<span class="op">=</span><span class="st">"transformation"</span>,</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    entity_id<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    direction<span class="op">=</span><span class="st">"downstream"</span>,  <span class="co"># 'upstream', 'downstream', or 'both'</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>analyze_dependencies_output: DependencyAnalysisOutput <span class="op">=</span> <span class="cf">await</span> analyze_dependencies(</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>analyze_dependencies_input</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-39" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(analyze_dependencies_output, root_tag<span class="op">=</span><span class="st">"DependencyAnalysisOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DependencyAnalysisOutput&gt;
+  &lt;results&gt;
+    &lt;example&gt;
+      &lt;tss_id&gt;113&lt;/tss_id&gt;
+      &lt;link_type&gt;in&lt;/link_type&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;tss_id&gt;423&lt;/tss_id&gt;
+      &lt;link_type&gt;out&lt;/link_type&gt;
+    &lt;/example&gt;
+  &lt;/results&gt;
+  &lt;markdown_content&gt;## Dependencies for Transformation 1
+
+### Input Time Series
+| Time Series ID |
+|----------------|
+| 113 |
+
+### Output Time Series
+| Time Series ID |
+|----------------|
+| 423 |
+&lt;/markdown_content&gt;
+&lt;/DependencyAnalysisOutput&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="analyse-dead-points" class="level2">
+<h2 class="anchored" data-anchor-id="analyse-dead-points">Analyse Dead Points</h2>
+<p>Deze tool geeft een overzicht van de dode punten in de configuratie. Dit is een uitgewerkte analyse tool die sp laat zien hoe we een speciefieke analyse kunnen uitvoeren op de configuratie database.</p>
+<div id="cell-41" class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dead_point_analysis <span class="im">import</span> analyze_dead_points</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.dead_point_analysis <span class="im">import</span> (</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    DeadPointsAnalysisInput,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    DeadPointsAnalysisOutput,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>dead_point_analysis_input <span class="op">=</span> DeadPointsAnalysisInput(</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    entity_type<span class="op">=</span><span class="st">"transformation"</span>,</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    entity_id<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>dead_point_analysis_output: DeadPointsAnalysisOutput <span class="op">=</span> <span class="cf">await</span> analyze_dead_points(</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>dead_point_analysis_input</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-42" class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(dead_point_analysis_output, root_tag<span class="op">=</span><span class="st">"DeadPointsAnalysisOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DeadPointsAnalysisOutput&gt;
+  &lt;count&gt;20&lt;/count&gt;
+  &lt;dead_points&gt;
+    &lt;example&gt;
+      &lt;id&gt;456&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.1b&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;456&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.1b&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;455&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.1o&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;455&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.1o&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;457&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.2b&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;457&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.2b&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;454&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.2o&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;454&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Hpbe.2o&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;hour&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;487&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Pct.pb.slecht.hoog&lt;/parid&gt;
+      &lt;qualifiers&gt;suminterval&lt;/qualifiers&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;dayGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;488&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Pct.pp.slecht.hoog&lt;/parid&gt;
+      &lt;qualifiers&gt;suminterval&lt;/qualifiers&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;dayGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;489&lt;/id&gt;
+      &lt;modins&gt;Peilevaluatie&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Pct.sp.slecht.hoog&lt;/parid&gt;
+      &lt;qualifiers&gt;suminterval&lt;/qualifiers&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;dayGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;502&lt;/id&gt;
+      &lt;modins&gt;im.BRO&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;GW.G&lt;/parid&gt;
+      &lt;qualifiers&gt;beoordeeld/filter1&lt;/qualifiers&gt;
+      &lt;tstype&gt;tmp_78&lt;/tstype&gt;
+      &lt;timess&gt;nonequidistant&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;503&lt;/id&gt;
+      &lt;modins&gt;im.BRO&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;GW.G&lt;/parid&gt;
+      &lt;qualifiers&gt;filter1/nietBeoordeeld&lt;/qualifiers&gt;
+      &lt;tstype&gt;tmp_78&lt;/tstype&gt;
+      &lt;timess&gt;nonequidistant&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;505&lt;/id&gt;
+      &lt;modins&gt;im.BRO&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;GW.G&lt;/parid&gt;
+      &lt;qualifiers&gt;beoordeeld/filter2&lt;/qualifiers&gt;
+      &lt;tstype&gt;tmp_79&lt;/tstype&gt;
+      &lt;timess&gt;nonequidistant&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;506&lt;/id&gt;
+      &lt;modins&gt;im.BRO&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;GW.G&lt;/parid&gt;
+      &lt;qualifiers&gt;filter2/nietBeoordeeld&lt;/qualifiers&gt;
+      &lt;tstype&gt;tmp_79&lt;/tstype&gt;
+      &lt;timess&gt;nonequidistant&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;549&lt;/id&gt;
+      &lt;modins&gt;pr.pompvolumes&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;V.B.m&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;549&lt;/id&gt;
+      &lt;modins&gt;pr.pompvolumes&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;V.B.m&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;528&lt;/id&gt;
+      &lt;modins&gt;pr.scalar.satdata&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;Eact.m&lt;/parid&gt;
+      &lt;qualifiers&gt;merge&lt;/qualifiers&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;573&lt;/id&gt;
+      &lt;modins&gt;pr.stuwdebieten&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;V.B.m&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;573&lt;/id&gt;
+      &lt;modins&gt;pr.stuwdebieten&lt;/modins&gt;
+      &lt;vtype&gt;scalar&lt;/vtype&gt;
+      &lt;parid&gt;V.B.m&lt;/parid&gt;
+      &lt;qualifiers /&gt;
+      &lt;tstype&gt;external historical&lt;/tstype&gt;
+      &lt;timess&gt;monthGMT+1&lt;/timess&gt;
+    &lt;/example&gt;
+  &lt;/dead_points&gt;
+  &lt;module_summary /&gt;
+  &lt;unique_modules&gt;0&lt;/unique_modules&gt;
+  &lt;parameters_affected&gt;0&lt;/parameters_affected&gt;
+  &lt;producers&gt;
+    &lt;454&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;454&lt;/tss_id&gt;
+        &lt;trafo_id&gt;4&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;sample Hpbe.2o pb&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;454&lt;/tss_id&gt;
+        &lt;trafo_id&gt;77&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;def int Hpbe.2o_SP&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/454&gt;
+    &lt;455&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;455&lt;/tss_id&gt;
+        &lt;trafo_id&gt;5&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;sample Hpbe.1o pb&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;455&lt;/tss_id&gt;
+        &lt;trafo_id&gt;78&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;def int Hpbe.1o_SP&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/455&gt;
+    &lt;456&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;456&lt;/tss_id&gt;
+        &lt;trafo_id&gt;6&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;sample Hpbe.1b pb&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;456&lt;/tss_id&gt;
+        &lt;trafo_id&gt;79&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;def int Hpbe.1b_SP&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/456&gt;
+    &lt;457&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;457&lt;/tss_id&gt;
+        &lt;trafo_id&gt;7&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;sample Hpbe.2b pb&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;457&lt;/tss_id&gt;
+        &lt;trafo_id&gt;80&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;def int Hpbe.2b_SP&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/457&gt;
+    &lt;487&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;487&lt;/tss_id&gt;
+        &lt;trafo_id&gt;43&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;percentage slecht hoog pb VV&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/487&gt;
+    &lt;488&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;488&lt;/tss_id&gt;
+        &lt;trafo_id&gt;63&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;percentage slecht hoog pp VV&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/488&gt;
+    &lt;489&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;489&lt;/tss_id&gt;
+        &lt;trafo_id&gt;114&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;percentage slecht sp hoog VV&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;Peilevaluatie&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.peilevaluatie&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/489&gt;
+    &lt;528&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;528&lt;/tss_id&gt;
+        &lt;trafo_id&gt;1402&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;pr.Eact.d.ls.deelstroomgebieden.accumulative.d.to.m&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;pr.accumulative.m&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.scalar.satdata.ra&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/528&gt;
+    &lt;549&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;549&lt;/tss_id&gt;
+        &lt;trafo_id&gt;1485&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;pr.pompvolumes.hl.m&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;pr.pompvolumes&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.pompvolumes&lt;/workflow_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;549&lt;/tss_id&gt;
+        &lt;trafo_id&gt;1486&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;pr.pompvolumes.sl.m&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;pr.pompvolumes&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.pompvolumes&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/549&gt;
+    &lt;573&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;573&lt;/tss_id&gt;
+        &lt;trafo_id&gt;1636&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;pr.stuwvolumes.Vbh.hl&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;pr.stuwvolumes.qb&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.interpolate&lt;/workflow_id&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;tss_id&gt;573&lt;/tss_id&gt;
+        &lt;trafo_id&gt;1637&lt;/trafo_id&gt;
+        &lt;trafo_desc&gt;pr.stuwvolumes.Vbh.sl&lt;/trafo_desc&gt;
+        &lt;module_instance&gt;pr.stuwvolumes.qb&lt;/module_instance&gt;
+        &lt;workflow_id&gt;wf.pr.interpolate&lt;/workflow_id&gt;
+      &lt;/example&gt;
+    &lt;/573&gt;
+  &lt;/producers&gt;
+  &lt;recommendations&gt;
+    &lt;example&gt;Review the identified dead points to determine if they are needed&lt;/example&gt;
+    &lt;example&gt;Consider removing unused time series sets to simplify configuration&lt;/example&gt;
+    &lt;example&gt;Check if any dead points should be marked as endpoints&lt;/example&gt;
+    &lt;example&gt;Verify if transformations producing these time series are working as expected&lt;/example&gt;
+  &lt;/recommendations&gt;
+  &lt;markdown_content&gt;## Dead Points Analysis
+Found 20 dead points across 5 modules.
+
+### Dead Points and Their Origins
+| ID | Time Series | Transformation | Module Config | Workflow |
+|----|-------------|----------------|---------------|----------|
+| 456 | Peilevaluatie•scalar•Hpbe.1b••external historical•hour | sample Hpbe.1b pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 456 | Peilevaluatie•scalar•Hpbe.1b••external historical•hour | def int Hpbe.1b_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 456 | Peilevaluatie•scalar•Hpbe.1b••external historical•hour | sample Hpbe.1b pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 456 | Peilevaluatie•scalar•Hpbe.1b••external historical•hour | def int Hpbe.1b_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 455 | Peilevaluatie•scalar•Hpbe.1o••external historical•hour | sample Hpbe.1o pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 455 | Peilevaluatie•scalar•Hpbe.1o••external historical•hour | def int Hpbe.1o_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 455 | Peilevaluatie•scalar•Hpbe.1o••external historical•hour | sample Hpbe.1o pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 455 | Peilevaluatie•scalar•Hpbe.1o••external historical•hour | def int Hpbe.1o_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 457 | Peilevaluatie•scalar•Hpbe.2b••external historical•hour | sample Hpbe.2b pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 457 | Peilevaluatie•scalar•Hpbe.2b••external historical•hour | def int Hpbe.2b_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 457 | Peilevaluatie•scalar•Hpbe.2b••external historical•hour | sample Hpbe.2b pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 457 | Peilevaluatie•scalar•Hpbe.2b••external historical•hour | def int Hpbe.2b_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 454 | Peilevaluatie•scalar•Hpbe.2o••external historical•hour | sample Hpbe.2o pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 454 | Peilevaluatie•scalar•Hpbe.2o••external historical•hour | def int Hpbe.2o_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 454 | Peilevaluatie•scalar•Hpbe.2o••external historical•hour | sample Hpbe.2o pb | Peilevaluatie | wf.pr.peilevaluatie |
+| 454 | Peilevaluatie•scalar•Hpbe.2o••external historical•hour | def int Hpbe.2o_SP | Peilevaluatie | wf.pr.peilevaluatie |
+| 487 | Peilevaluatie•scalar•Pct.pb.slecht.hoog•suminterval•external historical•dayGMT+1 | percentage slecht hoog pb VV | Peilevaluatie | wf.pr.peilevaluatie |
+| 488 | Peilevaluatie•scalar•Pct.pp.slecht.hoog•suminterval•external historical•dayGMT+1 | percentage slecht hoog pp VV | Peilevaluatie | wf.pr.peilevaluatie |
+| 489 | Peilevaluatie•scalar•Pct.sp.slecht.hoog•suminterval•external historical•dayGMT+1 | percentage slecht sp hoog VV | Peilevaluatie | wf.pr.peilevaluatie |
+| 502 | im.BRO•scalar•GW.G•beoordeeld/filter1•tmp_78•nonequidistant | - | - | - |
+| 503 | im.BRO•scalar•GW.G•filter1/nietBeoordeeld•tmp_78•nonequidistant | - | - | - |
+| 505 | im.BRO•scalar•GW.G•beoordeeld/filter2•tmp_79•nonequidistant | - | - | - |
+| 506 | im.BRO•scalar•GW.G•filter2/nietBeoordeeld•tmp_79•nonequidistant | - | - | - |
+| 549 | pr.pompvolumes•scalar•V.B.m••external historical•monthGMT+1 | pr.pompvolumes.hl.m | pr.pompvolumes | wf.pr.pompvolumes |
+| 549 | pr.pompvolumes•scalar•V.B.m••external historical•monthGMT+1 | pr.pompvolumes.sl.m | pr.pompvolumes | wf.pr.pompvolumes |
+| 549 | pr.pompvolumes•scalar•V.B.m••external historical•monthGMT+1 | pr.pompvolumes.hl.m | pr.pompvolumes | wf.pr.pompvolumes |
+| 549 | pr.pompvolumes•scalar•V.B.m••external historical•monthGMT+1 | pr.pompvolumes.sl.m | pr.pompvolumes | wf.pr.pompvolumes |
+| 528 | pr.scalar.satdata•scalar•Eact.m•merge•external historical•monthGMT+1 | pr.Eact.d.ls.deelstroomgebieden.accumulative.d.to.m | pr.accumulative.m | wf.pr.scalar.satdata.ra |
+| 573 | pr.stuwdebieten•scalar•V.B.m••external historical•monthGMT+1 | pr.stuwvolumes.Vbh.hl | pr.stuwvolumes.qb | wf.pr.interpolate |
+| 573 | pr.stuwdebieten•scalar•V.B.m••external historical•monthGMT+1 | pr.stuwvolumes.Vbh.sl | pr.stuwvolumes.qb | wf.pr.interpolate |
+| 573 | pr.stuwdebieten•scalar•V.B.m••external historical•monthGMT+1 | pr.stuwvolumes.Vbh.hl | pr.stuwvolumes.qb | wf.pr.interpolate |
+| 573 | pr.stuwdebieten•scalar•V.B.m••external historical•monthGMT+1 | pr.stuwvolumes.Vbh.sl | pr.stuwvolumes.qb | wf.pr.interpolate |
+
+### Module Instances That Can Be Removed
+No module instances can be safely removed - all are used by active time series.
+
+### Parameters That Can Be Removed
+No parameters can be safely removed - all are used by active time series.
+
+### Qualifiers That Can Be Removed
+No qualifiers can be safely removed - all are used by active time series.
+
+### Recommendations
+- Review the identified dead points to determine if they are needed
+- Consider removing unused time series sets to simplify configuration
+- Check if any dead points should be marked as endpoints
+- Verify if transformations producing these time series are working as expected
+&lt;/markdown_content&gt;
+&lt;/DeadPointsAnalysisOutput&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-visualize-graph" class="level2">
+<h2 class="anchored" data-anchor-id="sec-visualize-graph">Visualize graph</h2>
+<p>Hier wordt een grafische weergave van de workflow hiërarchie gegeven.</p>
+<div id="cell-44" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.graph_visualize <span class="im">import</span> visualize_graph</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.graph <span class="im">import</span> (</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    GraphVisualizationInput,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    GraphVisualizationOutput,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>graph_visualize_input <span class="op">=</span> GraphVisualizationInput(</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    root_entity_id<span class="op">=</span><span class="dv">1</span>, root_entity_type<span class="op">=</span><span class="st">"workflow"</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>graph_visualize_output: GraphVisualizationOutput <span class="op">=</span> <span class="cf">await</span> visualize_graph(</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>graph_visualize_input</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-45" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(graph_visualize_output, root_tag<span class="op">=</span><span class="st">"DeadPointsAnalysisOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;DeadPointsAnalysisOutput&gt;
+  &lt;nodes&gt;
+    &lt;example&gt;
+      &lt;id&gt;1&lt;/id&gt;
+      &lt;type&gt;workflow&lt;/type&gt;
+      &lt;label&gt;wf.im.afvalwater&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;description&gt;Taak om Afvalwaterdata van zuiveringen en rioolgemalen te importeren&lt;/description&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;0&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;1&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;113&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie•scalar•H.G.h••external historical•hour&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;type&gt;external historical&lt;/type&gt;
+        &lt;timestep&gt;hour&lt;/timestep&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;2&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1413&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;pr.average.d|pr.average.d&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie|H.G.d|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1420&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;pr.average.h|pr.average.h&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie|H.G|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1474&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;pr.lmw.average.h|pr.lmw.average.h&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie|H.G|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|H.G.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;81&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|afwijking tov streefpeil &lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;81&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Hwk.V.SP|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;81&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|afwijking tov streefpeil &lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;81&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie|H.S.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;423&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie•scalar•H.G.h••tmp_116•hour&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;type&gt;tmp_116&lt;/type&gt;
+        &lt;timestep&gt;hour&lt;/timestep&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;2&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie|H.G.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;2&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;2&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|H.G.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;2&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;2&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;1&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;423&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie•scalar•H.G.h••tmp_116•hour&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;type&gt;tmp_116&lt;/type&gt;
+        &lt;timestep&gt;hour&lt;/timestep&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;2&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;1&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;1&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Validatie|H.G.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;2&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;2&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|H.G.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;299&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie•scalar•H.G.h••external historical•hour&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;type&gt;external historical&lt;/type&gt;
+        &lt;timestep&gt;hour&lt;/timestep&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;2&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;2&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;2&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|H.G.h|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;3&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|waterstand per dag&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;3&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|H.G.d|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;4&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|sample Hpbe.2o pb&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;4&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Hpbe.2o|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;5&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|sample Hpbe.1o pb&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;5&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Hpbe.1o|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;6&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|sample Hpbe.1b pb&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;6&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Hpbe.1b|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;7&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|sample Hpbe.2b pb&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;7&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Hpbe.2b|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;8&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|afwijkingpb uur&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;8&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Hwk.V.PB|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;9&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|genormeerde afwijking per uur&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;9&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Afw.norm|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;11&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.slecht.hoog.uur&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;11&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.slecht.hoog|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;12&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.matig.hoog.uur&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;12&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.matig.hoog|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;13&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.goed.uur&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;13&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;0&lt;/id&gt;
+      &lt;type&gt;timeseries&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.goed|&lt;/label&gt;
+      &lt;properties /&gt;
+      &lt;level&gt;4&lt;/level&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;14&lt;/id&gt;
+      &lt;type&gt;transformation&lt;/type&gt;
+      &lt;label&gt;Peilevaluatie|Cl.pb.matig.laag.uur&lt;/label&gt;
+      &lt;properties&gt;
+        &lt;order&gt;14&lt;/order&gt;
+      &lt;/properties&gt;
+      &lt;level&gt;3&lt;/level&gt;
+    &lt;/example&gt;
+  &lt;/nodes&gt;
+  &lt;edges&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;1413&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in pr.average.d&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1413&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out pr.average.d&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;1420&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in pr.average.h&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1420&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out pr.average.h&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;1474&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in pr.lmw.average.h&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1474&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out pr.lmw.average.h&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;1&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;81&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;81&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;81&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;81&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;113&lt;/source_id&gt;
+      &lt;target_id&gt;1&lt;/target_id&gt;
+      &lt;type&gt;input_to&lt;/type&gt;
+      &lt;label&gt;input Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;423&lt;/source_id&gt;
+      &lt;target_id&gt;1&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;423&lt;/source_id&gt;
+      &lt;target_id&gt;2&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;2&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1&lt;/source_id&gt;
+      &lt;target_id&gt;423&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;output Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1&lt;/source_id&gt;
+      &lt;target_id&gt;1&lt;/target_id&gt;
+      &lt;type&gt;contains&lt;/type&gt;
+      &lt;label&gt;in im.afvalwater&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;423&lt;/source_id&gt;
+      &lt;target_id&gt;1&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;423&lt;/source_id&gt;
+      &lt;target_id&gt;2&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;2&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;423&lt;/source_id&gt;
+      &lt;target_id&gt;2&lt;/target_id&gt;
+      &lt;type&gt;input_to&lt;/type&gt;
+      &lt;label&gt;input Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;2&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;2&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;3&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;3&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;4&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;4&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;5&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;5&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;6&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;6&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;7&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;7&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;8&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;8&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;9&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;9&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;11&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;11&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;12&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;12&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;13&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;13&lt;/source_id&gt;
+      &lt;target_id&gt;0&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;out Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;299&lt;/source_id&gt;
+      &lt;target_id&gt;14&lt;/target_id&gt;
+      &lt;type&gt;used_by&lt;/type&gt;
+      &lt;label&gt;in Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;2&lt;/source_id&gt;
+      &lt;target_id&gt;299&lt;/target_id&gt;
+      &lt;type&gt;produces&lt;/type&gt;
+      &lt;label&gt;output Peilevaluatie&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;source_id&gt;1&lt;/source_id&gt;
+      &lt;target_id&gt;2&lt;/target_id&gt;
+      &lt;type&gt;contains&lt;/type&gt;
+      &lt;label&gt;in im.afvalwater.xmlpi&lt;/label&gt;
+      &lt;properties /&gt;
+    &lt;/example&gt;
+  &lt;/edges&gt;
+  &lt;layout&gt;
+    &lt;layout_type&gt;hierarchical&lt;/layout_type&gt;
+    &lt;direction&gt;LR&lt;/direction&gt;
+    &lt;max_depth&gt;null&lt;/max_depth&gt;
+    &lt;node_spacing&gt;50&lt;/node_spacing&gt;
+    &lt;level_spacing&gt;100&lt;/level_spacing&gt;
+  &lt;/layout&gt;
+  &lt;markdown_content&gt;```mermaid
+graph LR
+1["wf.im.afvalwater"]:::fill:#e8f5e9,stroke:#1b5e20
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+113["Validatie•scalar•H.G.h••external historical•hour"]:::fill:#e1f5fe,stroke:#01579b
+1413["pr.average.d|pr.average.d"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G.d|"]:::fill:#e1f5fe,stroke:#01579b
+1420["pr.average.h|pr.average.h"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G|"]:::fill:#e1f5fe,stroke:#01579b
+1474["pr.lmw.average.h|pr.lmw.average.h"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G|"]:::fill:#e1f5fe,stroke:#01579b
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+81["Peilevaluatie|afwijking tov streefpeil "]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hwk.V.SP|"]:::fill:#e1f5fe,stroke:#01579b
+81["Peilevaluatie|afwijking tov streefpeil "]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.S.h|"]:::fill:#e1f5fe,stroke:#01579b
+423["Peilevaluatie•scalar•H.G.h••tmp_116•hour"]:::fill:#e1f5fe,stroke:#01579b
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+423["Peilevaluatie•scalar•H.G.h••tmp_116•hour"]:::fill:#e1f5fe,stroke:#01579b
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+299["Peilevaluatie•scalar•H.G.h••external historical•hour"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+3["Peilevaluatie|waterstand per dag"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.d|"]:::fill:#e1f5fe,stroke:#01579b
+4["Peilevaluatie|sample Hpbe.2o pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.2o|"]:::fill:#e1f5fe,stroke:#01579b
+5["Peilevaluatie|sample Hpbe.1o pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.1o|"]:::fill:#e1f5fe,stroke:#01579b
+6["Peilevaluatie|sample Hpbe.1b pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.1b|"]:::fill:#e1f5fe,stroke:#01579b
+7["Peilevaluatie|sample Hpbe.2b pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.2b|"]:::fill:#e1f5fe,stroke:#01579b
+8["Peilevaluatie|afwijkingpb uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hwk.V.PB|"]:::fill:#e1f5fe,stroke:#01579b
+9["Peilevaluatie|genormeerde afwijking per uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Afw.norm|"]:::fill:#e1f5fe,stroke:#01579b
+11["Peilevaluatie|Cl.pb.slecht.hoog.uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Cl.pb.slecht.hoog|"]:::fill:#e1f5fe,stroke:#01579b
+12["Peilevaluatie|Cl.pb.matig.hoog.uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Cl.pb.matig.hoog|"]:::fill:#e1f5fe,stroke:#01579b
+13["Peilevaluatie|Cl.pb.goed.uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Cl.pb.goed|"]:::fill:#e1f5fe,stroke:#01579b
+14["Peilevaluatie|Cl.pb.matig.laag.uur"]:::fill:#f3e5f5,stroke:#4a148c
+113 --&amp;gt;|in pr.average.d| 1413:::stroke:#01579b
+1413 --&amp;gt;|out pr.average.d| 0:::stroke:#1b5e20
+113 --&amp;gt;|in pr.average.h| 1420:::stroke:#01579b
+1420 --&amp;gt;|out pr.average.h| 0:::stroke:#1b5e20
+113 --&amp;gt;|in pr.lmw.average.h| 1474:::stroke:#01579b
+1474 --&amp;gt;|out pr.lmw.average.h| 0:::stroke:#1b5e20
+113 --&amp;gt;|in Peilevaluatie| 1:::stroke:#01579b
+1 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+113 --&amp;gt;|in Peilevaluatie| 81:::stroke:#01579b
+81 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+113 --&amp;gt;|in Peilevaluatie| 81:::stroke:#01579b
+81 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+113 --&amp;gt;|input Peilevaluatie| 1:::stroke:#01579b
+423 --&amp;gt;|in Peilevaluatie| 1:::stroke:#01579b
+1 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+423 --&amp;gt;|in Peilevaluatie| 2:::stroke:#01579b
+2 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+1 --&amp;gt;|output Peilevaluatie| 423:::stroke:#1b5e20
+1 --&amp;gt;|in im.afvalwater| 1:::stroke:#4a148c
+423 --&amp;gt;|in Peilevaluatie| 1:::stroke:#01579b
+1 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+423 --&amp;gt;|in Peilevaluatie| 2:::stroke:#01579b
+2 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+423 --&amp;gt;|input Peilevaluatie| 2:::stroke:#01579b
+299 --&amp;gt;|in Peilevaluatie| 2:::stroke:#01579b
+2 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 3:::stroke:#01579b
+3 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 4:::stroke:#01579b
+4 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 5:::stroke:#01579b
+5 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 6:::stroke:#01579b
+6 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 7:::stroke:#01579b
+7 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 8:::stroke:#01579b
+8 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 9:::stroke:#01579b
+9 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 11:::stroke:#01579b
+11 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 12:::stroke:#01579b
+12 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 13:::stroke:#01579b
+13 --&amp;gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&amp;gt;|in Peilevaluatie| 14:::stroke:#01579b
+2 --&amp;gt;|output Peilevaluatie| 299:::stroke:#1b5e20
+1 --&amp;gt;|in im.afvalwater.xmlpi| 2:::stroke:#4a148c
+```&lt;/markdown_content&gt;
+&lt;/DeadPointsAnalysisOutput&gt;</code></pre>
+</div>
+</div>
+<p>De grafiek kunnen we vervolgens hier ook zien:</p>
+<div id="cell-47" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown, display</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>display(Markdown(graph_visualize_output.markdown_content))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<pre class="mermaid"><code>graph LR
+1["wf.im.afvalwater"]:::fill:#e8f5e9,stroke:#1b5e20
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+113["Validatie•scalar•H.G.h••external historical•hour"]:::fill:#e1f5fe,stroke:#01579b
+1413["pr.average.d|pr.average.d"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G.d|"]:::fill:#e1f5fe,stroke:#01579b
+1420["pr.average.h|pr.average.h"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G|"]:::fill:#e1f5fe,stroke:#01579b
+1474["pr.lmw.average.h|pr.lmw.average.h"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G|"]:::fill:#e1f5fe,stroke:#01579b
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+81["Peilevaluatie|afwijking tov streefpeil "]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hwk.V.SP|"]:::fill:#e1f5fe,stroke:#01579b
+81["Peilevaluatie|afwijking tov streefpeil "]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.S.h|"]:::fill:#e1f5fe,stroke:#01579b
+423["Peilevaluatie•scalar•H.G.h••tmp_116•hour"]:::fill:#e1f5fe,stroke:#01579b
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+423["Peilevaluatie•scalar•H.G.h••tmp_116•hour"]:::fill:#e1f5fe,stroke:#01579b
+1["Peilevaluatie|mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Validatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+299["Peilevaluatie•scalar•H.G.h••external historical•hour"]:::fill:#e1f5fe,stroke:#01579b
+2["Peilevaluatie|interpolate mean wathte_meetpunten per peilgebied"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.h|"]:::fill:#e1f5fe,stroke:#01579b
+3["Peilevaluatie|waterstand per dag"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|H.G.d|"]:::fill:#e1f5fe,stroke:#01579b
+4["Peilevaluatie|sample Hpbe.2o pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.2o|"]:::fill:#e1f5fe,stroke:#01579b
+5["Peilevaluatie|sample Hpbe.1o pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.1o|"]:::fill:#e1f5fe,stroke:#01579b
+6["Peilevaluatie|sample Hpbe.1b pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.1b|"]:::fill:#e1f5fe,stroke:#01579b
+7["Peilevaluatie|sample Hpbe.2b pb"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hpbe.2b|"]:::fill:#e1f5fe,stroke:#01579b
+8["Peilevaluatie|afwijkingpb uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Hwk.V.PB|"]:::fill:#e1f5fe,stroke:#01579b
+9["Peilevaluatie|genormeerde afwijking per uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Afw.norm|"]:::fill:#e1f5fe,stroke:#01579b
+11["Peilevaluatie|Cl.pb.slecht.hoog.uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Cl.pb.slecht.hoog|"]:::fill:#e1f5fe,stroke:#01579b
+12["Peilevaluatie|Cl.pb.matig.hoog.uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Cl.pb.matig.hoog|"]:::fill:#e1f5fe,stroke:#01579b
+13["Peilevaluatie|Cl.pb.goed.uur"]:::fill:#f3e5f5,stroke:#4a148c
+0["Peilevaluatie|Cl.pb.goed|"]:::fill:#e1f5fe,stroke:#01579b
+14["Peilevaluatie|Cl.pb.matig.laag.uur"]:::fill:#f3e5f5,stroke:#4a148c
+113 --&gt;|in pr.average.d| 1413:::stroke:#01579b
+1413 --&gt;|out pr.average.d| 0:::stroke:#1b5e20
+113 --&gt;|in pr.average.h| 1420:::stroke:#01579b
+1420 --&gt;|out pr.average.h| 0:::stroke:#1b5e20
+113 --&gt;|in pr.lmw.average.h| 1474:::stroke:#01579b
+1474 --&gt;|out pr.lmw.average.h| 0:::stroke:#1b5e20
+113 --&gt;|in Peilevaluatie| 1:::stroke:#01579b
+1 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+113 --&gt;|in Peilevaluatie| 81:::stroke:#01579b
+81 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+113 --&gt;|in Peilevaluatie| 81:::stroke:#01579b
+81 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+113 --&gt;|input Peilevaluatie| 1:::stroke:#01579b
+423 --&gt;|in Peilevaluatie| 1:::stroke:#01579b
+1 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+423 --&gt;|in Peilevaluatie| 2:::stroke:#01579b
+2 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+1 --&gt;|output Peilevaluatie| 423:::stroke:#1b5e20
+1 --&gt;|in im.afvalwater| 1:::stroke:#4a148c
+423 --&gt;|in Peilevaluatie| 1:::stroke:#01579b
+1 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+423 --&gt;|in Peilevaluatie| 2:::stroke:#01579b
+2 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+423 --&gt;|input Peilevaluatie| 2:::stroke:#01579b
+299 --&gt;|in Peilevaluatie| 2:::stroke:#01579b
+2 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 3:::stroke:#01579b
+3 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 4:::stroke:#01579b
+4 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 5:::stroke:#01579b
+5 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 6:::stroke:#01579b
+6 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 7:::stroke:#01579b
+7 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 8:::stroke:#01579b
+8 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 9:::stroke:#01579b
+9 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 11:::stroke:#01579b
+11 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 12:::stroke:#01579b
+12 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 13:::stroke:#01579b
+13 --&gt;|out Peilevaluatie| 0:::stroke:#1b5e20
+299 --&gt;|in Peilevaluatie| 14:::stroke:#01579b
+2 --&gt;|output Peilevaluatie| 299:::stroke:#1b5e20
+1 --&gt;|in im.afvalwater.xmlpi| 2:::stroke:#4a148c</code></pre>
 </div>
 </div>
 

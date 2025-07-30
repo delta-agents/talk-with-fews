@@ -104,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -211,10 +212,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/.pixi/envs/default/lib/python3.13/site-packages/pydantic/fields.py:1093: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
-  warn(</code></pre>
-</div>
 </div>
 </section>
 <section id="validate-xml-snippet" class="level2">
@@ -222,48 +219,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Delft FEWS configuratie is voor een groot gedeelte opgebouwd rond XML bestanden. Deze XML bestanden moeten voldoen aan een bepaalde structuur. Deze structuur wordt bepaald door de bijbehorende XSD schema.</p>
 <p>Laten we beginnen met een XML snippet van een time <code>series</code> definitie. Er mist een element in deze snippet welke we hopen te detecteren door onze validatie tool.</p>
 <div id="ea7e8b7c" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>xml_snippet <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;series&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;header&gt;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;type&gt;instantaneous&lt;/type&gt;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">        </span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;timeStep unit="second" multiplier="3600"/&gt;</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;startDate date="2006-08-23" time="17:00:00"/&gt;</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;endDate date="2006-08-24" time="00:00:00"/&gt;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;missVal&gt;-8888.0&lt;/missVal&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/header&gt;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;event date="2006-08-23" time="17:00:00" value="8.66"/&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/series&gt;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>xml_snippet <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;series&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;header&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;type&gt;instantaneous&lt;/type&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="st">        </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;timeStep unit="second" multiplier="3600"/&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;startDate date="2006-08-23" time="17:00:00"/&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;endDate date="2006-08-24" time="00:00:00"/&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;missVal&gt;-8888.0&lt;/missVal&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/header&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;event date="2006-08-23" time="17:00:00" value="8.66"/&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/series&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Nu we onze XML snippet hebben ingevuld, gaan we hiermee de tool op de juiste manier aanroepen. Voor een taalmodel is het van belang dat het toegang heeft tot voldoende informatie om de tool op de juiste manier aan te roepen.</p>
 <p>Dit doen wij via zogenaamd <em>model</em>: een soort sjabloon waarin je vastlegt welke gegevens er nodig zijn en welk type ze moeten hebben. Voordat de tool aangeroepen wordt wordt er gecontroleerd of de aangeleverde informatie voldoet aan de regels van het model.</p>
 <p>Voor hetgeen uit de tool komt, hebben we ook een sjabloon met de gegevens die er uit de tool komen. Op deze manier heeft een taalmodel inzichtelijk, zonder de tool aan te roepen, wat de tool doet, op welke manier het ingevuld moet worden en wat er uit de tool terug komt.</p>
 <p>Laten we de validate XML tool aanroepen met onze XML snippet en het bijbehorende XSD schema.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>XMLValidationInput(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>XMLValidationInput(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="fcf7e27e-5471-4bb9-8b7e-701272146905" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.validate_xml <span class="im">import</span> validate_xml</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.validate_xml <span class="im">import</span> XMLValidationOutput, XMLValidationInput</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.fews_schema_options <span class="im">import</span> FEWSSchemaOption</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>xml_validation_output: XMLValidationOutput <span class="op">=</span> <span class="cf">await</span> validate_xml(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_validation_input</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_sharedtypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_sharedtypes.xsd'
-  schema = xmlschema.XMLSchema(str(full_path), validation="lax")</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.validate_xml <span class="im">import</span> validate_xml</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.validate_xml <span class="im">import</span> XMLValidationOutput, XMLValidationInput</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.fews_schema_options <span class="im">import</span> FEWSSchemaOption</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>xml_validation_output: XMLValidationOutput <span class="op">=</span> <span class="cf">await</span> validate_xml(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_validation_input</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Laten we afdrukken wat het resultaat is van de XML snippet validatie</p>
 <div id="6526a1d8" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;examples&gt;
   &lt;is_valid&gt;True&lt;/is_valid&gt;
@@ -276,29 +269,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>De tool resultaat laat zien dat de XML snippet niet valide is, en dat er eerst een <code>locationId</code> wordt verwacht, waar het nu een <code>parameterId</code> aangeboden krijgt.</p>
 <p>Wanneer de XML snippet opnieuw invullen, inclusief een <code>locationId</code> krijgen we het volgende.</p>
 <div id="08daa674" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>xml_snippet <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;series&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;header&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;type&gt;instantaneous&lt;/type&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;locationId&gt;1234567890&lt;/locationId&gt;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;timeStep unit="second" multiplier="3600"/&gt;</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;startDate date="2006-08-23" time="17:00:00"/&gt;</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;endDate date="2006-08-24" time="00:00:00"/&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;missVal&gt;-8888.0&lt;/missVal&gt;</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/header&gt;</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;event date="2006-08-23" time="17:00:00" value="8.66"/&gt;</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/series&gt;</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>xml_validation_output: XMLValidationOutput <span class="op">=</span> <span class="cf">await</span> validate_xml(</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_validation_input</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>xml_snippet <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;series&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;header&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;type&gt;instantaneous&lt;/type&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;locationId&gt;1234567890&lt;/locationId&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;parameterId&gt;WaterLevel&lt;/parameterId&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;timeStep unit="second" multiplier="3600"/&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;startDate date="2006-08-23" time="17:00:00"/&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;endDate date="2006-08-24" time="00:00:00"/&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;missVal&gt;-8888.0&lt;/missVal&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/header&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;event date="2006-08-23" time="17:00:00" value="8.66"/&gt;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/series&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>xml_validation_output: XMLValidationOutput <span class="op">=</span> <span class="cf">await</span> validate_xml(</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_validation_input</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;examples&gt;
   &lt;is_valid&gt;True&lt;/is_valid&gt;
@@ -311,29 +304,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Het resultaat is nu dat de XML snippet succesvol valideert zonder errors or warnings.</p>
 <p>Hieronder nog een voorbeeld dat laat zien dat deze partiele validatie ook nog goed gaat voor XML snippets <em>dieper</em> in een XML bestand, exclusief een directe verwijzing naar zijn directe <em>parent</em> element.</p>
 <div id="17537691" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># xml snippet with indirect parent to root with missing nested elements</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>xml_snippet <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;general&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;exportType&gt;SomeValidExportType&lt;/exportType&gt;</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;folder&gt;MyExportFolder&lt;/folder&gt;</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;exportFileName&gt;</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;prefix&gt;</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;timeZeroFormattingString&gt;yyyyMMddHHmm&lt;/timeZeroFormattingString&gt;</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/prefix&gt;</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/exportFileName&gt;</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;idMapId&gt;MyIdMap&lt;/idMapId&gt;</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;forecastSelectionPeriod end="0" unit="day"/&gt;</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/general&gt;</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>xml_validation_output: XMLValidationOutput <span class="op">=</span> <span class="cf">await</span> validate_xml(</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_validation_input</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># xml snippet with indirect parent to root with missing nested elements</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>xml_snippet <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;general&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;exportType&gt;SomeValidExportType&lt;/exportType&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;folder&gt;MyExportFolder&lt;/folder&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;exportFileName&gt;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;prefix&gt;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="st">                &lt;timeZeroFormattingString&gt;yyyyMMddHHmm&lt;/timeZeroFormattingString&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="st">            &lt;/prefix&gt;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;/exportFileName&gt;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;idMapId&gt;MyIdMap&lt;/idMapId&gt;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;forecastSelectionPeriod end="0" unit="day"/&gt;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/general&gt;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>xml_validation_output: XMLValidationOutput <span class="op">=</span> <span class="cf">await</span> validate_xml(</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_validation_input</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;examples&gt;
   &lt;is_valid&gt;True&lt;/is_valid&gt;
@@ -341,10 +334,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   &lt;warnings /&gt;
   &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;
 &lt;/examples&gt;</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/validate_xml.py:167: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'
-  schema = xmlschema.XMLSchema(str(full_path), validation="lax")</code></pre>
 </div>
 </div>
 <p>Binnen de error beschrijving staat als onderdeel van de <code>xpath</code> de route welke de validator heeft afgelegd om deze snippet binnen het XSD schema te valideren.</p>
@@ -355,23 +344,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Deze tool maakt het mogelijk om een template op te zetten voor een bepaald gedeelte binnen je XML bestand .</p>
 <p>Hieronder laten we zien hoe we een template kunnen laten genereren voor de <code>general</code> element binnen het schema van de timeSeriesExportRun.</p>
 <div id="2ac1ed2b" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># partial xml template generation</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.generate_xml_template <span class="im">import</span> generate_xml_template</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.generate_xml_template <span class="im">import</span> (</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    XMLTemplateInput,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    XMLTemplateOutput,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.fews_schema_options <span class="im">import</span> FEWSSchemaOption</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>xml_template_input <span class="op">=</span> XMLTemplateInput(</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element<span class="op">=</span><span class="st">"general"</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>xml_template_output: XMLTemplateOutput <span class="op">=</span> <span class="cf">await</span> generate_xml_template(</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_template_input</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(xml_template_output.template)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># partial xml template generation</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.generate_xml_template <span class="im">import</span> generate_xml_template</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.generate_xml_template <span class="im">import</span> (</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    XMLTemplateInput,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    XMLTemplateOutput,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.fews_schema_options <span class="im">import</span> FEWSSchemaOption</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>xml_template_input <span class="op">=</span> XMLTemplateInput(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element<span class="op">=</span><span class="st">"general"</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>xml_template_output: XMLTemplateOutput <span class="op">=</span> <span class="cf">await</span> generate_xml_template(</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_template_input</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(xml_template_output.template)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;general&gt;
   &lt;exportTypeStandard&gt;example_value&lt;/exportTypeStandard&gt;
@@ -394,25 +383,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   &lt;decimalSeparator/&gt;
 &lt;/general&gt;</code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/src/talk_with_fews/tools/validator/generate_xml_template.py:219: XMLSchemaIncludeWarning: Include schema failed: can't access to resource 'file:///home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd': [Errno 2] No such file or directory: '/home/runner/work/talk-with-fews/talk-with-fews/talk_with_fews/data/fews_schemas/fewsdocs_deltares_nl/sharedTypes.xsd'
-  schema = xmlschema.XMLSchema(str(full_path), validation="lax")</code></pre>
-</div>
 </div>
 <p>Op het moment wanneer de <code>target_element</code> niet goed ingevuld wordt, retourneren we een <code>ModelRetry</code>, waarin we een suggestie aanleveren gebasseerd op wat geprobeerd is.</p>
 <p>Hier is het <code>target_element</code> ingevuld als <code>genral</code> in plaats van <code>general</code>:</p>
 <div id="6390962a" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    xml_template_input <span class="op">=</span> XMLTemplateInput(</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element<span class="op">=</span><span class="st">"genral"</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    xml_template_output: XMLTemplateOutput <span class="op">=</span> <span class="cf">await</span> generate_xml_template(</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_template_input</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(xml_template_output.template)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    xml_template_input <span class="op">=</span> XMLTemplateInput(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element<span class="op">=</span><span class="st">"genral"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    xml_template_output: XMLTemplateOutput <span class="op">=</span> <span class="cf">await</span> generate_xml_template(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>xml_template_input</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(xml_template_output.template)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(e)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Target element 'genral' not found in schema 'timeSeriesExportRun.xsd'.
 
@@ -426,36 +411,36 @@ Tip: Use the 'get_available_elements' tool to get a complete list of available e
 </div>
 </div>
 <p>Zie dat een duidelijke <code>ModelRetry</code> teruggeeft met een suggestie voor het het taalmodel of Agent om de tool op een andere manier aan te roepen:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ModelRetry:</span> Target element <span class="st">'genral'</span> not found in schema <span class="st">'timeSeriesExportRun.xsd'</span>.</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Similar</span> elements found:</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> general</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Please</span> try again with one of the suggested elements.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ModelRetry:</span> Target element <span class="st">'genral'</span> not found in schema <span class="st">'timeSeriesExportRun.xsd'</span>.</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Similar</span> elements found:</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">-</span> general</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Please</span> try again with one of the suggested elements.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="get-available-elements" class="level2">
 <h2 class="anchored" data-anchor-id="get-available-elements">Get available elements</h2>
 <p>Deze tool maakt het mogelijk om een lijst te krijgen van alle elementen die beschikbaar zijn in een bepaald schema.</p>
 <p>Hieronder laten we zien hoe we een lijst kunnen krijgen van alle elementen die beschikbaar zijn in het schema van de <code>timeSeriesExportRun</code>.</p>
 <div id="7e32a8aa" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.get_available_elements <span class="im">import</span> get_available_elements</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.get_available_elements <span class="im">import</span> (</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    GetAvailableElementsInput,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    GetAvailableElementsOutput,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>get_available_elements_input <span class="op">=</span> GetAvailableElementsInput(</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN,</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    limit<span class="op">=</span><span class="dv">15</span>,</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="dv">0</span>,</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    target_element<span class="op">=</span><span class="st">"general"</span>,</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>get_available_elements_output: GetAvailableElementsOutput <span class="op">=</span> (</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_available_elements(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_available_elements_input)</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_available_elements_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.get_available_elements <span class="im">import</span> get_available_elements</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.get_available_elements <span class="im">import</span> (</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    GetAvailableElementsInput,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    GetAvailableElementsOutput,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>get_available_elements_input <span class="op">=</span> GetAvailableElementsInput(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    limit<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    offset<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    target_element<span class="op">=</span><span class="st">"general"</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>get_available_elements_output: GetAvailableElementsOutput <span class="op">=</span> (</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> get_available_elements(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_available_elements_input)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_available_elements_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;examples&gt;
   &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;
