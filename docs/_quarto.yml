@@ -10,6 +10,7 @@ website:
         menu:
           - examples/notebooks/fews_config.ipynb
           - examples/notebooks/fews_webservice.ipynb
+          - examples/notebooks/fews_validate_xml.ipynb
       - text: "Python API"
         file: reference/index.qmd
     right:
@@ -63,6 +64,13 @@ quartodoc:
         - execute_query_webservice
         - get_series_headers
         - get_series_statistics
+    - title: Validator tools
+      desc: Tools beschikbaar voor de validator agent.
+      package: talk_with_fews.tools
+      contents:
+        - validate_xml
+        - genenerate_xml_template
+        - get_available_elements
     - title: Config tool models
       desc: Data modellen per Config tool.
       package: talk_with_fews.models
@@ -103,3 +111,13 @@ quartodoc:
         - GetSeriesStatisticsOutput
         - SeriesFlagsInput
         - SeriesFlagsSummary
+    - title: Validator tool models
+      package: talk_with_fews.models
+      desc: Data modellen per validator tool.
+      contents:
+        - XMLValidationInput
+        - XMLValidationOutput
+        - XMLTemplateInput
+        - XMLTemplateOutput
+        - GetAvailableElementsInput
+        - GetAvailableElementsOutput

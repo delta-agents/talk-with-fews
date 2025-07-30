@@ -66,6 +66,10 @@ from talk_with_fews.models.validate_xml import (
     XMLValidationInput,
     XMLValidationOutput,
 )
+from talk_with_fews.models.get_available_elements import (
+    GetAvailableElementsInput,
+    GetAvailableElementsOutput,
+)
 
 __all__ = [
     # config models
@@ -105,4 +109,6 @@ __all__ = [
     "SeriesFlagsSummary",
     "XMLValidationInput",
     "XMLValidationOutput",
+    "GetAvailableElementsInput",
+    "GetAvailableElementsOutput",
 ]
