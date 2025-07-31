@@ -3,7 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 import logging
-from ....scripts.download_fews_schemas import download_fews_schemas
+import subprocess
 
 logger = logging.getLogger("fews_agent")
 logger.setLevel(logging.WARNING)
@@ -23,5 +23,5 @@ def setup_dot_env():
 
     os.chdir(work_dir)
     ctx = get_runtime_ctx()
-    download_fews_schemas()
+    subprocess.run(["pixi", "run", "download-schemas"], check=True)
     return ctx
