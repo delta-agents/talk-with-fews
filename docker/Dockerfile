@@ -20,12 +20,16 @@ COPY env/ /app/env/
 RUN mkdir -p /app/data
 
 COPY data/ /app/data/
+COPY scripts/ /app/scripts/
 
 # Create empty dirs if they don't exist
 RUN mkdir -p /app/logs
 
 # Install dependencies
 RUN pixi install
+
+# TODO: Download schemas, zie https://github.com/HKV-products-services/talk-with-fews/issues/55
+# RUN pixi run download-schemas
 
 # Expose the port your FastAPI app uses
 EXPOSE 8000

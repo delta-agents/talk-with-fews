@@ -11,6 +11,10 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 import logging
+import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="../env/.env")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -292,6 +296,8 @@ def download_fews_schemas(
             max_depth=5
         )
     """
+    download_dir = os.environ.get("DOWNLOAD_DIR")  # , "../data/fews_schemas")
+    print(f"Download directory: {download_dir}")
     downloader = FEWSSchemaDownloader(download_dir)
 
     try:
