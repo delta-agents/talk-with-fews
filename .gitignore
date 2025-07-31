@@ -27,3 +27,4 @@ data/fews_schemas/*
 !data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd
 !data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd
 !data/fews_schemas/fewsdocs_deltares_nl/timeSeriesImportRun.xsd
+.DS_Store
