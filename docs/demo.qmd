@@ -3,10 +3,10 @@ title: "Demo"
 ---
 
 ## Config
-{{< video https://youtu.be/8D6_0Ds6l7s width="400" height="300" >}}
+{{< video https://www.youtube.com/embed/8D6_0Ds6l7s >}}
 
 ## Webservice
-{{< video https://youtu.be/GesXT97xkMY width="400" height="300" >}}
+{{< video https://www.youtube.com/embed/GesXT97xkMY >}}
 
 ## Validator
-{{< video https://youtu.be/djI5N7ufvDg width="400" height="300" >}}
+{{< video https://www.youtube.com/embed/djI5N7ufvDg >}}

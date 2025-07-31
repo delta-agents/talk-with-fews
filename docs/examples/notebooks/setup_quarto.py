@@ -11,7 +11,7 @@ httpx_logger = logging.getLogger("httpx")
 httpx_logger.setLevel(logging.WARNING)
 
 
-def setup_dot_env():
+def setup_dot_env(download_schemas: bool = False):
     logger.info("Setting up .env file")
     work_dir = Path(__file__).parent.parent.parent.parent
     env_path = work_dir / "env"
@@ -23,5 +23,6 @@ def setup_dot_env():
 
     os.chdir(work_dir)
     ctx = get_runtime_ctx()
-    subprocess.run(["pixi", "run", "download-schemas"], check=True)
+    if download_schemas:
+        subprocess.run(["pixi", "run", "download-schemas"], check=True)
     return ctx
