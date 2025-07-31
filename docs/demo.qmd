@@ -1,0 +1,12 @@
+---
+title: "Demo"
+---
+
+## Config
+{{< video https://youtu.be/8D6_0Ds6l7s width="400" height="300" >}}
+
+## Webservice
+{{< video https://youtu.be/GesXT97xkMY width="400" height="300" >}}
+
+## Validator
+{{< video https://youtu.be/djI5N7ufvDg width="400" height="300" >}}
