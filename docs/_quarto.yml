@@ -6,6 +6,8 @@ website:
   title: "Talk with FEWS"
   navbar:
     left:
+      - text: "Demo"
+        file: demo.qmd
       - text: "Documentatie"
         menu:
           - examples/notebooks/fews_config.ipynb
