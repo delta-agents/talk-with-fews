@@ -215,31 +215,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Download directory: ../data/fews_schemas
-Download completed: {'total_downloaded': 588, 'base_download_dir': '../data/fews_schemas', 'results': {'https://fews.wldelft.nl/schemas/version1.0/': {'downloaded_count': 294, 'local_directory': '../data/fews_schemas/fews_wldelft_nl'}, 'https://fewsdocs.deltares.nl/schemas/version1.0/': {'downloaded_count': 294, 'local_directory': '../data/fews_schemas/fewsdocs_deltares_nl'}}}</code></pre>
-</div>
 </div>
 <section id="sec-get-locations" class="level2">
 <h2 class="anchored" data-anchor-id="sec-get-locations">Get Locations</h2>
 <p>De webservice van FEWS heeft meerdere manieren om data te filteren. We gebruiken nu locaties en parameters om de data te filteren. De locaties zijn de meetpunten waar de data vandaan komt. We kunnen deze ophalen met de functie <code>get_locations</code>:</p>
 <div id="cell-3" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>filter_locations_name <span class="op">=</span> <span class="st">"Heino"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>filter_locations_name <span class="op">=</span> <span class="st">"Heino"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-4" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_locations</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetLocationInput, GetLocationOutput</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>get_location_input <span class="op">=</span> GetLocationInput(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    number_of_locations<span class="op">=</span><span class="dv">2</span>, filter_locations_name<span class="op">=</span>filter_locations_name</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>get_location_output: GetLocationOutput <span class="op">=</span> <span class="cf">await</span> get_locations(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_location_input</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_locations</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetLocationInput, GetLocationOutput</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>get_location_input <span class="op">=</span> GetLocationInput(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    number_of_locations<span class="op">=</span><span class="dv">2</span>, filter_locations_name<span class="op">=</span>filter_locations_name</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>get_location_output: GetLocationOutput <span class="op">=</span> <span class="cf">await</span> get_locations(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_location_input</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-5" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_location_output, root_tag<span class="op">=</span><span class="st">"GetLocationOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_location_output, root_tag<span class="op">=</span><span class="st">"GetLocationOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetLocationOutput&gt;
   &lt;locations&gt;
@@ -271,21 +267,21 @@ Found 1 locations.
 <h2 class="anchored" data-anchor-id="sec-get-parameters">Get Parameters</h2>
 <p>De parameters zijn gerelateerd aan het type data. Deze functie heeft een parameter <code>filter_parameters_name</code> waarmee we kunnen filteren op de naam van de parameter. We kunnen ook het aantal parameters beperken met de parameter <code>number_of_parameters</code>.</p>
 <div id="cell-7" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>filter_parameters_name <span class="op">=</span> <span class="st">"E"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>filter_parameters_name <span class="op">=</span> <span class="st">"E"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-8" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_parameters</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetParameterInput, GetParameterOutput</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>get_parameter_input <span class="op">=</span> GetParameterInput(</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    number_of_parameters<span class="op">=</span><span class="dv">2</span>, filter_parameters_name<span class="op">=</span>filter_parameters_name</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>get_parameter_output: GetParameterOutput <span class="op">=</span> <span class="cf">await</span> get_parameters(</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_parameter_input</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_parameters</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetParameterInput, GetParameterOutput</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>get_parameter_input <span class="op">=</span> GetParameterInput(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    number_of_parameters<span class="op">=</span><span class="dv">2</span>, filter_parameters_name<span class="op">=</span>filter_parameters_name</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>get_parameter_output: GetParameterOutput <span class="op">=</span> <span class="cf">await</span> get_parameters(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_parameter_input</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-9" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_parameter_output, root_tag<span class="op">=</span><span class="st">"GetParameterOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_parameter_output, root_tag<span class="op">=</span><span class="st">"GetParameterOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetParameterOutput&gt;
   &lt;parameters&gt;
@@ -331,31 +327,31 @@ Found 2 parameters.
 <h2 class="anchored" data-anchor-id="sec-get-series-headers">Get Series Headers</h2>
 <p>De headers van de series zijn de metadata. Hiermee kunnen we een koppeling maken tussen locaties en parameter. Eén locatie of één parameter wordt opgegeven om hiervoor de bijbehorende metadata op te halen. We geven voor beide een voorbeeld:</p>
 <div id="cell-11" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>location_id <span class="op">=</span> get_location_output.locations[<span class="dv">0</span>].locationId</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>location_id <span class="op">=</span> get_location_output.locations[<span class="dv">0</span>].locationId</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>'KNMIUUR278'</code></pre>
 </div>
 </div>
 <div id="cell-12" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_series_headers</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetSeriesHeadersInput, GetSeriesHeadersOutput</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>get_series_headers_input <span class="op">=</span> GetSeriesHeadersInput(location_id<span class="op">=</span>location_id)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>get_series_headers_output: GetSeriesHeadersOutput <span class="op">=</span> <span class="cf">await</span> get_series_headers(</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_headers_input</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_headers_output, root_tag<span class="op">=</span><span class="st">"GetSeriesHeadersOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_series_headers</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetSeriesHeadersInput, GetSeriesHeadersOutput</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>get_series_headers_input <span class="op">=</span> GetSeriesHeadersInput(location_id<span class="op">=</span>location_id)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>get_series_headers_output: GetSeriesHeadersOutput <span class="op">=</span> <span class="cf">await</span> get_series_headers(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_headers_input</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_headers_output, root_tag<span class="op">=</span><span class="st">"GetSeriesHeadersOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesHeadersOutput&gt;
   &lt;count&gt;4&lt;/count&gt;
   &lt;summary&gt;Found 4 parameters at location Heino.&lt;/summary&gt;
   &lt;sample_ids&gt;|   id | type          | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |
 |-----:|:--------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|
-|    1 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:30:23.957000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    4 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | P.G.h         | second         |                86400 |         0 |            |              | 2025-07-31 12:30:23.964000 | Heino           |        52.4339 |        6.26173 | Gemeten neerslag [mm] - uur          | mm               | accumulative     |
-|    3 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | T.air.G       | second         |                 3600 |         0 |            |              | 2025-07-31 12:30:23.962000 | Heino           |        52.4339 |        6.26173 | Temperatuur lucht [ï¿½C]             | oC               | instantaneous    |
-|    2 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | TCC.O.h       | second         |                86400 |         0 |            |              | 2025-07-31 12:30:23.960000 | Heino           |        52.4339 |        6.26173 | Cloud cover observation - uur        | -                | instantaneous    |&lt;/sample_ids&gt;
+|    1 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:55:37.454000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
+|    4 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | P.G.h         | second         |                86400 |         0 |            |              | 2025-07-31 12:55:37.462000 | Heino           |        52.4339 |        6.26173 | Gemeten neerslag [mm] - uur          | mm               | accumulative     |
+|    3 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | T.air.G       | second         |                 3600 |         0 |            |              | 2025-07-31 12:55:37.460000 | Heino           |        52.4339 |        6.26173 | Temperatuur lucht [ï¿½C]             | oC               | instantaneous    |
+|    2 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | TCC.O.h       | second         |                86400 |         0 |            |              | 2025-07-31 12:55:37.458000 | Heino           |        52.4339 |        6.26173 | Cloud cover observation - uur        | -                | instantaneous    |&lt;/sample_ids&gt;
   &lt;available_filters&gt;
     &lt;parameters&gt;
       &lt;example&gt;Eref.d&lt;/example&gt;
@@ -372,29 +368,29 @@ Found 2 parameters.
 </div>
 </div>
 <div id="cell-13" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>parameter_id <span class="op">=</span> get_parameter_output.parameters[<span class="dv">0</span>].<span class="bu">id</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>parameter_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>parameter_id <span class="op">=</span> get_parameter_output.parameters[<span class="dv">0</span>].<span class="bu">id</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>parameter_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>'Eref.d'</code></pre>
 </div>
 </div>
 <div id="cell-14" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>get_series_headers_input <span class="op">=</span> GetSeriesHeadersInput(parameter_id<span class="op">=</span>parameter_id)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>get_series_headers_output: GetSeriesHeadersOutput <span class="op">=</span> <span class="cf">await</span> get_series_headers(</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_headers_input</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_headers_output, root_tag<span class="op">=</span><span class="st">"GetSeriesHeadersOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>get_series_headers_input <span class="op">=</span> GetSeriesHeadersInput(parameter_id<span class="op">=</span>parameter_id)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>get_series_headers_output: GetSeriesHeadersOutput <span class="op">=</span> <span class="cf">await</span> get_series_headers(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_headers_input</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_headers_output, root_tag<span class="op">=</span><span class="st">"GetSeriesHeadersOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesHeadersOutput&gt;
   &lt;count&gt;7&lt;/count&gt;
   &lt;summary&gt;Found timeseries for Eref.d across 7 locations&lt;/summary&gt;
   &lt;sample_ids&gt;|   id | type         | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |
 |-----:|:-------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|
-|    8 | accumulative | im.wiwb.knmi       | KNMIUUR235   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:30:24.232000 | De Kooy         |        52.9167 |        4.78333 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    7 | accumulative | im.wiwb.knmi       | KNMIUUR260   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:30:24.230000 | De Bilt         |        52.0992 |        5.1767  | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    6 | accumulative | im.wiwb.knmi       | KNMIUUR269   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:30:24.228000 | Lelystad        |        52.4618 |        5.52147 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    5 | accumulative | im.wiwb.knmi       | KNMIUUR275   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:30:24.226000 | Deelen          |        52.0605 |        5.88704 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    1 | accumulative | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:30:23.957000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |&lt;/sample_ids&gt;
+|    8 | accumulative | im.wiwb.knmi       | KNMIUUR235   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:55:38.022000 | De Kooy         |        52.9167 |        4.78333 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
+|    7 | accumulative | im.wiwb.knmi       | KNMIUUR260   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:55:38.019000 | De Bilt         |        52.0992 |        5.1767  | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
+|    6 | accumulative | im.wiwb.knmi       | KNMIUUR269   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:55:38.017000 | Lelystad        |        52.4618 |        5.52147 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
+|    5 | accumulative | im.wiwb.knmi       | KNMIUUR275   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:55:38.014000 | Deelen          |        52.0605 |        5.88704 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
+|    1 | accumulative | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-07-31 12:55:37.454000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |&lt;/sample_ids&gt;
   &lt;available_filters&gt;
     &lt;locations&gt;
       &lt;example&gt;KNMIUUR235&lt;/example&gt;
@@ -418,23 +414,23 @@ Found 2 parameters.
 <h2 class="anchored" data-anchor-id="sec-execute-query-webservice">Execute Query Webservice</h2>
 <p>Bij het ophalen van de parameters, locaties en series headers hebben we de metadata opgehaald. Deze slaan wij in een cache database op om deze later te kunnen gebruiken, met als voordeel dat we niet steeds dezelfde data hoeven op te halen, maar ook dat we alle vrijheid hebben om de data te filteren en te combineren. We kunnen nu de meta data verder analyseren, bijvoorbeeld ook met een ruimtelijke query:</p>
 <div id="cell-16" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> (</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    execute_query_webservice,</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> (</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    SQLQueryInput,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    SQLQueryOutput,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT locationId, shortName, lat, lon, ST_Distance(geom, ST_Point(5.67, 52.035)) as distance_degrees FROM locations WHERE ST_DWithin(geom, ST_Point(5.67, 52.035), 0.1) ORDER BY distance_degrees LIMIT 30"</span>,</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query_webservice(</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> (</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    execute_query_webservice,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> (</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    SQLQueryInput,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    SQLQueryOutput,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT locationId, shortName, lat, lon, ST_Distance(geom, ST_Point(5.67, 52.035)) as distance_degrees FROM locations WHERE ST_DWithin(geom, ST_Point(5.67, 52.035), 0.1) ORDER BY distance_degrees LIMIT 30"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query_webservice(</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-17" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(sql_query_output, root_tag<span class="op">=</span><span class="st">"SQLQueryOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQLQueryOutput&gt;
   &lt;results&gt;
@@ -666,28 +662,28 @@ Found 2 parameters.
 <h2 class="anchored" data-anchor-id="sec-get-series-statistics">Get Series Statistics</h2>
 <p>Met de meta data die we hebben opgehaald, kunnen we nu de series statistieken ophalen. Dit is iets sneller dan de data zelf ophalen, en scheelt data overdracht. Hier moet een parameter en locatie id worden opgegeven, waar de data van wordt opgehaald.</p>
 <div id="cell-19" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>location_id <span class="op">=</span> get_series_headers_output.available_filters[<span class="st">"locations"</span>][<span class="dv">1</span>]</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>parameter_id, location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>location_id <span class="op">=</span> get_series_headers_output.available_filters[<span class="st">"locations"</span>][<span class="dv">1</span>]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>parameter_id, location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>('Eref.d', 'KNMIUUR260')</code></pre>
 </div>
 </div>
 <div id="cell-20" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_series_statistics</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    GetSeriesStatisticsInput,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    GetSeriesStatisticsOutput,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>get_series_statistics_input <span class="op">=</span> GetSeriesStatisticsInput(</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id, location_id<span class="op">=</span>location_id</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>get_series_statistics_output: GetSeriesStatisticsOutput <span class="op">=</span> <span class="cf">await</span> get_series_statistics(</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_statistics_input</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_series_statistics</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    GetSeriesStatisticsInput,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    GetSeriesStatisticsOutput,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>get_series_statistics_input <span class="op">=</span> GetSeriesStatisticsInput(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id, location_id<span class="op">=</span>location_id</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>get_series_statistics_output: GetSeriesStatisticsOutput <span class="op">=</span> <span class="cf">await</span> get_series_statistics(</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_statistics_input</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-21" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_statistics_output, root_tag<span class="op">=</span><span class="st">"GetSeriesStatisticsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_statistics_output, root_tag<span class="op">=</span><span class="st">"GetSeriesStatisticsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesStatisticsOutput&gt;
   &lt;count&gt;610&lt;/count&gt;
@@ -704,43 +700,43 @@ Found 2 parameters.
 <h2 class="anchored" data-anchor-id="get-series-data---work-in-progress-to-stream">Get Series Data - Work in progress to stream</h2>
 <p>Naast de statistiek van de series, kunnen we ook de data zelf ophalen. Hier moeten we ook een parameter en locatie id opgeven, maar ook een start en eind tijd. Deze kunnen we ophalen uit de statistieken die we eerder hebben opgehaald.</p>
 <div id="cell-23" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> timedelta</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> get_series_statistics_output.first_value_time</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> start_time <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(start_time, end_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> timedelta</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> get_series_statistics_output.first_value_time</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> start_time <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(start_time, end_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2023-11-21 00:00:00+00:00 2023-12-01 00:00:00+00:00</code></pre>
 </div>
 </div>
 <div id="cell-24" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>parameter_id, location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>parameter_id, location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>('Eref.d', 'KNMIUUR260')</code></pre>
 </div>
 </div>
 <div id="cell-25" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_series_data</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    GetSeriesDataInput,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    GetSeriesDataOutput,</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>get_series_data_input <span class="op">=</span> GetSeriesDataInput(</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    include_flag_sources<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>get_series_data_output: GetSeriesDataOutput <span class="op">=</span> <span class="cf">await</span> get_series_data(</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_data_input</span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> get_series_data</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    GetSeriesDataInput,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    GetSeriesDataOutput,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>get_series_data_input <span class="op">=</span> GetSeriesDataInput(</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    include_flag_sources<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>get_series_data_output: GetSeriesDataOutput <span class="op">=</span> <span class="cf">await</span> get_series_data(</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_data_input</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-26" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_data_output, root_tag<span class="op">=</span><span class="st">"GetSeriesDataOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_data_output, root_tag<span class="op">=</span><span class="st">"GetSeriesDataOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesDataOutput&gt;
   &lt;values&gt;
@@ -888,20 +884,20 @@ Found 2 parameters.
 <h2 class="anchored" data-anchor-id="analyze-series-flags">Analyze Series Flags</h2>
 <p>We kunnen de series ook analyseren op basis van de flags die zijn gezet. Dit kan handig zijn om te zien of er data ontbreekt, of dat er data is die niet betrouwbaar is.</p>
 <div id="cell-28" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> analyze_series_flags</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> SeriesFlagsInput, SeriesFlagsSummary</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>analyze_flags_input <span class="op">=</span> SeriesFlagsInput(</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>analyze_flags_output: SeriesFlagsSummary <span class="op">=</span> <span class="cf">await</span> analyze_series_flags(</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>analyze_flags_input</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(analyze_flags_output, root_tag<span class="op">=</span><span class="st">"AnalyzeFlagsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> analyze_series_flags</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> SeriesFlagsInput, SeriesFlagsSummary</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>analyze_flags_input <span class="op">=</span> SeriesFlagsInput(</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>analyze_flags_output: SeriesFlagsSummary <span class="op">=</span> <span class="cf">await</span> analyze_series_flags(</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>analyze_flags_input</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(analyze_flags_output, root_tag<span class="op">=</span><span class="st">"AnalyzeFlagsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;AnalyzeFlagsOutput&gt;
   &lt;total_values&gt;11&lt;/total_values&gt;
