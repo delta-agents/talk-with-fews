@@ -1,0 +1,50 @@
+---
+title: "MCP verbinding maken"
+---
+
+Model Context Protocol (MCP) is een open-source framework gemaakt om  verschillende LLM chatbots te verbinden aan  Agents.
+Dit gebruiken wij zodat de Delta Agents beschikbaar zijn waar jij het meeste tijd doorbrengt.
+Hier leggen we uit hoe je dit in VSCode kan doen.
+
+## voorbereidingen
+
+Zorg dat je de laatste versie van VSCode op hebt, via [deze link](https://code.visualstudio.com/Download) of run:
+
+```powershell
+powershell -command "Get-Process Code  | Stop-Process"
+winget upgrade --id Microsoft.VisualStudioCode
+```
+
+Zorg dat je toegang hebt to Copilot met je GitHub account, je krijgt standaard een aantal tokens. Zie [deze link](https://code.visualstudio.com/docs/copilot/setup) voor meer uitleg.
+
+
+## Toevoegen van MCP server
+
+Open een project waar in je met de Delta Agents wilt praten.
+In de `.vscode` map voeg je een `mcp.json` bestand toe. Soms staat deze map er al met bijvoorbeeld `settings.json`.
+
+Voeg de volgende configuratie toe:
+```json
+{
+    "servers": {
+      // test servers
+      "talk-with-fews-webservice-test":{
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithWebservice"
+
+      },
+      "talk-with-fews-config-test":{
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithConfig"
+
+      },
+      "talk-with-fews-validator-test":{
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithValidator"
+
+      },
+    }
+  }
+```
+
+Je kan nu de verschillende servers op starten in het bestand:
+![MCP Json Voorbeeld](images/mcp_json_example.png)
+
+Vervolgens zie je de tools in je Copilot chat scherm.
