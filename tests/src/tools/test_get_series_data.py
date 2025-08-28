@@ -18,7 +18,7 @@ def normalize_line_endings(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
-@pytest.mark.skip(reason="Depends on live FEWS data, not suitable for CI")
+# @pytest.mark.skip(reason="Depends on live FEWS data, not suitable for CI")
 def test_get_series_data():
     """Test retrieving timeseries data for KNMIUUR278 Eref.d."""
     # Setup environment
@@ -42,7 +42,7 @@ def test_get_series_data():
 
     # Assert
     assert result is not None
-    assert len(result.values) == (t_end - t_start).days + 1  # 7 days in July + 1 August
+    assert len(result.values) == (t_end - t_start).days + 1  # inclusive
 
     # Check metadata
     assert result.metadata["location_id"] == "KNMIUUR278"
@@ -70,7 +70,7 @@ def test_get_series_data():
 
     # Check CSV format
     csv_lines = normalize_line_endings(result.csv_data).strip().split("\n")
-    assert len(csv_lines) == (t_end - t_start).days + 1  # header + data rows
+    assert len(csv_lines) == (t_end - t_start).days + 2  # header + data rows
     assert (
         normalize_line_endings(csv_lines[0])
         == "datetime,location_id,station_name,parameter_id,moduleinstance_id,value,flag"
