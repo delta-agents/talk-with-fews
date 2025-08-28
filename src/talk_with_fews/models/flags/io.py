@@ -45,6 +45,9 @@ class SeriesFlagsSummary(BaseModel):
     end_date: str = Field(
         ..., description="End date time of the analysis period in ISO 8601 format"
     )
+    ## TODO: change above to and check it works
+    # start_time: datetime = Field(..., description="Start time for analysis")
+    # end_time: datetime = Field(..., description="End time for analysis")
 
     # Standard FEWS flag definitions
     flag_definitions: Dict[int, FlagDefinition] = Field(

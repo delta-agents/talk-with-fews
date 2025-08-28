@@ -6,6 +6,7 @@ including parameter-based and location-based queries.
 """
 
 import asyncio
+from datetime import datetime
 from pydantic import ValidationError
 import pytest
 
@@ -27,7 +28,10 @@ def test_get_series_statistics_no_date():
 
     # Create input for parameter-based query
     input_data = GetSeriesStatisticsInput(
-        parameter_id="Eref.d", location_id="KNMIUUR278"
+        parameter_id="Eref.d",
+        location_id="KNMIUUR278",
+        start_time=datetime.fromisoformat("1990-01-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2025-12-31T23:59:59+00:00"),
     )
 
     # Get runtime context
@@ -49,7 +53,12 @@ def test_get_series_statistics_data_empty():
     setup_dot_env()
 
     # Create input for parameter-based query
-    input_data = GetSeriesStatisticsInput(parameter_id="Kwel", location_id="GPG_10")
+    input_data = GetSeriesStatisticsInput(
+        parameter_id="Kwel",
+        location_id="GPG_10",
+        start_time=datetime.fromisoformat("1990-01-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2025-12-31T23:59:59+00:00"),
+    )
 
     # Get runtime context
     ctx = get_runtime_ctx()
