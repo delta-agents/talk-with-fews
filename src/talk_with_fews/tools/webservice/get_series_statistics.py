@@ -6,6 +6,7 @@ the local DuckDB cache, and if data is not found, it triggers ingestion from the
 """
 
 from datetime import datetime, timedelta, timezone
+from talk_with_fews.utils.utils import format_datetime
 import xml.etree.ElementTree as ET
 
 from pydantic_ai import RunContext, ModelRetry
@@ -48,6 +49,8 @@ async def get_series_statistics(
     params = {
         "locationIds": location_id,
         "parameterIds": parameter_id,
+        "startTime": format_datetime(input.start_time),
+        "endTime": format_datetime(input.end_time),
         "onlyHeaders": "True",
         "showStatistics": "true",
         "documentFormat": "PI_XML",

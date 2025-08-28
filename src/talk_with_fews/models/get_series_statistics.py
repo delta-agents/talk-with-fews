@@ -29,6 +29,8 @@ class GetSeriesStatisticsInput(LaxBaseModel):
         ...,
         description="Location ID to retrieve series headers for (e.g., 'GPG_1698')",
     )
+    start_time: datetime = Field(description="Start date time of the analysis period")
+    end_time: datetime = Field(description="End date time of the analysis period")
 
     @model_validator(mode="after")
     def validate_exclusive_fields(cls, values):

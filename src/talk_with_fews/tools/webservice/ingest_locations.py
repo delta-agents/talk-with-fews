@@ -45,13 +45,18 @@ def ingest_locations(
     )
 
     error, data = get_request(request_url, params=params)
-    data = json.loads(data) if isinstance(data, str) else data
+    if error == "only contains is supported":  # error seen for WSBD
+        params["showThresholds"] = "false"
+        error, data = get_request(request_url, params=params)
+        logger.debug("Set `include_thresholds` to false")
+
     if error is not None:
         logger.error(f"Error fetching locations details: {error}")
         raise ValueError(f"Error fetching parameter details: {error}")
 
     # slightly inefficient, but due to the legacy code we leave it like this
     # doing it this way means the data is checked before being inserted
+    data = json.loads(data) if isinstance(data, str) else data
     locations = []
     # Process the response data to create TimeSeriesSearchOutput
     for value in data["locations"]:

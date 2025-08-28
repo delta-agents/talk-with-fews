@@ -16,13 +16,16 @@ docs/reference
 .quarto/*
 # vscode
 .vscode
+.cursor
 /docs/_site
 env/.env
 .coverage
 .github/chatmodes
 example code/*
 *PLAN.md
+# data
 data/fews_schemas/*
+data/*.db3
 # Include specific PI schema files that are used within the notebook example
 !data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd
 !data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd

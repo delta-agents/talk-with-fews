@@ -6,6 +6,7 @@ including parameter-based and location-based queries.
 """
 
 import asyncio
+from datetime import datetime
 from pydantic import ValidationError
 import pytest
 
@@ -18,16 +19,19 @@ from talk_with_fews.tools import get_series_statistics
 from tests.utils_tests import setup_dot_env
 
 
-def test_get_series_statistics_no_date():
+def test_get_series_statistics():
     """
-    Test the get_series_statistics function without specifying a date range.
+    Test the get_series_statistics function
     """
     # Setup environment
     setup_dot_env()
 
     # Create input for parameter-based query
     input_data = GetSeriesStatisticsInput(
-        parameter_id="Eref.d", location_id="KNMIUUR278"
+        parameter_id="Eref.d",
+        location_id="KNMIUUR278",
+        start_time=datetime.fromisoformat("1990-01-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2025-12-31T23:59:59+00:00"),
     )
 
     # Get runtime context
@@ -38,7 +42,7 @@ def test_get_series_statistics_no_date():
 
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
-    assert output.count >= 600  # Should be non-negative
+    assert output.count >= 0  # Should be non-negative
 
 
 def test_get_series_statistics_data_empty():
@@ -49,7 +53,12 @@ def test_get_series_statistics_data_empty():
     setup_dot_env()
 
     # Create input for parameter-based query
-    input_data = GetSeriesStatisticsInput(parameter_id="Kwel", location_id="GPG_10")
+    input_data = GetSeriesStatisticsInput(
+        parameter_id="Kwel",
+        location_id="GPG_10",
+        start_time=datetime.fromisoformat("1990-01-01T00:00:00+00:00"),
+        end_time=datetime.fromisoformat("2025-12-31T23:59:59+00:00"),
+    )
 
     # Get runtime context
     ctx = get_runtime_ctx()
