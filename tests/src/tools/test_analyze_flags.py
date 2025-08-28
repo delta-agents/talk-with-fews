@@ -91,6 +91,7 @@ async def test_count_series_flags_unknown():
     assert "99" in str(exc.value)
 
 
+@pytest.mark.skip(reason="Uses live FEWS data, not suitable for CI")
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "location_id,parameter_id,period",

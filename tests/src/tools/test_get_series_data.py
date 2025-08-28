@@ -18,17 +18,20 @@ def normalize_line_endings(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
+@pytest.mark.skip(reason="Depends on live FEWS data, not suitable for CI")
 def test_get_series_data():
     """Test retrieving timeseries data for KNMIUUR278 Eref.d."""
     # Setup environment
     setup_dot_env()
 
     # Create input
+    t_start = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    t_end = datetime(2025, 2, 1, tzinfo=timezone.utc)
     input_data = GetSeriesDataInput(
         location_id="KNMIUUR278",
         parameter_id="Eref.d",
-        start_time=datetime(2025, 1, 1, tzinfo=timezone.utc),
-        end_time=datetime(2025, 2, 1, tzinfo=timezone.utc),
+        start_time=t_start,
+        end_time=t_end,
     )
 
     # Get runtime context
@@ -39,7 +42,7 @@ def test_get_series_data():
 
     # Assert
     assert result is not None
-    assert len(result.values) == 32  # 31 days in January + 1 February
+    assert len(result.values) == (t_end - t_start).days + 1  # 7 days in July + 1 August
 
     # Check metadata
     assert result.metadata["location_id"] == "KNMIUUR278"
@@ -51,22 +54,23 @@ def test_get_series_data():
 
     # Check first value
     first_value = result.values[0]
-    assert first_value.datetime == datetime(2025, 1, 1, tzinfo=timezone.utc)
+    assert first_value.datetime == t_start
     assert first_value.location_id == "KNMIUUR278"
     assert first_value.station_name == "Heino"
     assert first_value.parameter_id == "Eref.d"
     assert first_value.moduleinstance_id == "im.wiwb.knmi"
+
     assert first_value.value == 0.1
     assert first_value.flag == 0
 
     # Check last value
     last_value = result.values[-1]
-    assert last_value.datetime == datetime(2025, 2, 1, tzinfo=timezone.utc)
+    assert last_value.datetime == t_end
     assert last_value.value == 0.7
 
     # Check CSV format
     csv_lines = normalize_line_endings(result.csv_data).strip().split("\n")
-    assert len(csv_lines) == 33  # header + 32 data rows
+    assert len(csv_lines) == (t_end - t_start).days + 1  # header + data rows
     assert (
         normalize_line_endings(csv_lines[0])
         == "datetime,location_id,station_name,parameter_id,moduleinstance_id,value,flag"

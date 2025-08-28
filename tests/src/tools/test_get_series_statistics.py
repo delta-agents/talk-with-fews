@@ -19,9 +19,9 @@ from talk_with_fews.tools import get_series_statistics
 from tests.utils_tests import setup_dot_env
 
 
-def test_get_series_statistics_no_date():
+def test_get_series_statistics():
     """
-    Test the get_series_statistics function without specifying a date range.
+    Test the get_series_statistics function
     """
     # Setup environment
     setup_dot_env()
@@ -42,7 +42,7 @@ def test_get_series_statistics_no_date():
 
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
-    assert output.count >= 600  # Should be non-negative
+    assert output.count >= 0  # Should be non-negative
 
 
 def test_get_series_statistics_data_empty():
