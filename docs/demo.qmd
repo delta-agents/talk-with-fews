@@ -1,0 +1,16 @@
+---
+title: "Demo"
+---
+
+## Config
+{{< video https://www.youtube.com/embed/8D6_0Ds6l7s >}}
+
+## Webservice
+{{< video https://www.youtube.com/embed/GesXT97xkMY >}}
+
+## Validator
+{{< video https://www.youtube.com/embed/djI5N7ufvDg >}}
+
+### Zelf proberen?
+
+Zie [hier](MCP_instalatie.qmd) het stappenplan.

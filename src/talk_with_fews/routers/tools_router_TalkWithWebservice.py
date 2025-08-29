@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastmcp import FastMCP
 from talk_with_fews.utils.docstring_generator import auto_docstring
+from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 
 # Import tool functions and their models
@@ -23,7 +24,21 @@ from talk_with_fews.models.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
-from talk_with_fews.routers.setup_connections import get_runtime_ctx
+from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
+from talk_with_fews.models.get_series_statistics import (
+    GetSeriesStatisticsInput,
+    GetSeriesStatisticsOutput,
+)
+from talk_with_fews.tools.webservice.get_series_data import get_series_data
+from talk_with_fews.models.get_series_data import (
+    GetSeriesDataInput,
+    GetSeriesDataOutput,
+)
+from talk_with_fews.tools.webservice.analyze_flags import analyze_series_flags
+from talk_with_fews.models.flags.io import (
+    SeriesFlagsInput,
+    SeriesFlagsSummary,
+)
 
 router = APIRouter()
 mcp = FastMCP("TalkWithFewsWebservice")
@@ -101,3 +116,63 @@ async def get_series_headers_mcp(
 ) -> GetSeriesHeadersOutput:
     ctx = get_runtime_ctx()
     return await get_series_headers(ctx, input)
+
+
+# get_series_statistics tool registration
+@mcp.tool()
+@router.post("/tools.webservice/get_series_statistics")
+@auto_docstring(
+    "Get statistical summaries for time series from the FEWS WebService. "
+    "Retrieves statistics such as mean, min, max, and count for specified series. "
+    "Features include: "
+    "- Must Query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
+    "- Optionally Specify time range for statistics, else defaults 2 days"
+    "- Useful for quick data exploration and validation "
+    "- Returns summary statistics for each matching series"
+)
+async def get_series_statistics_mcp(
+    input: GetSeriesStatisticsInput,
+) -> GetSeriesStatisticsOutput:
+    ctx = get_runtime_ctx()
+    return await get_series_statistics(ctx, input)
+
+
+# get_series_data tool registration
+@mcp.tool()
+@router.post("/tools.webservice/get_series_data")
+@auto_docstring(
+    "Get timeseries data for a specific location-parameter combination. "
+    "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
+    "Features include: "
+    "- Query by location ID and parameter ID "
+)
+async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
+    ctx = get_runtime_ctx()
+    return await get_series_data(ctx, input)
+
+
+# analyze_series_flags tool registration
+@mcp.tool()
+@router.post("/tools.webservice/analyze_series_flags")
+@auto_docstring(
+    "Analyze FEWS quality flags for a specific location-parameter combination. "
+    "This tool analyzes existing quality flags in the timeseries. "
+    "Features include: "
+    "- Detailed flag distribution (counts and percentages) "
+    "- Quality level summary (Reliable/Doubtful/Unreliable) "
+    "- Origin tracking (Original/Corrected/Completed) "
+    "- Complete flag descriptions and metadata "
+    "\n"
+    "Requirements: "
+    "- Must provide location ID and parameter ID "
+    "- Time range cannot be in the future "
+    "- Start time must be before end time "
+    "\n"
+    "Example Use Cases: "
+    "- Monitor data quality across different periods "
+    "- Compare quality between locations/parameters "
+    "- Identify problematic data sources"
+)
+async def analyze_series_flags_mcp(input: SeriesFlagsInput) -> SeriesFlagsSummary:
+    ctx = get_runtime_ctx()
+    return await analyze_series_flags(ctx, input)

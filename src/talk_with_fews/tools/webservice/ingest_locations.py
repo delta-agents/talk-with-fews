@@ -1,6 +1,7 @@
 from talk_with_fews.models.base import Location
 from talk_with_fews.models.ingest_webservice import IngestLocationsOutput
 from talk_with_fews.utils.webservice_utils import get_request
+from talk_with_fews.utils.logging_utils import logger
 
 import pandas as pd
 import json
@@ -24,6 +25,7 @@ def ingest_locations(
 
     # check if webservice_url is set
     if webservice_url is None:
+        logger.error("Web service URL is not configured in the environment variables.")
         raise ValueError(
             "Web service URL is not configured in the environment variables."
         )
@@ -43,12 +45,18 @@ def ingest_locations(
     )
 
     error, data = get_request(request_url, params=params)
-    data = json.loads(data) if isinstance(data, str) else data
+    if error == "only contains is supported":  # error seen for WSBD
+        params["showThresholds"] = "false"
+        error, data = get_request(request_url, params=params)
+        logger.debug("Set `include_thresholds` to false")
+
     if error is not None:
+        logger.error(f"Error fetching locations details: {error}")
         raise ValueError(f"Error fetching parameter details: {error}")
 
     # slightly inefficient, but due to the legacy code we leave it like this
     # doing it this way means the data is checked before being inserted
+    data = json.loads(data) if isinstance(data, str) else data
     locations = []
     # Process the response data to create TimeSeriesSearchOutput
     for value in data["locations"]:

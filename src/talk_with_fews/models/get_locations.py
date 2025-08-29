@@ -5,11 +5,12 @@ This module defines the models used by the agent to query and analyze FEWS confi
 """
 
 from typing import Optional, List
-from pydantic import BaseModel, Field
-from talk_with_fews.models.base import Location
+from pydantic import BaseModel, Field, model_validator
+from pydantic_ai import ModelRetry
+from talk_with_fews.models.base import Location, LaxBaseModel
 
 
-class GetLocationInput(BaseModel):
+class GetLocationInput(LaxBaseModel):
     """
     GetLocationInput defines the input parameters for retrieving location search results.
 
@@ -22,12 +23,19 @@ class GetLocationInput(BaseModel):
     """
 
     number_of_locations: Optional[int] = Field(
-        ..., description="Number of locations to retrieve"
+        ...,
+        description="Number of locations to retrieve, at most 100",
     )
     filter_locations_name: Optional[str] = Field(
         None,
         description="Optional string used to filter the locations returned by using sql LIKE functionality",
     )
+
+    @model_validator(mode="after")
+    def validate_number_of_locations(cls, values):
+        if values.number_of_locations is not None and values.number_of_locations > 100:
+            raise ModelRetry("number_of_locations must be at most 100.")
+        return values
 
 
 class GetLocationOutput(BaseModel):

@@ -1,9 +1,10 @@
 from pydantic_ai import ModelRetry, RunContext
 
-from talk_with_fews.models.deadpoint import (
+from talk_with_fews.models.dead_point_analysis import (
     DeadPoint,
     DeadPointProducer,
     DeadPointsAnalysisOutput,
+    DeadPointsAnalysisInput,
 )
 from talk_with_fews.models.sql_query import SQLQueryInput
 
@@ -15,7 +16,7 @@ from talk_with_fews.utils.schema_utils import format_timeseries_description
 
 @log_tool_call
 async def analyze_dead_points(
-    ctx: RunContext[Deps], input: dict = None
+    ctx: RunContext[Deps], input: DeadPointsAnalysisInput = None
 ) -> DeadPointsAnalysisOutput:
     """
     Identify "dead points" in the FEWS configuration - time series sets that are
@@ -30,7 +31,9 @@ async def analyze_dead_points(
     """
     try:
         # Check parameters
-        include_producers = input.get("include_producers", True) if input else True
+        include_producers = (
+            input.include_producers
+        )  # .get("include_producers", True) if input else True
 
         # Execute query to find dead points with their origins
         dead_points_query = """
@@ -231,10 +234,10 @@ Found {len(dead_points)} dead points across {len(module_counts)} modules.
             producers_info = producers.get(dp.id, [])
             if producers_info:
                 for prod in producers_info:
-                    ts_desc = format_timeseries_description(dp.dict())
+                    ts_desc = format_timeseries_description(dp.model_dump())
                     markdown_content += f"| {dp.id} | {ts_desc} | {prod.trafo_desc} | {prod.module_instance} | {prod.workflow_id} |\n"
             else:
-                ts_desc = format_timeseries_description(dp.dict())
+                ts_desc = format_timeseries_description(dp.model_dump())
                 markdown_content += f"| {dp.id} | {ts_desc} | - | - | - |\n"
 
         if exclusively_dead_module_instances:

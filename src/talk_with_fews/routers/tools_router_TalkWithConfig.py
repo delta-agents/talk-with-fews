@@ -26,15 +26,21 @@ from talk_with_fews.models.workflow_details import (
     WorkflowDetailsInput,
     WorkflowDetailsOutput,
 )
-from talk_with_fews.tools.config.deadpoint_analysis import analyze_dead_points
-from talk_with_fews.models.deadpoint import DeadPointsAnalysisOutput
+from talk_with_fews.tools.config.dead_point_analysis import analyze_dead_points
+from talk_with_fews.models.dead_point_analysis import (
+    DeadPointsAnalysisInput,
+    DeadPointsAnalysisOutput,
+)
 from talk_with_fews.tools.config.dependency_analysis import analyze_dependencies
 from talk_with_fews.models.dependency_analysis import (
     DependencyAnalysisInput,
     DependencyAnalysisOutput,
 )
 from talk_with_fews.tools.config.get_database_schema import get_database_schema
-from talk_with_fews.models.database_schema import DatabaseSchemaOutput
+from talk_with_fews.models.database_schema import (
+    DatabaseSchemaInput,
+    DatabaseSchemaOutput,
+)
 from talk_with_fews.tools.config.graph_visualize import visualize_graph
 from talk_with_fews.models.graph import (
     GraphVisualizationInput,
@@ -52,7 +58,8 @@ from talk_with_fews.models.transformation_details import (
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 router = APIRouter()
-mcp = FastMCP("TalkWithFewsConfig")
+mcp = FastMCP(name="TalkWithFewsConfig")
+# TODO: add authentication on this level
 
 
 # describe_timeseries tool registration
@@ -64,6 +71,7 @@ mcp = FastMCP("TalkWithFewsConfig")
 async def describe_timeseries_mcp(
     input: DescribeTimeSeriesInput,
 ) -> DescribeTimeSeriesOutput:
+    # TODO: add authentication passing to the get_runtime
     ctx = get_runtime_ctx()
     return await describe_timeseries(ctx, input)
 
@@ -120,7 +128,9 @@ async def get_workflow_details_mcp(
 @auto_docstring(
     "Identify 'dead points' in the FEWS configuration - time series sets that are neither used as inputs for any transformation nor marked as endpoints."
 )
-async def analyze_dead_points_mcp(input: dict = None) -> DeadPointsAnalysisOutput:
+async def analyze_dead_points_mcp(
+    input: DeadPointsAnalysisInput,
+) -> DeadPointsAnalysisOutput:
     ctx = get_runtime_ctx()
     return await analyze_dead_points(ctx, input)
 
@@ -144,7 +154,7 @@ async def analyze_dependencies_mcp(
 @auto_docstring(
     "Get the database schema information to understand the structure of the FEWS configuration database."
 )
-async def get_database_schema_mcp(input: dict = None) -> DatabaseSchemaOutput:
+async def get_database_schema_mcp(input: DatabaseSchemaInput) -> DatabaseSchemaOutput:
     ctx = get_runtime_ctx()
     return await get_database_schema(ctx, input)
 

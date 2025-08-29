@@ -8,6 +8,7 @@ DuckDB database for incremental caching. Supports both parameter-based and locat
 import xml.etree.ElementTree as ET
 from typing import List
 import duckdb
+from pydantic_ai import ModelRetry
 from talk_with_fews.models.base import SeriesHeader
 from talk_with_fews.models.ingest_series_headers import IngestSeriesHeadersOutput
 from talk_with_fews.utils.webservice_utils import get_request
@@ -187,9 +188,9 @@ async def ingest_series_headers(
 
     # Validate input - must have either parameter_id or location_id, not both
     if parameter_id and location_id:
-        raise ValueError("Cannot specify both parameter_id and location_id")
+        raise ModelRetry("Cannot specify both parameter_id and location_id")
     if not parameter_id and not location_id:
-        raise ValueError("Must specify either parameter_id or location_id")
+        raise ModelRetry("Must specify either parameter_id or location_id")
 
     # Construct webservice URL
     if parameter_id:

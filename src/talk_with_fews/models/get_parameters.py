@@ -6,10 +6,10 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from talk_with_fews.models.base import Parameter  # , Location
+from talk_with_fews.models.base import Parameter, LaxBaseModel
 
 
-class GetParameterInput(BaseModel):
+class GetParameterInput(LaxBaseModel):
     """Model representing a parameter search result.
 
     Attributes:

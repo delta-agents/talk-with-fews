@@ -5,6 +5,7 @@ from talk_with_fews.models.base import Deps
 
 from talk_with_fews.models.timeseries_search import (
     TimeSeriesSearchOutput,
+    TimeSeriesSearchInput,
     TimeSeriesSearchResult,
 )
 from talk_with_fews.tools.config.sql_query import execute_query
@@ -13,7 +14,7 @@ from talk_with_fews.utils.logging_utils import log_tool_call, logger
 
 @log_tool_call
 async def search_timeseries(
-    ctx: RunContext[Deps], input: TimeSeriesSearchOutput
+    ctx: RunContext[Deps], input: TimeSeriesSearchInput
 ) -> TimeSeriesSearchOutput:
     """
     Search for time series sets by parameter, qualifier, module, or endpoint status.

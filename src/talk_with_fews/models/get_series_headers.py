@@ -6,10 +6,12 @@ series headers from the FEWS webservice with incremental caching.
 """
 
 from typing import Optional, List, Dict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+from pydantic_ai import ModelRetry
+from talk_with_fews.models.base import LaxBaseModel
 
 
-class GetSeriesHeadersInput(BaseModel):
+class GetSeriesHeadersInput(LaxBaseModel):
     """
     GetSeriesHeadersInput defines the input parameters for retrieving series headers.
 
@@ -23,6 +25,20 @@ class GetSeriesHeadersInput(BaseModel):
         None,
         description="Location ID to retrieve series headers for (e.g., 'GPG_1698')",
     )
+
+    @model_validator(mode="after")
+    def validate_exclusive_fields(cls, values):
+        parameter_id, location_id = (
+            values.parameter_id,
+            values.location_id,
+        )
+        if not (parameter_id or location_id):
+            raise ModelRetry("Either 'parameter_id' or 'location_id' must be provided.")
+        if parameter_id and location_id:
+            raise ModelRetry(
+                "Only one of 'parameter_id' or 'location_id' can be provided, not both."
+            )
+        return values
 
 
 class GetSeriesHeadersOutput(BaseModel):

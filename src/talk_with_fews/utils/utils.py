@@ -9,6 +9,11 @@ import os
 from typing import List, Dict, Any
 
 
+def format_datetime(dt):
+    """Format datetime to FEWS webservice format (yyyy-MM-dd'T'HH:mm:ss'Z')."""
+    return dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+
+
 def connect_to_database(db_path: str) -> sqlite3.Connection:
     """
     Connect to the SQLite database.

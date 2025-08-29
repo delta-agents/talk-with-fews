@@ -10,7 +10,6 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.agent import AgentRunResult
 
-from talk_with_fews.agents.fews_config_agent import FEWSConfigAgent
 from talk_with_fews.models.base import Deps
 
 # Import logging utilities from the dedicated module
@@ -20,6 +19,7 @@ from talk_with_fews.tools import (
     get_parameters,
     get_locations,
     execute_query_webservice,
+    get_series_statistics,
 )
 
 from talk_with_fews.utils.utils import connect_to_database
@@ -31,7 +31,7 @@ from talk_with_fews.utils.schema_utils import (
 from talk_with_fews.models.base import AgentResponse
 
 
-class FEWSWebserviceAgent(FEWSConfigAgent):
+class FEWSWebserviceAgent:
     """
     Agent for querying and analyzing FEWS Webservice.
 
@@ -148,6 +148,12 @@ class FEWSWebserviceAgent(FEWSConfigAgent):
                 takes_ctx=True,
                 name="execute_query_webservice",
                 description="Execute a SQL query on the cached FewsWebService database which contains the locations and parameters from the FEWS web service. This is useful for quick access to parameter and location data.",
+            ),
+            Tool(
+                get_series_statistics,
+                takes_ctx=True,
+                name="get_series_statistics",
+                description="Get series statistics from the FEWS webservice with incremental caching. Requires either parameter_id or location_id.",
             ),
         ]
 

@@ -1,5 +1,5 @@
 # CONFIG
-from talk_with_fews.tools.config.deadpoint_analysis import analyze_dead_points
+from talk_with_fews.tools.config.dead_point_analysis import analyze_dead_points
 from talk_with_fews.tools.config.dependency_analysis import analyze_dependencies
 from talk_with_fews.tools.config.get_database_schema import get_database_schema
 from talk_with_fews.tools.config.graph_visualize import visualize_graph
@@ -20,7 +20,15 @@ from talk_with_fews.tools.webservice.get_locations import get_locations
 from talk_with_fews.tools.webservice.sql_query_webservice import (
     execute_query_webservice,
 )
+from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
+from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
+from talk_with_fews.tools.webservice.get_series_data import get_series_data
+from talk_with_fews.tools.webservice.analyze_flags import analyze_series_flags
 
+# VALIDATOR
+from talk_with_fews.tools.validator.validate_xml import validate_xml
+from talk_with_fews.tools.validator.generate_xml_template import generate_xml_template
+from talk_with_fews.tools.validator.get_available_elements import get_available_elements
 
 __all__ = [
     # Config tools
@@ -40,4 +48,12 @@ __all__ = [
     "get_parameters",
     "get_locations",
     "execute_query_webservice",
+    "get_series_headers",
+    "get_series_statistics",
+    "get_series_data",
+    "analyze_series_flags",
+    # Validator tools
+    "validate_xml",
+    "generate_xml_template",
+    "get_available_elements",
 ]

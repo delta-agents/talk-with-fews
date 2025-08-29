@@ -6,6 +6,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
+from talk_with_fews.models.base import LaxBaseModel
 
 
 class GraphNode(BaseModel):
@@ -78,7 +79,7 @@ class GraphLayout(BaseModel):
     level_spacing: int = Field(100, description="Spacing between levels")
 
 
-class GraphVisualizationInput(BaseModel):
+class GraphVisualizationInput(LaxBaseModel):
     """Model for the input of graph visualization tools.
 
     This model defines the parameters for creating a graph visualization.

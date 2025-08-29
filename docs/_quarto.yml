@@ -3,22 +3,29 @@ project:
   type: website
 
 website:
-  title: "talk_with_fews"
+  title: "Talk with FEWS"
   navbar:
     left:
-      - text: "Examples"
+      - text: "Demo"
+        file: demo.qmd
+      - text: "Documentatie"
         menu:
-          - examples/notebooks/introduction.ipynb
+          - examples/notebooks/fews_config.ipynb
+          - examples/notebooks/fews_webservice.ipynb
+          - examples/notebooks/fews_validator.ipynb
       - text: "Python API"
         file: reference/index.qmd
     right:
       - icon: github
         href: https://github.com/HKV-products-services/talk_with_fews
         aria-label: GitHub
+      - text: "Contributing"
+        file: contributing.qmd
 format:
   html:
     theme: cosmo
     toc: true
+
 
 quartodoc:
   style: pkgdown
@@ -34,3 +41,90 @@ quartodoc:
     include_attributes: true
     include_classes: true
     include_functions: true
+  sections:
+    - title: Config tools
+      desc: Tools beschikbaar voor de config agent.
+      package: talk_with_fews.tools
+      contents:
+        - analyze_dead_points
+        - analyze_dependencies
+        - get_database_schema
+        - visualize_graph
+        - execute_query
+        - describe_timeseries
+        - search_timeseries
+        - get_transformation_details
+        - search_transformations
+        - find_workflow_call_hierarchy
+        - search_workflows
+        - get_workflow_details
+    - title: Webservice tools
+      desc: Tools beschikbaar voor de webservice agent.
+      package: talk_with_fews.tools
+      contents:
+        - get_parameters
+        - get_locations
+        - execute_query_webservice
+        - get_series_headers
+        - get_series_statistics
+        - get_series_data
+        - analyze_series_flags
+    - title: Validator tools
+      desc: Tools beschikbaar voor de validator agent.
+      package: talk_with_fews.tools
+      contents:
+        - validate_xml
+        - generate_xml_template
+        - get_available_elements
+    - title: Config tool models
+      desc: Data modellen per Config tool.
+      package: talk_with_fews.models
+      contents:
+        - DescribeTimeSeriesInput
+        - DescribeTimeSeriesOutput
+        - TimeSeriesSearchOutput
+        - TransformationSearchInput
+        - TransformationSearchOutput
+        - TransformationDetailsOutput
+        - WorkflowSearchInput
+        - WorkflowSearchOutput
+        - WorkflowDetailsInput
+        - WorkflowDetailsOutput
+        - WorkflowCallHierarchyInput
+        - DeadPointsAnalysisOutput
+        - DeadPointsAnalysisInput
+        - DependencyAnalysisInput
+        - DependencyAnalysisOutput
+        - DatabaseSchemaOutput
+        - GraphVisualizationInput
+        - GraphVisualizationOutput
+        - SQLQueryInput
+        - SQLQueryOutput
+        - TransformationDetailsInput
+        - TransformationDetailsOutput
+    - title: Webservice tool models
+      package: talk_with_fews.models
+      desc: Data modellen per webservice tool.
+      contents:
+        - GetParameterInput
+        - GetParameterOutput
+        - GetLocationInput
+        - GetLocationOutput
+        - GetSeriesDataInput
+        - GetSeriesDataOutput
+        - GetSeriesHeadersInput
+        - GetSeriesHeadersOutput
+        - GetSeriesStatisticsInput
+        - GetSeriesStatisticsOutput
+        - SeriesFlagsInput
+        - SeriesFlagsSummary
+    - title: Validator tool models
+      package: talk_with_fews.models
+      desc: Data modellen per validator tool.
+      contents:
+        - XMLValidationInput
+        - XMLValidationOutput
+        - XMLTemplateInput
+        - XMLTemplateOutput
+        - GetAvailableElementsInput
+        - GetAvailableElementsOutput

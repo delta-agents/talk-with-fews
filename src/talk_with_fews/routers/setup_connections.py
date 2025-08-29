@@ -31,15 +31,27 @@ def get_runtime_ctx() -> RunContext:
         _schema, \
         _cache_FewsWebServices_db, \
         _ingest_locations_output, \
-        _ingest_parameters_output
+        _ingest_parameters_output, \
+        _cache_fews_schemas_dir
+    # TODO: split?
+    # handle config
     db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
-    webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
-
     if _db_connection is None:
         _db_connection = connect_to_database(db_path)
+
     if _schema is None:
         _schema = extract_db_schema_as_dict(db_path)
-    if _cache_FewsWebServices_db is None:
+
+    # handle webservice URL
+    webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
+    # dev option to disable webservice ingestion
+    disable_cache_FewsWebServices_db = os.environ.get(
+        "DEV_DISABLE_WEBSERVICE_INGEST", "false"
+    ).lower() in ("true", "1", "yes")
+    if webservice_url is not None and webservice_url.endswith("/"):
+        webservice_url = webservice_url[:-1]
+
+    if _cache_FewsWebServices_db is None and not disable_cache_FewsWebServices_db:
         _cache_FewsWebServices_db = duckdb.connect(database=":memory:", read_only=False)
         _cache_FewsWebServices_db.execute("INSTALL spatial;")
         _cache_FewsWebServices_db.execute("LOAD spatial;")
@@ -55,14 +67,18 @@ def get_runtime_ctx() -> RunContext:
             _cache_FewsWebServices_db
         )
 
+    # handle validation
+    fews_schemas_dir = os.environ.get("FEWS_SCHEMAS_DIR", "data/fews_schemas")
+
+    # combine all three into a Deps object
     deps = Deps(db_path=db_path, db_connection=_db_connection)
     deps.webservice_url = webservice_url
     deps.schema = _schema
     # for now this is limited to the session
     deps.cache_FewsWebServices_db = _cache_FewsWebServices_db
-    # TODO: not yet happy with this, should be a tool, but also run on startup? then it shouldn't be a tool?
     deps.ingest_locations_output = _ingest_locations_output
     deps.ingest_parameters_output = _ingest_parameters_output
+    deps.cache_fews_schemas_dir = fews_schemas_dir
     return CtxWithDeps(deps)
 
 

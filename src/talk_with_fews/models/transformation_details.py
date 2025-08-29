@@ -7,7 +7,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 from typing import List
 from pydantic import BaseModel, Field
 
-from talk_with_fews.models.base import TimeSeriesLink
+from talk_with_fews.models.base import TimeSeriesLink, LaxBaseModel
 
 
 class TransformationDetails(BaseModel):
@@ -37,7 +37,7 @@ class TransformationDetails(BaseModel):
     )
 
 
-class TransformationDetailsInput(BaseModel):
+class TransformationDetailsInput(LaxBaseModel):
     """Model for the input of the get_transformation_details tool.
 
     This model defines the required parameters to get details about a specific transformation.

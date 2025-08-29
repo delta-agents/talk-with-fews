@@ -23,10 +23,12 @@ from talk_with_fews.models.graph import (
     GraphVisualizationInput,
     GraphVisualizationOutput,
 )
+from talk_with_fews.utils.logging_utils import log_tool_call
 
 
+@log_tool_call
 async def visualize_graph(
-    ctx: RunContext[Deps], input_data: GraphVisualizationInput
+    ctx: RunContext[Deps], input: GraphVisualizationInput
 ) -> GraphVisualizationOutput:
     """Generate a graph visualization of FEWS entities and their relationships.
 
@@ -36,15 +38,15 @@ async def visualize_graph(
 
     Args:
         ctx: RunContext with database connection
-        input_data: Visualization parameters including root entity and layout settings
+        input: Visualization parameters including root entity and layout settings
 
     Returns:
         GraphVisualizationOutput containing nodes, edges, and Mermaid markdown
     """
     # Initialize layout parameters
-    layout = input_data.layout or GraphLayout()
+    layout = input.layout or GraphLayout()
     max_depth = layout.max_depth or 3
-    max_nodes = input_data.max_nodes or 50
+    max_nodes = input.max_nodes or 50
 
     # Initialize lists to store nodes and edges
     nodes = []
@@ -208,12 +210,12 @@ async def visualize_graph(
         return True
 
     # Start building the graph from the root entity
-    if input_data.root_entity_type == "timeseries":
-        await get_time_series_node(input_data.root_entity_id)
-    elif input_data.root_entity_type == "transformation":
-        await get_transformation_node(input_data.root_entity_id)
-    elif input_data.root_entity_type == "workflow":
-        await get_workflow_node(input_data.root_entity_id)
+    if input.root_entity_type == "timeseries":
+        await get_time_series_node(input.root_entity_id)
+    elif input.root_entity_type == "transformation":
+        await get_transformation_node(input.root_entity_id)
+    elif input.root_entity_type == "workflow":
+        await get_workflow_node(input.root_entity_id)
 
     # Generate Mermaid diagram
     mermaid_lines = ["```mermaid", "graph " + layout.direction]
@@ -222,7 +224,7 @@ async def visualize_graph(
     for node in nodes:
         # Create node label with properties if requested
         label = node.label
-        if input_data.include_properties and node.properties:
+        if input.include_properties and node.properties:
             props = ", ".join(f"{k}: {v}" for k, v in node.properties.items())
             label = f"{label}<br/>({props})"
 
@@ -239,7 +241,7 @@ async def visualize_graph(
     for edge in edges:
         # Create edge label with properties if requested
         label = edge.label or ""
-        if input_data.include_properties and edge.properties:
+        if input.include_properties and edge.properties:
             props = ", ".join(f"{k}: {v}" for k, v in edge.properties.items())
             label = f"{label} ({props})"
 
