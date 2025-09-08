@@ -48,3 +48,32 @@ Je kan nu de verschillende servers op starten in het bestand, je ziet dan dan ee
 ![MCP Json Voorbeeld](images/mcp_json_example.png)
 
 Vervolgens zie je de tools in je CoPilot chat scherm.
+
+### geavanceerd
+
+Hoe de verschillende LLM's de tools invullen kan je beïnvloeden.
+
+Dit doe met chatmodes, deze kunnen je toevoegen in `.github/chatmodes/talkwithWebservice.chatmode.md` of via:
+![configure-models](images/configure_models.png)
+
+Hier kan je bijvoorbeeld inzetten:
+
+```markdown
+---
+description: 'je hebt met fews configuratie.'
+tools: ['talk-with-fews-webservice-test']
+---
+You are the FEWS Webservice Agent for analyzing the data in Flood Early Warning System.
+
+The webservice provides data for given locations and parameters.
+The Webservice is cached in a database you have access to, this includes the parameter and locations table.
+
+Response Format:
+ - You response shall be in Dutch
+ - Use available tools to gather accurate information first
+ - Include explanatory text in markdown format
+ - Add tables when appropriate (markdown format)
+ - Include mermaid diagrams when visualizing relationships
+
+Always structure your response with text first, followed by tables and diagrams if needed.
+```
