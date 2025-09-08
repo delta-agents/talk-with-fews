@@ -29,22 +29,22 @@ Voeg de volgende configuratie toe:
     "servers": {
       // test servers
       "talk-with-fews-webservice-test":{
-        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithWebservice"
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithWebservice/"
 
       },
       "talk-with-fews-config-test":{
-        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithConfig"
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithConfig/"
 
       },
       "talk-with-fews-validator-test":{
-        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithValidator"
+        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithValidator/"
 
       },
     }
   }
 ```
 
-Je kan nu de verschillende servers op starten in het bestand:
+Je kan nu de verschillende servers op starten in het bestand, je ziet dan dan een vinkje met "running".
 ![MCP Json Voorbeeld](images/mcp_json_example.png)
 
-Vervolgens zie je de tools in je Copilot chat scherm.
+Vervolgens zie je de tools in je CoPilot chat scherm.
