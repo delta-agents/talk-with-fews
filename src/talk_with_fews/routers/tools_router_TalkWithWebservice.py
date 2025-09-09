@@ -1,5 +1,12 @@
 from fastapi import APIRouter
 from fastmcp import FastMCP
+from fastmcp.server.auth.providers.jwt import StaticTokenVerifier
+
+import os
+import json
+from pathlib import Path
+from dotenv import load_dotenv
+
 from talk_with_fews.utils.docstring_generator import auto_docstring
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
@@ -40,9 +47,18 @@ from talk_with_fews.models.flags.io import (
     SeriesFlagsSummary,
 )
 
-router = APIRouter()
-mcp = FastMCP("TalkWithFewsWebservice")
 
+load_dotenv(dotenv_path="env/.env")
+
+tokens = json.loads(os.getenv("STATIC_TOKENS", "{}"))
+
+verifier = StaticTokenVerifier(
+    tokens=tokens,
+    required_scopes=["read:data"]
+)
+
+router = APIRouter()
+mcp = FastMCP("TalkWithFewsWebservice", auth=verifier)
 
 # get_parameter_details tool registration
 @mcp.tool()
