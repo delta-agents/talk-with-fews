@@ -178,7 +178,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#voorbereidingen" id="toc-voorbereidingen" class="nav-link active" data-scroll-target="#voorbereidingen">voorbereidingen</a></li>
-  <li><a href="#toevoegen-van-mcp-server" id="toc-toevoegen-van-mcp-server" class="nav-link" data-scroll-target="#toevoegen-van-mcp-server">Toevoegen van MCP server</a></li>
+  <li><a href="#toevoegen-van-mcp-server" id="toc-toevoegen-van-mcp-server" class="nav-link" data-scroll-target="#toevoegen-van-mcp-server">Toevoegen van MCP server</a>
+  <ul class="collapse">
+  <li><a href="#geavanceerd" id="toc-geavanceerd" class="nav-link" data-scroll-target="#geavanceerd">geavanceerd</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -220,23 +223,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"servers"</span><span class="fu">:</span> <span class="fu">{</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      <span class="er">//</span> <span class="er">test</span> <span class="er">servers</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"talk-with-fews-webservice-test"</span><span class="fu">:{</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithWebservice"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithWebservice/"</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"talk-with-fews-config-test"</span><span class="fu">:{</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithConfig"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithConfig/"</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"talk-with-fews-validator-test"</span><span class="fu">:{</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithValidator"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"url"</span><span class="fu">:</span> <span class="st">"https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithValidator/"</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Je kan nu de verschillende servers op starten in het bestand: <img src="images/mcp_json_example.png" class="img-fluid" alt="MCP Json Voorbeeld"></p>
-<p>Vervolgens zie je de tools in je Copilot chat scherm.</p>
+<p>Je kan nu de verschillende servers op starten in het bestand, je ziet dan dan een vinkje met “running”. <img src="images/mcp_json_example.png" class="img-fluid" alt="MCP Json Voorbeeld"></p>
+<p>Vervolgens zie je de tools in je CoPilot chat scherm.</p>
+<section id="geavanceerd" class="level3">
+<h3 class="anchored" data-anchor-id="geavanceerd">geavanceerd</h3>
+<p>Hoe de verschillende LLM’s de tools invullen kan je beïnvloeden.</p>
+<p>Dit doe met chatmodes, deze kunnen je toevoegen in <code>.github/chatmodes/talkwithWebservice.chatmode.md</code> of via: <img src="images/configure_models.png" class="img-fluid" alt="configure-models"></p>
+<p>Hier kan je bijvoorbeeld inzetten:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> 'je hebt met fews configuratie.'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">tools:</span><span class="co"> ['talk-with-fews-webservice-test']</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>You are the FEWS Webservice Agent for analyzing the data in Flood Early Warning System.</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>The webservice provides data for given locations and parameters.</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>The Webservice is cached in a database you have access to, this includes the parameter and locations table.</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>Response Format:</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>You response shall be in Dutch</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Use available tools to gather accurate information first</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Include explanatory text in markdown format</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Add tables when appropriate (markdown format)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ss"> - </span>Include mermaid diagrams when visualizing relationships</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Always structure your response with text first, followed by tables and diagrams if needed.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
