@@ -58,7 +58,8 @@ from talk_with_fews.models.transformation_details import (
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 
 router = APIRouter()
-mcp = FastMCP("TalkWithFewsConfig")
+mcp = FastMCP(name="TalkWithFewsConfig")
+# TODO: add authentication on this level
 
 
 # describe_timeseries tool registration
@@ -70,6 +71,7 @@ mcp = FastMCP("TalkWithFewsConfig")
 async def describe_timeseries_mcp(
     input: DescribeTimeSeriesInput,
 ) -> DescribeTimeSeriesOutput:
+    # TODO: add authentication passing to the get_runtime
     ctx = get_runtime_ctx()
     return await describe_timeseries(ctx, input)
 

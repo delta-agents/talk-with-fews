@@ -6,6 +6,10 @@ This template package contains core functionality for a python package, develope
 
 Here are a couple quick useful things to know when using this repo.
 
+## starting MCP
+
+`pixi run start`
+
 ### Pre-commit
 
 This repo uses pre-commit, make sure you run `pixi run pre-commit` before you commit anything.
@@ -43,6 +47,7 @@ iwr -useb https://pixi.sh/install.ps1 | iex
 ```bash
 curl -fsSL https://pixi.sh/install.sh | bash
 ```
+
 </details>
 
 #### installing
