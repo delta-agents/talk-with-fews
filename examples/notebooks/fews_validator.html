@@ -213,9 +213,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We gaan als eerste een context object definieren. Het context object bevat informatie welke de tools gebruik van kunnen maken. Voor de validator Agent is de verwijzing naar de locatie van de FEWS XSD schema’s het meest relevant binnen dit context object.</p>
 <div id="2fae765e" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic_ai <span class="im">import</span> format_as_xml</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> setup_quarto <span class="im">import</span> setup_dot_env_docs</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env(download_schemas<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env_docs(download_schemas<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Download directory: ../data/fews_schemas
 Download completed: {'total_downloaded': 588, 'base_download_dir': '../data/fews_schemas', 'results': {'https://fews.wldelft.nl/schemas/version1.0/': {'downloaded_count': 294, 'local_directory': '../data/fews_schemas/fews_wldelft_nl'}, 'https://fewsdocs.deltares.nl/schemas/version1.0/': {'downloaded_count': 294, 'local_directory': '../data/fews_schemas/fewsdocs_deltares_nl'}}}</code></pre>
