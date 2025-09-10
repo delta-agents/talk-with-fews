@@ -1,7 +1,13 @@
 from fastapi import APIRouter
 from fastmcp import FastMCP
+from fastmcp.server.auth.providers.jwt import StaticTokenVerifier
+
 from talk_with_fews.utils.docstring_generator import auto_docstring
-from talk_with_fews.routers.setup_connections import get_runtime_ctx
+from talk_with_fews.routers.setup_connections import (
+    get_runtime_ctx,
+    get_user_settings,
+    setup_env,
+)
 
 
 # Import tool functions and their models
@@ -21,8 +27,12 @@ from talk_with_fews.models.get_available_elements import (
     GetAvailableElementsOutput,
 )
 
+
+tokens = setup_env()
+verifier = StaticTokenVerifier(tokens=tokens, required_scopes=["read:data"])
+
 router = APIRouter()
-mcp = FastMCP("TalkWithFewsValidator")
+mcp = FastMCP("TalkWithFewsValidator", auth=verifier)
 
 
 # validate_xml tool registration
@@ -40,7 +50,8 @@ mcp = FastMCP("TalkWithFewsValidator")
     "- Automatic namespace prefix handling for FEWS schemas "
 )
 async def validate_xml_mcp(input: XMLValidationInput) -> XMLValidationOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await validate_xml(ctx, input)
 
 
@@ -62,7 +73,8 @@ async def validate_xml_mcp(input: XMLValidationInput) -> XMLValidationOutput:
     "- 5-second timeout protection to prevent hanging on complex schemas "
 )
 async def generate_xml_template_mcp(input: XMLTemplateInput) -> XMLTemplateOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await generate_xml_template(ctx, input)
 
 
@@ -86,5 +98,6 @@ async def generate_xml_template_mcp(input: XMLTemplateInput) -> XMLTemplateOutpu
 async def get_available_elements_mcp(
     input: GetAvailableElementsInput,
 ) -> GetAvailableElementsOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await get_available_elements(ctx, input)

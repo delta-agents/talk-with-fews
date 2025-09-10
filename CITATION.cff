@@ -3,12 +3,16 @@
 authors:
   -
     affiliation: "HKV lijn in water"
-    family-names: Dupuits
-    given-names: Guy
+    family-names: van Hoek
+    given-names: Mattijn
   -
     affiliation: "HKV lijn in water"
     family-names: Haasnoot
     given-names: David
+  -
+    affiliation: "HKV lijn in water"
+    family-names: Jansen
+    given-names: Marc
 
 cff-version: "0.0.1"
 keywords:

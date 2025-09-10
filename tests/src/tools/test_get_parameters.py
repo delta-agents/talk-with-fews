@@ -13,12 +13,12 @@ def test_get_parameter_details():
     Test the get_parameter_details function to ensure it retrieves parameter details correctly.
     """
     # this is dependant on the FEWS web service being available indefinitely
-    setup_dot_env()
+    user_settingss = setup_dot_env()
     # Create a mock RunContext and input
     input_data = GetParameterInput(number_of_parameters=6)
 
     # Call the function
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settingss)
     output = asyncio.run(get_parameters(ctx, input_data))
 
     # Assert the output is of the expected type

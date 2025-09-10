@@ -24,7 +24,7 @@ def test_get_series_statistics():
     Test the get_series_statistics function
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input for parameter-based query
     input_data = GetSeriesStatisticsInput(
@@ -35,7 +35,7 @@ def test_get_series_statistics():
     )
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     output = asyncio.run(get_series_statistics(ctx, input_data))
@@ -50,7 +50,7 @@ def test_get_series_statistics_data_empty():
     Test the get_series_statistics function when the data is empty.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input for parameter-based query
     input_data = GetSeriesStatisticsInput(
@@ -61,7 +61,7 @@ def test_get_series_statistics_data_empty():
     )
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     output = asyncio.run(get_series_statistics(ctx, input_data))

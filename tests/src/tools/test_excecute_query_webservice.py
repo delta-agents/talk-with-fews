@@ -13,14 +13,14 @@ def test_get_locations():
     Test the get_locations function to ensure it retrieves locations details correctly.
     """
     # this is dependant on the FEWS web service being available indefinitely
-    setup_dot_env()
+    user_settings = setup_dot_env()
     # Create a mock RunContext and input
     input_data = SQLQueryInput(
         query="SELECT * FROM locations WHERE shortName = 'Esvelder beek' LIMIT 1"
     )
 
     # Call the function
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     output = asyncio.run(execute_query_webservice(ctx, input_data))
 
     # Assert the output is of the expected type

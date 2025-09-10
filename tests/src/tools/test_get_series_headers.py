@@ -24,13 +24,13 @@ def test_get_series_headers_by_parameter():
     Test the get_series_headers function with parameter-based query.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input for parameter-based query
     input_data = GetSeriesHeadersInput(parameter_id="Kwel")
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     output = asyncio.run(get_series_headers(ctx, input_data))
@@ -58,13 +58,13 @@ def test_get_series_headers_by_location():
     Test the get_series_headers function with location-based query.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input for location-based query
     input_data = GetSeriesHeadersInput(location_id="GPG_1698")
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     output = asyncio.run(get_series_headers(ctx, input_data))
@@ -92,7 +92,7 @@ def test_get_series_headers_invalid_input():
     Test the get_series_headers function with invalid input (both parameter and location).
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Call the function and expect ModelRetry
     with pytest.raises(
@@ -102,7 +102,7 @@ def test_get_series_headers_invalid_input():
         # Create invalid input (both parameter and location)
         input_data = GetSeriesHeadersInput(parameter_id="Kwel", location_id="GPG_1698")
         # Get runtime context
-        ctx = get_runtime_ctx()
+        ctx = get_runtime_ctx(user_settings)
         asyncio.run(get_series_headers(ctx, input_data))
 
 
@@ -111,7 +111,7 @@ def test_get_series_headers_no_input():
     Test the get_series_headers function with no input (neither parameter nor location).
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create invalid input (neither parameter nor location)
 
@@ -121,7 +121,7 @@ def test_get_series_headers_no_input():
     ):
         input_data = GetSeriesHeadersInput()
         # Get runtime context
-        ctx = get_runtime_ctx()
+        ctx = get_runtime_ctx(user_settings)
         asyncio.run(get_series_headers(ctx, input_data))
 
 
@@ -130,10 +130,10 @@ def test_ingest_series_headers_by_parameter():
     Test the ingest_series_headers function with parameter-based query.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
 
@@ -162,10 +162,10 @@ def test_ingest_series_headers_by_location():
     Test the ingest_series_headers function with location-based query.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
 
@@ -194,10 +194,10 @@ def test_ingest_series_headers_invalid_input():
     Test the ingest_series_headers function with invalid input (both parameter and location).
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
 
@@ -220,10 +220,10 @@ def test_ingest_series_headers_no_input():
     Test the ingest_series_headers function with no input (neither parameter nor location).
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     webservice_url = ctx.deps.webservice_url
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
 
@@ -244,10 +244,10 @@ def test_series_headers_caching():
     Test that series headers are properly cached and subsequent calls use cache.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # First call - should trigger ingestion
     input_data1 = GetSeriesHeadersInput(parameter_id="Kwel")
@@ -268,13 +268,13 @@ def test_series_headers_output_structure():
     Test that the output structure is correct and contains all required fields.
     """
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input
     input_data = GetSeriesHeadersInput(parameter_id="Kwel")
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     output = asyncio.run(get_series_headers(ctx, input_data))

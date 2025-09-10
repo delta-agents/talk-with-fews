@@ -4,6 +4,7 @@ from src.talk_with_fews.routers.setup_connections import get_runtime_ctx
 from src.talk_with_fews.tools.webservice.ingest_series_headers import (
     ingest_series_headers,
 )
+from tests.utils_tests import setup_dot_env
 
 
 def test_series_headers_foreign_keys():
@@ -11,8 +12,9 @@ def test_series_headers_foreign_keys():
     Controleer of alle series_headers geldige foreign keys hebben naar parameters en locations.
     De test faalt als er een series_header is met een locationId of parameterId die niet bestaat.
     """
+    user_settings = setup_dot_env()
     # Setup context en database connectie
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     db: duckdb.DuckDBPyConnection = ctx.deps.cache_FewsWebServices_db
     webservice_url = ctx.deps.webservice_url
 

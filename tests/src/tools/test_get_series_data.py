@@ -22,7 +22,7 @@ def normalize_line_endings(text: str) -> str:
 def test_get_series_data():
     """Test retrieving timeseries data for KNMIUUR278 Eref.d."""
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input
     t_start = datetime(2025, 1, 1, tzinfo=timezone.utc)
@@ -35,7 +35,7 @@ def test_get_series_data():
     )
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -96,7 +96,7 @@ def test_get_series_data():
 def test_get_series_data_missing_values():
     """Test handling of missing values in the timeseries data."""
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input
     input_data = GetSeriesDataInput(
@@ -107,7 +107,7 @@ def test_get_series_data_missing_values():
     )
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -124,7 +124,7 @@ def test_get_series_data_missing_values():
 def test_get_series_data_invalid_location():
     """Test error handling for invalid location ID."""
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input
     input_data = GetSeriesDataInput(
@@ -135,7 +135,7 @@ def test_get_series_data_invalid_location():
     )
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function and expect error
     with pytest.raises(Exception) as exc_info:
@@ -146,7 +146,7 @@ def test_get_series_data_invalid_location():
 def test_get_series_data_invalid_parameter():
     """Test error handling for invalid parameter ID."""
     # Setup environment
-    setup_dot_env()
+    user_settings = setup_dot_env()
 
     # Create input
     input_data = GetSeriesDataInput(
@@ -157,7 +157,7 @@ def test_get_series_data_invalid_parameter():
     )
 
     # Get runtime context
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
 
     # Call the function and expect error
     with pytest.raises(Exception) as exc_info:

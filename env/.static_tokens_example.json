@@ -1,0 +1,10 @@
+{
+    "example-token": {
+        "client_id": "example",
+        "FEWS_DB_PATH": "data/fews_config.db3",
+        "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
+        "scopes": [
+            "read:data"
+        ]
+    }
+}
