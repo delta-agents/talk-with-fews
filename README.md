@@ -47,6 +47,7 @@ iwr -useb https://pixi.sh/install.ps1 | iex
 ```bash
 curl -fsSL https://pixi.sh/install.sh | bash
 ```
+
 </details>
 
 #### installing
