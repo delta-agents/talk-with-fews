@@ -44,8 +44,8 @@ def create_test_values(flags: List[int]) -> List[TimeseriesValue]:
 @pytest.fixture
 def test_context():
     """Create a test context with FEWS webservice URL"""
-    setup_dot_env()
-    return get_runtime_ctx()
+    user_settings = setup_dot_env()
+    return get_runtime_ctx(user_settings)
 
 
 @pytest.mark.asyncio

@@ -15,14 +15,19 @@ docs/reference
 *.egg-info
 .quarto/*
 # vscode
-.vscode
+.vscode/mcp.json
+.vscode/settings.json
 .cursor
 /docs/_site
+# env
 env/.env
+env/.static_tokens.json
+# tests & CI
 .coverage
 .github/chatmodes
 example code/*
-*PLAN.md
+#logs
+logs/*.log
 # data
 data/fews_schemas/*
 data/*.db3

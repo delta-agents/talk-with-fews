@@ -1,4 +1,8 @@
+import json
 import os
+from pathlib import Path
+import warnings
+from dotenv import load_dotenv
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
 from talk_with_fews.utils.utils import connect_to_database
@@ -6,6 +10,47 @@ from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 import duckdb
 from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
+from fastmcp.server.dependencies import get_http_request
+from starlette.requests import Request
+
+
+def setup_env():
+    """Load environment variables from a .env file located in the 'env' directory."""
+    env_dir = Path(__file__).parent.parent.parent.parent / "env"
+    load_dotenv(dotenv_path=env_dir / ".env")
+    return json.load(
+        open(env_dir / os.getenv("STATIC_TOKENS_FILE", ".static_tokens_example.json"))
+    )
+
+
+def get_user_settings(verifier) -> dict:
+    """ "
+    Extract user settings from the Authorization header using the provided verifier.
+    This allows the user tools to have user specific settings
+    """
+    # maybe could be improved using `get_access_token` from `fastmcp.server.dependencies`
+    try:
+        request: Request = get_http_request()
+    except RuntimeError as e:
+        # allow debugging and testing without an HTTP request context
+        warnings.warn(
+            f"Failed to get HTTP request context {e}, reverting to default settings."
+        )
+        db_path = os.environ.get("FEWS_DB_PATH", "data/digiflow.db3.db")
+        webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
+        user_settings = {
+            "FEWS_DB_PATH": db_path,
+            "FEWS_WEB_SERVICE_URL": webservice_url,
+        }
+    else:
+        authorization = request.headers.get("Authorization", None)
+        if authorization is not None and authorization.startswith("Bearer "):
+            authorization = authorization[len("Bearer ") :]
+            user_settings = verifier.tokens[authorization]
+        else:
+            raise ValueError("Missing or invalid Authorization header")
+    finally:
+        return user_settings
 
 
 class CtxWithDeps:
@@ -19,9 +64,10 @@ _schema = None
 _cache_FewsWebServices_db = None
 _ingest_locations_output = None
 _ingest_parameters_output = None
+_cache_fews_schemas_dir = None
 
 
-def get_runtime_ctx() -> RunContext:
+def get_runtime_ctx(user_settings: dict) -> RunContext:
     """
     Returns a RunContext[Deps] with a shared database connection and schema.
     Uses FEWS_DB_PATH env var or defaults to './fews.db'.
@@ -33,9 +79,13 @@ def get_runtime_ctx() -> RunContext:
         _ingest_locations_output, \
         _ingest_parameters_output, \
         _cache_fews_schemas_dir
-    # TODO: split?
-    # handle config
-    db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
+
+    #### old way of getting settings from env vars
+    # db_path = os.environ.get("DEBUG_FEWS_DB_PATH", "./fews.db")
+    # webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
+    ### we now get these from the user settings, which are tied to the static token used
+    db_path = user_settings["FEWS_DB_PATH"]
+
     if _db_connection is None:
         _db_connection = connect_to_database(db_path)
 
@@ -43,8 +93,10 @@ def get_runtime_ctx() -> RunContext:
         _schema = extract_db_schema_as_dict(db_path)
 
     # handle webservice URL
-    webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
+    webservice_url = user_settings["FEWS_WEB_SERVICE_URL"]
+
     # dev option to disable webservice ingestion
+
     disable_cache_FewsWebServices_db = os.environ.get(
         "DEV_DISABLE_WEBSERVICE_INGEST", "false"
     ).lower() in ("true", "1", "yes")
@@ -68,7 +120,10 @@ def get_runtime_ctx() -> RunContext:
         )
 
     # handle validation
-    fews_schemas_dir = os.environ.get("FEWS_SCHEMAS_DIR", "data/fews_schemas")
+    if _cache_fews_schemas_dir is None:
+        _cache_fews_schemas_dir = os.environ.get(
+            "FEWS_SCHEMAS_DIR", "data/fews_schemas"
+        )
 
     # combine all three into a Deps object
     deps = Deps(db_path=db_path, db_connection=_db_connection)
@@ -78,7 +133,8 @@ def get_runtime_ctx() -> RunContext:
     deps.cache_FewsWebServices_db = _cache_FewsWebServices_db
     deps.ingest_locations_output = _ingest_locations_output
     deps.ingest_parameters_output = _ingest_parameters_output
-    deps.cache_fews_schemas_dir = fews_schemas_dir
+    deps.cache_fews_schemas_dir = _cache_fews_schemas_dir
+
     return CtxWithDeps(deps)
 
 

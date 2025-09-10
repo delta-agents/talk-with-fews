@@ -1,0 +1,22 @@
+{
+  "servers": {
+    "local-webservice": {
+      "url": "http://localhost:8000/mcp/TalkWithWebservice",
+      "headers": {
+        "Authorization": "Bearer example-token"
+      }
+    },
+    "local-config": {
+      "url": "http://localhost:8000/mcp/TalkWithConfig",
+      "headers": {
+        "Authorization": "Bearer example-token"
+      }
+    },
+    "local-validator": {
+      "url": "http://localhost:8000/mcp/TalkWithValidator",
+      "headers": {
+        "Authorization": "Bearer example-token"
+      }
+    }
+  }
+}

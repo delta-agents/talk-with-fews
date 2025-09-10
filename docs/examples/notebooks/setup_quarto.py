@@ -11,7 +11,7 @@ httpx_logger = logging.getLogger("httpx")
 httpx_logger.setLevel(logging.WARNING)
 
 
-def setup_dot_env(download_schemas: bool = False):
+def setup_dot_env_docs(download_schemas: bool = False):
     logger.info("Setting up .env file")
     work_dir = Path(__file__).parent.parent.parent.parent
     env_path = work_dir / "env"
@@ -20,9 +20,14 @@ def setup_dot_env(download_schemas: bool = False):
     if not env_copy.exists():
         env_copy.write_text(env_template.read_text())
     load_dotenv(dotenv_path=env_copy)
-
+    user_settings = {
+        "client_id": "example",
+        "FEWS_DB_PATH": "data/fews_config.db3",
+        "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
+        "scopes": ["read:data"],
+    }
     os.chdir(work_dir)
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     if download_schemas:
         subprocess.run(["pixi", "run", "download-schemas"], check=True)
     return ctx

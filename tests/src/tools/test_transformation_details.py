@@ -14,11 +14,11 @@ def test_transformation_details():
     Test the test_transformation_details function to ensure it retrieves transformation details correctly.
     """
     # this is dependant on the FEWS web service being available indefinitely
-    setup_dot_env()
+    user_settings = setup_dot_env()
     # Create a mock RunContext and input
     index = 1  # Example transformation ID, adjust as needed
     input_data = TransformationDetailsInput(transformation_id=index)
-    ctx = get_runtime_ctx()
+    ctx = get_runtime_ctx(user_settings)
     output = asyncio.run(get_transformation_details(ctx, input_data))
 
     # Assert the output is of the expected type

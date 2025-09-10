@@ -1,6 +1,12 @@
 from fastapi import APIRouter
 from fastmcp import FastMCP
+from fastmcp.server.auth.providers.jwt import StaticTokenVerifier
 from talk_with_fews.utils.docstring_generator import auto_docstring
+from talk_with_fews.routers.setup_connections import (
+    get_runtime_ctx,
+    get_user_settings,
+    setup_env,
+)
 
 
 # Import tool functions and their models
@@ -55,11 +61,13 @@ from talk_with_fews.models.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
 )
-from talk_with_fews.routers.setup_connections import get_runtime_ctx
+
+
+tokens = setup_env()
+verifier = StaticTokenVerifier(tokens=tokens, required_scopes=["read:data"])
 
 router = APIRouter()
-mcp = FastMCP(name="TalkWithFewsConfig")
-# TODO: add authentication on this level
+mcp = FastMCP(name="TalkWithFewsConfig", auth=verifier)
 
 
 # describe_timeseries tool registration
@@ -72,7 +80,8 @@ async def describe_timeseries_mcp(
     input: DescribeTimeSeriesInput,
 ) -> DescribeTimeSeriesOutput:
     # TODO: add authentication passing to the get_runtime
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await describe_timeseries(ctx, input)
 
 
@@ -85,7 +94,8 @@ async def describe_timeseries_mcp(
 async def search_timeseries_mcp(
     input: TimeSeriesSearchOutput,
 ) -> TimeSeriesSearchOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await search_timeseries(ctx, input)
 
 
@@ -96,7 +106,8 @@ async def search_timeseries_mcp(
 async def search_transformations_mcp(
     input: TransformationSearchInput,
 ) -> TransformationSearchOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await search_transformations(ctx, input)
 
 
@@ -105,7 +116,8 @@ async def search_transformations_mcp(
 @router.post("/tools.config/search_workflows")
 @auto_docstring("Search for workflows by name pattern.")
 async def search_workflows_mcp(input: WorkflowSearchInput) -> WorkflowSearchOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await search_workflows(ctx, input)
 
 
@@ -118,7 +130,8 @@ async def search_workflows_mcp(input: WorkflowSearchInput) -> WorkflowSearchOutp
 async def get_workflow_details_mcp(
     input: WorkflowDetailsInput,
 ) -> WorkflowDetailsOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await get_workflow_details(ctx, input)
 
 
@@ -131,7 +144,8 @@ async def get_workflow_details_mcp(
 async def analyze_dead_points_mcp(
     input: DeadPointsAnalysisInput,
 ) -> DeadPointsAnalysisOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await analyze_dead_points(ctx, input)
 
 
@@ -144,7 +158,8 @@ async def analyze_dead_points_mcp(
 async def analyze_dependencies_mcp(
     input: DependencyAnalysisInput,
 ) -> DependencyAnalysisOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await analyze_dependencies(ctx, input)
 
 
@@ -155,7 +170,8 @@ async def analyze_dependencies_mcp(
     "Get the database schema information to understand the structure of the FEWS configuration database."
 )
 async def get_database_schema_mcp(input: DatabaseSchemaInput) -> DatabaseSchemaOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await get_database_schema(ctx, input)
 
 
@@ -168,7 +184,8 @@ async def get_database_schema_mcp(input: DatabaseSchemaInput) -> DatabaseSchemaO
 async def visualize_graph_mcp(
     input: GraphVisualizationInput,
 ) -> GraphVisualizationOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await visualize_graph(ctx, input)
 
 
@@ -177,7 +194,8 @@ async def visualize_graph_mcp(
 @router.post("/tools.config/execute_query")
 @auto_docstring("Execute a SQL query against the FEWS configuration database.")
 async def execute_query_mcp(input: SQLQueryInput) -> SQLQueryOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await execute_query(ctx, input)
 
 
@@ -188,5 +206,6 @@ async def execute_query_mcp(input: SQLQueryInput) -> SQLQueryOutput:
 async def get_transformation_details_mcp(
     input: TransformationDetailsInput,
 ) -> TransformationDetailsOutput:
-    ctx = get_runtime_ctx()
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
     return await get_transformation_details(ctx, input)
