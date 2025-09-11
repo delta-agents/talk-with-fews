@@ -59,12 +59,16 @@ class CtxWithDeps:
 
 
 # Shared/cached context globals
-_db_connection = None
-_schema = None
-_cache_FewsWebServices_db = None
-_ingest_locations_output = None
-_ingest_parameters_output = None
-_cache_fews_schemas_dir = None
+
+_empty_user_config = dict(
+    _db_connection=None,
+    _schema=None,
+    _cache_FewsWebServices_db=None,
+    _ingest_locations_output=None,
+    _ingest_parameters_output=None,
+    _cache_fews_schemas_dir=None,
+)
+_cached_configs = {}
 
 
 def get_runtime_ctx(user_settings: dict) -> RunContext:
@@ -72,16 +76,35 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     Returns a RunContext[Deps] with a shared database connection and schema.
     Uses FEWS_DB_PATH env var or defaults to './fews.db'.
     """
-    global \
-        _db_connection, \
-        _schema, \
-        _cache_FewsWebServices_db, \
-        _ingest_locations_output, \
-        _ingest_parameters_output, \
-        _cache_fews_schemas_dir
+
+    global _cached_configs
+    # if we know of the user we retrieve stored variables
+    client_id = user_settings["client_id"]
+    if client_id in _cached_configs:
+        _db_connection = _cached_configs[client_id]["_db_connection"]
+        _schema = _cached_configs[client_id]["_schema"]
+        _cache_FewsWebServices_db = _cached_configs[client_id][
+            "_cache_FewsWebServices_db"
+        ]
+        _ingest_locations_output = _cached_configs[client_id][
+            "_ingest_locations_output"
+        ]
+        _ingest_parameters_output = _cached_configs[client_id][
+            "_ingest_parameters_output"
+        ]
+        _cache_fews_schemas_dir = _cached_configs[client_id]["_cache_fews_schemas_dir"]
+    else:
+        # first time we see this user, so we create a new entry
+        _cached_configs[client_id] = _empty_user_config.copy()
+        _db_connection = None
+        _schema = None
+        _cache_FewsWebServices_db = None
+        _ingest_locations_output = None
+        _ingest_parameters_output = None
+        _cache_fews_schemas_dir = None
 
     #### old way of getting settings from env vars
-    # db_path = os.environ.get("DEBUG_FEWS_DB_PATH", "./fews.db")
+    # db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
     # webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
     ### we now get these from the user settings, which are tied to the static token used
     db_path = user_settings["FEWS_DB_PATH"]
@@ -103,6 +126,7 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     if webservice_url is not None and webservice_url.endswith("/"):
         webservice_url = webservice_url[:-1]
 
+    # TODO: monitor memory if this is okay for large databases
     if _cache_FewsWebServices_db is None and not disable_cache_FewsWebServices_db:
         _cache_FewsWebServices_db = duckdb.connect(database=":memory:", read_only=False)
         _cache_FewsWebServices_db.execute("INSTALL spatial;")
