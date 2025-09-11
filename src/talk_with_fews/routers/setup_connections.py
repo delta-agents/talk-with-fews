@@ -39,6 +39,7 @@ def get_user_settings(verifier) -> dict:
         db_path = os.environ.get("FEWS_DB_PATH", "data/digiflow.db3.db")
         webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
         user_settings = {
+            "client_id": "test-no-auth",
             "FEWS_DB_PATH": db_path,
             "FEWS_WEB_SERVICE_URL": webservice_url,
         }
