@@ -29,20 +29,35 @@ Voeg de volgende configuratie toe:
     "servers": {
       // test servers
       "talk-with-fews-webservice-test":{
-        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithWebservice/"
+        "url": "https://talk-with-fews-api-demo.hkvservices.nl/mcp/TalkWithWebservice/",
+        "type": "http",
+        "headers": {
+          "Authorization": "Bearer {token}"
+      }
 
       },
       "talk-with-fews-config-test":{
-        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithConfig/"
+        "url": "https://talk-with-fews-api-demo.hkvservices.nl/mcp/TalkWithConfig/",
+        "type": "http",
+        "headers": {
+          "Authorization": "Bearer {token}"
+      }
 
       },
       "talk-with-fews-validator-test":{
-        "url": "https://talk-with-fews-api-test.hkvservices.nl/mcp/TalkWithValidator/"
+        "url": "https://talk-with-fews-api-demo.hkvservices.nl/mcp/TalkWithValidator/",
+        "type": "http",
+        "headers": {
+          "Authorization": "Bearer {token}"
+      }
 
       },
     }
   }
 ```
+waarbij je `{token}` vervangt door de gegeven token.
+De url vervang je door de juiste url, hier staat demo maar afhankelijk van de ontvangen instructies kan je deze aanpassen.
+De token geeft je toegang tot de juiste configuratie.
 
 Je kan nu de verschillende servers op starten in het bestand, je ziet dan dan een vinkje met "running".
 ![MCP Json Voorbeeld](images/mcp_json_example.png)

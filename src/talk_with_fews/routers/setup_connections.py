@@ -110,7 +110,10 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     ### we now get these from the user settings, which are tied to the static token used
     db_path = user_settings["FEWS_DB_PATH"]
 
-    if _db_connection is None:
+    disable_cache_FewsWebServices_db = os.environ.get(
+        "DEV_DISABLE_CONFIG_DB", "false"
+    ).lower() in ("true", "1", "yes")
+    if _db_connection is None and not disable_cache_FewsWebServices_db:
         _db_connection = connect_to_database(db_path)
 
     if _schema is None:
