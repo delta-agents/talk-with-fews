@@ -26,8 +26,7 @@ class GetSeriesStatisticsInput(LaxBaseModel):
         ..., description="Parameter ID to retrieve series headers for (e.g., 'Kwel')"
     )
     location_id: str = Field(
-        ...,
-        description="Location ID to retrieve series headers for (e.g., 'GPG_1698')",
+        ..., description="Location ID to retrieve series headers for (e.g., 'GPG_1698')"
     )
     start_time: datetime = Field(description="Start date time of the analysis period")
     end_time: datetime = Field(description="End date time of the analysis period")

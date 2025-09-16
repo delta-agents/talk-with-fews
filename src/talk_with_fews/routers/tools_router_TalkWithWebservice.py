@@ -56,14 +56,14 @@ mcp = FastMCP("TalkWithFewsWebservice", auth=verifier)
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools.webservice/get_parameters")
+@router.post("/tools.webservice/parameters")
 @auto_docstring(
     "Get information about parameters. This is how to access parameters data."
     "By default 10 parameters are returned. "
     "If no query is provided, the first number parameters asked for are returned."
     "If a query is provided, the parameters are filtered by the query string."
 )
-async def get_parameters_mcp(
+async def parameters(
     input: GetParameterInput,
 ) -> GetParameterOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -74,7 +74,7 @@ async def get_parameters_mcp(
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools.webservice/get_locations")
+@router.post("/tools.webservice/locations")
 @auto_docstring(
     "Get location information from the FEWS WebService database. "
     "Returns location metadata including coordinates, names, and spatial geometry data. "
@@ -85,7 +85,7 @@ async def get_parameters_mcp(
     "- Control result size with limit parameter "
     "- Essential for identifying monitoring sites and their geographic properties"
 )
-async def get_locations_mcp(
+async def locations(
     input: GetLocationInput,
 ) -> GetLocationOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -95,7 +95,7 @@ async def get_locations_mcp(
 
 # execute_query_webservice tool registration
 @mcp.tool()
-@router.post("/tools.webservice/execute_query_webservice")
+@router.post("/tools.webservice/query_webservice")
 @auto_docstring(
     "Execute SQL queries on the FEWS WebService database containing locations and parameters. "
     "Use this tool to access comprehensive parameter and location data with advanced filtering capabilities. "
@@ -105,7 +105,7 @@ async def get_locations_mcp(
     "- Location geometry data stored in 'geom' field (EPSG:4326 coordinate system) "
     "- Complex filtering and aggregation operations "
 )
-async def execute_query_webservice_mcp(input: SQLQueryInput) -> SQLQueryOutput:
+async def query_webservice(input: SQLQueryInput) -> SQLQueryOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await execute_query_webservice(ctx, input)
@@ -113,7 +113,7 @@ async def execute_query_webservice_mcp(input: SQLQueryInput) -> SQLQueryOutput:
 
 # get_series_headers tool registration
 @mcp.tool()
-@router.post("/tools.webservice/get_series_headers")
+@router.post("/tools.webservice/series_headers")
 @auto_docstring(
     "Get series headers from the FEWS WebService with incremental caching. "
     "Retrieves available time series metadata using an efficient caching strategy. "
@@ -125,7 +125,7 @@ async def execute_query_webservice_mcp(input: SQLQueryInput) -> SQLQueryOutput:
     "- Automatic foreign key validation with existing data "
     "- Essential for discovering available time series and their properties"
 )
-async def get_series_headers_mcp(
+async def series_headers(
     input: GetSeriesHeadersInput,
 ) -> GetSeriesHeadersOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -135,7 +135,7 @@ async def get_series_headers_mcp(
 
 # get_series_statistics tool registration
 @mcp.tool()
-@router.post("/tools.webservice/get_series_statistics")
+@router.post("/tools.webservice/series_statistics")
 @auto_docstring(
     "Get statistical summaries for time series from the FEWS WebService. "
     "Retrieves statistics such as mean, min, max, and count for specified series. "
@@ -145,7 +145,7 @@ async def get_series_headers_mcp(
     "- Useful for quick data exploration and validation "
     "- Returns summary statistics for each matching series"
 )
-async def get_series_statistics_mcp(
+async def series_statistics(
     input: GetSeriesStatisticsInput,
 ) -> GetSeriesStatisticsOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -155,14 +155,14 @@ async def get_series_statistics_mcp(
 
 # get_series_data tool registration
 @mcp.tool()
-@router.post("/tools.webservice/get_series_data")
+@router.post("/tools.webservice/series_data")
 @auto_docstring(
     "Get timeseries data for a specific location-parameter combination. "
     "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
     "Features include: "
     "- Query by location ID and parameter ID "
 )
-async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
+async def series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await get_series_data(ctx, input)
@@ -170,7 +170,7 @@ async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
 
 # analyze_series_flags tool registration
 @mcp.tool()
-@router.post("/tools.webservice/analyze_series_flags")
+@router.post("/tools.webservice/series_flags")
 @auto_docstring(
     "Analyze FEWS quality flags for a specific location-parameter combination. "
     "This tool analyzes existing quality flags in the timeseries. "
@@ -190,7 +190,63 @@ async def get_series_data_mcp(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     "- Compare quality between locations/parameters "
     "- Identify problematic data sources"
 )
-async def analyze_series_flags_mcp(input: SeriesFlagsInput) -> SeriesFlagsSummary:
+async def series_flags(input: SeriesFlagsInput) -> SeriesFlagsSummary:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await analyze_series_flags(ctx, input)
+
+
+# from typing import Optional, List
+# from pydantic import BaseModel, Field
+# from talk_with_fews.models.base import LaxBaseModel
+
+
+# class UserInfo(BaseModel):
+#     name: str = Field(..., description="dit is de naam van de user")
+
+
+# class GetUserInfoInput(LaxBaseModel):
+#     """
+#     Input model for get_info tool.
+#     """
+
+#     text: str = Field(..., description="1 woord met het gevoel wat je nu hebt")
+#     value: int = Field(..., description="1 getal (integer) welke je nu voelt")
+#     boolean: bool = Field(
+#         ...,
+#         description="dit is een boolean input voor de tool, vul hier True of False in",
+#     )
+#     list: Optional[List[str]] = Field(
+#         None,
+#         description="dit is een optionele lijst van str input voor de tool, vul hier een paar woorden in die je nu voelt",
+#     )
+#     user_name: str = Field(..., description="dit is de naam van de user")
+
+
+# class GetUserInfoOutput(LaxBaseModel):
+#     """
+#     Input model for get_info tool.
+#     """
+
+#     text: str = Field(..., description="dit is de text output van de tool")
+#     value: int = Field(..., description="dit is het getal (integer) output van de tool")
+#     list: Optional[List[str]] = Field(
+#         None, description="dit is een optionele lijst van str output van de tool"
+#     )
+#     boolean: bool = Field(..., description="dit is een boolean output van de tool")
+#     user: UserInfo = Field(..., description="dit is de user info output van de tool")
+
+
+# # get_user_info tool registration
+# @mcp.tool()
+# @router.post("/tools.webservice/user_info")
+# @auto_docstring("Get user info")
+# async def user_info(input: GetUserInfoInput) -> GetUserInfoOutput:
+#     out = GetUserInfoOutput(
+#         text=input.text,
+#         value=input.value + 2,
+#         list=input.list,
+#         boolean=input.boolean,
+#         user=UserInfo(name=input.user_name),
+#     )
+#     return out

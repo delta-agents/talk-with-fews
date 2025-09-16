@@ -23,8 +23,7 @@ class GetLocationInput(LaxBaseModel):
     """
 
     number_of_locations: Optional[int] = Field(
-        ...,
-        description="Number of locations to retrieve, at most 100",
+        ..., description="Number of locations to retrieve, at most 100"
     )
     filter_locations_name: Optional[str] = Field(
         None,

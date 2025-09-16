@@ -49,7 +49,7 @@ mcp = FastMCP("TalkWithFewsValidator", auth=verifier)
     "- Support for both direct and indirect parent element relationships "
     "- Automatic namespace prefix handling for FEWS schemas "
 )
-async def validate_xml_mcp(input: XMLValidationInput) -> XMLValidationOutput:
+async def xml_validation(input: XMLValidationInput) -> XMLValidationOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await validate_xml(ctx, input)
@@ -72,7 +72,7 @@ async def validate_xml_mcp(input: XMLValidationInput) -> XMLValidationOutput:
     "- Intelligent suggestions for similar elements when target not found "
     "- 5-second timeout protection to prevent hanging on complex schemas "
 )
-async def generate_xml_template_mcp(input: XMLTemplateInput) -> XMLTemplateOutput:
+async def xml_template_generation(input: XMLTemplateInput) -> XMLTemplateOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await generate_xml_template(ctx, input)
@@ -95,7 +95,7 @@ async def generate_xml_template_mcp(input: XMLTemplateInput) -> XMLTemplateOutpu
     "- Intelligent suggestions for invalid target elements "
     "- Useful for exploring large schema structures efficiently "
 )
-async def get_available_elements_mcp(
+async def available_elements(
     input: GetAvailableElementsInput,
 ) -> GetAvailableElementsOutput:
     user_settings: dict = get_user_settings(verifier)

@@ -11,12 +11,23 @@ authors:
     given-names: David
   -
     affiliation: "HKV lijn in water"
+    family-names: Verkaik
+    given-names: Job
+  -
+    affiliation: "HKV lijn in water"
+    family-names: Waterman
+    given-names: Rolf
+  -
+    affiliation: "HKV lijn in water"
     family-names: Jansen
     given-names: Marc
 
-cff-version: "0.0.1"
+cff-version: "0.0.2"
 keywords:
   - Waterveiligheid
+  - Watermanagement
+  - FEWS
+  - AI
 license: "GPL-3.0-or-later"
 message: "If you use this software, please cite it using these metadata."
 title: talk_with_fews
