@@ -10,10 +10,7 @@ class IngestLocationsOutput(BaseModel):
         sql_examples (List[str]): List of SQL examples to query the ingested data.
     """
 
-    description: str = Field(
-        ...,
-        description="Description of the ingestion process",
-    )
+    description: str = Field(..., description="Description of the ingestion process")
     sql_examples: List[str] = Field(
         ..., description="List of SQL examples to query the ingested data"
     )
