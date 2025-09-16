@@ -76,7 +76,7 @@ mcp = FastMCP(name="TalkWithFewsConfig", auth=verifier)
 @auto_docstring(
     "Get a complete description of a time series, including its basic properties and optionally any transformations that use it as input or output."
 )
-async def describe_timeseries_mcp(
+async def timeseries_description(
     input: DescribeTimeSeriesInput,
 ) -> DescribeTimeSeriesOutput:
     # TODO: add authentication passing to the get_runtime
@@ -91,7 +91,7 @@ async def describe_timeseries_mcp(
 @auto_docstring(
     "Search for time series sets by parameter, qualifier, module, or endpoint status."
 )
-async def search_timeseries_mcp(
+async def timeseries_search(
     input: TimeSeriesSearchOutput,
 ) -> TimeSeriesSearchOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -103,7 +103,7 @@ async def search_timeseries_mcp(
 @mcp.tool()
 @router.post("/tools.config/search_transformations")
 @auto_docstring("Search for transformations matching the given criteria.")
-async def search_transformations_mcp(
+async def transformations_search(
     input: TransformationSearchInput,
 ) -> TransformationSearchOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -115,7 +115,7 @@ async def search_transformations_mcp(
 @mcp.tool()
 @router.post("/tools.config/search_workflows")
 @auto_docstring("Search for workflows by name pattern.")
-async def search_workflows_mcp(input: WorkflowSearchInput) -> WorkflowSearchOutput:
+async def workflows_search(input: WorkflowSearchInput) -> WorkflowSearchOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await search_workflows(ctx, input)
@@ -127,7 +127,7 @@ async def search_workflows_mcp(input: WorkflowSearchInput) -> WorkflowSearchOutp
 @auto_docstring(
     "Get detailed information about a specific workflow, including its module instance calls and their transformations in sequential order."
 )
-async def get_workflow_details_mcp(
+async def workflow_details(
     input: WorkflowDetailsInput,
 ) -> WorkflowDetailsOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -141,7 +141,7 @@ async def get_workflow_details_mcp(
 @auto_docstring(
     "Identify 'dead points' in the FEWS configuration - time series sets that are neither used as inputs for any transformation nor marked as endpoints."
 )
-async def analyze_dead_points_mcp(
+async def dead_points_analysis(
     input: DeadPointsAnalysisInput,
 ) -> DeadPointsAnalysisOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -155,7 +155,7 @@ async def analyze_dead_points_mcp(
 @auto_docstring(
     "Analyze dependencies for a specific entity, showing both upstream and downstream relationships."
 )
-async def analyze_dependencies_mcp(
+async def dependencies_analysis(
     input: DependencyAnalysisInput,
 ) -> DependencyAnalysisOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -169,7 +169,7 @@ async def analyze_dependencies_mcp(
 @auto_docstring(
     "Get the database schema information to understand the structure of the FEWS configuration database."
 )
-async def get_database_schema_mcp(input: DatabaseSchemaInput) -> DatabaseSchemaOutput:
+async def database_schema(input: DatabaseSchemaInput) -> DatabaseSchemaOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await get_database_schema(ctx, input)
@@ -181,7 +181,7 @@ async def get_database_schema_mcp(input: DatabaseSchemaInput) -> DatabaseSchemaO
 @auto_docstring(
     "Generate a graph visualization of FEWS entities and their relationships."
 )
-async def visualize_graph_mcp(
+async def graph_visualization(
     input: GraphVisualizationInput,
 ) -> GraphVisualizationOutput:
     user_settings: dict = get_user_settings(verifier)
@@ -193,7 +193,7 @@ async def visualize_graph_mcp(
 @mcp.tool()
 @router.post("/tools.config/execute_query")
 @auto_docstring("Execute a SQL query against the FEWS configuration database.")
-async def execute_query_mcp(input: SQLQueryInput) -> SQLQueryOutput:
+async def query_execution(input: SQLQueryInput) -> SQLQueryOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await execute_query(ctx, input)
@@ -203,7 +203,7 @@ async def execute_query_mcp(input: SQLQueryInput) -> SQLQueryOutput:
 @mcp.tool()
 @router.post("/tools.config/get_transformation_details")
 @auto_docstring("Get detailed information about a specific transformation.")
-async def get_transformation_details_mcp(
+async def transformation_details(
     input: TransformationDetailsInput,
 ) -> TransformationDetailsOutput:
     user_settings: dict = get_user_settings(verifier)
