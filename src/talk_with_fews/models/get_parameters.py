@@ -6,7 +6,7 @@ This module defines the models used by the agent to query and analyze FEWS confi
 
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from talk_with_fews.models.base import Parameter, LaxBaseModel
+from talk_with_fews.models.base import ParameterBase, Parameter, LaxBaseModel
 
 
 class GetParameterInput(LaxBaseModel):
@@ -37,7 +37,7 @@ class GetParameterOutput(BaseModel):
     and a formatted markdown representation for display purposes.
     """
 
-    parameters: Optional[List[Parameter]] = Field(
+    parameters: Optional[List[ParameterBase | Parameter]] = Field(
         None, description="Optional list of associated transformations"
     )
 

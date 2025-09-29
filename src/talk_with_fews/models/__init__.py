@@ -3,7 +3,10 @@ from talk_with_fews.models.timeseries_describe import (
     DescribeTimeSeriesInput,
     DescribeTimeSeriesOutput,
 )
-from talk_with_fews.models.timeseries_search import TimeSeriesSearchOutput
+from talk_with_fews.models.timeseries_search import (
+    TimeSeriesSearchInput,
+    TimeSeriesSearchOutput,
+)
 from talk_with_fews.models.transformation_search import (
     TransformationSearchInput,
     TransformationSearchOutput,
@@ -83,6 +86,7 @@ __all__ = [
     # config models
     "DescribeTimeSeriesInput",
     "DescribeTimeSeriesOutput",
+    "TimeSeriesSearchInput",
     "TimeSeriesSearchOutput",
     "TransformationSearchInput",
     "TransformationSearchOutput",

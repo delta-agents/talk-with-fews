@@ -93,14 +93,25 @@ class Transformation(BaseModel):
     )
 
 
-class Parameter(BaseModel):
+class ParameterBase(BaseModel):
+    """Model representing a parameter in the FEWS configuration.
+
+    A parameter is a specific variable or characteristic that can be measured or calculated
+    within the FEWS system, such as soil moisture or water level.
+
+    Specifically, this base model includes only the unique identifier of the parameter.
+    """
+
+    id: str = Field(..., description="Unique identifier of the parameter")
+
+
+class Parameter(ParameterBase):
     """Model representing a parameter in the FEWS configuration.
 
     A parameter is a specific variable or characteristic that can be measured or calculated
     within the FEWS system, such as soil moisture or water level.
     """
 
-    id: str = Field(..., description="Unique identifier of the parameter")
     name: str = Field(..., description="Name of the parameter")
     parameter_type: str = Field(..., description="Type of parameter")
     unit: str = Field(..., description="Unit of measurement for the parameter")
