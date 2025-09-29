@@ -47,18 +47,5 @@ async def search_parameters(
     # Generate markdown content
     markdown_content = "## Parameter Search Results\n\n"
     markdown_content += f"Found {len(results)} parameters matching the criteria.\n\n"
-
-    # if results:
-    #     markdown_content += (
-    #         "| Workflow | Module Config | Transformation | Order | Description |\n"
-    #     )
-    #     markdown_content += (
-    #         "|----------|---------------|----------------|-------|-------------|\n"
-    #     )
-
-    #     for result in results:
-    #         markdown_content += f"| {result.workflow_name} | {result.modins} | {result.id} | {result.ord_nr} | {result.desc} |\n"
-    # else:
-    #     markdown_content += "No transformations found matching the criteria.\n"
-
+    markdown_content += "These parameters ids can be used to search for timeseries using the tool: search_timeseries\n"
     return GetParameterOutput(parameters=results, markdown_content=markdown_content)
