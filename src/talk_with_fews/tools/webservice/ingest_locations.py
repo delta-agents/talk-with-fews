@@ -95,6 +95,8 @@ def ingest_locations(
         )
 
     locations_df = pd.DataFrame(locations_data)
+    locations_df["lon"] = locations_df["lon"].fillna(0)
+    locations_df["lat"] = locations_df["lat"].fillna(0)
     locations_gdf = gpd.GeoDataFrame(
         locations_df,
         geometry=gpd.points_from_xy(locations_df.lon, locations_df.lat),
@@ -122,6 +124,9 @@ def ingest_locations(
             series_headers_retrieved BOOLEAN DEFAULT FALSE -- Column to track if series headers have been ingested
         )
     """)
+    logger.info(f"Ingesting {len(locations_gdf)} locations into DuckDB")
+    # logger.info(f"Ingesting {len(locations_gdf.columns)} columns into DuckDB")
+    # locations_gdf.to_file("locations_gdf.csv")
 
     # Insert data into DuckDB table
     cache_FewsWebServices_db.execute(
