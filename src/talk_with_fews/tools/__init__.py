@@ -6,6 +6,7 @@ from talk_with_fews.tools.config.graph_visualize import visualize_graph
 from talk_with_fews.tools.config.sql_query import execute_query
 from talk_with_fews.tools.config.timeseries_describe import describe_timeseries
 from talk_with_fews.tools.config.timeseries_search import search_timeseries
+from talk_with_fews.tools.config.parameter_search import search_parameters
 from talk_with_fews.tools.config.transformation_details import (
     get_transformation_details,
 )
@@ -39,6 +40,7 @@ __all__ = [
     "execute_query",
     "describe_timeseries",
     "search_timeseries",
+    "search_parameters",
     "get_transformation_details",
     "search_transformations",
     "find_workflow_call_hierarchy",

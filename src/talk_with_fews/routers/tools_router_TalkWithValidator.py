@@ -11,9 +11,15 @@ from talk_with_fews.routers.setup_connections import (
 
 
 # Import tool functions and their models
-from talk_with_fews.tools.validator.validate_xml import validate_xml
-from talk_with_fews.tools.validator.generate_xml_template import generate_xml_template
-from talk_with_fews.tools.validator.get_available_elements import get_available_elements
+from talk_with_fews.tools.validator.validate_xml import (
+    validate_xml as validate_xml_pydantic,
+)
+from talk_with_fews.tools.validator.generate_xml_template import (
+    generate_xml_template as generate_xml_template_pydantic_ai,
+)
+from talk_with_fews.tools.validator.get_available_elements import (
+    get_available_elements as get_available_elements_pydantic_ai,
+)
 from talk_with_fews.models.validate_xml import (
     XMLValidationInput,
     XMLValidationOutput,
@@ -49,10 +55,10 @@ mcp = FastMCP("TalkWithFewsValidator", auth=verifier)
     "- Support for both direct and indirect parent element relationships "
     "- Automatic namespace prefix handling for FEWS schemas "
 )
-async def xml_validation(input: XMLValidationInput) -> XMLValidationOutput:
+async def validate_xml(input: XMLValidationInput) -> XMLValidationOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await validate_xml(ctx, input)
+    return await validate_xml_pydantic(ctx, input)
 
 
 # generate_xml_template tool registration
@@ -72,10 +78,10 @@ async def xml_validation(input: XMLValidationInput) -> XMLValidationOutput:
     "- Intelligent suggestions for similar elements when target not found "
     "- 5-second timeout protection to prevent hanging on complex schemas "
 )
-async def xml_template_generation(input: XMLTemplateInput) -> XMLTemplateOutput:
+async def generate_xml_template(input: XMLTemplateInput) -> XMLTemplateOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await generate_xml_template(ctx, input)
+    return await generate_xml_template_pydantic_ai(ctx, input)
 
 
 # get_available_elements tool registration
@@ -95,9 +101,9 @@ async def xml_template_generation(input: XMLTemplateInput) -> XMLTemplateOutput:
     "- Intelligent suggestions for invalid target elements "
     "- Useful for exploring large schema structures efficiently "
 )
-async def available_elements(
+async def get_available_elements(
     input: GetAvailableElementsInput,
 ) -> GetAvailableElementsOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await get_available_elements(ctx, input)
+    return await get_available_elements_pydantic_ai(ctx, input)

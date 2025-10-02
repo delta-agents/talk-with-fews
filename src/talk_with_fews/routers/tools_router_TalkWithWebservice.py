@@ -12,35 +12,47 @@ from talk_with_fews.routers.setup_connections import (
 
 # Import tool functions and their models
 from talk_with_fews.tools.webservice.sql_query_webservice import (
-    execute_query_webservice,
+    execute_query_webservice as execute_query_webservice_pydantic_ai,
 )
 from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
-from talk_with_fews.tools.webservice.get_parameters import get_parameters
+from talk_with_fews.tools.webservice.get_parameters import (
+    get_parameters as get_parameters_pydantic_ai,
+)
 from talk_with_fews.models.get_parameters import (
     GetParameterInput,
     GetParameterOutput,
 )
-from talk_with_fews.tools.webservice.get_locations import get_locations
+from talk_with_fews.tools.webservice.get_locations import (
+    get_locations as get_locations_pydantic_ai,
+)
 from talk_with_fews.models.get_locations import (
     GetLocationInput,
     GetLocationOutput,
 )
-from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
+from talk_with_fews.tools.webservice.get_series_headers import (
+    get_series_headers as get_series_headers_pydantic_ai,
+)
 from talk_with_fews.models.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
-from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
+from talk_with_fews.tools.webservice.get_series_statistics import (
+    get_series_statistics as get_series_statistics_pydantic_ai,
+)
 from talk_with_fews.models.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
 )
-from talk_with_fews.tools.webservice.get_series_data import get_series_data
+from talk_with_fews.tools.webservice.get_series_data import (
+    get_series_data as get_series_data_pydantic_ai,
+)
 from talk_with_fews.models.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
 )
-from talk_with_fews.tools.webservice.analyze_flags import analyze_series_flags
+from talk_with_fews.tools.webservice.analyze_flags import (
+    analyze_series_flags as analyze_series_flags_pyantic_ai,
+)
 from talk_with_fews.models.flags.io import (
     SeriesFlagsInput,
     SeriesFlagsSummary,
@@ -56,25 +68,25 @@ mcp = FastMCP("TalkWithFewsWebservice", auth=verifier)
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools.webservice/parameters")
+@router.post("/tools.webservice/get_parameters")
 @auto_docstring(
     "Get information about parameters. This is how to access parameters data."
     "By default 10 parameters are returned. "
     "If no query is provided, the first number parameters asked for are returned."
     "If a query is provided, the parameters are filtered by the query string."
 )
-async def parameters(
+async def get_parameters(
     input: GetParameterInput,
 ) -> GetParameterOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
 
-    return await get_parameters(ctx, input)
+    return await get_parameters_pydantic_ai(ctx, input)
 
 
 # get_parameter_details tool registration
 @mcp.tool()
-@router.post("/tools.webservice/locations")
+@router.post("/tools.webservice/get_locations")
 @auto_docstring(
     "Get location information from the FEWS WebService database. "
     "Returns location metadata including coordinates, names, and spatial geometry data. "
@@ -85,17 +97,17 @@ async def parameters(
     "- Control result size with limit parameter "
     "- Essential for identifying monitoring sites and their geographic properties"
 )
-async def locations(
+async def get_locations(
     input: GetLocationInput,
 ) -> GetLocationOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await get_locations(ctx, input)
+    return await get_locations_pydantic_ai(ctx, input)
 
 
 # execute_query_webservice tool registration
 @mcp.tool()
-@router.post("/tools.webservice/query_webservice")
+@router.post("/tools.webservice/execute_query_webservice")
 @auto_docstring(
     "Execute SQL queries on the FEWS WebService database containing locations and parameters. "
     "Use this tool to access comprehensive parameter and location data with advanced filtering capabilities. "
@@ -105,15 +117,15 @@ async def locations(
     "- Location geometry data stored in 'geom' field (EPSG:4326 coordinate system) "
     "- Complex filtering and aggregation operations "
 )
-async def query_webservice(input: SQLQueryInput) -> SQLQueryOutput:
+async def execute_query_webservice(input: SQLQueryInput) -> SQLQueryOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await execute_query_webservice(ctx, input)
+    return await execute_query_webservice_pydantic_ai(ctx, input)
 
 
 # get_series_headers tool registration
 @mcp.tool()
-@router.post("/tools.webservice/series_headers")
+@router.post("/tools.webservice/get_series_headers")
 @auto_docstring(
     "Get series headers from the FEWS WebService with incremental caching. "
     "Retrieves available time series metadata using an efficient caching strategy. "
@@ -125,17 +137,17 @@ async def query_webservice(input: SQLQueryInput) -> SQLQueryOutput:
     "- Automatic foreign key validation with existing data "
     "- Essential for discovering available time series and their properties"
 )
-async def series_headers(
+async def get_series_headers(
     input: GetSeriesHeadersInput,
 ) -> GetSeriesHeadersOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await get_series_headers(ctx, input)
+    return await get_series_headers_pydantic_ai(ctx, input)
 
 
 # get_series_statistics tool registration
 @mcp.tool()
-@router.post("/tools.webservice/series_statistics")
+@router.post("/tools.webservice/get_series_statistics")
 @auto_docstring(
     "Get statistical summaries for time series from the FEWS WebService. "
     "Retrieves statistics such as mean, min, max, and count for specified series. "
@@ -145,32 +157,32 @@ async def series_headers(
     "- Useful for quick data exploration and validation "
     "- Returns summary statistics for each matching series"
 )
-async def series_statistics(
+async def get_series_statistics(
     input: GetSeriesStatisticsInput,
 ) -> GetSeriesStatisticsOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await get_series_statistics(ctx, input)
+    return await get_series_statistics_pydantic_ai(ctx, input)
 
 
 # get_series_data tool registration
 @mcp.tool()
-@router.post("/tools.webservice/series_data")
+@router.post("/tools.webservice/get_series_data")
 @auto_docstring(
     "Get timeseries data for a specific location-parameter combination. "
     "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
     "Features include: "
     "- Query by location ID and parameter ID "
 )
-async def series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
+async def get_series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await get_series_data(ctx, input)
+    return await get_series_data_pydantic_ai(ctx, input)
 
 
 # analyze_series_flags tool registration
 @mcp.tool()
-@router.post("/tools.webservice/series_flags")
+@router.post("/tools.webservice/analyze_series_flags")
 @auto_docstring(
     "Analyze FEWS quality flags for a specific location-parameter combination. "
     "This tool analyzes existing quality flags in the timeseries. "
@@ -190,10 +202,10 @@ async def series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     "- Compare quality between locations/parameters "
     "- Identify problematic data sources"
 )
-async def series_flags(input: SeriesFlagsInput) -> SeriesFlagsSummary:
+async def analyze_series_flags(input: SeriesFlagsInput) -> SeriesFlagsSummary:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await analyze_series_flags(ctx, input)
+    return await analyze_series_flags_pyantic_ai(ctx, input)
 
 
 # from typing import Optional, List

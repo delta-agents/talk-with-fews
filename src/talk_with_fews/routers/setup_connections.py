@@ -36,7 +36,7 @@ def get_user_settings(verifier) -> dict:
         warnings.warn(
             f"Failed to get HTTP request context {e}, reverting to default settings."
         )
-        db_path = os.environ.get("FEWS_DB_PATH", "data/digiflow.db3.db")
+        db_path = os.environ.get("FEWS_DB_PATH", "data/digiflow.db3")
         webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
         user_settings = {
             "client_id": "test-no-auth",
