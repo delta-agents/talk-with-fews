@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-1b3a22d1cae7d936259cf712f923d661.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-0dab428fd1ac68d91f80535f802a2546.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -3504,6 +3504,61 @@ graph LR
 299 --&gt;|in Peilevaluatie| 14:::stroke:#01579b
 2 --&gt;|output Peilevaluatie| 299:::stroke:#1b5e20
 1 --&gt;|in im.afvalwater.xmlpi| 2:::stroke:#4a148c</code></pre>
+</div>
+</div>
+<div id="cell-48" class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.parameter_search <span class="im">import</span> search_parameters</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> GetParameterInput, GetParameterOutput</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>get_parameter_input <span class="op">=</span> GetParameterInput(number_of_parameters<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>get_parameter_output: GetParameterOutput <span class="op">=</span> <span class="cf">await</span> search_parameters(</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    ctx, get_parameter_input</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-49" class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_parameter_output, root_tag<span class="op">=</span><span class="st">"GetParameterOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;GetParameterOutput&gt;
+  &lt;parameters&gt;
+    &lt;example&gt;
+      &lt;id&gt;Afw.norm&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pb.goed&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pb.matig.hoog&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pb.matig.laag&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pb.slecht.hoog&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pb.slecht.laag&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pp.goed&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pp.matig.hoog&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pp.matig.laag&lt;/id&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;id&gt;Cl.pp.slecht.hoog&lt;/id&gt;
+    &lt;/example&gt;
+  &lt;/parameters&gt;
+  &lt;markdown_content&gt;## Parameter Search Results
+
+Found 10 parameters matching the criteria.
+
+These parameters ids can be used to search for timeseries using the tool: search_timeseries
+&lt;/markdown_content&gt;
+&lt;/GetParameterOutput&gt;</code></pre>
 </div>
 </div>
 
