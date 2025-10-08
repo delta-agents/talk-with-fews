@@ -30,5 +30,5 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://hkv-products-services.github.io/talk_with_fews"
-Source = "https://github.com/HKV-products-services/talk_with_fews"
+Documentation = "https://hkv-products-services.github.io/talk-with-fews"
+Source = "https://github.com/HKV-products-services/talk-with-fews"
