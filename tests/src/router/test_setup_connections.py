@@ -10,16 +10,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 from tests.utils_tests import setup_dot_env
 from talk_with_fews.routers.setup_connections import (
     get_runtime_ctx,
-    _cached_configs,
+    _cache_manager,
 )
 
 
 @pytest.fixture(autouse=True)
 def clear_cached_configs():
     """Clear the global cached configs before each test."""
-    _cached_configs.clear()
+    _cache_manager.clear()
     yield
-    _cached_configs.clear()
+    _cache_manager.clear()
 
 
 @pytest.fixture
@@ -123,7 +123,7 @@ def test_get_runtime_ctx_with_ingestion_disabled():
 def test_get_runtime_ctx_with_ingestion_enabled():
     """Test that when DEV_DISABLE_WEBSERVICE_INGEST=false, DB exists with data ingested."""
     # Clear the cache first to ensure fresh state
-    _cached_configs.clear()
+    _cache_manager.clear()
 
     os.environ["DEV_DISABLE_WEBSERVICE_INGEST"] = "false"
 
