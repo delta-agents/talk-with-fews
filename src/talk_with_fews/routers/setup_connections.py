@@ -110,10 +110,11 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     ### we now get these from the user settings, which are tied to the static token used
     db_path = user_settings["FEWS_DB_PATH"]
 
-    disable_cache_FewsWebServices_db = os.environ.get(
+    # dev option to disable database connection
+    disable_db_connection = os.environ.get(
         "DEV_DISABLE_CONFIG_DB", "false"
     ).lower() in ("true", "1", "yes")
-    if _db_connection is None and not disable_cache_FewsWebServices_db:
+    if _db_connection is None and not disable_db_connection:
         _db_connection = connect_to_database(db_path)
 
     if _schema is None:
@@ -162,6 +163,14 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     deps.ingest_locations_output = _ingest_locations_output
     deps.ingest_parameters_output = _ingest_parameters_output
     deps.cache_fews_schemas_dir = _cache_fews_schemas_dir
+
+    # Store back to cache for reuse
+    _cached_configs[client_id]["_db_connection"] = _db_connection
+    _cached_configs[client_id]["_schema"] = _schema
+    _cached_configs[client_id]["_cache_FewsWebServices_db"] = _cache_FewsWebServices_db
+    _cached_configs[client_id]["_ingest_locations_output"] = _ingest_locations_output
+    _cached_configs[client_id]["_ingest_parameters_output"] = _ingest_parameters_output
+    _cached_configs[client_id]["_cache_fews_schemas_dir"] = _cache_fews_schemas_dir
 
     return CtxWithDeps(deps)
 
