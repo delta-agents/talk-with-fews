@@ -2,6 +2,8 @@ import json
 import os
 from pathlib import Path
 import warnings
+from dataclasses import dataclass
+from typing import Any, Optional
 from dotenv import load_dotenv
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
@@ -34,9 +36,14 @@ def get_user_settings(verifier) -> dict:
     except RuntimeError as e:
         # allow debugging and testing without an HTTP request context
         warnings.warn(
-            f"Failed to get HTTP request context {e}, reverting to default settings."
+            f"Failed to get HTTP request context {e}, reverting to environment variables."
         )
-        db_path = os.environ.get("FEWS_DB_PATH", "data/digiflow.db3")
+        db_path = os.environ.get("FEWS_DB_PATH")
+        if not db_path:
+            raise ValueError(
+                "FEWS_DB_PATH environment variable not set. "
+                "Required for testing without HTTP context."
+            )
         webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
         user_settings = {
             "client_id": "test-no-auth",
@@ -50,8 +57,24 @@ def get_user_settings(verifier) -> dict:
             user_settings = verifier.tokens[authorization]
         else:
             raise ValueError("Missing or invalid Authorization header")
-    finally:
-        return user_settings
+
+    # Validate paths before returning
+    # FEWS_DB_PATH is required and must exist
+    db_path = user_settings.get("FEWS_DB_PATH")
+    if not db_path:
+        raise ValueError(
+            "FEWS_DB_PATH not configured in user settings. "
+            "Please check your authentication token configuration."
+        )
+    if not Path(db_path).exists():
+        raise FileNotFoundError(
+            f"FEWS configuration database not found: {db_path}\n"
+            f"Please check the FEWS_DB_PATH setting in your user configuration."
+        )
+
+    # FEWS_WEB_SERVICE_URL is optional, no validation needed
+
+    return user_settings
 
 
 class CtxWithDeps:
@@ -59,109 +82,202 @@ class CtxWithDeps:
         self.deps = deps
 
 
-# Shared/cached context globals
+@dataclass
+class UserContextCache:
+    """Cache for a single user's runtime context."""
 
-_empty_user_config = dict(
-    _db_connection=None,
-    _schema=None,
-    _cache_FewsWebServices_db=None,
-    _ingest_locations_output=None,
-    _ingest_parameters_output=None,
-    _cache_fews_schemas_dir=None,
-)
-_cached_configs = {}
+    db_connection: Optional[Any] = None
+    schema: Optional[dict] = None
+    cache_FewsWebServices_db: Optional[Any] = None
+    ingest_locations_output: Optional[Any] = None
+    ingest_parameters_output: Optional[Any] = None
+    cache_fews_schemas_dir: Optional[str] = None
+
+
+class ContextCacheManager:
+    """Manages cached contexts for multiple users."""
+
+    def __init__(self):
+        self._caches: dict[str, UserContextCache] = {}
+
+    def get_or_create(self, client_id: str) -> UserContextCache:
+        """Get cached context for a client or create new one."""
+        if client_id not in self._caches:
+            self._caches[client_id] = UserContextCache()
+        return self._caches[client_id]
+
+    def clear(self, client_id: str = None):
+        """Clear cache for specific user or all users."""
+        if client_id:
+            self._caches.pop(client_id, None)
+        else:
+            self._caches.clear()
+
+
+# Global cache manager
+_cache_manager = ContextCacheManager()
+
+
+def _get_cached_context(client_id: str) -> UserContextCache:
+    """
+    Get cached context for a client, or create new empty cache entry.
+
+    Args:
+        client_id: Unique identifier for the client
+
+    Returns:
+        UserContextCache object with cached values
+    """
+    return _cache_manager.get_or_create(client_id)
+
+
+def _setup_database_connection(db_path: str, cached_connection):
+    """
+    Setup database connection if needed and enabled.
+
+    Args:
+        db_path: Path to the FEWS configuration database
+        cached_connection: Previously cached connection (if any)
+
+    Returns:
+        Database connection or None
+    """
+    if cached_connection is not None:
+        return cached_connection
+
+    # Check if database connection is enabled
+    # Behavior table documented in get_runtime_ctx
+    enable_db_connection = os.environ.get(
+        "DEV_DISABLE_CONFIG_DB", "false"
+    ).lower() not in ("true", "1", "yes")
+
+    if enable_db_connection:
+        return connect_to_database(db_path)
+    return None
+
+
+def _setup_webservice_cache(
+    webservice_url: str | None, cached_db, enable_webservice_ingest: bool
+) -> tuple:
+    """
+    Setup webservice cache database and optionally ingest data.
+
+    Args:
+        webservice_url: URL for FEWS webservice (or None)
+        cached_db: Previously cached database connection (if any)
+        enable_webservice_ingest: Whether to ingest locations/parameters
+
+    Returns:
+        Tuple of (cache_db, locations_output, parameters_output)
+    """
+    # Return cached values if available
+    if cached_db is not None:
+        return cached_db, None, None
+
+    # No webservice URL provided
+    if webservice_url is None:
+        return None, None, None
+
+    # Create in-memory DuckDB database
+    cache_db = duckdb.connect(database=":memory:", read_only=False)
+    cache_db.execute("INSTALL spatial;")
+    cache_db.execute("LOAD spatial;")
+
+    # Optionally ingest data (this is the slow part)
+    locations_output = None
+    parameters_output = None
+    if enable_webservice_ingest:
+        locations_output = ingest_locations(webservice_url, cache_db)
+        parameters_output = ingest_parameters(webservice_url, cache_db)
+        # Setup the series_headers table (requires locations and parameters tables)
+        cache_db = setup_series_headers_table(cache_db)
+
+    return cache_db, locations_output, parameters_output
 
 
 def get_runtime_ctx(user_settings: dict) -> RunContext:
     """
     Returns a RunContext[Deps] with a shared database connection and schema.
-    Uses FEWS_DB_PATH env var or defaults to './fews.db'.
+
+    Args:
+        user_settings: Dictionary containing user-specific settings including:
+            - FEWS_DB_PATH: Path to the FEWS configuration database (validated in get_user_settings)
+            - FEWS_WEB_SERVICE_URL: Optional URL for FEWS webservice
+            - client_id: Unique identifier for the user/client
+
+    Returns:
+        RunContext with initialized dependencies (database, schema, webservice cache)
+
+    Note:
+        - Database connections and schemas are cached per client_id
+        - Use DEV_DISABLE_CONFIG_DB=true to skip database connection (development)
+        - Use DEV_DISABLE_WEBSERVICE_INGEST=true to skip slow webservice data ingestion (development)
     """
 
-    global _cached_configs
-    # if we know of the user we retrieve stored variables
+    # Extract user settings
     client_id = user_settings["client_id"]
-    if client_id in _cached_configs:
-        _db_connection = _cached_configs[client_id]["_db_connection"]
-        _schema = _cached_configs[client_id]["_schema"]
-        _cache_FewsWebServices_db = _cached_configs[client_id][
-            "_cache_FewsWebServices_db"
-        ]
-        _ingest_locations_output = _cached_configs[client_id][
-            "_ingest_locations_output"
-        ]
-        _ingest_parameters_output = _cached_configs[client_id][
-            "_ingest_parameters_output"
-        ]
-        _cache_fews_schemas_dir = _cached_configs[client_id]["_cache_fews_schemas_dir"]
-    else:
-        # first time we see this user, so we create a new entry
-        _cached_configs[client_id] = _empty_user_config.copy()
-        _db_connection = None
-        _schema = None
-        _cache_FewsWebServices_db = None
-        _ingest_locations_output = None
-        _ingest_parameters_output = None
-        _cache_fews_schemas_dir = None
+    db_path = user_settings["FEWS_DB_PATH"]  # Already validated in get_user_settings()
+    webservice_url = user_settings.get("FEWS_WEB_SERVICE_URL")
 
-    #### old way of getting settings from env vars
-    # db_path = os.environ.get("FEWS_DB_PATH", "./fews.db")
-    # webservice_url = os.environ.get("FEWS_WEB_SERVICE_URL", None)
-    ### we now get these from the user settings, which are tied to the static token used
-    db_path = user_settings["FEWS_DB_PATH"]
-
-    disable_cache_FewsWebServices_db = os.environ.get(
-        "DEV_DISABLE_CONFIG_DB", "false"
-    ).lower() in ("true", "1", "yes")
-    if _db_connection is None and not disable_cache_FewsWebServices_db:
-        _db_connection = connect_to_database(db_path)
-
-    if _schema is None:
-        _schema = extract_db_schema_as_dict(db_path)
-
-    # handle webservice URL
-    webservice_url = user_settings["FEWS_WEB_SERVICE_URL"]
-
-    # dev option to disable webservice ingestion
-
-    disable_cache_FewsWebServices_db = os.environ.get(
-        "DEV_DISABLE_WEBSERVICE_INGEST", "false"
-    ).lower() in ("true", "1", "yes")
-    if webservice_url is not None and webservice_url.endswith("/"):
+    # Clean webservice URL (remove trailing slash)
+    if webservice_url and webservice_url.endswith("/"):
         webservice_url = webservice_url[:-1]
 
-    # TODO: monitor memory if this is okay for large databases
-    if _cache_FewsWebServices_db is None and not disable_cache_FewsWebServices_db:
-        _cache_FewsWebServices_db = duckdb.connect(database=":memory:", read_only=False)
-        _cache_FewsWebServices_db.execute("INSTALL spatial;")
-        _cache_FewsWebServices_db.execute("LOAD spatial;")
+    # Get or create cached context for this client
+    cache = _get_cached_context(client_id)
 
-        # Ingest existing data
-        _ingest_locations_output = ingest_locations(
-            webservice_url, _cache_FewsWebServices_db
-        )
-        _ingest_parameters_output = ingest_parameters(
-            webservice_url, _cache_FewsWebServices_db
-        )
-        _cache_FewsWebServices_db = setup_series_headers_table(
-            _cache_FewsWebServices_db
-        )
+    # Setup database connection (uses cached value if available)
+    # Behavior controlled by DEV_DISABLE_CONFIG_DB environment variable:
+    # | DEV_DISABLE_CONFIG_DB | enable_db_connection | Result                              |
+    # |-----------------------|----------------------|-------------------------------------|
+    # | not set (default)     | True                 | Connect to config DB (default)      |
+    # | "false"               | True                 | Connect to config DB                |
+    # | "true" / "1" / "yes"  | False                | No config DB connection (fast mode) |
+    db_connection = _setup_database_connection(db_path, cache.db_connection)
 
-    # handle validation
-    if _cache_fews_schemas_dir is None:
-        _cache_fews_schemas_dir = os.environ.get(
-            "FEWS_SCHEMAS_DIR", "data/fews_schemas"
-        )
+    # Extract database schema (always needed for LLM context)
+    schema = cache.schema
+    if schema is None:
+        schema = extract_db_schema_as_dict(db_path)
 
-    # combine all three into a Deps object
-    deps = Deps(db_path=db_path, db_connection=_db_connection)
+    # Check if webservice data ingestion is enabled
+    # Behavior controlled by DEV_DISABLE_WEBSERVICE_INGEST environment variable:
+    # | DEV_DISABLE_WEBSERVICE_INGEST | enable_webservice_ingest | Result                    |
+    # |-------------------------------|--------------------------|---------------------------|
+    # | not set (default)             | True                     | Full ingestion (default)  |
+    # | "false"                       | True                     | Full ingestion            |
+    # | "true" / "1" / "yes"          | False                    | No ingestion (fast mode)  |
+    enable_webservice_ingest = os.environ.get(
+        "DEV_DISABLE_WEBSERVICE_INGEST", "false"
+    ).lower() not in ("true", "1", "yes")
+
+    # Setup webservice cache (creates in-memory DB, optionally ingests data)
+    cache_db, locations_out, parameters_out = _setup_webservice_cache(
+        webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
+    )
+
+    # Get schemas directory for XML validation
+    # Note: We don't validate it exists here - validator tools will check when needed
+    schemas_dir = cache.cache_fews_schemas_dir
+    if schemas_dir is None:
+        schemas_dir = os.environ.get("FEWS_SCHEMAS_DIR", "data/fews_schemas")
+
+    # Build dependencies object
+    deps = Deps(db_path=db_path, db_connection=db_connection)
     deps.webservice_url = webservice_url
-    deps.schema = _schema
-    # for now this is limited to the session
-    deps.cache_FewsWebServices_db = _cache_FewsWebServices_db
-    deps.ingest_locations_output = _ingest_locations_output
-    deps.ingest_parameters_output = _ingest_parameters_output
-    deps.cache_fews_schemas_dir = _cache_fews_schemas_dir
+    deps.schema = schema
+    deps.cache_FewsWebServices_db = cache_db
+    deps.ingest_locations_output = locations_out or cache.ingest_locations_output
+    deps.ingest_parameters_output = parameters_out or cache.ingest_parameters_output
+    deps.cache_fews_schemas_dir = schemas_dir
+
+    # Update cache with new values
+    cache.db_connection = db_connection
+    cache.schema = schema
+    cache.cache_FewsWebServices_db = cache_db
+    cache.ingest_locations_output = deps.ingest_locations_output
+    cache.ingest_parameters_output = deps.ingest_parameters_output
+    cache.cache_fews_schemas_dir = schemas_dir
 
     return CtxWithDeps(deps)
 
