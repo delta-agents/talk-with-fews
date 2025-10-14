@@ -797,12 +797,53 @@ Found 2 parameters.
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_statistics_output, root_tag<span class="op">=</span><span class="st">"GetSeriesStatisticsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesStatisticsOutput&gt;
-  &lt;count&gt;625&lt;/count&gt;
-  &lt;description&gt;Found 625 values for parameter_id 'Eref.d' or location_id 'KNMIUUR260'&lt;/description&gt;
+  &lt;description&gt;Found 625 values for parameter 'Eref.d' and location 'KNMIUUR260'. Data available from 2023-11-21 to 2025-10-13. Daily data. Units: mm. Value range: 0 to 5.8 (mm). Interval analysis available by month.&lt;/description&gt;
   &lt;min_value&gt;0&lt;/min_value&gt;
   &lt;max_value&gt;5.8&lt;/max_value&gt;
+  &lt;parameter_units&gt;mm&lt;/parameter_units&gt;
   &lt;first_value_time&gt;2023-11-21T00:00:00+00:00&lt;/first_value_time&gt;
   &lt;last_value_time&gt;2025-10-13T00:00:00+00:00&lt;/last_value_time&gt;
+  &lt;time_step&gt;Daily data&lt;/time_step&gt;
+  &lt;interval_analysis&gt;
+    &lt;interval_type&gt;MONTH&lt;/interval_type&gt;
+    &lt;statistics&gt;
+      &lt;example&gt;
+        &lt;name&gt;aantal waarden&lt;/name&gt;
+        &lt;values&gt;
+          &lt;jan&gt;31.0&lt;/jan&gt;
+          &lt;feb&gt;29.0&lt;/feb&gt;
+          &lt;mrt&gt;31.0&lt;/mrt&gt;
+          &lt;apr&gt;30.0&lt;/apr&gt;
+          &lt;mei&gt;31.0&lt;/mei&gt;
+          &lt;jun&gt;30.0&lt;/jun&gt;
+          &lt;jul&gt;31.0&lt;/jul&gt;
+          &lt;aug&gt;31.0&lt;/aug&gt;
+          &lt;sep&gt;30.0&lt;/sep&gt;
+          &lt;okt&gt;31.0&lt;/okt&gt;
+          &lt;nov&gt;40.0&lt;/nov&gt;
+          &lt;dec&gt;63.0&lt;/dec&gt;
+        &lt;/values&gt;
+      &lt;/example&gt;
+      &lt;example&gt;
+        &lt;name&gt;% betrouwbaar&lt;/name&gt;
+        &lt;values&gt;
+          &lt;jan&gt;100.0&lt;/jan&gt;
+          &lt;feb&gt;100.0&lt;/feb&gt;
+          &lt;mrt&gt;100.0&lt;/mrt&gt;
+          &lt;apr&gt;100.0&lt;/apr&gt;
+          &lt;mei&gt;100.0&lt;/mei&gt;
+          &lt;jun&gt;100.0&lt;/jun&gt;
+          &lt;jul&gt;100.0&lt;/jul&gt;
+          &lt;aug&gt;100.0&lt;/aug&gt;
+          &lt;sep&gt;100.0&lt;/sep&gt;
+          &lt;okt&gt;100.0&lt;/okt&gt;
+          &lt;nov&gt;100.0&lt;/nov&gt;
+          &lt;dec&gt;100.0&lt;/dec&gt;
+        &lt;/values&gt;
+      &lt;/example&gt;
+    &lt;/statistics&gt;
+  &lt;/interval_analysis&gt;
+  &lt;estimated_data_points_in_range&gt;12785&lt;/estimated_data_points_in_range&gt;
 &lt;/GetSeriesStatisticsOutput&gt;</code></pre>
 </div>
 </div>

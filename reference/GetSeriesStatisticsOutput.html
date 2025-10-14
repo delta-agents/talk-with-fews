@@ -193,8 +193,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="talk_with_fews.models.GetSeriesStatisticsOutput" class="level1">
 <h1>GetSeriesStatisticsOutput</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>models.GetSeriesStatisticsOutput()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>GetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.</p>
-<p>Designed for cost optimization in AI applications while providing actionable information and enabling follow-up questions.</p>
+<p>GetSeriesStatisticsOutput provides series data summary with interval analysis.</p>
+<p>Returns data characteristics (min/max values, units, count), time information (data range, time step), and interval statistics (monthly/daily patterns) to help decide whether to call get_series_data for detailed analysis.</p>
 <section id="attributes" class="level2">
 <h2 class="anchored" data-anchor-id="attributes">Attributes</h2>
 <table class="caption-top table">
@@ -206,11 +206,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.count">count</a></td>
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.description">description</a></td>
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.description">description</a></td>
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.estimated_data_points_in_range">estimated_data_points_in_range</a></td>
 <td></td>
 </tr>
 <tr class="odd">
@@ -218,15 +218,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.last_value_time">last_value_time</a></td>
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.interval_analysis">interval_analysis</a></td>
 <td></td>
 </tr>
 <tr class="odd">
-<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.max_value">max_value</a></td>
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.last_value_time">last_value_time</a></td>
 <td></td>
 </tr>
 <tr class="even">
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.max_value">max_value</a></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.min_value">min_value</a></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.parameter_units">parameter_units</a></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><a href="#talk_with_fews.models.get_series_statistics.GetSeriesStatisticsOutput.time_step">time_step</a></td>
 <td></td>
 </tr>
 </tbody>

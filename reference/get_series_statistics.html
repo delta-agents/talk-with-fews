@@ -195,14 +195,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>get_series_statistics</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.get_series_statistics(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Retrieve series statistics from FEWS webservice.</p>
+<p>Requires a valid parameter_id + location_id combination that exists in the FEWS service. Use get_series_headers to find valid combinations before calling this function.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 7%">
 <col style="width: 23%">
-<col style="width: 57%">
-<col style="width: 11%">
+<col style="width: 58%">
+<col style="width: 10%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -222,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>input</td>
 <td>GetSeriesStatisticsInput</td>
-<td>GetSeriesHeadersInput containing parameter_id AND location_id</td>
+<td>GetSeriesStatisticsInput containing parameter_id AND location_id</td>
 <td><em>required</em></td>
 </tr>
 </tbody>
@@ -232,9 +233,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 6%">
-<col style="width: 23%">
-<col style="width: 69%">
+<col style="width: 7%">
+<col style="width: 24%">
+<col style="width: 67%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -247,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>GetSeriesStatisticsOutput</td>
-<td>GetSeriesStatisticsOutput with series headers summary and follow-up suggestions</td>
+<td>GetSeriesStatisticsOutput with series statistics and actionable insights</td>
 </tr>
 </tbody>
 </table>
