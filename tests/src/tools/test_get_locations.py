@@ -23,8 +23,11 @@ def test_get_locations():
     assert isinstance(output, GetLocationOutput)
     assert output.locations is not None
     assert len(output.locations) == 6  # > accounts for additions in the future
-    assert isinstance(output.markdown_content, str)
-    assert "## Locations" in output.markdown_content
+    assert isinstance(output.description, str)
+    assert (
+        "retrieved sample locations" in output.description
+        or "Found" in output.description
+    )
 
 
 def test_get_locations_query():
@@ -36,7 +39,7 @@ def test_get_locations_query():
     # Create a mock RunContext and input
     input_data = GetLocationInput(
         number_of_locations=6,
-        query="SELECT * FROM locations WHERE shortName LIKE '%ede%'",
+        filter_locations_name="ede",
     )
 
     ctx = get_runtime_ctx(user_settings)
@@ -45,6 +48,6 @@ def test_get_locations_query():
     # Assert the output is of the expected type
     assert isinstance(output, GetLocationOutput)
     assert output.locations is not None
-    assert len(output.locations) == 6  # > accounts for additions in the future
-    assert isinstance(output.markdown_content, str)
-    assert "## Locations" in output.markdown_content
+    assert len(output.locations) <= 6  # May be fewer results with filter
+    assert isinstance(output.description, str)
+    assert "Found" in output.description or "No locations found" in output.description

@@ -27,8 +27,9 @@ def setup_dot_env():
     return {
         "client_id": "example",
         "FEWS_DB_PATH": "data/fews_config.db3",
-        "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
+        # "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
         # "FEWS_DB_PATH": "data/HDSR_wis.db3",
         # "FEWS_WEB_SERVICE_URL": "http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesHDSR",
+        "FEWS_WEB_SERVICE_URL": "http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesWSVV",
         "scopes": ["read:data"],
     }
