@@ -29,10 +29,12 @@ FEWS_SERVICES = {
         db_path="data/fews_config.db3",
         test_data={
             "location_filters": ["ede", "amsterdam", "rotterdam"],
-            "location_ids": ["KNMIUUR275", "WS000323"],
-            "parameter_ids": ["Kwel", "WaterLevel", "Discharge"],
+            "location_ids": ["KNMIUUR278", "WS000323"],
+            "parameter_ids": ["Eref.d", "WaterLevel", "Discharge"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
+            "start_time": "1990-01-01T00:00:00+00:00",
+            "end_time": "2025-12-31T23:59:59+00:00",
         },
     ),
     "hdsr": FEWSServiceConfig(
@@ -45,6 +47,8 @@ FEWS_SERVICES = {
             "parameter_ids": ["WaterLevel", "Discharge", "Precipitation"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
+            "start_time": "2020-01-01T00:00:00+01:00",
+            "end_time": "2024-12-31T23:59:59+01:00",
         },
     ),
     "wsvv": FEWSServiceConfig(
@@ -53,10 +57,12 @@ FEWS_SERVICES = {
         db_path="data/WSDD_wis.db3",
         test_data={
             "location_filters": ["den_haag", "delft", "zoetermeer"],
-            "location_ids": ["WS000323", "WS000324"],
-            "parameter_ids": ["WaterLevel", "Discharge", "Temperature"],
+            "location_ids": ["HL000141", "WS000323", "WS000324"],
+            "parameter_ids": ["H.G", "WaterLevel", "Discharge", "Temperature"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
+            "start_time": "2024-01-01T00:00:00+01:00",
+            "end_time": "2024-01-14T00:00:00+01:00",
         },
     ),
     "hhd": FEWSServiceConfig(
@@ -69,6 +75,8 @@ FEWS_SERVICES = {
             "parameter_ids": ["WaterLevel", "Discharge", "Salinity"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
+            "start_time": "2020-01-01T00:00:00+01:00",
+            "end_time": "2024-12-31T23:59:59+01:00",
         },
     ),
     "scheldestromen": FEWSServiceConfig(
@@ -81,6 +89,8 @@ FEWS_SERVICES = {
             "parameter_ids": ["WaterLevel", "Discharge", "Tide"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
+            "start_time": "2020-01-01T00:00:00+01:00",
+            "end_time": "2024-12-31T23:59:59+01:00",
         },
     ),
 }
