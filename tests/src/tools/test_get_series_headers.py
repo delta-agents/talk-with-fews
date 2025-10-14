@@ -61,7 +61,8 @@ def test_get_series_headers_by_location():
     user_settings = setup_dot_env()
 
     # Create input for location-based query
-    input_data = GetSeriesHeadersInput(location_id="GPG_1698")
+    # input_data = GetSeriesHeadersInput(location_id="GPG_1698")
+    input_data = GetSeriesHeadersInput(location_id="WS000323")
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
