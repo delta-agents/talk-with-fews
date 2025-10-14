@@ -37,20 +37,17 @@ def test_get_series_headers_by_parameter():
 
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesHeadersOutput)
-    assert output.count >= 0  # Should be non-negative
-    assert isinstance(output.summary, str)
-    assert len(output.summary) <= 200  # Check summary length constraint
-    assert isinstance(output.sample_ids, str)
-    assert isinstance(output.available_filters, dict)
-    assert isinstance(output.follow_up_suggestions, list)
+    assert isinstance(output.series_headers, list)
+    assert len(output.series_headers) >= 0  # Should be non-negative
+    assert isinstance(output.description, str)
+    assert isinstance(output.available_ids, dict)
 
-    # Check that summary mentions the parameter
-    assert "Kwel" in output.summary
+    # Check that description mentions the parameter
+    assert "Kwel" in output.description
 
-    # Check that available_filters contains expected keys for parameter query
-    if output.count > 0:
-        assert "locations" in output.available_filters
-        assert "model_types" in output.available_filters
+    # Check that available_ids contains expected keys for parameter query
+    if len(output.series_headers) > 0:
+        assert "locations" in output.available_ids
 
 
 def test_get_series_headers_by_location():
@@ -61,8 +58,9 @@ def test_get_series_headers_by_location():
     user_settings = setup_dot_env()
 
     # Create input for location-based query
-    # input_data = GetSeriesHeadersInput(location_id="GPG_1698")
-    input_data = GetSeriesHeadersInput(location_id="WS000323")
+    # input_data = GetSeriesHeadersInput(location_id="GPG_1698")  # HDSR
+    # input_data = GetSeriesHeadersInput(location_id="WS000323")  # WSVV
+    input_data = GetSeriesHeadersInput(location_id="KNMIUUR275")
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -72,20 +70,17 @@ def test_get_series_headers_by_location():
 
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesHeadersOutput)
-    assert output.count >= 0  # Should be non-negative
-    assert isinstance(output.summary, str)
-    assert len(output.summary) <= 200  # Check summary length constraint
-    assert isinstance(output.sample_ids, str)
-    assert isinstance(output.available_filters, dict)
-    assert isinstance(output.follow_up_suggestions, list)
+    assert isinstance(output.series_headers, list)
+    assert len(output.series_headers) >= 0  # Should be non-negative
+    assert isinstance(output.description, str)
+    assert isinstance(output.available_ids, dict)
 
-    # Check that summary mentions the location
-    assert "GPG_1698" in output.summary
+    # Check that description mentions the location (either ID or name)
+    assert "KNMIUUR275" in output.description or "Deelen" in output.description
 
-    # Check that available_filters contains expected keys for location query
-    if output.count > 0:
-        assert "parameters" in output.available_filters
-        assert "model_types" in output.available_filters
+    # Check that available_ids contains expected keys for location query
+    if len(output.series_headers) > 0:
+        assert "parameters" in output.available_ids
 
 
 def test_get_series_headers_invalid_input():
@@ -259,9 +254,9 @@ def test_series_headers_caching():
     output2 = asyncio.run(get_series_headers(ctx, input_data2))
 
     # Both outputs should be identical (same data from cache)
-    assert output1.count == output2.count
-    assert output1.summary == output2.summary
-    assert output1.sample_ids == output2.sample_ids
+    assert len(output1.series_headers) == len(output2.series_headers)
+    assert output1.description == output2.description
+    assert output1.available_ids == output2.available_ids
 
 
 def test_series_headers_output_structure():
@@ -281,19 +276,14 @@ def test_series_headers_output_structure():
     output = asyncio.run(get_series_headers(ctx, input_data))
 
     # Test output structure
-    assert hasattr(output, "count")
-    assert hasattr(output, "summary")
-    assert hasattr(output, "sample_ids")
-    assert hasattr(output, "available_filters")
-    assert hasattr(output, "follow_up_suggestions")
+    assert hasattr(output, "series_headers")
+    assert hasattr(output, "description")
+    assert hasattr(output, "available_ids")
 
     # Test data types
-    assert isinstance(output.count, int)
-    assert isinstance(output.summary, str)
-    assert isinstance(output.sample_ids, str)
-    assert isinstance(output.available_filters, dict)
-    assert isinstance(output.follow_up_suggestions, list)
+    assert isinstance(output.series_headers, list)
+    assert isinstance(output.description, str)
+    assert isinstance(output.available_ids, dict)
 
     # Test constraints
-    assert output.count >= 0
-    assert len(output.summary) <= 200
+    assert len(output.series_headers) >= 0
