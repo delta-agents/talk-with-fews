@@ -1037,7 +1037,7 @@ Found 2 parameters.
 <p>We kunnen de series ook analyseren op basis van de flags die zijn gezet. Dit kan handig zijn om te zien of er data ontbreekt, of dat er data is die niet betrouwbaar is.</p>
 <div id="cell-29" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> analyze_series_flags</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> SeriesFlagsInput, SeriesFlagsSummary</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> SeriesFlagsInput, SeriesFlagsOutput</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>analyze_flags_input <span class="op">=</span> SeriesFlagsInput(</span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
@@ -1046,82 +1046,21 @@ Found 2 parameters.
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>analyze_flags_output: SeriesFlagsSummary <span class="op">=</span> <span class="cf">await</span> analyze_series_flags(</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>analyze_flags_output: SeriesFlagsOutput <span class="op">=</span> <span class="cf">await</span> analyze_series_flags(</span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>analyze_flags_input</span>
 <span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(analyze_flags_output, root_tag<span class="op">=</span><span class="st">"AnalyzeFlagsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;AnalyzeFlagsOutput&gt;
-  &lt;total_values&gt;11&lt;/total_values&gt;
-  &lt;start_date&gt;2023-11-21T00:00:00Z&lt;/start_date&gt;
-  &lt;end_date&gt;2023-12-01T00:00:00Z&lt;/end_date&gt;
-  &lt;flag_definitions&gt;
-    &lt;0&gt;
-      &lt;flag&gt;0&lt;/flag&gt;
-      &lt;origin&gt;Original&lt;/origin&gt;
-      &lt;quality&gt;Reliable&lt;/quality&gt;
-      &lt;description&gt;Original value, passes all validation criteria&lt;/description&gt;
-    &lt;/0&gt;
-    &lt;1&gt;
-      &lt;flag&gt;1&lt;/flag&gt;
-      &lt;origin&gt;Corrected&lt;/origin&gt;
-      &lt;quality&gt;Reliable&lt;/quality&gt;
-      &lt;description&gt;Original value corrected through interpolation or manual editing&lt;/description&gt;
-    &lt;/1&gt;
-    &lt;2&gt;
-      &lt;flag&gt;2&lt;/flag&gt;
-      &lt;origin&gt;Completed&lt;/origin&gt;
-      &lt;quality&gt;Reliable&lt;/quality&gt;
-      &lt;description&gt;Original value was missing. Value has been filled in through interpolation, transformation (e.g. stage discharge) or a model&lt;/description&gt;
-    &lt;/2&gt;
-    &lt;3&gt;
-      &lt;flag&gt;3&lt;/flag&gt;
-      &lt;origin&gt;Original&lt;/origin&gt;
-      &lt;quality&gt;Doubtful&lt;/quality&gt;
-      &lt;description&gt;Observed value retrieved from external data source. Value is valid, but marked as suspect due to soft validation limits being exceeded&lt;/description&gt;
-    &lt;/3&gt;
-    &lt;4&gt;
-      &lt;flag&gt;4&lt;/flag&gt;
-      &lt;origin&gt;Corrected&lt;/origin&gt;
-      &lt;quality&gt;Doubtful&lt;/quality&gt;
-      &lt;description&gt;Original value was removed and corrected. However, the corrected value is doubtful due to validation limits&lt;/description&gt;
-    &lt;/4&gt;
-    &lt;5&gt;
-      &lt;flag&gt;5&lt;/flag&gt;
-      &lt;origin&gt;Completed&lt;/origin&gt;
-      &lt;quality&gt;Doubtful&lt;/quality&gt;
-      &lt;description&gt;Original value was missing. Value has been filled in as above, but resulting value is doubtful due to limits in transformation/interpolation or input value used for transformation being doubtful&lt;/description&gt;
-    &lt;/5&gt;
-    &lt;6&gt;
-      &lt;flag&gt;6&lt;/flag&gt;
-      &lt;origin&gt;Original&lt;/origin&gt;
-      &lt;quality&gt;Unreliable&lt;/quality&gt;
-      &lt;description&gt;Observed value retrieved from external data source. Value is invalid due to validation limits set. Value is marked as unreliable and will not be used in transformations and model calculations&lt;/description&gt;
-    &lt;/6&gt;
-    &lt;7&gt;
-      &lt;flag&gt;7&lt;/flag&gt;
-      &lt;origin&gt;Corrected&lt;/origin&gt;
-      &lt;quality&gt;Unreliable&lt;/quality&gt;
-      &lt;description&gt;Original value was removed and corrected. However, corrected value is unreliable&lt;/description&gt;
-    &lt;/7&gt;
-    &lt;8&gt;
-      &lt;flag&gt;8&lt;/flag&gt;
-      &lt;origin&gt;Completed&lt;/origin&gt;
-      &lt;quality&gt;Unreliable&lt;/quality&gt;
-      &lt;description&gt;Original value was missing. Value has been filled in as above, but resulting value is unreliable&lt;/description&gt;
-    &lt;/8&gt;
-    &lt;9&gt;
-      &lt;flag&gt;9&lt;/flag&gt;
-      &lt;origin&gt;Original&lt;/origin&gt;
-      &lt;quality&gt;Unreliable&lt;/quality&gt;
-      &lt;description&gt;Missing value in originally observed series. Note this is a special form of both Original/Unreliable and Original/Reliable&lt;/description&gt;
-    &lt;/9&gt;
-  &lt;/flag_definitions&gt;
+  &lt;description&gt;Flag analysis for Eref.d at KNMIUUR260: 11 values analyzed from 2023-11-21T00:00:00Z to 2023-12-01T00:00:00Z. Data quality: 100.0% reliable, 0.0% doubtful, 0.0% unreliable.&lt;/description&gt;
   &lt;flag_counts&gt;
     &lt;example&gt;
       &lt;flag&gt;0&lt;/flag&gt;
       &lt;count&gt;11&lt;/count&gt;
       &lt;percentage&gt;100.0&lt;/percentage&gt;
+      &lt;origin&gt;Original&lt;/origin&gt;
+      &lt;quality&gt;Reliable&lt;/quality&gt;
+      &lt;description&gt;Original value, passes all validation criteria&lt;/description&gt;
     &lt;/example&gt;
   &lt;/flag_counts&gt;
   &lt;counts&gt;

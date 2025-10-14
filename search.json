@@ -336,158 +336,200 @@
     "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
   },
   {
-    "objectID": "reference/TransformationSearchOutput.html",
-    "href": "reference/TransformationSearchOutput.html",
-    "title": "TransformationSearchOutput",
+    "objectID": "reference/WorkflowDetailsOutput.html",
+    "href": "reference/WorkflowDetailsOutput.html",
+    "title": "WorkflowDetailsOutput",
     "section": "",
-    "text": "models.TransformationSearchOutput()\nModel for the output of the search_transformations tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
+    "text": "models.WorkflowDetailsOutput()\nModel for the output of the get_workflow_details tool.\nThis model provides a complete description of a workflow, including both its structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
   },
   {
-    "objectID": "reference/TransformationSearchOutput.html#attributes",
-    "href": "reference/TransformationSearchOutput.html#attributes",
-    "title": "TransformationSearchOutput",
+    "objectID": "reference/WorkflowDetailsOutput.html#attributes",
+    "href": "reference/WorkflowDetailsOutput.html#attributes",
+    "title": "WorkflowDetailsOutput",
     "section": "",
     "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
   },
   {
-    "objectID": "reference/GetSeriesDataOutput.html",
-    "href": "reference/GetSeriesDataOutput.html",
-    "title": "GetSeriesDataOutput",
+    "objectID": "reference/get_series_headers.html",
+    "href": "reference/get_series_headers.html",
+    "title": "get_series_headers",
     "section": "",
-    "text": "models.GetSeriesDataOutput()\n\n\n\n\n\nName\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
+    "text": "tools.get_series_headers(ctx, input)\nDiscover available time series data by finding valid parameter-location combinations.\nThis is an ESSENTIAL discovery tool that helps you understand what data is available: - Use location_id to find ALL parameters available at that location - Use parameter_id to find ALL locations that have that parameter\nExamples: - “What parameters are available at location X?” → use location_id=“X” - “Which locations have parameter Y?” → use parameter_id=“Y”\nUse the returned available_ids to make targeted follow-up queries for specific data.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with discovered series combinations and follow-up options"
   },
   {
-    "objectID": "reference/GetSeriesDataOutput.html#attributes",
-    "href": "reference/GetSeriesDataOutput.html#attributes",
-    "title": "GetSeriesDataOutput",
+    "objectID": "reference/get_series_headers.html#parameters",
+    "href": "reference/get_series_headers.html#parameters",
+    "title": "get_series_headers",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired"
   },
   {
-    "objectID": "reference/GetSeriesStatisticsOutput.html",
-    "href": "reference/GetSeriesStatisticsOutput.html",
-    "title": "GetSeriesStatisticsOutput",
+    "objectID": "reference/get_series_headers.html#returns",
+    "href": "reference/get_series_headers.html#returns",
+    "title": "get_series_headers",
     "section": "",
-    "text": "models.GetSeriesStatisticsOutput()\nGetSeriesStatisticsOutput provides series data summary with interval analysis.\nReturns data characteristics (min/max values, units, count), time information (data range, time step), and interval statistics (monthly/daily patterns) to help decide whether to call get_series_data for detailed analysis.\n\n\n\n\n\nName\nDescription\n\n\n\n\ndescription\n\n\n\nestimated_data_points_in_range\n\n\n\nfirst_value_time\n\n\n\ninterval_analysis\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value\n\n\n\nparameter_units\n\n\n\ntime_step"
+    "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with discovered series combinations and follow-up options"
   },
   {
-    "objectID": "reference/GetSeriesStatisticsOutput.html#attributes",
-    "href": "reference/GetSeriesStatisticsOutput.html#attributes",
-    "title": "GetSeriesStatisticsOutput",
+    "objectID": "reference/GetParameterOutput.html",
+    "href": "reference/GetParameterOutput.html",
+    "title": "GetParameterOutput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ndescription\n\n\n\nestimated_data_points_in_range\n\n\n\nfirst_value_time\n\n\n\ninterval_analysis\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value\n\n\n\nparameter_units\n\n\n\ntime_step"
+    "text": "models.GetParameterOutput()\nModel for the output of the parameter_details tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters"
   },
   {
-    "objectID": "reference/analyze_series_flags.html",
-    "href": "reference/analyze_series_flags.html",
-    "title": "analyze_series_flags",
+    "objectID": "reference/GetParameterOutput.html#attributes",
+    "href": "reference/GetParameterOutput.html#attributes",
+    "title": "GetParameterOutput",
     "section": "",
-    "text": "tools.analyze_series_flags(ctx, input)\nSummarize FEWS flags in a timeseries.\nThis tool: 1. Retrieves timeseries with flags from FEWS 2. Counts occurrences of existing flags 3. Groups and summarizes these counts 4. Formats results for reporting\nNote: Flag source analysis requires FEWS API support (feature request pending).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with dependencies\nrequired\n\n\ninput\nSeriesFlagsInput\nAnalysis parameters including location, parameter, and time range\nrequired\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nSeriesFlagsSummary\nComprehensive summary of flags\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nInvalidTimeRangeError\nIf time range is invalid\n\n\n\nUnknownFlagError\nIf an unknown flag is encountered"
+    "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters"
   },
   {
-    "objectID": "reference/analyze_series_flags.html#parameters",
-    "href": "reference/analyze_series_flags.html#parameters",
-    "title": "analyze_series_flags",
+    "objectID": "reference/get_transformation_details.html",
+    "href": "reference/get_transformation_details.html",
+    "title": "get_transformation_details",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with dependencies\nrequired\n\n\ninput\nSeriesFlagsInput\nAnalysis parameters including location, parameter, and time range\nrequired"
+    "text": "tools.get_transformation_details(ctx, input)\nGet detailed information about a specific transformation, including its input and output time series.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
   },
   {
-    "objectID": "reference/analyze_series_flags.html#returns",
-    "href": "reference/analyze_series_flags.html#returns",
-    "title": "analyze_series_flags",
+    "objectID": "reference/get_transformation_details.html#parameters",
+    "href": "reference/get_transformation_details.html#parameters",
+    "title": "get_transformation_details",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nSeriesFlagsSummary\nComprehensive summary of flags"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired"
   },
   {
-    "objectID": "reference/analyze_series_flags.html#raises",
-    "href": "reference/analyze_series_flags.html#raises",
-    "title": "analyze_series_flags",
+    "objectID": "reference/get_transformation_details.html#returns",
+    "href": "reference/get_transformation_details.html#returns",
+    "title": "get_transformation_details",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nInvalidTimeRangeError\nIf time range is invalid\n\n\n\nUnknownFlagError\nIf an unknown flag is encountered"
+    "text": "Name\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
   },
   {
-    "objectID": "reference/DescribeTimeSeriesOutput.html",
-    "href": "reference/DescribeTimeSeriesOutput.html",
-    "title": "DescribeTimeSeriesOutput",
+    "objectID": "reference/XMLValidationInput.html",
+    "href": "reference/XMLValidationInput.html",
+    "title": "XMLValidationInput",
     "section": "",
-    "text": "models.DescribeTimeSeriesOutput()\nModel for the output of the describe_timeseries tool.\nThis model provides a complete description of a time series, including both its structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
+    "text": "models.XMLValidationInput()\nEnhanced input model for XML validation\n\n\n\n\n\nName\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLValidationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
-    "objectID": "reference/DescribeTimeSeriesOutput.html#attributes",
-    "href": "reference/DescribeTimeSeriesOutput.html#attributes",
-    "title": "DescribeTimeSeriesOutput",
+    "objectID": "reference/XMLValidationInput.html#attributes",
+    "href": "reference/XMLValidationInput.html#attributes",
+    "title": "XMLValidationInput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
+    "text": "Name\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content"
   },
   {
-    "objectID": "reference/get_series_data.html",
-    "href": "reference/get_series_data.html",
-    "title": "get_series_data",
+    "objectID": "reference/XMLValidationInput.html#methods",
+    "href": "reference/XMLValidationInput.html#methods",
+    "title": "XMLValidationInput",
     "section": "",
-    "text": "tools.get_series_data(ctx, input)\nRetrieve timeseries data for a specific location-parameter combination.\nNote: Flag source retrieval requires FEWS API support (feature request pending).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with webservice URL\nrequired\n\n\ninput\nGetSeriesDataInput\nGetSeriesDataInput containing location_id, parameter_id, and time range\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nGetSeriesDataOutput\nGetSeriesDataOutput containing the timeseries values, metadata, and CSV formatted data"
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLValidationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
-    "objectID": "reference/get_series_data.html#parameters",
-    "href": "reference/get_series_data.html#parameters",
-    "title": "get_series_data",
+    "objectID": "reference/get_locations.html",
+    "href": "reference/get_locations.html",
+    "title": "get_locations",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with webservice URL\nrequired\n\n\ninput\nGetSeriesDataInput\nGetSeriesDataInput containing location_id, parameter_id, and time range\nrequired"
+    "text": "tools.get_locations(ctx, input)\nRetrieve a given number of location details from a web service and format the results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional filter to search locations by their locationId, shortName, or description\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
   },
   {
-    "objectID": "reference/get_series_data.html#returns",
-    "href": "reference/get_series_data.html#returns",
-    "title": "get_series_data",
+    "objectID": "reference/get_locations.html#parameters",
+    "href": "reference/get_locations.html#parameters",
+    "title": "get_locations",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesDataOutput\nGetSeriesDataOutput containing the timeseries values, metadata, and CSV formatted data"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional filter to search locations by their locationId, shortName, or description\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
   },
   {
-    "objectID": "reference/XMLValidationOutput.html",
-    "href": "reference/XMLValidationOutput.html",
-    "title": "XMLValidationOutput",
+    "objectID": "reference/DependencyAnalysisInput.html",
+    "href": "reference/DependencyAnalysisInput.html",
+    "title": "DependencyAnalysisInput",
     "section": "",
-    "text": "models.XMLValidationOutput()\nEnhanced output model for XML validation results\n\n\n\n\n\nName\nDescription\n\n\n\n\nerrors\n\n\n\nis_valid\n\n\n\nschema_location\n\n\n\nwarnings"
+    "text": "models.DependencyAnalysisInput()\nModel for the input of the analyze_dependencies tool.\nThis model defines the required parameters to analyze dependencies.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DependencyAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
-    "objectID": "reference/XMLValidationOutput.html#attributes",
-    "href": "reference/XMLValidationOutput.html#attributes",
-    "title": "XMLValidationOutput",
+    "objectID": "reference/DependencyAnalysisInput.html#attributes",
+    "href": "reference/DependencyAnalysisInput.html#attributes",
+    "title": "DependencyAnalysisInput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nerrors\n\n\n\nis_valid\n\n\n\nschema_location\n\n\n\nwarnings"
+    "text": "Name\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)"
   },
   {
-    "objectID": "reference/TransformationSearchInput.html",
-    "href": "reference/TransformationSearchInput.html",
-    "title": "TransformationSearchInput",
+    "objectID": "reference/DependencyAnalysisInput.html#methods",
+    "href": "reference/DependencyAnalysisInput.html#methods",
+    "title": "DependencyAnalysisInput",
     "section": "",
-    "text": "models.TransformationSearchInput()\nModel for the input of the search_transformations tool.\nThis model defines the parameters to search for transformations.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DependencyAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
-    "objectID": "reference/TransformationSearchInput.html#attributes",
-    "href": "reference/TransformationSearchInput.html#attributes",
-    "title": "TransformationSearchInput",
+    "objectID": "reference/execute_query.html",
+    "href": "reference/execute_query.html",
+    "title": "execute_query",
     "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results"
+    "text": "tools.execute_query(ctx, input)\nExecute a SQL query on the FEWS configuration database.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
   },
   {
-    "objectID": "reference/TransformationSearchInput.html#methods",
-    "href": "reference/TransformationSearchInput.html#methods",
-    "title": "TransformationSearchInput",
+    "objectID": "reference/execute_query.html#parameters",
+    "href": "reference/execute_query.html#parameters",
+    "title": "execute_query",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired"
   },
   {
-    "objectID": "reference/SeriesFlagsSummary.html",
-    "href": "reference/SeriesFlagsSummary.html",
-    "title": "SeriesFlagsSummary",
+    "objectID": "reference/execute_query.html#returns",
+    "href": "reference/execute_query.html#returns",
+    "title": "execute_query",
     "section": "",
-    "text": "models.SeriesFlagsSummary()\nSummary of FEWS flags in a timeseries\n\n\n\n\n\nName\nDescription\n\n\n\n\ncounts\n\n\n\nend_date\n\n\n\nflag_counts\n\n\n\nflag_definitions\n\n\n\nstart_date\n\n\n\ntotal_values"
+    "text": "Name\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
   },
   {
-    "objectID": "reference/SeriesFlagsSummary.html#attributes",
-    "href": "reference/SeriesFlagsSummary.html#attributes",
-    "title": "SeriesFlagsSummary",
+    "objectID": "reference/index.html",
+    "href": "reference/index.html",
+    "title": "API Reference",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncounts\n\n\n\nend_date\n\n\n\nflag_counts\n\n\n\nflag_definitions\n\n\n\nstart_date\n\n\n\ntotal_values"
+    "text": "Tools beschikbaar voor de config agent.\n\n\n\nanalyze_dead_points\nIdentify “dead points” in the FEWS configuration - time series sets that are\n\n\nanalyze_dependencies\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\nget_database_schema\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\nvisualize_graph\nGenerate a graph visualization of FEWS entities and their relationships.\n\n\nexecute_query\nExecute a SQL query on the FEWS configuration database.\n\n\ndescribe_timeseries\nGet a complete description of a time series, including its basic properties and optionally\n\n\nsearch_timeseries\nSearch for time series sets by parameter, qualifier, module, or endpoint status.\n\n\nget_transformation_details\nGet detailed information about a specific transformation, including its input and output time series.\n\n\nsearch_transformations\nSearch for transformations matching the given criteria.\n\n\nfind_workflow_call_hierarchy\nTrace workflow call stacks.\n\n\nsearch_workflows\nSearch for workflows by name pattern.\n\n\nget_workflow_details\nGet detailed information about a specific workflow, including its module instance calls\n\n\n\n\n\n\nTools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nDiscover available time series data by finding valid parameter-location combinations.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice.\n\n\nget_series_data\nRetrieve timeseries data for a specific location-parameter combination.\n\n\nanalyze_series_flags\nSummarize FEWS flags in a timeseries.\n\n\n\n\n\n\nTools beschikbaar voor de validator agent.\n\n\n\nvalidate_xml\nEnhanced XML validation using local FEWS schemas.\n\n\ngenerate_xml_template\nGenerate XML template from XSD schema.\n\n\nget_available_elements\nGet available elements from a FEWS schema with pagination support.\n\n\n\n\n\n\nData modellen per Config tool.\n\n\n\nDescribeTimeSeriesInput\nModel for the input of the describe_timeseries tool.\n\n\nDescribeTimeSeriesOutput\nModel for the output of the describe_timeseries tool.\n\n\nTimeSeriesSearchOutput\nModel for the output of the search_timeseries tool.\n\n\nTransformationSearchInput\nModel for the input of the search_transformations tool.\n\n\nTransformationSearchOutput\nModel for the output of the search_transformations tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\nWorkflowSearchInput\nInput for workflow search.\n\n\nWorkflowSearchOutput\nModel for the output of the search_workflows tool.\n\n\nWorkflowDetailsInput\nModel for the input of the get_workflow_details tool.\n\n\nWorkflowDetailsOutput\nModel for the output of the get_workflow_details tool.\n\n\nWorkflowCallHierarchyInput\nModel representing the details of a workflow call hierarchy.\n\n\nDeadPointsAnalysisOutput\nModel for the output of the analyze_dead_points tool.\n\n\nDeadPointsAnalysisInput\n\n\n\nDependencyAnalysisInput\nModel for the input of the analyze_dependencies tool.\n\n\nDependencyAnalysisOutput\nModel for the output of the analyze_dependencies tool.\n\n\nDatabaseSchemaOutput\n\n\n\nGraphVisualizationInput\nModel for the input of graph visualization tools.\n\n\nGraphVisualizationOutput\nModel for the output of graph visualization tools.\n\n\nSQLQueryInput\nInput for SQL query.\n\n\nSQLQueryOutput\nOutput from SQL query.\n\n\nTransformationDetailsInput\nModel for the input of the get_transformation_details tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\n\n\n\n\nData modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the get_locations tool.\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nModel for the output of the get_series_headers tool.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides series data summary with interval analysis.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsOutput\nOutput model for FEWS flag analysis tool.\n\n\n\n\n\n\nData modellen per validator tool.\n\n\n\nXMLValidationInput\nEnhanced input model for XML validation\n\n\nXMLValidationOutput\nEnhanced output model for XML validation results\n\n\nXMLTemplateInput\nInput model for XML template generation\n\n\nXMLTemplateOutput\nOutput model for XML template generation\n\n\nGetAvailableElementsInput\nInput model for getting available elements from a schema\n\n\nGetAvailableElementsOutput\nOutput model for getting available elements from a schema"
+  },
+  {
+    "objectID": "reference/index.html#config-tools",
+    "href": "reference/index.html#config-tools",
+    "title": "API Reference",
+    "section": "",
+    "text": "Tools beschikbaar voor de config agent.\n\n\n\nanalyze_dead_points\nIdentify “dead points” in the FEWS configuration - time series sets that are\n\n\nanalyze_dependencies\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\nget_database_schema\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\nvisualize_graph\nGenerate a graph visualization of FEWS entities and their relationships.\n\n\nexecute_query\nExecute a SQL query on the FEWS configuration database.\n\n\ndescribe_timeseries\nGet a complete description of a time series, including its basic properties and optionally\n\n\nsearch_timeseries\nSearch for time series sets by parameter, qualifier, module, or endpoint status.\n\n\nget_transformation_details\nGet detailed information about a specific transformation, including its input and output time series.\n\n\nsearch_transformations\nSearch for transformations matching the given criteria.\n\n\nfind_workflow_call_hierarchy\nTrace workflow call stacks.\n\n\nsearch_workflows\nSearch for workflows by name pattern.\n\n\nget_workflow_details\nGet detailed information about a specific workflow, including its module instance calls"
+  },
+  {
+    "objectID": "reference/index.html#webservice-tools",
+    "href": "reference/index.html#webservice-tools",
+    "title": "API Reference",
+    "section": "",
+    "text": "Tools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nDiscover available time series data by finding valid parameter-location combinations.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice.\n\n\nget_series_data\nRetrieve timeseries data for a specific location-parameter combination.\n\n\nanalyze_series_flags\nSummarize FEWS flags in a timeseries."
+  },
+  {
+    "objectID": "reference/index.html#validator-tools",
+    "href": "reference/index.html#validator-tools",
+    "title": "API Reference",
+    "section": "",
+    "text": "Tools beschikbaar voor de validator agent.\n\n\n\nvalidate_xml\nEnhanced XML validation using local FEWS schemas.\n\n\ngenerate_xml_template\nGenerate XML template from XSD schema.\n\n\nget_available_elements\nGet available elements from a FEWS schema with pagination support."
+  },
+  {
+    "objectID": "reference/index.html#config-tool-models",
+    "href": "reference/index.html#config-tool-models",
+    "title": "API Reference",
+    "section": "",
+    "text": "Data modellen per Config tool.\n\n\n\nDescribeTimeSeriesInput\nModel for the input of the describe_timeseries tool.\n\n\nDescribeTimeSeriesOutput\nModel for the output of the describe_timeseries tool.\n\n\nTimeSeriesSearchOutput\nModel for the output of the search_timeseries tool.\n\n\nTransformationSearchInput\nModel for the input of the search_transformations tool.\n\n\nTransformationSearchOutput\nModel for the output of the search_transformations tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\nWorkflowSearchInput\nInput for workflow search.\n\n\nWorkflowSearchOutput\nModel for the output of the search_workflows tool.\n\n\nWorkflowDetailsInput\nModel for the input of the get_workflow_details tool.\n\n\nWorkflowDetailsOutput\nModel for the output of the get_workflow_details tool.\n\n\nWorkflowCallHierarchyInput\nModel representing the details of a workflow call hierarchy.\n\n\nDeadPointsAnalysisOutput\nModel for the output of the analyze_dead_points tool.\n\n\nDeadPointsAnalysisInput\n\n\n\nDependencyAnalysisInput\nModel for the input of the analyze_dependencies tool.\n\n\nDependencyAnalysisOutput\nModel for the output of the analyze_dependencies tool.\n\n\nDatabaseSchemaOutput\n\n\n\nGraphVisualizationInput\nModel for the input of graph visualization tools.\n\n\nGraphVisualizationOutput\nModel for the output of graph visualization tools.\n\n\nSQLQueryInput\nInput for SQL query.\n\n\nSQLQueryOutput\nOutput from SQL query.\n\n\nTransformationDetailsInput\nModel for the input of the get_transformation_details tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool."
+  },
+  {
+    "objectID": "reference/index.html#webservice-tool-models",
+    "href": "reference/index.html#webservice-tool-models",
+    "title": "API Reference",
+    "section": "",
+    "text": "Data modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the get_locations tool.\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nModel for the output of the get_series_headers tool.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides series data summary with interval analysis.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsOutput\nOutput model for FEWS flag analysis tool."
+  },
+  {
+    "objectID": "reference/index.html#validator-tool-models",
+    "href": "reference/index.html#validator-tool-models",
+    "title": "API Reference",
+    "section": "",
+    "text": "Data modellen per validator tool.\n\n\n\nXMLValidationInput\nEnhanced input model for XML validation\n\n\nXMLValidationOutput\nEnhanced output model for XML validation results\n\n\nXMLTemplateInput\nInput model for XML template generation\n\n\nXMLTemplateOutput\nOutput model for XML template generation\n\n\nGetAvailableElementsInput\nInput model for getting available elements from a schema\n\n\nGetAvailableElementsOutput\nOutput model for getting available elements from a schema"
   },
   {
     "objectID": "reference/GetAvailableElementsInput.html",
@@ -627,7 +669,7 @@
     "href": "examples/notebooks/fews_webservice.html#analyze-series-flags",
     "title": "Webservice Agent",
     "section": "Analyze Series Flags",
-    "text": "Analyze Series Flags\nWe kunnen de series ook analyseren op basis van de flags die zijn gezet. Dit kan handig zijn om te zien of er data ontbreekt, of dat er data is die niet betrouwbaar is.\n\nfrom talk_with_fews.tools import analyze_series_flags\nfrom talk_with_fews.models import SeriesFlagsInput, SeriesFlagsSummary\n\nanalyze_flags_input = SeriesFlagsInput(\n    parameter_id=parameter_id,\n    location_id=location_id,\n    start_time=start_time,\n    end_time=end_time,\n)\n\nanalyze_flags_output: SeriesFlagsSummary = await analyze_series_flags(\n    ctx=ctx, input=analyze_flags_input\n)\nprint(format_as_xml(analyze_flags_output, root_tag=\"AnalyzeFlagsOutput\"))\n\n&lt;AnalyzeFlagsOutput&gt;\n  &lt;total_values&gt;11&lt;/total_values&gt;\n  &lt;start_date&gt;2023-11-21T00:00:00Z&lt;/start_date&gt;\n  &lt;end_date&gt;2023-12-01T00:00:00Z&lt;/end_date&gt;\n  &lt;flag_definitions&gt;\n    &lt;0&gt;\n      &lt;flag&gt;0&lt;/flag&gt;\n      &lt;origin&gt;Original&lt;/origin&gt;\n      &lt;quality&gt;Reliable&lt;/quality&gt;\n      &lt;description&gt;Original value, passes all validation criteria&lt;/description&gt;\n    &lt;/0&gt;\n    &lt;1&gt;\n      &lt;flag&gt;1&lt;/flag&gt;\n      &lt;origin&gt;Corrected&lt;/origin&gt;\n      &lt;quality&gt;Reliable&lt;/quality&gt;\n      &lt;description&gt;Original value corrected through interpolation or manual editing&lt;/description&gt;\n    &lt;/1&gt;\n    &lt;2&gt;\n      &lt;flag&gt;2&lt;/flag&gt;\n      &lt;origin&gt;Completed&lt;/origin&gt;\n      &lt;quality&gt;Reliable&lt;/quality&gt;\n      &lt;description&gt;Original value was missing. Value has been filled in through interpolation, transformation (e.g. stage discharge) or a model&lt;/description&gt;\n    &lt;/2&gt;\n    &lt;3&gt;\n      &lt;flag&gt;3&lt;/flag&gt;\n      &lt;origin&gt;Original&lt;/origin&gt;\n      &lt;quality&gt;Doubtful&lt;/quality&gt;\n      &lt;description&gt;Observed value retrieved from external data source. Value is valid, but marked as suspect due to soft validation limits being exceeded&lt;/description&gt;\n    &lt;/3&gt;\n    &lt;4&gt;\n      &lt;flag&gt;4&lt;/flag&gt;\n      &lt;origin&gt;Corrected&lt;/origin&gt;\n      &lt;quality&gt;Doubtful&lt;/quality&gt;\n      &lt;description&gt;Original value was removed and corrected. However, the corrected value is doubtful due to validation limits&lt;/description&gt;\n    &lt;/4&gt;\n    &lt;5&gt;\n      &lt;flag&gt;5&lt;/flag&gt;\n      &lt;origin&gt;Completed&lt;/origin&gt;\n      &lt;quality&gt;Doubtful&lt;/quality&gt;\n      &lt;description&gt;Original value was missing. Value has been filled in as above, but resulting value is doubtful due to limits in transformation/interpolation or input value used for transformation being doubtful&lt;/description&gt;\n    &lt;/5&gt;\n    &lt;6&gt;\n      &lt;flag&gt;6&lt;/flag&gt;\n      &lt;origin&gt;Original&lt;/origin&gt;\n      &lt;quality&gt;Unreliable&lt;/quality&gt;\n      &lt;description&gt;Observed value retrieved from external data source. Value is invalid due to validation limits set. Value is marked as unreliable and will not be used in transformations and model calculations&lt;/description&gt;\n    &lt;/6&gt;\n    &lt;7&gt;\n      &lt;flag&gt;7&lt;/flag&gt;\n      &lt;origin&gt;Corrected&lt;/origin&gt;\n      &lt;quality&gt;Unreliable&lt;/quality&gt;\n      &lt;description&gt;Original value was removed and corrected. However, corrected value is unreliable&lt;/description&gt;\n    &lt;/7&gt;\n    &lt;8&gt;\n      &lt;flag&gt;8&lt;/flag&gt;\n      &lt;origin&gt;Completed&lt;/origin&gt;\n      &lt;quality&gt;Unreliable&lt;/quality&gt;\n      &lt;description&gt;Original value was missing. Value has been filled in as above, but resulting value is unreliable&lt;/description&gt;\n    &lt;/8&gt;\n    &lt;9&gt;\n      &lt;flag&gt;9&lt;/flag&gt;\n      &lt;origin&gt;Original&lt;/origin&gt;\n      &lt;quality&gt;Unreliable&lt;/quality&gt;\n      &lt;description&gt;Missing value in originally observed series. Note this is a special form of both Original/Unreliable and Original/Reliable&lt;/description&gt;\n    &lt;/9&gt;\n  &lt;/flag_definitions&gt;\n  &lt;flag_counts&gt;\n    &lt;example&gt;\n      &lt;flag&gt;0&lt;/flag&gt;\n      &lt;count&gt;11&lt;/count&gt;\n      &lt;percentage&gt;100.0&lt;/percentage&gt;\n    &lt;/example&gt;\n  &lt;/flag_counts&gt;\n  &lt;counts&gt;\n    &lt;total_values&gt;11&lt;/total_values&gt;\n    &lt;missing_values&gt;0&lt;/missing_values&gt;\n    &lt;reliable_count&gt;11&lt;/reliable_count&gt;\n    &lt;doubtful_count&gt;0&lt;/doubtful_count&gt;\n    &lt;unreliable_count&gt;0&lt;/unreliable_count&gt;\n    &lt;reliable_percentage&gt;100.0&lt;/reliable_percentage&gt;\n    &lt;doubtful_percentage&gt;0.0&lt;/doubtful_percentage&gt;\n    &lt;unreliable_percentage&gt;0.0&lt;/unreliable_percentage&gt;\n  &lt;/counts&gt;\n&lt;/AnalyzeFlagsOutput&gt;"
+    "text": "Analyze Series Flags\nWe kunnen de series ook analyseren op basis van de flags die zijn gezet. Dit kan handig zijn om te zien of er data ontbreekt, of dat er data is die niet betrouwbaar is.\n\nfrom talk_with_fews.tools import analyze_series_flags\nfrom talk_with_fews.models import SeriesFlagsInput, SeriesFlagsOutput\n\nanalyze_flags_input = SeriesFlagsInput(\n    parameter_id=parameter_id,\n    location_id=location_id,\n    start_time=start_time,\n    end_time=end_time,\n)\n\nanalyze_flags_output: SeriesFlagsOutput = await analyze_series_flags(\n    ctx=ctx, input=analyze_flags_input\n)\nprint(format_as_xml(analyze_flags_output, root_tag=\"AnalyzeFlagsOutput\"))\n\n&lt;AnalyzeFlagsOutput&gt;\n  &lt;description&gt;Flag analysis for Eref.d at KNMIUUR260: 11 values analyzed from 2023-11-21T00:00:00Z to 2023-12-01T00:00:00Z. Data quality: 100.0% reliable, 0.0% doubtful, 0.0% unreliable.&lt;/description&gt;\n  &lt;flag_counts&gt;\n    &lt;example&gt;\n      &lt;flag&gt;0&lt;/flag&gt;\n      &lt;count&gt;11&lt;/count&gt;\n      &lt;percentage&gt;100.0&lt;/percentage&gt;\n      &lt;origin&gt;Original&lt;/origin&gt;\n      &lt;quality&gt;Reliable&lt;/quality&gt;\n      &lt;description&gt;Original value, passes all validation criteria&lt;/description&gt;\n    &lt;/example&gt;\n  &lt;/flag_counts&gt;\n  &lt;counts&gt;\n    &lt;total_values&gt;11&lt;/total_values&gt;\n    &lt;missing_values&gt;0&lt;/missing_values&gt;\n    &lt;reliable_count&gt;11&lt;/reliable_count&gt;\n    &lt;doubtful_count&gt;0&lt;/doubtful_count&gt;\n    &lt;unreliable_count&gt;0&lt;/unreliable_count&gt;\n    &lt;reliable_percentage&gt;100.0&lt;/reliable_percentage&gt;\n    &lt;doubtful_percentage&gt;0.0&lt;/doubtful_percentage&gt;\n    &lt;unreliable_percentage&gt;0.0&lt;/unreliable_percentage&gt;\n  &lt;/counts&gt;\n&lt;/AnalyzeFlagsOutput&gt;"
   },
   {
     "objectID": "examples/notebooks/fews_config.html",
@@ -896,200 +938,158 @@
     "text": "Name\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
   },
   {
-    "objectID": "reference/index.html",
-    "href": "reference/index.html",
-    "title": "API Reference",
+    "objectID": "reference/TransformationSearchInput.html",
+    "href": "reference/TransformationSearchInput.html",
+    "title": "TransformationSearchInput",
     "section": "",
-    "text": "Tools beschikbaar voor de config agent.\n\n\n\nanalyze_dead_points\nIdentify “dead points” in the FEWS configuration - time series sets that are\n\n\nanalyze_dependencies\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\nget_database_schema\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\nvisualize_graph\nGenerate a graph visualization of FEWS entities and their relationships.\n\n\nexecute_query\nExecute a SQL query on the FEWS configuration database.\n\n\ndescribe_timeseries\nGet a complete description of a time series, including its basic properties and optionally\n\n\nsearch_timeseries\nSearch for time series sets by parameter, qualifier, module, or endpoint status.\n\n\nget_transformation_details\nGet detailed information about a specific transformation, including its input and output time series.\n\n\nsearch_transformations\nSearch for transformations matching the given criteria.\n\n\nfind_workflow_call_hierarchy\nTrace workflow call stacks.\n\n\nsearch_workflows\nSearch for workflows by name pattern.\n\n\nget_workflow_details\nGet detailed information about a specific workflow, including its module instance calls\n\n\n\n\n\n\nTools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nDiscover available time series data by finding valid parameter-location combinations.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice.\n\n\nget_series_data\nRetrieve timeseries data for a specific location-parameter combination.\n\n\nanalyze_series_flags\nSummarize FEWS flags in a timeseries.\n\n\n\n\n\n\nTools beschikbaar voor de validator agent.\n\n\n\nvalidate_xml\nEnhanced XML validation using local FEWS schemas.\n\n\ngenerate_xml_template\nGenerate XML template from XSD schema.\n\n\nget_available_elements\nGet available elements from a FEWS schema with pagination support.\n\n\n\n\n\n\nData modellen per Config tool.\n\n\n\nDescribeTimeSeriesInput\nModel for the input of the describe_timeseries tool.\n\n\nDescribeTimeSeriesOutput\nModel for the output of the describe_timeseries tool.\n\n\nTimeSeriesSearchOutput\nModel for the output of the search_timeseries tool.\n\n\nTransformationSearchInput\nModel for the input of the search_transformations tool.\n\n\nTransformationSearchOutput\nModel for the output of the search_transformations tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\nWorkflowSearchInput\nInput for workflow search.\n\n\nWorkflowSearchOutput\nModel for the output of the search_workflows tool.\n\n\nWorkflowDetailsInput\nModel for the input of the get_workflow_details tool.\n\n\nWorkflowDetailsOutput\nModel for the output of the get_workflow_details tool.\n\n\nWorkflowCallHierarchyInput\nModel representing the details of a workflow call hierarchy.\n\n\nDeadPointsAnalysisOutput\nModel for the output of the analyze_dead_points tool.\n\n\nDeadPointsAnalysisInput\n\n\n\nDependencyAnalysisInput\nModel for the input of the analyze_dependencies tool.\n\n\nDependencyAnalysisOutput\nModel for the output of the analyze_dependencies tool.\n\n\nDatabaseSchemaOutput\n\n\n\nGraphVisualizationInput\nModel for the input of graph visualization tools.\n\n\nGraphVisualizationOutput\nModel for the output of graph visualization tools.\n\n\nSQLQueryInput\nInput for SQL query.\n\n\nSQLQueryOutput\nOutput from SQL query.\n\n\nTransformationDetailsInput\nModel for the input of the get_transformation_details tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\n\n\n\n\nData modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the get_locations tool.\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nModel for the output of the get_series_headers tool.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides series data summary with interval analysis.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsSummary\nSummary of FEWS flags in a timeseries\n\n\n\n\n\n\nData modellen per validator tool.\n\n\n\nXMLValidationInput\nEnhanced input model for XML validation\n\n\nXMLValidationOutput\nEnhanced output model for XML validation results\n\n\nXMLTemplateInput\nInput model for XML template generation\n\n\nXMLTemplateOutput\nOutput model for XML template generation\n\n\nGetAvailableElementsInput\nInput model for getting available elements from a schema\n\n\nGetAvailableElementsOutput\nOutput model for getting available elements from a schema"
+    "text": "models.TransformationSearchInput()\nModel for the input of the search_transformations tool.\nThis model defines the parameters to search for transformations.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
-    "objectID": "reference/index.html#config-tools",
-    "href": "reference/index.html#config-tools",
-    "title": "API Reference",
+    "objectID": "reference/TransformationSearchInput.html#attributes",
+    "href": "reference/TransformationSearchInput.html#attributes",
+    "title": "TransformationSearchInput",
     "section": "",
-    "text": "Tools beschikbaar voor de config agent.\n\n\n\nanalyze_dead_points\nIdentify “dead points” in the FEWS configuration - time series sets that are\n\n\nanalyze_dependencies\nAnalyze dependencies for a specific entity, showing both upstream and downstream relationships.\n\n\nget_database_schema\nGet the database schema information to understand the structure of the FEWS configuration database.\n\n\nvisualize_graph\nGenerate a graph visualization of FEWS entities and their relationships.\n\n\nexecute_query\nExecute a SQL query on the FEWS configuration database.\n\n\ndescribe_timeseries\nGet a complete description of a time series, including its basic properties and optionally\n\n\nsearch_timeseries\nSearch for time series sets by parameter, qualifier, module, or endpoint status.\n\n\nget_transformation_details\nGet detailed information about a specific transformation, including its input and output time series.\n\n\nsearch_transformations\nSearch for transformations matching the given criteria.\n\n\nfind_workflow_call_hierarchy\nTrace workflow call stacks.\n\n\nsearch_workflows\nSearch for workflows by name pattern.\n\n\nget_workflow_details\nGet detailed information about a specific workflow, including its module instance calls"
+    "text": "Name\nType\nDescription\n\n\n\n\ndescription_pattern\nstr\nPattern to search for in transformation description\n\n\nworkflow_name\nOptional[str]\nOptional pattern to filter by workflow name\n\n\nmodule_config\nOptional[str]\nOptional pattern to filter by module configuration name\n\n\nmax_depth\nOptional[int]\nOptional maximum depth for hierarchical results"
   },
   {
-    "objectID": "reference/index.html#webservice-tools",
-    "href": "reference/index.html#webservice-tools",
-    "title": "API Reference",
+    "objectID": "reference/TransformationSearchInput.html#methods",
+    "href": "reference/TransformationSearchInput.html#methods",
+    "title": "TransformationSearchInput",
     "section": "",
-    "text": "Tools beschikbaar voor de webservice agent.\n\n\n\nget_parameters\nRetrieve parameter details from a web service and format the results.\n\n\nget_locations\nRetrieve a given number of location details from a web service and format the results.\n\n\nexecute_query_webservice\nExecute a SQL query on the FewsWebService cached database.\n\n\nget_series_headers\nDiscover available time series data by finding valid parameter-location combinations.\n\n\nget_series_statistics\nRetrieve series statistics from FEWS webservice.\n\n\nget_series_data\nRetrieve timeseries data for a specific location-parameter combination.\n\n\nanalyze_series_flags\nSummarize FEWS flags in a timeseries."
+    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.TransformationSearchInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
   },
   {
-    "objectID": "reference/index.html#validator-tools",
-    "href": "reference/index.html#validator-tools",
-    "title": "API Reference",
+    "objectID": "reference/XMLValidationOutput.html",
+    "href": "reference/XMLValidationOutput.html",
+    "title": "XMLValidationOutput",
     "section": "",
-    "text": "Tools beschikbaar voor de validator agent.\n\n\n\nvalidate_xml\nEnhanced XML validation using local FEWS schemas.\n\n\ngenerate_xml_template\nGenerate XML template from XSD schema.\n\n\nget_available_elements\nGet available elements from a FEWS schema with pagination support."
+    "text": "models.XMLValidationOutput()\nEnhanced output model for XML validation results\n\n\n\n\n\nName\nDescription\n\n\n\n\nerrors\n\n\n\nis_valid\n\n\n\nschema_location\n\n\n\nwarnings"
   },
   {
-    "objectID": "reference/index.html#config-tool-models",
-    "href": "reference/index.html#config-tool-models",
-    "title": "API Reference",
+    "objectID": "reference/XMLValidationOutput.html#attributes",
+    "href": "reference/XMLValidationOutput.html#attributes",
+    "title": "XMLValidationOutput",
     "section": "",
-    "text": "Data modellen per Config tool.\n\n\n\nDescribeTimeSeriesInput\nModel for the input of the describe_timeseries tool.\n\n\nDescribeTimeSeriesOutput\nModel for the output of the describe_timeseries tool.\n\n\nTimeSeriesSearchOutput\nModel for the output of the search_timeseries tool.\n\n\nTransformationSearchInput\nModel for the input of the search_transformations tool.\n\n\nTransformationSearchOutput\nModel for the output of the search_transformations tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool.\n\n\nWorkflowSearchInput\nInput for workflow search.\n\n\nWorkflowSearchOutput\nModel for the output of the search_workflows tool.\n\n\nWorkflowDetailsInput\nModel for the input of the get_workflow_details tool.\n\n\nWorkflowDetailsOutput\nModel for the output of the get_workflow_details tool.\n\n\nWorkflowCallHierarchyInput\nModel representing the details of a workflow call hierarchy.\n\n\nDeadPointsAnalysisOutput\nModel for the output of the analyze_dead_points tool.\n\n\nDeadPointsAnalysisInput\n\n\n\nDependencyAnalysisInput\nModel for the input of the analyze_dependencies tool.\n\n\nDependencyAnalysisOutput\nModel for the output of the analyze_dependencies tool.\n\n\nDatabaseSchemaOutput\n\n\n\nGraphVisualizationInput\nModel for the input of graph visualization tools.\n\n\nGraphVisualizationOutput\nModel for the output of graph visualization tools.\n\n\nSQLQueryInput\nInput for SQL query.\n\n\nSQLQueryOutput\nOutput from SQL query.\n\n\nTransformationDetailsInput\nModel for the input of the get_transformation_details tool.\n\n\nTransformationDetailsOutput\nModel for the output of the get_transformation_details tool."
+    "text": "Name\nDescription\n\n\n\n\nerrors\n\n\n\nis_valid\n\n\n\nschema_location\n\n\n\nwarnings"
   },
   {
-    "objectID": "reference/index.html#webservice-tool-models",
-    "href": "reference/index.html#webservice-tool-models",
-    "title": "API Reference",
+    "objectID": "reference/get_series_data.html",
+    "href": "reference/get_series_data.html",
+    "title": "get_series_data",
     "section": "",
-    "text": "Data modellen per webservice tool.\n\n\n\nGetParameterInput\nModel representing a parameter search result.\n\n\nGetParameterOutput\nModel for the output of the parameter_details\n\n\nGetLocationInput\nGetLocationInput defines the input parameters for retrieving location search results.\n\n\nGetLocationOutput\nModel for the output of the get_locations tool.\n\n\nGetSeriesDataInput\n\n\n\nGetSeriesDataOutput\n\n\n\nGetSeriesHeadersInput\nGetSeriesHeadersInput defines the input parameters for retrieving series headers.\n\n\nGetSeriesHeadersOutput\nModel for the output of the get_series_headers tool.\n\n\nGetSeriesStatisticsInput\nGetSeriesStatisticsInput defines the input parameters for retrieving series statistics.\n\n\nGetSeriesStatisticsOutput\nGetSeriesStatisticsOutput provides series data summary with interval analysis.\n\n\nSeriesFlagsInput\nInput parameters for flag analysis\n\n\nSeriesFlagsSummary\nSummary of FEWS flags in a timeseries"
+    "text": "tools.get_series_data(ctx, input)\nRetrieve timeseries data for a specific location-parameter combination.\nNote: Flag source retrieval requires FEWS API support (feature request pending).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with webservice URL\nrequired\n\n\ninput\nGetSeriesDataInput\nGetSeriesDataInput containing location_id, parameter_id, and time range\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nGetSeriesDataOutput\nGetSeriesDataOutput containing the timeseries values, metadata, and CSV formatted data"
   },
   {
-    "objectID": "reference/index.html#validator-tool-models",
-    "href": "reference/index.html#validator-tool-models",
-    "title": "API Reference",
+    "objectID": "reference/get_series_data.html#parameters",
+    "href": "reference/get_series_data.html#parameters",
+    "title": "get_series_data",
     "section": "",
-    "text": "Data modellen per validator tool.\n\n\n\nXMLValidationInput\nEnhanced input model for XML validation\n\n\nXMLValidationOutput\nEnhanced output model for XML validation results\n\n\nXMLTemplateInput\nInput model for XML template generation\n\n\nXMLTemplateOutput\nOutput model for XML template generation\n\n\nGetAvailableElementsInput\nInput model for getting available elements from a schema\n\n\nGetAvailableElementsOutput\nOutput model for getting available elements from a schema"
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with webservice URL\nrequired\n\n\ninput\nGetSeriesDataInput\nGetSeriesDataInput containing location_id, parameter_id, and time range\nrequired"
   },
   {
-    "objectID": "reference/execute_query.html",
-    "href": "reference/execute_query.html",
-    "title": "execute_query",
+    "objectID": "reference/get_series_data.html#returns",
+    "href": "reference/get_series_data.html#returns",
+    "title": "get_series_data",
     "section": "",
-    "text": "tools.execute_query(ctx, input)\nExecute a SQL query on the FEWS configuration database.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
+    "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesDataOutput\nGetSeriesDataOutput containing the timeseries values, metadata, and CSV formatted data"
   },
   {
-    "objectID": "reference/execute_query.html#parameters",
-    "href": "reference/execute_query.html#parameters",
-    "title": "execute_query",
+    "objectID": "reference/DescribeTimeSeriesOutput.html",
+    "href": "reference/DescribeTimeSeriesOutput.html",
+    "title": "DescribeTimeSeriesOutput",
     "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nSQLQueryInput\nSQLQueryInput containing the query to execute\nrequired"
+    "text": "models.DescribeTimeSeriesOutput()\nModel for the output of the describe_timeseries tool.\nThis model provides a complete description of a time series, including both its structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
   },
   {
-    "objectID": "reference/execute_query.html#returns",
-    "href": "reference/execute_query.html#returns",
-    "title": "execute_query",
-    "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nSQLQueryOutput\nSQLQueryOutput\nResults of the query with column names"
-  },
-  {
-    "objectID": "reference/DependencyAnalysisInput.html",
-    "href": "reference/DependencyAnalysisInput.html",
-    "title": "DependencyAnalysisInput",
-    "section": "",
-    "text": "models.DependencyAnalysisInput()\nModel for the input of the analyze_dependencies tool.\nThis model defines the required parameters to analyze dependencies.\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DependencyAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
-  },
-  {
-    "objectID": "reference/DependencyAnalysisInput.html#attributes",
-    "href": "reference/DependencyAnalysisInput.html#attributes",
-    "title": "DependencyAnalysisInput",
-    "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nentity_type\nstr\nType of entity to analyze (timeseries, transformation, workflow)\n\n\nentity_id\nint\nID of the entity to analyze\n\n\ndirection\nstr\nDirection of dependencies to analyze (upstream, downstream, or both)"
-  },
-  {
-    "objectID": "reference/DependencyAnalysisInput.html#methods",
-    "href": "reference/DependencyAnalysisInput.html#methods",
-    "title": "DependencyAnalysisInput",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.DependencyAnalysisInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
-  },
-  {
-    "objectID": "reference/get_locations.html",
-    "href": "reference/get_locations.html",
-    "title": "get_locations",
-    "section": "",
-    "text": "tools.get_locations(ctx, input)\nRetrieve a given number of location details from a web service and format the results.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional filter to search locations by their locationId, shortName, or description\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
-  },
-  {
-    "objectID": "reference/get_locations.html#parameters",
-    "href": "reference/get_locations.html#parameters",
-    "title": "get_locations",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetLocationInput\nGetLocationInput containing request parameters which includes: - number_of_locations: The maximum number of locations to retrieve - filter_locations_name: An optional filter to search locations by their locationId, shortName, or description\nrequired\n\n\n\nReturns: GetLocationOutput: Retrieved locations details with formatted markdown content"
-  },
-  {
-    "objectID": "reference/XMLValidationInput.html",
-    "href": "reference/XMLValidationInput.html",
-    "title": "XMLValidationInput",
-    "section": "",
-    "text": "models.XMLValidationInput()\nEnhanced input model for XML validation\n\n\n\n\n\nName\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content\n\n\n\n\n\n\n\n\n\n\nName\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLValidationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
-  },
-  {
-    "objectID": "reference/XMLValidationInput.html#attributes",
-    "href": "reference/XMLValidationInput.html#attributes",
-    "title": "XMLValidationInput",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\nschema_option\n\n\n\nxml_content"
-  },
-  {
-    "objectID": "reference/XMLValidationInput.html#methods",
-    "href": "reference/XMLValidationInput.html#methods",
-    "title": "XMLValidationInput",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\nmodel_validate\nCustom validation that can handle string input representing a dict.\n\n\n\n\n\nmodels.XMLValidationInput.model_validate(obj, *args, **kwargs)\nCustom validation that can handle string input representing a dict."
-  },
-  {
-    "objectID": "reference/get_transformation_details.html",
-    "href": "reference/get_transformation_details.html",
-    "title": "get_transformation_details",
-    "section": "",
-    "text": "tools.get_transformation_details(ctx, input)\nGet detailed information about a specific transformation, including its input and output time series.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
-  },
-  {
-    "objectID": "reference/get_transformation_details.html#parameters",
-    "href": "reference/get_transformation_details.html#parameters",
-    "title": "get_transformation_details",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nTransformationDetailsInput\nTransformationDetailsInput containing the transformation ID\nrequired"
-  },
-  {
-    "objectID": "reference/get_transformation_details.html#returns",
-    "href": "reference/get_transformation_details.html#returns",
-    "title": "get_transformation_details",
-    "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\nTransformationDetailsOutput\nTransformationDetailsOutput\nA complete description of the transformation including: - Structured data about the transformation and its time series links - Pre-formatted markdown content for display"
-  },
-  {
-    "objectID": "reference/GetParameterOutput.html",
-    "href": "reference/GetParameterOutput.html",
-    "title": "GetParameterOutput",
-    "section": "",
-    "text": "models.GetParameterOutput()\nModel for the output of the parameter_details tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters"
-  },
-  {
-    "objectID": "reference/GetParameterOutput.html#attributes",
-    "href": "reference/GetParameterOutput.html#attributes",
-    "title": "GetParameterOutput",
-    "section": "",
-    "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nparameters"
-  },
-  {
-    "objectID": "reference/get_series_headers.html",
-    "href": "reference/get_series_headers.html",
-    "title": "get_series_headers",
-    "section": "",
-    "text": "tools.get_series_headers(ctx, input)\nDiscover available time series data by finding valid parameter-location combinations.\nThis is an ESSENTIAL discovery tool that helps you understand what data is available: - Use location_id to find ALL parameters available at that location - Use parameter_id to find ALL locations that have that parameter\nExamples: - “What parameters are available at location X?” → use location_id=“X” - “Which locations have parameter Y?” → use parameter_id=“Y”\nUse the returned available_ids to make targeted follow-up queries for specific data.\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with discovered series combinations and follow-up options"
-  },
-  {
-    "objectID": "reference/get_series_headers.html#parameters",
-    "href": "reference/get_series_headers.html#parameters",
-    "title": "get_series_headers",
-    "section": "",
-    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRunContext with database connection\nrequired\n\n\ninput\nGetSeriesHeadersInput\nGetSeriesHeadersInput containing parameter_id OR location_id\nrequired"
-  },
-  {
-    "objectID": "reference/get_series_headers.html#returns",
-    "href": "reference/get_series_headers.html#returns",
-    "title": "get_series_headers",
-    "section": "",
-    "text": "Name\nType\nDescription\n\n\n\n\n\nGetSeriesHeadersOutput\nGetSeriesHeadersOutput with discovered series combinations and follow-up options"
-  },
-  {
-    "objectID": "reference/WorkflowDetailsOutput.html",
-    "href": "reference/WorkflowDetailsOutput.html",
-    "title": "WorkflowDetailsOutput",
-    "section": "",
-    "text": "models.WorkflowDetailsOutput()\nModel for the output of the get_workflow_details tool.\nThis model provides a complete description of a workflow, including both its structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
-  },
-  {
-    "objectID": "reference/WorkflowDetailsOutput.html#attributes",
-    "href": "reference/WorkflowDetailsOutput.html#attributes",
-    "title": "WorkflowDetailsOutput",
+    "objectID": "reference/DescribeTimeSeriesOutput.html#attributes",
+    "href": "reference/DescribeTimeSeriesOutput.html#attributes",
+    "title": "DescribeTimeSeriesOutput",
     "section": "",
     "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
+  },
+  {
+    "objectID": "reference/analyze_series_flags.html",
+    "href": "reference/analyze_series_flags.html",
+    "title": "analyze_series_flags",
+    "section": "",
+    "text": "tools.analyze_series_flags(ctx, input)\nSummarize FEWS flags in a timeseries.\nThis tool: 1. Retrieves timeseries with flags from FEWS 2. Counts occurrences of existing flags 3. Groups and summarizes these counts 4. Formats results for reporting\nNote: Flag source analysis requires FEWS API support (feature request pending).\n\n\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with dependencies\nrequired\n\n\ninput\nSeriesFlagsInput\nAnalysis parameters including location, parameter, and time range\nrequired\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nSeriesFlagsOutput\nComprehensive summary of flags\n\n\n\n\n\n\n\n\n\nName\nType\nDescription\n\n\n\n\n\nInvalidTimeRangeError\nIf time range is invalid\n\n\n\nUnknownFlagError\nIf an unknown flag is encountered"
+  },
+  {
+    "objectID": "reference/analyze_series_flags.html#parameters",
+    "href": "reference/analyze_series_flags.html#parameters",
+    "title": "analyze_series_flags",
+    "section": "",
+    "text": "Name\nType\nDescription\nDefault\n\n\n\n\nctx\nRunContext[Deps]\nRuntime context with dependencies\nrequired\n\n\ninput\nSeriesFlagsInput\nAnalysis parameters including location, parameter, and time range\nrequired"
+  },
+  {
+    "objectID": "reference/analyze_series_flags.html#returns",
+    "href": "reference/analyze_series_flags.html#returns",
+    "title": "analyze_series_flags",
+    "section": "",
+    "text": "Name\nType\nDescription\n\n\n\n\n\nSeriesFlagsOutput\nComprehensive summary of flags"
+  },
+  {
+    "objectID": "reference/analyze_series_flags.html#raises",
+    "href": "reference/analyze_series_flags.html#raises",
+    "title": "analyze_series_flags",
+    "section": "",
+    "text": "Name\nType\nDescription\n\n\n\n\n\nInvalidTimeRangeError\nIf time range is invalid\n\n\n\nUnknownFlagError\nIf an unknown flag is encountered"
+  },
+  {
+    "objectID": "reference/GetSeriesStatisticsOutput.html",
+    "href": "reference/GetSeriesStatisticsOutput.html",
+    "title": "GetSeriesStatisticsOutput",
+    "section": "",
+    "text": "models.GetSeriesStatisticsOutput()\nGetSeriesStatisticsOutput provides series data summary with interval analysis.\nReturns data characteristics (min/max values, units, count), time information (data range, time step), and interval statistics (monthly/daily patterns) to help decide whether to call get_series_data for detailed analysis.\n\n\n\n\n\nName\nDescription\n\n\n\n\ndescription\n\n\n\nestimated_data_points_in_range\n\n\n\nfirst_value_time\n\n\n\ninterval_analysis\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value\n\n\n\nparameter_units\n\n\n\ntime_step"
+  },
+  {
+    "objectID": "reference/GetSeriesStatisticsOutput.html#attributes",
+    "href": "reference/GetSeriesStatisticsOutput.html#attributes",
+    "title": "GetSeriesStatisticsOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ndescription\n\n\n\nestimated_data_points_in_range\n\n\n\nfirst_value_time\n\n\n\ninterval_analysis\n\n\n\nlast_value_time\n\n\n\nmax_value\n\n\n\nmin_value\n\n\n\nparameter_units\n\n\n\ntime_step"
+  },
+  {
+    "objectID": "reference/GetSeriesDataOutput.html",
+    "href": "reference/GetSeriesDataOutput.html",
+    "title": "GetSeriesDataOutput",
+    "section": "",
+    "text": "models.GetSeriesDataOutput()\n\n\n\n\n\nName\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
+  },
+  {
+    "objectID": "reference/GetSeriesDataOutput.html#attributes",
+    "href": "reference/GetSeriesDataOutput.html#attributes",
+    "title": "GetSeriesDataOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncsv_data\n\n\n\nmetadata\n\n\n\nvalues"
+  },
+  {
+    "objectID": "reference/TransformationSearchOutput.html",
+    "href": "reference/TransformationSearchOutput.html",
+    "title": "TransformationSearchOutput",
+    "section": "",
+    "text": "models.TransformationSearchOutput()\nModel for the output of the search_transformations tool.\nThis model provides the search results including both structured data and a formatted markdown representation for display purposes.\n\n\n\n\n\nName\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
+  },
+  {
+    "objectID": "reference/TransformationSearchOutput.html#attributes",
+    "href": "reference/TransformationSearchOutput.html#attributes",
+    "title": "TransformationSearchOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\nmarkdown_content\n\n\n\nresults"
+  },
+  {
+    "objectID": "reference/SeriesFlagsOutput.html",
+    "href": "reference/SeriesFlagsOutput.html",
+    "title": "SeriesFlagsOutput",
+    "section": "",
+    "text": "models.SeriesFlagsOutput()\nOutput model for FEWS flag analysis tool.\nThis model provides flag analysis results optimized for LLM consumption with structured data and actionable contextual description.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncounts\n\n\n\ndescription\n\n\n\nflag_counts"
+  },
+  {
+    "objectID": "reference/SeriesFlagsOutput.html#attributes",
+    "href": "reference/SeriesFlagsOutput.html#attributes",
+    "title": "SeriesFlagsOutput",
+    "section": "",
+    "text": "Name\nDescription\n\n\n\n\ncounts\n\n\n\ndescription\n\n\n\nflag_counts"
   },
   {
     "objectID": "reference/validate_xml.html",
