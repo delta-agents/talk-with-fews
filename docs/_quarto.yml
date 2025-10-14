@@ -117,7 +117,7 @@ quartodoc:
         - GetSeriesStatisticsInput
         - GetSeriesStatisticsOutput
         - SeriesFlagsInput
-        - SeriesFlagsSummary
+        - SeriesFlagsOutput
     - title: Validator tool models
       package: talk_with_fews.models
       desc: Data modellen per validator tool.
