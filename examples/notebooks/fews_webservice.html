@@ -339,26 +339,61 @@ Found 2 parameters.
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_headers_output, root_tag<span class="op">=</span><span class="st">"GetSeriesHeadersOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesHeadersOutput&gt;
-  &lt;count&gt;4&lt;/count&gt;
-  &lt;summary&gt;Found 4 parameters at location Heino.&lt;/summary&gt;
-  &lt;sample_ids&gt;|   id | type          | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |
-|-----:|:--------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|
-|    1 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-10-14 12:45:35.686000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    4 | accumulative  | im.wiwb.knmi       | KNMIUUR278   | P.G.h         | second         |                86400 |         0 |            |              | 2025-10-14 12:45:35.693000 | Heino           |        52.4339 |        6.26173 | Gemeten neerslag [mm] - uur          | mm               | accumulative     |
-|    3 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | T.air.G       | second         |                 3600 |         0 |            |              | 2025-10-14 12:45:35.691000 | Heino           |        52.4339 |        6.26173 | Temperatuur lucht [ï¿½C]             | oC               | instantaneous    |
-|    2 | instantaneous | im.wiwb.knmi       | KNMIUUR278   | TCC.O.h       | second         |                86400 |         0 |            |              | 2025-10-14 12:45:35.689000 | Heino           |        52.4339 |        6.26173 | Cloud cover observation - uur        | -                | instantaneous    |&lt;/sample_ids&gt;
-  &lt;available_filters&gt;
+  &lt;series_headers&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR278&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;Heino&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR278&lt;/location_id&gt;
+      &lt;parameter_id&gt;P.G.h&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Gemeten neerslag [mm] - uur&lt;/parameter_name&gt;
+      &lt;location_name&gt;Heino&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR278&lt;/location_id&gt;
+      &lt;parameter_id&gt;T.air.G&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Temperatuur lucht [ï¿½C]&lt;/parameter_name&gt;
+      &lt;location_name&gt;Heino&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;3600&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;instantaneous&lt;/type&gt;
+      &lt;parameter_unit&gt;oC&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR278&lt;/location_id&gt;
+      &lt;parameter_id&gt;TCC.O.h&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Cloud cover observation - uur&lt;/parameter_name&gt;
+      &lt;location_name&gt;Heino&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;instantaneous&lt;/type&gt;
+      &lt;parameter_unit&gt;-&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+  &lt;/series_headers&gt;
+  &lt;description&gt;Found 4 parameters at location 'Heino'. Use available_ids.parameters for follow-up queries.&lt;/description&gt;
+  &lt;available_ids&gt;
     &lt;parameters&gt;
       &lt;example&gt;Eref.d&lt;/example&gt;
       &lt;example&gt;P.G.h&lt;/example&gt;
       &lt;example&gt;T.air.G&lt;/example&gt;
       &lt;example&gt;TCC.O.h&lt;/example&gt;
     &lt;/parameters&gt;
-    &lt;model_types /&gt;
-  &lt;/available_filters&gt;
-  &lt;follow_up_suggestions&gt;
-    &lt;example&gt;No follow-up suggestions available yet.&lt;/example&gt;
-  &lt;/follow_up_suggestions&gt;
+  &lt;/available_ids&gt;
 &lt;/GetSeriesHeadersOutput&gt;</code></pre>
 </div>
 </div>
@@ -377,16 +412,87 @@ Found 2 parameters.
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_headers_output, root_tag<span class="op">=</span><span class="st">"GetSeriesHeadersOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesHeadersOutput&gt;
-  &lt;count&gt;7&lt;/count&gt;
-  &lt;summary&gt;Found timeseries for Eref.d across 7 locations&lt;/summary&gt;
-  &lt;sample_ids&gt;|   id | type         | moduleInstanceId   | locationId   | parameterId   | timeStepUnit   |   timeStepMultiplier |   missVal | timeZone   | qualifiers   | created_at                 | location_name   |   location_lat |   location_lon | parameter_name                       | parameter_unit   | parameter_type   |
-|-----:|:-------------|:-------------------|:-------------|:--------------|:---------------|---------------------:|----------:|:-----------|:-------------|:---------------------------|:----------------|---------------:|---------------:|:-------------------------------------|:-----------------|:-----------------|
-|    8 | accumulative | im.wiwb.knmi       | KNMIUUR235   | Eref.d        | second         |                86400 |         0 |            |              | 2025-10-14 12:45:37.151000 | De Kooy         |        52.9167 |        4.78333 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    7 | accumulative | im.wiwb.knmi       | KNMIUUR260   | Eref.d        | second         |                86400 |         0 |            |              | 2025-10-14 12:45:37.149000 | De Bilt         |        52.0992 |        5.1767  | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    6 | accumulative | im.wiwb.knmi       | KNMIUUR269   | Eref.d        | second         |                86400 |         0 |            |              | 2025-10-14 12:45:37.146000 | Lelystad        |        52.4618 |        5.52147 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    5 | accumulative | im.wiwb.knmi       | KNMIUUR275   | Eref.d        | second         |                86400 |         0 |            |              | 2025-10-14 12:45:37.143000 | Deelen          |        52.0605 |        5.88704 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |
-|    1 | accumulative | im.wiwb.knmi       | KNMIUUR278   | Eref.d        | second         |                86400 |         0 |            |              | 2025-10-14 12:45:35.686000 | Heino           |        52.4339 |        6.26173 | Referentiegewasverdamping [mm] - dag | mm               | accumulative     |&lt;/sample_ids&gt;
-  &lt;available_filters&gt;
+  &lt;series_headers&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR235&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;De Kooy&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR260&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;De Bilt&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR269&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;Lelystad&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR275&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;Deelen&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR278&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;Heino&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR280&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;Eelde&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+    &lt;example&gt;
+      &lt;location_id&gt;KNMIUUR290&lt;/location_id&gt;
+      &lt;parameter_id&gt;Eref.d&lt;/parameter_id&gt;
+      &lt;parameter_name&gt;Referentiegewasverdamping [mm] - dag&lt;/parameter_name&gt;
+      &lt;location_name&gt;Twenthe&lt;/location_name&gt;
+      &lt;time_step_unit&gt;second&lt;/time_step_unit&gt;
+      &lt;time_step_multiplier&gt;86400&lt;/time_step_multiplier&gt;
+      &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+      &lt;type&gt;accumulative&lt;/type&gt;
+      &lt;parameter_unit&gt;mm&lt;/parameter_unit&gt;
+    &lt;/example&gt;
+  &lt;/series_headers&gt;
+  &lt;description&gt;Found 7 locations with parameter 'Eref.d'. Use available_ids.locations for follow-up queries.&lt;/description&gt;
+  &lt;available_ids&gt;
     &lt;locations&gt;
       &lt;example&gt;KNMIUUR235&lt;/example&gt;
       &lt;example&gt;KNMIUUR260&lt;/example&gt;
@@ -396,11 +502,7 @@ Found 2 parameters.
       &lt;example&gt;KNMIUUR280&lt;/example&gt;
       &lt;example&gt;KNMIUUR290&lt;/example&gt;
     &lt;/locations&gt;
-    &lt;model_types /&gt;
-  &lt;/available_filters&gt;
-  &lt;follow_up_suggestions&gt;
-    &lt;example&gt;No follow-up suggestions available yet.&lt;/example&gt;
-  &lt;/follow_up_suggestions&gt;
+  &lt;/available_ids&gt;
 &lt;/GetSeriesHeadersOutput&gt;</code></pre>
 </div>
 </div>
@@ -657,7 +759,7 @@ Found 2 parameters.
 <h2 class="anchored" data-anchor-id="sec-get-series-statistics">Get Series Statistics</h2>
 <p>Met de meta data die we hebben opgehaald, kunnen we nu de series statistieken ophalen. Dit is iets sneller dan de data zelf ophalen, en scheelt data overdracht. Hier moet een parameter en locatie id worden opgegeven, waar de data van wordt opgehaald. Daarnaast ook de tijden waarover de statistieken moeten worden berekend.</p>
 <div id="cell-19" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>location_id <span class="op">=</span> get_series_headers_output.available_filters[<span class="st">"locations"</span>][<span class="dv">1</span>]</span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>location_id <span class="op">=</span> get_series_headers_output.available_ids[<span class="st">"locations"</span>][<span class="dv">1</span>]</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>parameter_id, location_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>('Eref.d', 'KNMIUUR260')</code></pre>
