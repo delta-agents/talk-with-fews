@@ -1,35 +1,64 @@
 """
-Pydantic models for the get_series_headers tool.
+Pydantic models for the get_series_statistics tool.
 
-This module defines the models used by the get_series_headers tool to retrieve
+This module defines the models used by the get_series_statistics tool to retrieve
 series statistics from the FEWS webservice with incremental caching.
 """
 
 from datetime import datetime
 from pydantic import BaseModel, Field, model_validator
-from typing import Optional
+from typing import Optional, Dict, Any
+from enum import Enum
 
 from pydantic_ai import ModelRetry
 from talk_with_fews.models.base import LaxBaseModel
+
+
+class IntervalType(str, Enum):
+    """Interval types for temporal analysis."""
+
+    WEEK_DAY = "WEEK_DAY"
+    CALENDAR_DAY = "CALENDAR_DAY"
+    MONTH = "MONTH"
+    CALENDAR_MONTH = "CALENDAR_MONTH"
+    YEAR = "YEAR"
 
 
 class GetSeriesStatisticsInput(LaxBaseModel):
     """
     GetSeriesStatisticsInput defines the input parameters for retrieving series statistics.
 
+    Requires a valid parameter_id + location_id combination that exists in the FEWS service.
+    Use get_series_headers to find valid combinations before calling this function.
+
     Supports querying by parameter_id AND location_id for incremental caching.
+    Can provide both data summary and interval analysis for comprehensive insights.
 
     This model can handle both object input and string input that represents a dict.
     """
 
     parameter_id: str = Field(
-        ..., description="Parameter ID to retrieve series headers for (e.g., 'Kwel')"
+        ...,
+        description="Parameter ID that exists for the given location_id (use get_series_headers to find valid combinations)",
     )
     location_id: str = Field(
-        ..., description="Location ID to retrieve series headers for (e.g., 'GPG_1698')"
+        ...,
+        description="Location ID that exists for the given parameter_id (use get_series_headers to find valid combinations)",
     )
-    start_time: datetime = Field(description="Start date time of the analysis period")
-    end_time: datetime = Field(description="End date time of the analysis period")
+    start_time: datetime = Field(
+        description="Start date time for interval analysis (data summary uses full available range, not this range)"
+    )
+    end_time: datetime = Field(
+        description="End date time for interval analysis (data summary uses full available range, not this range)"
+    )
+    include_interval_analysis: bool = Field(
+        default=True,
+        description="Whether to include interval analysis for temporal patterns (monthly, daily, etc.)",
+    )
+    interval_type: IntervalType = Field(
+        default=IntervalType.MONTH,
+        description="Interval type for temporal analysis. Only used when include_interval_analysis=True.",
+    )
 
     @model_validator(mode="after")
     def validate_exclusive_fields(cls, values):
@@ -41,21 +70,50 @@ class GetSeriesStatisticsInput(LaxBaseModel):
 
 class GetSeriesStatisticsOutput(BaseModel):
     """
-    GetSeriesStatisticsOutput provides a minimal but meaningful response for series statistics.
+    GetSeriesStatisticsOutput provides series data summary with interval analysis.
 
-    Designed for cost optimization in AI applications while providing actionable information
-    and enabling follow-up questions.
+    Returns data characteristics (min/max values, units, count), time information
+    (data range, time step), and interval statistics (monthly/daily patterns) to
+    help decide whether to call get_series_data for detailed analysis.
     """
 
-    count: int = Field(..., description="Total number of series found")
-    description: Optional[str] = Field(
-        None, description="Short description of the FEWS series or its context"
+    # Core data summary
+    description: str = Field(
+        ...,
+        description="Contextual description with data summary and actionable insights",
     )
-    min_value: Optional[str] = Field(None, description="Minimum value across series")
-    max_value: Optional[str] = Field(None, description="Maximum value across series")
+
+    # Data characteristics
+    min_value: Optional[str] = Field(
+        None,
+        description="Minimum value across series (from full available data range, not requested time range)",
+    )
+    max_value: Optional[str] = Field(
+        None,
+        description="Maximum value across series (from full available data range, not requested time range)",
+    )
+    parameter_units: Optional[str] = Field(
+        None, description="Parameter units (e.g., 'mm', 'm3/s', '°C')"
+    )
+
+    # Time information
     first_value_time: Optional[datetime] = Field(
-        None, description="Earliest start date among series "
+        None, description="Earliest data point timestamp in the series"
     )
     last_value_time: Optional[datetime] = Field(
-        None, description="Latest end date among series"
+        None, description="Latest data point timestamp in the series"
+    )
+    time_step: Optional[str] = Field(
+        None,
+        description="Time step description (e.g., 'Daily data', 'Hourly data', 'Data every 6 hours', 'Irregular time intervals (nonequidistant)')",
+    )
+
+    # Analysis and estimation
+    interval_analysis: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Temporal analysis results including patterns by interval (monthly, daily, etc.)",
+    )
+    estimated_data_points_in_range: Optional[int] = Field(
+        None,
+        description="Estimated number of data points if get_series_data is called with the same start_time/end_time range (only for equidistant data)",
     )

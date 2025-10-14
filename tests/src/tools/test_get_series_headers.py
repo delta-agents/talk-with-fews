@@ -17,7 +17,7 @@ from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
 from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from tests.utils_tests import setup_dot_env
-from tests.test_data_helpers import get_test_assertion_data
+from tests.test_config import get_test_service_config
 
 
 # Parallel tests removed - they require proper database setup for all services
@@ -28,10 +28,11 @@ def test_get_series_headers_by_parameter():
     """
     # Setup environment
     user_settings = setup_dot_env()
-    test_data = get_test_assertion_data()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
 
     # Create input for parameter-based query
-    input_data = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
+    input_data = GetSeriesHeadersInput(parameter_id=test_data["parameter_ids"][0])
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -47,7 +48,7 @@ def test_get_series_headers_by_parameter():
     assert isinstance(output.available_ids, dict)
 
     # Check that description mentions the parameter
-    assert test_data["parameter_id"] in output.description
+    assert test_data["parameter_ids"][0] in output.description
 
     # Check that available_ids contains expected keys for parameter query
     if len(output.series_headers) > 0:
@@ -60,10 +61,11 @@ def test_get_series_headers_by_location():
     """
     # Setup environment
     user_settings = setup_dot_env()
-    test_data = get_test_assertion_data()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
 
     # Create input for location-based query
-    input_data = GetSeriesHeadersInput(location_id=test_data["location_id"])
+    input_data = GetSeriesHeadersInput(location_id=test_data["location_ids"][0])
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -80,7 +82,7 @@ def test_get_series_headers_by_location():
 
     # Check that description mentions the location (either ID or name)
     # The description might contain either the location ID or the location name
-    location_id = test_data["location_id"]
+    location_id = test_data["location_ids"][0]
     location_mentioned = location_id in output.description or any(
         header.get("location_name") in output.description
         for header in output.series_headers
@@ -138,7 +140,8 @@ def test_ingest_series_headers_by_parameter():
     """
     # Setup environment
     user_settings = setup_dot_env()
-    test_data = get_test_assertion_data()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -150,7 +153,7 @@ def test_ingest_series_headers_by_parameter():
         ingest_series_headers(
             webservice_url=webservice_url,
             cache_FewsWebServices_db=cache_FewsWebServices_db,
-            parameter_id=test_data["parameter_id"],
+            parameter_id=test_data["parameter_ids"][0],
         )
     )
 
@@ -162,7 +165,7 @@ def test_ingest_series_headers_by_parameter():
     assert len(output.sql_examples) >= 1  # Should have at least one SQL example
 
     # Check that description mentions the parameter
-    assert test_data["parameter_id"] in output.description
+    assert test_data["parameter_ids"][0] in output.description
 
 
 def test_ingest_series_headers_by_location():
@@ -171,7 +174,8 @@ def test_ingest_series_headers_by_location():
     """
     # Setup environment
     user_settings = setup_dot_env()
-    test_data = get_test_assertion_data()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -183,7 +187,7 @@ def test_ingest_series_headers_by_location():
         ingest_series_headers(
             webservice_url=webservice_url,
             cache_FewsWebServices_db=cache_FewsWebServices_db,
-            location_id=test_data["location_id"],
+            location_id=test_data["location_ids"][0],
         )
     )
 
@@ -195,7 +199,7 @@ def test_ingest_series_headers_by_location():
     assert len(output.sql_examples) >= 1  # Should have at least one SQL example
 
     # Check that description mentions the location
-    assert test_data["location_id"] in output.description
+    assert test_data["location_ids"][0] in output.description
 
 
 def test_ingest_series_headers_invalid_input():
@@ -254,17 +258,18 @@ def test_series_headers_caching():
     """
     # Setup environment
     user_settings = setup_dot_env()
-    test_data = get_test_assertion_data()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
 
     # First call - should trigger ingestion
-    input_data1 = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
+    input_data1 = GetSeriesHeadersInput(parameter_id=test_data["parameter_ids"][0])
     output1 = asyncio.run(get_series_headers(ctx, input_data1))
 
     # Second call - should use cache
-    input_data2 = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
+    input_data2 = GetSeriesHeadersInput(parameter_id=test_data["parameter_ids"][0])
     output2 = asyncio.run(get_series_headers(ctx, input_data2))
 
     # Both outputs should be identical (same data from cache)
@@ -279,10 +284,11 @@ def test_series_headers_output_structure():
     """
     # Setup environment
     user_settings = setup_dot_env()
-    test_data = get_test_assertion_data()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
 
     # Create input
-    input_data = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
+    input_data = GetSeriesHeadersInput(parameter_id=test_data["parameter_ids"][0])
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)

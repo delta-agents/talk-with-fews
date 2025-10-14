@@ -29,11 +29,21 @@ def fews_parallel(*services):
     def decorator(test_func):
         @wraps(test_func)
         def wrapper(service, *args, **kwargs):
-            # Set the service explicitly
-            os.environ["FEWS_TEST_SERVICE"] = service
+            # Store the original value to restore later
+            original_service = os.environ.get("FEWS_TEST_SERVICE")
 
-            # Call the original test function with just the service parameter
-            return test_func(service, *args, **kwargs)
+            try:
+                # Set the service explicitly for this test instance
+                os.environ["FEWS_TEST_SERVICE"] = service
+
+                # Call the original test function with just the service parameter
+                return test_func(service, *args, **kwargs)
+            finally:
+                # Restore the original value
+                if original_service is not None:
+                    os.environ["FEWS_TEST_SERVICE"] = original_service
+                else:
+                    os.environ.pop("FEWS_TEST_SERVICE", None)
 
         # Check if running in CI
         is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
