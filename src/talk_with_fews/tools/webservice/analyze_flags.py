@@ -13,7 +13,7 @@ from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
 from talk_with_fews.models.flags.counts import FlagCount, FlagCounts
 from talk_with_fews.models.flags.errors import UnknownFlagError, InvalidTimeRangeError
-from talk_with_fews.models.flags.io import SeriesFlagsInput, SeriesFlagsSummary
+from talk_with_fews.models.flags.io import SeriesFlagsInput, SeriesFlagsOutput
 from talk_with_fews.models.flags.mappings import QUALITY_FLAGS
 from talk_with_fews.models.get_series_data import TimeseriesValue
 from talk_with_fews.tools.webservice.get_series_data import get_series_data
@@ -35,6 +35,14 @@ def validate_time_range(start_time: datetime, end_time: datetime) -> None:
 
     # Ensure timezone-aware comparison
     now = datetime.now(timezone.utc)
+
+    # Handle timezone-naive datetimes by treating them as UTC
+    # This is a reasonable assumption for FEWS data
+    if start_time.tzinfo is None:
+        start_time = start_time.replace(tzinfo=timezone.utc)
+    if end_time.tzinfo is None:
+        end_time = end_time.replace(tzinfo=timezone.utc)
+
     if start_time > now or end_time > now:
         raise InvalidTimeRangeError("Time range cannot be in the future")
 
@@ -85,8 +93,17 @@ async def count_series_flags(values: List[TimeseriesValue]) -> Dict[str, Any]:
         # Calculate percentage
         percentage = (count / total_values) * 100 if total_values > 0 else 0
 
-        # Create flag count
-        flag_counts.append(FlagCount(flag=flag, count=count, percentage=percentage))
+        # Create flag count with definition
+        flag_counts.append(
+            FlagCount(
+                flag=flag,
+                count=count,
+                percentage=percentage,
+                origin=flag_def.origin,
+                quality=flag_def.quality,
+                description=flag_def.description,
+            )
+        )
 
     return {
         "counts": flag_counts,
@@ -99,7 +116,7 @@ async def count_series_flags(values: List[TimeseriesValue]) -> Dict[str, Any]:
 @log_tool_call
 async def analyze_series_flags(
     ctx: RunContext[Deps], input: SeriesFlagsInput
-) -> SeriesFlagsSummary:
+) -> SeriesFlagsOutput:
     """
     Summarize FEWS flags in a timeseries.
 
@@ -128,15 +145,44 @@ async def analyze_series_flags(
     # 2. Get timeseries with flags
     series_data = await get_series_data(ctx, input)
 
-    # 3. Count flags
+    # 3. Handle empty data case
+    if not series_data.values:
+        return SeriesFlagsOutput(
+            description=f"No data found for parameter '{input.parameter_id}' and location '{input.location_id}'. This location-parameter combination has no data in the specified time range.",
+            flag_counts=[],
+            counts=FlagCounts(
+                total_values=0,
+                missing_values=0,
+                reliable_count=0,
+                doubtful_count=0,
+                unreliable_count=0,
+                reliable_percentage=0.0,
+                doubtful_percentage=0.0,
+                unreliable_percentage=0.0,
+            ),
+        )
+
+    # 4. Count flags
     flag_analysis = await count_series_flags(series_data.values)
 
-    # 4. Create summary
-    return SeriesFlagsSummary(
-        total_values=flag_analysis["total_values"],
-        start_date=format_datetime(input.start_time),
-        end_date=format_datetime(input.end_time),
-        flag_definitions=QUALITY_FLAGS,
+    # 5. Create contextual description
+    description = f"Flag analysis for {input.parameter_id} at {input.location_id}: {flag_analysis['total_values']} values analyzed from {format_datetime(input.start_time)} to {format_datetime(input.end_time)}. "
+
+    reliable_pct = (
+        flag_analysis["quality_counts"]["Reliable"] / flag_analysis["total_values"]
+    ) * 100
+    doubtful_pct = (
+        flag_analysis["quality_counts"]["Doubtful"] / flag_analysis["total_values"]
+    ) * 100
+    unreliable_pct = (
+        flag_analysis["quality_counts"]["Unreliable"] / flag_analysis["total_values"]
+    ) * 100
+
+    description += f"Data quality: {reliable_pct:.1f}% reliable, {doubtful_pct:.1f}% doubtful, {unreliable_pct:.1f}% unreliable."
+
+    # 6. Create output
+    return SeriesFlagsOutput(
+        description=description,
         flag_counts=flag_analysis["counts"],
         counts=FlagCounts(
             total_values=flag_analysis["total_values"],
@@ -144,26 +190,8 @@ async def analyze_series_flags(
             reliable_count=flag_analysis["quality_counts"]["Reliable"],
             doubtful_count=flag_analysis["quality_counts"]["Doubtful"],
             unreliable_count=flag_analysis["quality_counts"]["Unreliable"],
-            reliable_percentage=(
-                flag_analysis["quality_counts"]["Reliable"]
-                / flag_analysis["total_values"]
-            )
-            * 100
-            if flag_analysis["total_values"] > 0
-            else 0,
-            doubtful_percentage=(
-                flag_analysis["quality_counts"]["Doubtful"]
-                / flag_analysis["total_values"]
-            )
-            * 100
-            if flag_analysis["total_values"] > 0
-            else 0,
-            unreliable_percentage=(
-                flag_analysis["quality_counts"]["Unreliable"]
-                / flag_analysis["total_values"]
-            )
-            * 100
-            if flag_analysis["total_values"] > 0
-            else 0,
+            reliable_percentage=reliable_pct,
+            doubtful_percentage=doubtful_pct,
+            unreliable_percentage=unreliable_pct,
         ),
     )

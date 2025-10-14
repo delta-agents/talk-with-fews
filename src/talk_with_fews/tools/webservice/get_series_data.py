@@ -160,7 +160,16 @@ async def get_series_data(
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
         if response.status_code != 200:
-            raise Exception(f"Failed to fetch data: {response.text}")
+            # Check if it's a "No timeSeries found" error
+            if "No timeSeries found" in response.text:
+                # Return empty data instead of raising an error
+                return GetSeriesDataOutput(
+                    values=[],
+                    metadata={},
+                    csv_data="datetime,location_id,station_name,parameter_id,moduleinstance_id,value,flag",
+                )
+            else:
+                raise Exception(f"Failed to fetch data: {response.text}")
         xml_content = response.text
 
     # Parse response and convert to CSV

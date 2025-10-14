@@ -5,12 +5,11 @@ These models define the input parameters and output structure.
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import List
 
 from pydantic import BaseModel, Field
 
 from .counts import FlagCount, FlagCounts
-from .definitions import FlagDefinition
 
 
 class DateRange(BaseModel):
@@ -33,31 +32,27 @@ class SeriesFlagsInput(BaseModel):
     )
 
 
-class SeriesFlagsSummary(BaseModel):
-    """Summary of FEWS flags in a timeseries"""
+class SeriesFlagsOutput(BaseModel):
+    """Output model for FEWS flag analysis tool.
 
-    # Basic information
-    total_values: int = Field(..., description="Total number of values")
-    # this was a date range, but we now use ISO 8601 strings as needs to be serializable
-    start_date: str = Field(
-        ..., description="Start date time of the analysis period in ISO 8601 format"
-    )
-    end_date: str = Field(
-        ..., description="End date time of the analysis period in ISO 8601 format"
-    )
-    ## TODO: change above to and check it works
-    # start_time: datetime = Field(..., description="Start time for analysis")
-    # end_time: datetime = Field(..., description="End time for analysis")
+    This model provides flag analysis results optimized for LLM consumption with
+    structured data and actionable contextual description.
+    """
 
-    # Standard FEWS flag definitions
-    flag_definitions: Dict[int, FlagDefinition] = Field(
-        ..., description="Metadata about each flag type"
+    # Core information - lean and mean like GetSeriesHeadersOutput
+    description: str = Field(
+        ...,
+        description="Contextual description with actionable insights for data quality assessment",
     )
 
-    # Actual counts from timeseries
+    # Essential flag analysis data (includes flag definitions)
     flag_counts: List[FlagCount] = Field(
-        ..., description="Count of each flag occurrence"
+        ...,
+        description="Count of each flag occurrence with percentages and flag definitions",
     )
 
-    # Summary counts
-    counts: FlagCounts = Field(..., description="Comprehensive count summary")
+    # Summary statistics
+    counts: FlagCounts = Field(
+        ...,
+        description="Comprehensive count summary (total, reliable, doubtful, unreliable counts and percentages)",
+    )

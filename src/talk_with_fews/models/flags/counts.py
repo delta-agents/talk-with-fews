@@ -6,13 +6,20 @@ from pydantic import BaseModel, Field
 
 
 class FlagCount(BaseModel):
-    """Count of a specific FEWS flag occurrence"""
+    """Count of a specific FEWS flag occurrence with its definition"""
 
     flag: int = Field(..., description="Flag number (0-9)")
     count: int = Field(..., description="Number of occurrences")
     percentage: float = Field(
         ..., description="Percentage of total values with this flag"
     )
+    origin: str = Field(
+        ..., description="Origin of the data (Original/Corrected/Completed)"
+    )
+    quality: str = Field(
+        ..., description="Quality level (Reliable/Doubtful/Unreliable)"
+    )
+    description: str = Field(..., description="Detailed description of the flag")
 
 
 class FlagCounts(BaseModel):
