@@ -13,20 +13,17 @@ from functools import wraps
 def fews_parallel(*services):
     """
     Decorator to run a test function in parallel against multiple FEWS services.
+    Automatically detects CI and only runs against production service in CI.
 
     Usage:
-        # For local testing - all services
         @fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
         def test_get_locations(service):
-            pass
-
-        # For GitHub Actions - production only
-        @fews_parallel("actueelwaterbeeld")
-        def test_get_locations(service):
+            # In CI: only runs against "actueelwaterbeeld"
+            # Locally: runs against all 5 services
             pass
 
     Args:
-        *services: List of service names to test against
+        *services: List of service names to test against (CI will only use first one)
     """
 
     def decorator(test_func):
@@ -38,8 +35,18 @@ def fews_parallel(*services):
             # Call the original test function with just the service parameter
             return test_func(service, *args, **kwargs)
 
+        # Check if running in CI
+        is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
+
+        if is_ci:
+            # In CI, only run against the first service (should be actueelwaterbeeld)
+            services_to_use = [services[0]] if services else []
+        else:
+            # Locally, run against all services
+            services_to_use = services
+
         # Mark the test for parallel execution
-        wrapper = pytest.mark.parametrize("service", services)(wrapper)
+        wrapper = pytest.mark.parametrize("service", services_to_use)(wrapper)
         return wrapper
 
     return decorator

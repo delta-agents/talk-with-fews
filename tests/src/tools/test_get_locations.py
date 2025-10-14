@@ -50,11 +50,3 @@ def test_get_locations(service):
     assert len(output.locations) <= test_data["expected_location_count"]
     assert isinstance(output.description, str)
     assert "Found" in output.description or "No locations found" in output.description
-
-
-# Optional: Keep only if you need CI-specific testing
-# @fews_production_only
-# def test_get_locations_production(service):
-#     """Test only against production service (for CI)."""
-#     # Same logic as test_get_locations but only runs against actueelwaterbeeld
-#     pass
