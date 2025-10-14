@@ -247,12 +247,15 @@ async def get_series_statistics(
     """
     Retrieve series statistics from FEWS webservice.
 
+    Requires a valid parameter_id + location_id combination that exists in the FEWS service.
+    Use get_series_headers to find valid combinations before calling this function.
+
     Args:
         ctx: RunContext with database connection
-        input: GetSeriesHeadersInput containing parameter_id AND location_id
+        input: GetSeriesStatisticsInput containing parameter_id AND location_id
 
     Returns:
-        GetSeriesStatisticsOutput with series headers summary and follow-up suggestions
+        GetSeriesStatisticsOutput with series statistics and actionable insights
     """
 
     # Validate input
@@ -406,7 +409,7 @@ async def get_series_statistics(
                     parameter_id,
                     input.start_time,
                     input.end_time,
-                    input.interval_type,
+                    input.interval_type.value,
                 )
 
             # Estimate data points in requested range
@@ -431,7 +434,7 @@ async def get_series_statistics(
                 time_step_description,
                 parameter_units,
                 interval_analysis,
-                input.interval_type,
+                input.interval_type.value,
             )
 
             return GetSeriesStatisticsOutput(
@@ -468,7 +471,7 @@ async def get_series_statistics(
                     parameter_id,
                     input.start_time,
                     input.end_time,
-                    input.interval_type,
+                    input.interval_type.value,
                 )
 
             # Estimate data points in requested range
@@ -493,7 +496,7 @@ async def get_series_statistics(
                 time_step_description,
                 parameter_units,
                 interval_analysis,
-                input.interval_type,
+                input.interval_type.value,
             )
 
             return GetSeriesStatisticsOutput(
