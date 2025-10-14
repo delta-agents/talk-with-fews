@@ -63,9 +63,19 @@ def parse_series_headers_xml(xml_content: str, start_id: int) -> List[SeriesHead
         time_step_unit = (
             time_step_elem.get("unit") if time_step_elem is not None else None
         )
-        time_step_multiplier = (
-            int(time_step_elem.get("multiplier")) if time_step_elem is not None else 1
-        )
+        # Handle timeStep multiplier based on unit type
+        time_step_multiplier = 1  # Default for equidistant time steps
+        if time_step_elem is not None:
+            unit = time_step_elem.get("unit")
+            if unit == "nonequidistant":
+                # For nonequidistant time steps, multiplier is not applicable
+                # Use 0 to indicate irregular intervals
+                time_step_multiplier = 0
+            else:
+                # For equidistant time steps, use the multiplier if present
+                multiplier_attr = time_step_elem.get("multiplier")
+                if multiplier_attr is not None:
+                    time_step_multiplier = int(multiplier_attr)
 
         # Extract qualifiers
         qualifiers_elem = header_elem.find("pi:qualifiers", namespace)
