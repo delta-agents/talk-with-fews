@@ -22,6 +22,7 @@ from talk_with_fews.tools.webservice.analyze_flags import (
     analyze_series_flags,
 )
 from tests.utils_tests import setup_dot_env
+from tests.parallel_decorator import fews_parallel
 
 
 def create_test_values(flags: List[int]) -> List[TimeseriesValue]:
@@ -208,3 +209,85 @@ async def test_analyze_series_flags_invalid_time_range(test_context):
     with pytest.raises(InvalidTimeRangeError) as exc:
         await analyze_series_flags(test_context, input)
     assert "future" in str(exc.value)
+
+
+@fews_parallel("actueelwaterbeeld", "wsvv")
+def test_analyze_series_flags_datetime_comparison_error(service):
+    """
+    Test that reproduces the WSVV datetime comparison error.
+
+    This test should:
+    - PASS for actueelwaterbeeld (working service)
+    - FAIL for wsvv with: "can't compare offset-naive and offset-aware datetimes"
+
+    Issue: https://github.com/HKV-products-services/talk-with-fews/issues/76
+
+    NOTE: This test currently passes for both services, suggesting the datetime
+    error may have been fixed or occurs under different conditions. The test
+    serves as a regression test to catch the error if it reappears.
+    """
+    import asyncio
+    import os
+
+    # Set service explicitly
+    os.environ["FEWS_TEST_SERVICE"] = service
+
+    # Get service-specific configuration
+    from tests.test_config import get_test_service_config
+
+    user_settings = setup_dot_env()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
+
+    # Use service-specific parameters from test config
+    if service == "wsvv":
+        # WSVV: Use exact parameters from issue #76 (timezone-naive datetimes)
+        location_id = "HL000141"
+        parameter_id = "H.G"  # Original parameter from issue
+        start_time = datetime(2024, 1, 1)  # No timezone - this might cause the error!
+        end_time = datetime(2024, 1, 14)  # No timezone - this might cause the error!
+        print(
+            f"Testing WSVV with original issue parameters: {location_id}/{parameter_id}"
+        )
+        print(f"Using timezone-naive datetimes: {start_time} to {end_time}")
+    else:
+        # actueelwaterbeeld: Use working parameters from test config
+        location_id = test_data["location_ids"][0]  # "KNMIUUR278"
+        parameter_id = test_data["parameter_ids"][0]  # "Eref.d"
+        start_time = datetime(2025, 1, 1, tzinfo=timezone.utc)
+        end_time = datetime(2025, 2, 1, tzinfo=timezone.utc)
+        print(
+            f"Testing {service} with working parameters: {location_id}/{parameter_id}"
+        )
+
+    # Create test input
+    input_data = SeriesFlagsInput(
+        location_id=location_id,
+        parameter_id=parameter_id,
+        start_time=start_time,
+        end_time=end_time,
+    )
+
+    # Create context
+    ctx = get_runtime_ctx(user_settings)
+
+    try:
+        # This should work for both services now (error may have been fixed)
+        result = asyncio.run(analyze_series_flags(ctx, input_data))
+
+        # If we get here, the test passed
+        assert result is not None
+        print(f"{service} test passed - {result.total_values} values found")
+
+    except Exception as e:
+        error_msg = str(e)
+        print(f"{service} test failed with error: {error_msg}")
+
+        if service == "wsvv" and "offset-naive and offset-aware" in error_msg:
+            print("✅ Successfully reproduced the datetime comparison error for WSVV!")
+            # This is the expected failure, so we raise it to fail the test
+            raise
+        else:
+            # Unexpected error or error on actueelwaterbeeld
+            print(f"❌ Unexpected error on {service}: {error_msg}")
+            raise
