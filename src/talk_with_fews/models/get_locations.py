@@ -16,9 +16,9 @@ class GetLocationInput(LaxBaseModel):
 
     Attributes:
         number_of_locations (Optional[int]): The maximum number of locations to retrieve.
-        filter_locations_name (Optional[str]): An optional name filter for locations names, using the SQL LIKE functionality.
+        filter_locations_name (Optional[str]): An optional filter to search locations by their locationId, shortName, or description, using the SQL LIKE functionality.
 
-    This model allows flexible querying of location data, supporting both general and name-specific searches,
+    This model allows flexible querying of location data, supporting both general and ID/name/description-specific searches,
     and limiting the number of results returned.
     """
 
@@ -27,7 +27,7 @@ class GetLocationInput(LaxBaseModel):
     )
     filter_locations_name: Optional[str] = Field(
         None,
-        description="Optional string used to filter the locations returned by using sql LIKE functionality",
+        description="Optional string used to filter locations by searching locationId, shortName, and description using SQL LIKE functionality",
     )
 
     @model_validator(mode="after")
@@ -38,18 +38,14 @@ class GetLocationInput(LaxBaseModel):
 
 
 class GetLocationOutput(BaseModel):
-    """Model for the output of the location_details
-      tool.
+    """Model for the output of the get_locations tool.
 
-    This model provides the search results including both structured data
-    and a formatted markdown representation for display purposes.
+    This model provides search results optimized for LLM consumption with
+    structured data and actionable contextual description.
     """
 
-    locations: Optional[List[Location]] = Field(
-        None, description="Optional list of associated transformations"
-    )
-
-    markdown_content: str = Field(
+    locations: List[Location] = Field(..., description="List of matching locations")
+    description: str = Field(
         ...,
-        description="Pre-formatted markdown string that displays the search results in a human-readable format",
+        description="Contextual description with actionable insights for follow-up analysis",
     )

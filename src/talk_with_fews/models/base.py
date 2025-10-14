@@ -138,12 +138,14 @@ class Location(BaseModel):
     shortName: str = Field(..., description="Short name of the location")
     lat: float = Field(..., description="Latitude coordinate")
     lon: float = Field(..., description="Longitude coordinate")
-    x: float = Field(..., description="X coordinate")
-    y: float = Field(..., description="Y coordinate")
+    x: float | None = Field(None, description="X coordinate")
+    y: float | None = Field(None, description="Y coordinate")
     z: float | None = Field(..., description="Z coordinate (elevation)")
     geoDatum: str = Field(
         ..., description="Geographic datum used for the location coordinates"
     )
+    description: str | None = Field(None, description="Description of the location")
+    parentLocationId: str | None = Field(None, description="ID of the parent location")
     attributes: Optional[List[Dict[str, Any]]] | None = Field(
         None, description="List of location attributes"
     )

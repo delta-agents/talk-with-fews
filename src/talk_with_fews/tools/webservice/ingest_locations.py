@@ -69,6 +69,8 @@ def ingest_locations(
             y=value["y"],
             z=value["z"],
             geoDatum=data["geoDatum"],  # in the main data, but still use full to have
+            description=value.get("description"),
+            parentLocationId=value.get("parentLocationId"),
             attributes=value["attributes"],
             relations=value["relations"],
         )
@@ -87,6 +89,8 @@ def ingest_locations(
                 "y": float(loc.y) if loc.y else None,
                 "z": float(loc.z) if loc.z else None,
                 "geoDatum": loc.geoDatum,
+                "description": loc.description,
+                "parentLocationId": loc.parentLocationId,
                 "attributes": json.dumps(loc.attributes) if loc.attributes else None,
                 "relations": json.dumps(loc.relations)
                 if hasattr(loc, "relations") and loc.relations
@@ -118,6 +122,8 @@ def ingest_locations(
             y DOUBLE,
             z DOUBLE,
             geoDatum VARCHAR,
+            description VARCHAR,
+            parentLocationId VARCHAR,
             attributes VARCHAR,
             relations VARCHAR,
             geom GEOMETRY, -- Add geometry column for spatial data
