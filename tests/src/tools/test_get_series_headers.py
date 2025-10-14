@@ -17,17 +17,21 @@ from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
 from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from tests.utils_tests import setup_dot_env
+from tests.test_data_helpers import get_test_assertion_data
 
 
+# Parallel tests removed - they require proper database setup for all services
+# Use the individual tests below instead
 def test_get_series_headers_by_parameter():
     """
     Test the get_series_headers function with parameter-based query.
     """
     # Setup environment
     user_settings = setup_dot_env()
+    test_data = get_test_assertion_data()
 
     # Create input for parameter-based query
-    input_data = GetSeriesHeadersInput(parameter_id="Kwel")
+    input_data = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -43,7 +47,7 @@ def test_get_series_headers_by_parameter():
     assert isinstance(output.available_ids, dict)
 
     # Check that description mentions the parameter
-    assert "Kwel" in output.description
+    assert test_data["parameter_id"] in output.description
 
     # Check that available_ids contains expected keys for parameter query
     if len(output.series_headers) > 0:
@@ -56,11 +60,10 @@ def test_get_series_headers_by_location():
     """
     # Setup environment
     user_settings = setup_dot_env()
+    test_data = get_test_assertion_data()
 
     # Create input for location-based query
-    # input_data = GetSeriesHeadersInput(location_id="GPG_1698")  # HDSR
-    # input_data = GetSeriesHeadersInput(location_id="WS000323")  # WSVV
-    input_data = GetSeriesHeadersInput(location_id="KNMIUUR275")
+    input_data = GetSeriesHeadersInput(location_id=test_data["location_id"])
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -76,7 +79,15 @@ def test_get_series_headers_by_location():
     assert isinstance(output.available_ids, dict)
 
     # Check that description mentions the location (either ID or name)
-    assert "KNMIUUR275" in output.description or "Deelen" in output.description
+    # The description might contain either the location ID or the location name
+    location_id = test_data["location_id"]
+    location_mentioned = location_id in output.description or any(
+        header.get("location_name") in output.description
+        for header in output.series_headers
+    )
+    assert location_mentioned, (
+        f"Location ID '{location_id}' or location name not found in description: '{output.description}'"
+    )
 
     # Check that available_ids contains expected keys for location query
     if len(output.series_headers) > 0:
@@ -127,6 +138,7 @@ def test_ingest_series_headers_by_parameter():
     """
     # Setup environment
     user_settings = setup_dot_env()
+    test_data = get_test_assertion_data()
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -138,7 +150,7 @@ def test_ingest_series_headers_by_parameter():
         ingest_series_headers(
             webservice_url=webservice_url,
             cache_FewsWebServices_db=cache_FewsWebServices_db,
-            parameter_id="Kwel",
+            parameter_id=test_data["parameter_id"],
         )
     )
 
@@ -150,7 +162,7 @@ def test_ingest_series_headers_by_parameter():
     assert len(output.sql_examples) >= 1  # Should have at least one SQL example
 
     # Check that description mentions the parameter
-    assert "Kwel" in output.description
+    assert test_data["parameter_id"] in output.description
 
 
 def test_ingest_series_headers_by_location():
@@ -159,6 +171,7 @@ def test_ingest_series_headers_by_location():
     """
     # Setup environment
     user_settings = setup_dot_env()
+    test_data = get_test_assertion_data()
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
@@ -170,7 +183,7 @@ def test_ingest_series_headers_by_location():
         ingest_series_headers(
             webservice_url=webservice_url,
             cache_FewsWebServices_db=cache_FewsWebServices_db,
-            location_id="GPG_1698",
+            location_id=test_data["location_id"],
         )
     )
 
@@ -182,7 +195,7 @@ def test_ingest_series_headers_by_location():
     assert len(output.sql_examples) >= 1  # Should have at least one SQL example
 
     # Check that description mentions the location
-    assert "GPG_1698" in output.description
+    assert test_data["location_id"] in output.description
 
 
 def test_ingest_series_headers_invalid_input():
@@ -241,16 +254,17 @@ def test_series_headers_caching():
     """
     # Setup environment
     user_settings = setup_dot_env()
+    test_data = get_test_assertion_data()
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
 
     # First call - should trigger ingestion
-    input_data1 = GetSeriesHeadersInput(parameter_id="Kwel")
+    input_data1 = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
     output1 = asyncio.run(get_series_headers(ctx, input_data1))
 
     # Second call - should use cache
-    input_data2 = GetSeriesHeadersInput(parameter_id="Kwel")
+    input_data2 = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
     output2 = asyncio.run(get_series_headers(ctx, input_data2))
 
     # Both outputs should be identical (same data from cache)
@@ -265,9 +279,10 @@ def test_series_headers_output_structure():
     """
     # Setup environment
     user_settings = setup_dot_env()
+    test_data = get_test_assertion_data()
 
     # Create input
-    input_data = GetSeriesHeadersInput(parameter_id="Kwel")
+    input_data = GetSeriesHeadersInput(parameter_id=test_data["parameter_id"])
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
