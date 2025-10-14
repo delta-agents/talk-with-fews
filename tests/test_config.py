@@ -43,8 +43,8 @@ FEWS_SERVICES = {
         db_path="data/HDSR_wis.db3",
         test_data={
             "location_filters": ["gouda", "utrecht", "leiden"],
-            "location_ids": ["GPG_1698", "GPG_1700"],
-            "parameter_ids": ["WaterLevel", "Discharge", "Precipitation"],
+            "location_ids": ["beg_109", "beg_110"],
+            "parameter_ids": ["BG.b.0", "H.G"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
@@ -57,8 +57,13 @@ FEWS_SERVICES = {
         db_path="data/WSDD_wis.db3",
         test_data={
             "location_filters": ["den_haag", "delft", "zoetermeer"],
-            "location_ids": ["HL000141", "WS000323", "WS000324"],
-            "parameter_ids": ["H.G", "WaterLevel", "Discharge", "Temperature"],
+            "location_ids": [
+                "HL000141"
+            ],  # Use only location where we know parameters exist
+            "parameter_ids": [
+                "Q.G",
+                "T.ow.G",
+            ],  # Use only parameters that exist for HL000141
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2024-01-01T00:00:00+01:00",

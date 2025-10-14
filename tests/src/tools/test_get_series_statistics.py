@@ -19,13 +19,14 @@ from talk_with_fews.tools import get_series_statistics
 from tests.parallel_decorator import fews_parallel
 
 
-@fews_parallel("actueelwaterbeeld", "wsvv")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv")
 def test_get_series_statistics(service):
     """
     Test the get_series_statistics function against different FEWS services.
 
     This test runs against:
     - actueelwaterbeeld (production)
+    - hdsr (local)
     - wsvv (local)
     """
     # Set service explicitly
@@ -59,7 +60,8 @@ def test_get_series_statistics(service):
 
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
-    assert output.count >= 0  # Should be non-negative
+    assert isinstance(output.description, str)
+    assert "Found" in output.description or "No data found" in output.description
 
 
 def test_get_series_statistics_data_empty():
@@ -87,7 +89,8 @@ def test_get_series_statistics_data_empty():
 
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
-    assert output.count >= 0  # Should be non-negative (may have data)
+    assert isinstance(output.description, str)
+    assert "Found" in output.description or "No data found" in output.description
 
 
 def test_get_series_statistics_no_input():
