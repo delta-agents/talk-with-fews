@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from tests.test_config import get_test_service_config
 
 
 def setup_dot_env():
@@ -12,6 +13,11 @@ def setup_dot_env():
     test_get_parameters, test_get_series_headers, etc.)
 
     Note: Individual tests can override DEV_DISABLE_WEBSERVICE_INGEST if needed.
+
+    The FEWS service configuration is determined by:
+    - FEWS_TEST_SERVICE environment variable (for local testing)
+    - CI environment detection (defaults to actueelwaterbeeld in CI)
+    - Default to actueelwaterbeeld
     """
     env_template = Path(__file__).parent.parent / "env" / ".env.example"
     env_copy = Path(__file__).parent.parent / "env" / ".env"
@@ -24,12 +30,12 @@ def setup_dot_env():
     if "DEV_DISABLE_WEBSERVICE_INGEST" not in os.environ:
         os.environ["DEV_DISABLE_WEBSERVICE_INGEST"] = "false"
 
+    # Get the appropriate FEWS service configuration
+    service_config = get_test_service_config()
+
     return {
         "client_id": "example",
-        "FEWS_DB_PATH": "data/fews_config.db3",
-        "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
-        # "FEWS_DB_PATH": "data/HDSR_wis.db3",
-        # "FEWS_WEB_SERVICE_URL": "http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesHDSR",
-        # "FEWS_WEB_SERVICE_URL": "http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesWSVV",
+        "FEWS_DB_PATH": service_config.db_path,
+        "FEWS_WEB_SERVICE_URL": service_config.web_service_url,
         "scopes": ["read:data"],
     }
