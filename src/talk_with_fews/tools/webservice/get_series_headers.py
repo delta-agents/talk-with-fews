@@ -27,7 +27,6 @@ def get_series_headers_with_details(
 
     query = """
         SELECT
-            sh.id,
             sh.type,
             sh.moduleInstanceId,
             sh.locationId,
@@ -70,109 +69,28 @@ def get_series_headers_with_details(
     return cache_FewsWebServices_db.execute(query, params).df()
 
 
-def get_available_filters(
+def get_available_ids(
     cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
     parameter_id: str = None,
     location_id: str = None,
 ) -> Dict[str, List[str]]:
-    """Get available filter options for the query results"""
-
-    available_filters = {}
+    """Get available IDs for follow-up queries"""
 
     if parameter_id:
-        # For parameter query, show available locations and model types
+        # For parameter query, show available locations
         locations = cache_FewsWebServices_db.execute(
-            """
-            SELECT DISTINCT locationId
-            FROM series_headers
-            WHERE parameterId = ?
-            ORDER BY locationId
-            LIMIT 10
-        """,
+            "SELECT DISTINCT locationId FROM series_headers WHERE parameterId = ? ORDER BY locationId",
             [parameter_id],
         ).fetchall()
+        return {"locations": [row[0] for row in locations]}
 
-        model_types = cache_FewsWebServices_db.execute(
-            """
-            SELECT DISTINCT
-                CASE
-                    WHEN moduleInstanceId LIKE '%hist%' THEN 'historical'
-                    WHEN moduleInstanceId LIKE '%fcst%' THEN 'forecast'
-                    ELSE 'other'
-                END as model_type
-            FROM series_headers
-            WHERE parameterId = ?
-            ORDER BY model_type
-        """,
-            [parameter_id],
-        ).fetchall()
-
-        available_filters["locations"] = [row[0] for row in locations]
-        available_filters["model_types"] = [
-            row[0] for row in model_types if row[0] != "other"
-        ]
-
-    elif location_id:
-        # For location query, show available parameters and model types
+    else:  # location_id
+        # For location query, show available parameters
         parameters = cache_FewsWebServices_db.execute(
-            """
-            SELECT DISTINCT parameterId
-            FROM series_headers
-            WHERE locationId = ?
-            ORDER BY parameterId
-            LIMIT 10
-        """,
+            "SELECT DISTINCT parameterId FROM series_headers WHERE locationId = ? ORDER BY parameterId",
             [location_id],
         ).fetchall()
-
-        model_types = cache_FewsWebServices_db.execute(
-            """
-            SELECT DISTINCT
-                CASE
-                    WHEN moduleInstanceId LIKE '%hist%' THEN 'historical'
-                    WHEN moduleInstanceId LIKE '%fcst%' THEN 'forecast'
-                    ELSE 'other'
-                END as model_type
-            FROM series_headers
-            WHERE locationId = ?
-            ORDER BY model_type
-        """,
-            [location_id],
-        ).fetchall()
-
-        available_filters["parameters"] = [row[0] for row in parameters]
-        available_filters["model_types"] = [
-            row[0] for row in model_types if row[0] != "other"
-        ]
-
-    return available_filters
-
-
-def generate_follow_up_suggestions(
-    parameter_id: str = None, location_id: str = None, count: int = 0
-) -> List[str]:
-    """Generate user-friendly follow-up suggestions"""
-
-    suggestions = []
-
-    if parameter_id:
-        if count > 10:
-            suggestions.append(
-                f"Get series for specific location from the available {count} locations"
-            )
-        suggestions.append("Filter by historical model data")
-        suggestions.append("Analyze spatial distribution of series")
-
-    elif location_id:
-        if count > 10:
-            suggestions.append(
-                f"Get series for specific parameter from the available {count} parameters"
-            )
-        suggestions.append("Analyze time ranges and data coverage")
-        suggestions.append("Compare with other locations in the region")
-
-    # Limit to 3 suggestions
-    return suggestions[:3]
+        return {"parameters": [row[0] for row in parameters]}
 
 
 @log_tool_call
@@ -180,17 +98,24 @@ async def get_series_headers(
     ctx: RunContext[Deps], input: GetSeriesHeadersInput
 ) -> GetSeriesHeadersOutput:
     """
-    Retrieve series headers with incremental caching from FEWS webservice.
+    Discover available time series data by finding valid parameter-location combinations.
 
-    This tool implements the incremental caching strategy: first check local cache,
-    then trigger ingestion if needed, and return minimal but meaningful output.
+    This is an ESSENTIAL discovery tool that helps you understand what data is available:
+    - Use location_id to find ALL parameters available at that location
+    - Use parameter_id to find ALL locations that have that parameter
+
+    Examples:
+    - "What parameters are available at location X?" → use location_id="X"
+    - "Which locations have parameter Y?" → use parameter_id="Y"
+
+    Use the returned available_ids to make targeted follow-up queries for specific data.
 
     Args:
         ctx: RunContext with database connection
         input: GetSeriesHeadersInput containing parameter_id OR location_id
 
     Returns:
-        GetSeriesHeadersOutput with series headers summary and follow-up suggestions
+        GetSeriesHeadersOutput with discovered series combinations and follow-up options
     """
 
     # Validate input
@@ -230,9 +155,6 @@ async def get_series_headers(
             cache_FewsWebServices_db, parameter_id=input.parameter_id
         )
 
-        # Generate summary
-        summary = f"Found timeseries for {input.parameter_id} across {df_results['locationId'].nunique()} locations"
-
     else:  # location_id
         series_headers_retrieved = cache_FewsWebServices_db.execute(
             """
@@ -268,28 +190,40 @@ async def get_series_headers(
         ).fetchone()
         location_display = location_name[0] if location_name else input.location_id
 
-        # Generate summary
-        summary = f"Found {df_results['parameterId'].nunique()} parameters at location {location_display}."
+    # Convert DataFrame to dictionaries
+    results = []
+    for _, row in df_results.iterrows():
+        series_dict = {
+            "location_id": row["locationId"],
+            "parameter_id": row["parameterId"],
+            "parameter_name": row["parameter_name"],
+            "location_name": row["location_name"],
+            "time_step_unit": row["timeStepUnit"],
+            "time_step_multiplier": row["timeStepMultiplier"],
+            "module_instance_id": row["moduleInstanceId"],
+            "type": row["type"],
+            "parameter_unit": row["parameter_unit"],
+        }
+        results.append(series_dict)
 
-    # Generate sample IDs
-    sample_ids = df_results.head().to_markdown(index=False)
-
-    # Get available filters
-    available_filters = get_available_filters(
+    # Get available IDs for follow-up queries
+    available_ids = get_available_ids(
         cache_FewsWebServices_db, input.parameter_id, input.location_id
     )
 
-    # TODO: readd generate_follow_up_suggestions
-    # Generate follow-up suggestions
-    # follow_up_suggestions = generate_follow_up_suggestions(
-    #     input.parameter_id, input.location_id, len(results)
-    # )
-    follow_up_suggestions = ["No follow-up suggestions available yet."]
+    # Generate actionable description
+    if input.parameter_id:
+        description = f"Found {len(results)} locations with parameter '{input.parameter_id}'. Use available_ids.locations for follow-up queries."
+    else:
+        location_display = (
+            df_results["location_name"].iloc[0]
+            if len(df_results) > 0
+            else input.location_id
+        )
+        description = f"Found {len(results)} parameters at location '{location_display}'. Use available_ids.parameters for follow-up queries."
 
     return GetSeriesHeadersOutput(
-        count=len(df_results),
-        summary=summary,
-        sample_ids=sample_ids,
-        available_filters=available_filters,
-        follow_up_suggestions=follow_up_suggestions,  # Placeholder for follow-up suggestions
+        series_headers=results,
+        description=description,
+        available_ids=available_ids,
     )

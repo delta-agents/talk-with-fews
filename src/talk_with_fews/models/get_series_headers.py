@@ -5,7 +5,7 @@ This module defines the models used by the get_series_headers tool to retrieve
 series headers from the FEWS webservice with incremental caching.
 """
 
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, model_validator
 from pydantic_ai import ModelRetry
 from talk_with_fews.models.base import LaxBaseModel
@@ -42,23 +42,21 @@ class GetSeriesHeadersInput(LaxBaseModel):
 
 
 class GetSeriesHeadersOutput(BaseModel):
-    """
-    GetSeriesHeadersOutput provides a minimal but meaningful response for series headers.
+    """Model for the output of the get_series_headers tool.
 
-    Designed for cost optimization in AI applications while providing actionable information
-    and enabling follow-up questions.
+    This model provides search results optimized for LLM consumption with
+    structured data and actionable contextual description.
     """
 
-    count: int = Field(..., description="Number of series found")
-    summary: str = Field(..., description="Brief summary (max 200 chars)")
-    sample_ids: str = Field(
-        ..., description="First 5 series IDs for reference in markdown format"
+    series_headers: List[Dict[str, Any]] = Field(
+        ...,
+        description="List of series headers with key information (location_id, parameter_id, parameter_name, location_name, time_step_unit, time_step_multiplier, module_instance_id, type, parameter_unit)",
     )
-    available_filters: Dict[str, List[str]] = Field(
-        default_factory=dict,
-        description="Available values for user-friendly filtering options",
+    description: str = Field(
+        ...,
+        description="Contextual description with actionable insights for follow-up analysis",
     )
-    follow_up_suggestions: List[str] = Field(
-        default_factory=list,
-        description="User-friendly suggestions for next analysis steps (max 3)",
+    available_ids: Dict[str, List[str]] = Field(
+        ...,
+        description="Available IDs for follow-up queries: 'locations' for parameter queries, 'parameters' for location queries",
     )

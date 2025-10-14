@@ -277,7 +277,8 @@ class SeriesHeader(BaseModel):
         ..., description="Time step unit (e.g., 'minute', 'hour')"
     )
     timeStepMultiplier: int = Field(
-        ..., description="Time step multiplier (e.g., 10 for 10 minutes)"
+        ...,
+        description="Time step multiplier (e.g., 10 for 10 minutes, 0 for nonequidistant)",
     )
     missVal: float = Field(..., description="Missing value indicator")
     timeZone: str = Field(..., description="Time zone offset (e.g., '0.0')")
