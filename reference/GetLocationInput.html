@@ -203,9 +203,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="doc-section doc-section-attributes anchored" data-anchor-id="attributes">Attributes</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 19%">
 <col style="width: 14%">
-<col style="width: 66%">
+<col style="width: 10%">
+<col style="width: 75%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -223,11 +223,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>filter_locations_name</td>
 <td>Optional[str]</td>
-<td>An optional name filter for locations names, using the SQL LIKE functionality.</td>
+<td>An optional filter to search locations by their locationId, shortName, or description, using the SQL LIKE functionality.</td>
 </tr>
 </tbody>
 </table>
-<p>This model allows flexible querying of location data, supporting both general and name-specific searches, and limiting the number of results returned.</p>
+<p>This model allows flexible querying of location data, supporting both general and ID/name/description-specific searches, and limiting the number of results returned.</p>
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
