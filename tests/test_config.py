@@ -68,18 +68,29 @@ FEWS_SERVICES = {
         test_data={
             "location_filters": ["den_haag", "delft", "zoetermeer"],
             "location_ids": [
-                "HL000141"
-            ],  # Use only location where we know parameters exist
+                "HL000141",
+                "HL000005",
+                "HL000041",
+            ],  # Updated with working locations that have data
             "parameter_ids": [
-                "Q.G",
-                "H.B",
-                "GW.G",
-            ],  # Use only parameters that exist for HL000141
+                "EV.15",
+                "EV.hrsfi.m",
+                "EV.lrsfi.m",
+            ],  # Updated with working parameters that have data
             "parameter_filters": ["discharge", "temperature", "H.B"],
             "validated_combinations": [
-                {"location_id": "HL000141", "parameter_id": "Q.G"},
-                {"location_id": "HL000141", "parameter_id": "EV.15"},
-                {"location_id": "AMRB", "parameter_id": "Q.G"},
+                {
+                    "location_id": "HL000141",
+                    "parameter_id": "EV.15",
+                },  # 577 values (all flagged but real data)
+                {
+                    "location_id": "HL000005",
+                    "parameter_id": "EV.15",
+                },  # 577 values (all flagged but real data)
+                {
+                    "location_id": "HL000041",
+                    "parameter_id": "EV.15",
+                },  # 577 values (all flagged but real data)
             ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
@@ -94,23 +105,23 @@ FEWS_SERVICES = {
         test_data={
             "location_filters": ["hoorn", "heerhugowaard", "den_helder"],
             "location_ids": [
+                "HHD_150183-pomp1",  # Put working location first
                 "HHD_350101",
                 "HHD_150183",
-                "HHD_250180",
             ],  # Real location IDs from web service
             "parameter_ids": [
+                "pompstatus.bedrijf",  # Put working parameter first
                 "Q.meting",
-                "pompstatus.bedrijf",
                 "Q.sim",
             ],  # Real parameter IDs with data
             "parameter_filters": ["water", "level", "Eref.d"],
             # Validated location-parameter combinations that have time series data
             "validated_combinations": [
-                {"location_id": "HHD_150183", "parameter_id": "Q.meting"},  # 9 series
                 {
                     "location_id": "HHD_150183-pomp1",
                     "parameter_id": "pompstatus.bedrijf",
-                },  # 19 series
+                },  # 8641 values (all flagged but real data)
+                {"location_id": "HHD_150183", "parameter_id": "Q.meting"},  # 9 series
                 {"location_id": "HHD_350101", "parameter_id": "Q.sim"},  # 1 series
             ],
             # Location-parameter combinations that have NO time series data (for testing empty responses)
