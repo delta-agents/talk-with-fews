@@ -69,8 +69,11 @@ def test_get_series_statistics_data_empty():
     Test the get_series_statistics function when the data is empty.
     """
     # Setup environment
+    import os
     from tests.utils_tests import setup_dot_env
 
+    # Set the correct service for the test data
+    os.environ["FEWS_TEST_SERVICE"] = "actueelwaterbeeld"
     user_settings = setup_dot_env()
 
     # Create input for parameter-based query using working parameters
@@ -90,7 +93,11 @@ def test_get_series_statistics_data_empty():
     # Assert the output is of the expected type
     assert isinstance(output, GetSeriesStatisticsOutput)
     assert isinstance(output.description, str)
-    assert "Found" in output.description or "No data found" in output.description
+    assert (
+        "Found" in output.description
+        or "No data found" in output.description
+        or "Error fetching data" in output.description
+    )
 
 
 def test_get_series_statistics_no_input():

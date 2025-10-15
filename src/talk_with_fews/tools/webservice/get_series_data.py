@@ -77,10 +77,6 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
 
         value_data = {
             "datetime": event_datetime,
-            "location_id": metadata["location_id"],
-            "station_name": metadata["station_name"],
-            "parameter_id": metadata["parameter_id"],
-            "moduleinstance_id": metadata["moduleinstance_id"],
             "value": value,
             "flag": int(event.get("flag")),
         }
@@ -95,43 +91,15 @@ async def parse_timeseries_xml(xml_content: str) -> Tuple[dict, List[TimeseriesV
     return metadata, values
 
 
-def convert_to_csv(values: List[TimeseriesValue]) -> str:
-    """
-    Convert timeseries values to CSV format.
-    Only includes flag_source column if any value has a flag source.
-    """
-    # Base headers without flag_source
-    headers = [
-        "datetime",
-        "location_id",
-        "station_name",
-        "parameter_id",
-        "moduleinstance_id",
-        "value",
-        "flag",
-    ]
-
-    # Check if any value has a flag_source
-    if any(value.flag_source is not None for value in values):
-        headers.append("flag_source")
-
-    # Create CSV string manually to ensure consistent line endings
-    lines = [",".join(headers)]
-    for value in values:
-        data = value.model_dump()
-        lines.append(
-            ",".join("" if data.get(h) is None else str(data[h]) for h in headers)
-        )
-
-    return "\n".join(lines)
-
-
 @log_tool_call
 async def get_series_data(
     ctx: RunContext[Deps], input: GetSeriesDataInput
 ) -> GetSeriesDataOutput:
     """
     Retrieve timeseries data for a specific location-parameter combination.
+
+    Automatically applies thinning for large datasets (>500 estimated points) to ensure
+    manageable data retrieval for AI assistants.
 
     Note: Flag source retrieval requires FEWS API support (feature request pending).
 
@@ -140,9 +108,46 @@ async def get_series_data(
         input: GetSeriesDataInput containing location_id, parameter_id, and time range
 
     Returns:
-        GetSeriesDataOutput containing the timeseries values, metadata, and CSV formatted data
+        GetSeriesDataOutput containing optimized timeseries values (only changing data)
+        and metadata (static information). AI assistants can generate CSV format if needed.
     """
-    # Construct URL with proper datetime format
+    # Step 1: Check estimated data points using get_series_statistics
+    from talk_with_fews.tools.webservice.get_series_statistics import (
+        get_series_statistics,
+    )
+    from talk_with_fews.models.get_series_statistics import (
+        GetSeriesStatisticsInput,
+        IntervalType,
+    )
+
+    stats_input = GetSeriesStatisticsInput(
+        location_id=input.location_id,
+        parameter_id=input.parameter_id,
+        start_time=input.start_time,
+        end_time=input.end_time,
+        include_interval_analysis=False,
+        interval_type=IntervalType.MONTH,
+    )
+
+    stats_result = await get_series_statistics(ctx, stats_input)
+    estimated_points = getattr(stats_result, "estimated_data_points_in_range", None)
+
+    # Step 2: Determine if thinning is needed
+    thinning_applied = False
+    thinning_value = None
+    thinning_reason = None
+
+    # Primary check: Use estimated_points from get_series_statistics
+    if estimated_points and estimated_points > 500:
+        # Calculate thinning: view period in ms / display pixels
+        # For 5 years on 1024 pixels: 157784760000 / 1024 = 15408668 ms/pixel
+        time_span_ms = int((input.end_time - input.start_time).total_seconds() * 1000)
+        display_pixels = 1024  # Standard display width
+        thinning_value = time_span_ms // display_pixels
+        thinning_applied = True
+        thinning_reason = f"Automatic thinning applied for large dataset ({estimated_points:,} estimated points > 500)"
+
+    # Step 3: Construct URL with optional thinning parameter
     url = (
         f"{ctx.deps.webservice_url}/rest/fewspiservice/v1/timeseries"
         f"?locationIds={input.location_id}"
@@ -151,6 +156,10 @@ async def get_series_data(
         f"&endTime={format_datetime(input.end_time)}"
         f"&documentFormat=PI_XML"
     )
+
+    # Add thinning parameter if needed
+    if thinning_applied:
+        url += f"&thinning={thinning_value}"
 
     # Add flag source parameter if requested (requires FEWS API support)
     if input.include_flag_sources:
@@ -166,14 +175,19 @@ async def get_series_data(
                 return GetSeriesDataOutput(
                     values=[],
                     metadata={},
-                    csv_data="datetime,location_id,station_name,parameter_id,moduleinstance_id,value,flag",
                 )
             else:
                 raise Exception(f"Failed to fetch data: {response.text}")
         xml_content = response.text
 
-    # Parse response and convert to CSV
+    # Parse response
     metadata, values = await parse_timeseries_xml(xml_content)
-    csv_data = convert_to_csv(values)
 
-    return GetSeriesDataOutput(values=values, metadata=metadata, csv_data=csv_data)
+    # Add thinning information to metadata
+    if thinning_applied:
+        metadata["thinning_applied"] = True
+        metadata["thinning_value"] = thinning_value
+        metadata["estimated_original_points"] = estimated_points
+        metadata["thinning_reason"] = thinning_reason
+
+    return GetSeriesDataOutput(values=values, metadata=metadata)
