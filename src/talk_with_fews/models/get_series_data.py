@@ -7,58 +7,61 @@ from talk_with_fews.models.base import LaxBaseModel
 
 
 class TimeseriesValue(BaseModel):
+    """Single measurement point in a time series."""
+
     datetime: Annotated[
         datetime,
         Field(
-            description="Timestamp of the measurement (combination of date and time)"
+            description="When the measurement was taken (use for time-based analysis and plotting)"
         ),
     ]
-    location_id: str = Field(
-        ..., description="Unique identifier of the measurement location"
-    )
-    station_name: str = Field(
-        ..., description="Human-readable name of the measurement station"
-    )
-    parameter_id: str = Field(
-        ..., description="Identifier of the measured parameter (e.g., 'Kwel', 'Eref.d')"
-    )
-    moduleinstance_id: str = Field(
-        ...,
-        description="Identifier of the FEWS module instance that produced this data",
-    )
     value: Optional[float] = Field(
         None,
-        description="Measured value. None if the measurement equals the missVal from XML",
+        description="The measured value (None indicates missing/bad data - filter out for analysis)",
     )
     flag: int = Field(
         ...,
-        description="Quality flag for the measurement (0 = good, other values indicate specific issues)",
+        description="Data quality indicator: 0=good data, >0 indicates issues (filter on flag=0 for clean analysis)",
     )
     flag_source: Optional[str] = Field(
         None,
-        description="Source of the flag (e.g., 'IMP', 'SN', 'HX'). Requires FEWS API support.",
+        description="Origin of quality issue (e.g., 'IMP'=interpolated, 'SN'=sensor noise, 'HX'=human error)",
     )
 
 
 class GetSeriesDataInput(LaxBaseModel):
-    location_id: str = Field(..., description="Location ID to fetch data for")
-    parameter_id: str = Field(..., description="Parameter ID to fetch data for")
-    start_time: datetime = Field(description="Start time for data retrieval")
-    end_time: datetime = Field(description="End time for data retrieval")
+    """Retrieve time series measurements from a specific location and parameter.
+
+    Use this to get actual measurement data for analysis, visualization, and reporting.
+    Supports flexible date formats and automatic handling of large datasets.
+    """
+
+    location_id: str = Field(
+        ..., description="Location identifier (e.g., 'beg_109', 'VOV9345')"
+    )
+    parameter_id: str = Field(
+        ..., description="Parameter identifier (e.g., 'BG.b.0', 'WNSHDB1')"
+    )
+    start_time: datetime = Field(
+        description="Start date/time for the time series (accepts '2024-01-01' or '2024-01-01T00:00:00')"
+    )
+    end_time: datetime = Field(
+        description="End date/time for the time series (accepts '2024-01-07' or '2024-01-07T23:59:59')"
+    )
     include_flag_sources: bool = Field(
-        False, description="Whether to request flag sources. Requires FEWS API support."
+        False,
+        description="Include flag source information (e.g., 'IMP', 'SN') for data quality analysis",
     )
 
 
 class GetSeriesDataOutput(BaseModel):
+    """Time series data ready for analysis, visualization, and export."""
+
     values: List[TimeseriesValue] = Field(
-        ..., description="List of timeseries values with their associated metadata"
+        ...,
+        description="Time series measurements: timestamps, values, and quality flags for analysis and plotting",
     )
     metadata: dict = Field(
         ...,
-        description="Header information from the XML response including units, coordinates, and other metadata",
-    )
-    csv_data: str = Field(
-        ...,
-        description="CSV formatted string containing the timeseries data with columns: datetime, location-id, station-name, parameter-id, moduleinstance-id, value, flag",
+        description="Station information: location details, parameter info, units, coordinates. Includes thinning info when large datasets are automatically reduced for performance.",
     )

@@ -55,22 +55,14 @@ def test_get_series_data():
     assert result.metadata["location_id"] == test_data["location_ids"][0]
     assert result.metadata["parameter_id"] == test_data["parameter_ids"][0]
 
-    # Check CSV format
-    csv_lines = normalize_line_endings(result.csv_data).strip().split("\n")
-    assert len(csv_lines) >= 1  # At least header row
-    assert (
-        normalize_line_endings(csv_lines[0])
-        == "datetime,location_id,station_name,parameter_id,moduleinstance_id,value,flag"
-    )
-
     # If we have data, check basic structure
     if result.values:
         first_value = result.values[0]
-        assert first_value.location_id == test_data["location_ids"][0]
-        assert first_value.parameter_id == test_data["parameter_ids"][0]
+        assert first_value.datetime is not None
         assert (
             first_value.value is not None or first_value.value == -999.0
         )  # Allow missing values
+        assert first_value.flag is not None
 
 
 def test_get_series_data_missing_values():
@@ -152,3 +144,201 @@ def test_get_series_data_invalid_parameter():
     with pytest.raises(Exception) as exc_info:
         asyncio.run(get_series_data(ctx, input_data))
     assert "Failed to fetch data" in str(exc_info.value)
+
+
+def test_get_series_data_large_dataset():
+    """Test handling of large timeseries datasets (>500 points)."""
+    # Use Scheldestromen which has a very large dataset (175,393 data points)
+    import os
+
+    os.environ["FEWS_TEST_SERVICE"] = "scheldestromen"
+
+    # Setup environment
+    user_settings = setup_dot_env()
+
+    # Create input for the large dataset
+    input_data = GetSeriesDataInput(
+        location_id="VOV9345",
+        parameter_id="WNSHDB1",
+        start_time=datetime.fromisoformat("2020-01-01T00:00:00+01:00"),
+        end_time=datetime.fromisoformat("2024-12-31T23:59:59+01:00"),
+    )
+
+    # Get runtime context
+    ctx = get_runtime_ctx(user_settings)
+
+    # Call the function
+    result = asyncio.run(get_series_data(ctx, input_data))
+
+    # Assert we got a large dataset (>500 points)
+    assert result is not None
+    assert len(result.values) > 500  # Should have more than 500 data points
+    assert len(result.values) < 200000  # Should be around 175k based on our findings
+
+    # Note: CSV data generation removed - AI assistants can generate CSV from values + metadata if needed
+
+    # Check that we can access individual values without issues
+    first_value = result.values[0]
+    last_value = result.values[-1]
+
+    assert first_value.location_id == "VOV9345"
+    assert first_value.parameter_id == "WNSHDB1"
+    assert last_value.location_id == "VOV9345"
+    assert last_value.parameter_id == "WNSHDB1"
+
+    # Check metadata is properly populated
+    assert "location_id" in result.metadata
+    assert "parameter_id" in result.metadata
+    assert result.metadata["location_id"] == "VOV9345"
+    assert result.metadata["parameter_id"] == "WNSHDB1"
+
+    print(
+        f"✅ Successfully handled large dataset: {len(result.values):,} data points (>500)"
+    )
+    print(f"✅ First value: {first_value.datetime} = {first_value.value}")
+    print(f"✅ Last value: {last_value.datetime} = {last_value.value}")
+
+
+def test_get_series_data_large_dataset_with_thinning():
+    """Test handling of large timeseries datasets with thinning parameter."""
+    # Use Scheldestromen which has a very large dataset (175,393 data points)
+    import os
+
+    os.environ["FEWS_TEST_SERVICE"] = "scheldestromen"
+
+    # Setup environment
+    user_settings = setup_dot_env()
+
+    # Create input for the large dataset with thinning
+    # 5 years = 157784760000 ms, 1024 pixels = 15408668 ms/pixel
+    input_data = GetSeriesDataInput(
+        location_id="VOV9345",
+        parameter_id="WNSHDB1",
+        start_time=datetime.fromisoformat("2020-01-01T00:00:00+01:00"),
+        end_time=datetime.fromisoformat("2024-12-31T23:59:59+01:00"),
+    )
+
+    # Get runtime context
+    ctx = get_runtime_ctx(user_settings)
+
+    # Call the function
+    result = asyncio.run(get_series_data(ctx, input_data))
+
+    # Assert we got a thinned dataset (should be much smaller)
+    assert result is not None
+    assert (
+        len(result.values) < 10000
+    )  # Should be much smaller with thinning (was 175k, now ~2.4k)
+    assert len(result.values) > 0  # But should still have some data
+
+    # Note: CSV data generation removed - AI assistants can generate CSV from values + metadata if needed
+
+    # Check that we can access individual values without issues
+    first_value = result.values[0]
+    last_value = result.values[-1]
+
+    assert first_value.datetime is not None
+    assert last_value.datetime is not None
+
+    # Check metadata is properly populated
+    assert "location_id" in result.metadata
+    assert "parameter_id" in result.metadata
+    assert result.metadata["location_id"] == "VOV9345"
+    assert result.metadata["parameter_id"] == "WNSHDB1"
+
+    print(
+        f"✅ Successfully handled thinned dataset: {len(result.values):,} data points"
+    )
+    print(f"✅ First value: {first_value.datetime} = {first_value.value}")
+    print(f"✅ Last value: {last_value.datetime} = {last_value.value}")
+    print(f"✅ Thinning reduced data from ~175k to {len(result.values):,} points")
+
+
+def test_get_series_data_automatic_thinning():
+    """Test automatic thinning for large datasets within get_series_data."""
+    # Use Scheldestromen which has a very large dataset
+    import os
+
+    os.environ["FEWS_TEST_SERVICE"] = "scheldestromen"
+
+    # Setup environment
+    user_settings = setup_dot_env()
+    ctx = get_runtime_ctx(user_settings)
+
+    # Test with large date range (5 years) - should trigger automatic thinning
+    input_data = GetSeriesDataInput(
+        location_id="VOV9345",
+        parameter_id="WNSHDB1",
+        start_time=datetime.fromisoformat("2020-01-01T00:00:00+01:00"),
+        end_time=datetime.fromisoformat("2024-12-31T23:59:59+01:00"),
+    )
+
+    result = asyncio.run(get_series_data(ctx, input_data))
+
+    # Assertions
+    assert result is not None
+    assert len(result.values) > 0  # Should have some data
+
+    # Should be significantly reduced from original (175k -> much smaller)
+    # Thinning reduces data substantially but doesn't guarantee <500 points
+    assert len(result.values) < 10000  # Should be thinned to manageable size
+
+    # Check that thinning was applied
+    assert "thinning_applied" in result.metadata
+    assert result.metadata["thinning_applied"] is True
+    assert "thinning_value" in result.metadata
+    assert "estimated_original_points" in result.metadata
+    assert "thinning_reason" in result.metadata
+
+    print(
+        f"🎯 Automatic thinning applied: {result.metadata['thinning_value']:,} ms/pixel"
+    )
+    print(
+        f"📊 Original estimated points: {result.metadata['estimated_original_points']:,}"
+    )
+    print(f"✅ Thinned to: {len(result.values):,} data points")
+    print(f"💡 Reason: {result.metadata['thinning_reason']}")
+
+    # Note: CSV data generation removed - AI assistants can generate CSV from values + metadata if needed
+
+    print("✅ Automatic thinning workflow completed successfully")
+    print(f"✅ First value: {result.values[0].datetime} = {result.values[0].value}")
+    print(f"✅ Last value: {result.values[-1].datetime} = {result.values[-1].value}")
+
+
+def test_get_series_data_no_thinning_needed():
+    """Test that no thinning is applied for small datasets."""
+    # Use HDSR which has a small dataset
+    import os
+
+    os.environ["FEWS_TEST_SERVICE"] = "hdsr"
+
+    # Setup environment
+    user_settings = setup_dot_env()
+    ctx = get_runtime_ctx(user_settings)
+
+    # Test with small dataset - should NOT trigger thinning
+    input_data = GetSeriesDataInput(
+        location_id="beg_109",
+        parameter_id="BG.b.0",
+        start_time=datetime.fromisoformat("2020-01-01T00:00:00+01:00"),
+        end_time=datetime.fromisoformat("2024-12-31T23:59:59+01:00"),
+    )
+
+    result = asyncio.run(get_series_data(ctx, input_data))
+
+    # Assertions
+    assert result is not None
+    assert len(result.values) > 0  # Should have some data
+
+    # Check that thinning was NOT applied
+    assert (
+        "thinning_applied" not in result.metadata
+        or result.metadata.get("thinning_applied", False) is False
+    )
+
+    print(
+        f"✅ No thinning needed for small dataset: {len(result.values):,} data points"
+    )
+
+    print("✅ Small dataset workflow completed successfully")
