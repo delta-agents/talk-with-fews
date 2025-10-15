@@ -288,7 +288,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       &lt;display_unit&gt;mm&lt;/display_unit&gt;
       &lt;uses_datum&gt;False&lt;/uses_datum&gt;
       &lt;parameter_group&gt;Verdamping&lt;/parameter_group&gt;
-      &lt;parameter_group_name&gt;Verdamping&lt;/parameter_group_name&gt;
       &lt;short_name&gt;Referentiegewasverdamping [mm] - dag&lt;/short_name&gt;
       &lt;attributes&gt;"[{'name': 'PARGROUP', 'type': 'text', 'id': 'PARGROUP', 'value': 'Verdamping'}]"&lt;/attributes&gt;
     &lt;/example&gt;
@@ -300,20 +299,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       &lt;display_unit&gt;-&lt;/display_unit&gt;
       &lt;uses_datum&gt;False&lt;/uses_datum&gt;
       &lt;parameter_group&gt;Bewolking&lt;/parameter_group&gt;
-      &lt;parameter_group_name&gt;Bewolking&lt;/parameter_group_name&gt;
       &lt;short_name&gt;Cloud cover observation - uur&lt;/short_name&gt;
       &lt;attributes&gt;"[{'name': 'PARGROUP', 'type': 'text', 'id': 'PARGROUP', 'value': 'Bewolking'}]"&lt;/attributes&gt;
     &lt;/example&gt;
   &lt;/parameters&gt;
-  &lt;markdown_content&gt;## Parameters
-
-Found 2 parameters.
-
-| ID | Name | Unit | parameterGroup |
-|----|------|------|----------------|
-| Eref.d | Referentiegewasverdamping [mm] - dag | mm | Verdamping |
-| TCC.O.h | Cloud cover observation - uur | - | Bewolking |
-&lt;/markdown_content&gt;
+  &lt;description&gt;Found 2 parameters: 'Referentiegewasverdamping [mm] - dag', 'Cloud cover observation - uur'&lt;/description&gt;
 &lt;/GetParameterOutput&gt;</code></pre>
 </div>
 </div>
@@ -797,12 +787,12 @@ Found 2 parameters.
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_statistics_output, root_tag<span class="op">=</span><span class="st">"GetSeriesStatisticsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesStatisticsOutput&gt;
-  &lt;description&gt;Found 625 values for parameter 'Eref.d' and location 'KNMIUUR260'. Data available from 2023-11-21 to 2025-10-13. Daily data. Units: mm. Value range: 0 to 5.8 (mm). Interval analysis available by month.&lt;/description&gt;
+  &lt;description&gt;Found 626 values for parameter 'Eref.d' and location 'KNMIUUR260'. Data available from 2023-11-21 to 2025-10-14. Daily data. Units: mm. Value range: 0 to 5.8 (mm). Interval analysis available by month.&lt;/description&gt;
   &lt;min_value&gt;0&lt;/min_value&gt;
   &lt;max_value&gt;5.8&lt;/max_value&gt;
   &lt;parameter_units&gt;mm&lt;/parameter_units&gt;
   &lt;first_value_time&gt;2023-11-21T00:00:00+00:00&lt;/first_value_time&gt;
-  &lt;last_value_time&gt;2025-10-13T00:00:00+00:00&lt;/last_value_time&gt;
+  &lt;last_value_time&gt;2025-10-14T00:00:00+00:00&lt;/last_value_time&gt;
   &lt;time_step&gt;Daily data&lt;/time_step&gt;
   &lt;interval_analysis&gt;
     &lt;interval_type&gt;MONTH&lt;/interval_type&gt;
