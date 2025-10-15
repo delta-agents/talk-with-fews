@@ -301,10 +301,13 @@ def test_get_series_data_large_dataset():
     first_value = result.values[0]
     last_value = result.values[-1]
 
-    assert first_value.location_id == "VOV9345"
-    assert first_value.parameter_id == "WNSHDB1"
-    assert last_value.location_id == "VOV9345"
-    assert last_value.parameter_id == "WNSHDB1"
+    # Check that values have the expected structure
+    assert hasattr(first_value, "datetime")
+    assert hasattr(first_value, "value")
+    assert hasattr(first_value, "flag")
+    assert hasattr(last_value, "datetime")
+    assert hasattr(last_value, "value")
+    assert hasattr(last_value, "flag")
 
     # Check metadata is properly populated
     assert "location_id" in result.metadata

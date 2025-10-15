@@ -107,6 +107,10 @@ class GetSeriesStatisticsOutput(BaseModel):
         None,
         description="Time step description (e.g., 'Daily data', 'Hourly data', 'Data every 6 hours', 'Irregular time intervals (nonequidistant)')",
     )
+    timestep_info: Optional[Dict[str, Any]] = Field(
+        None,
+        description="Raw timestep information: {'unit': str, 'multiplier': int}",
+    )
 
     # Analysis and estimation
     interval_analysis: Optional[Dict[str, Any]] = Field(

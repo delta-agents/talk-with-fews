@@ -135,7 +135,9 @@ async def get_series_data(
     # Step 2: Determine if thinning is needed
     thinning_applied = False
     thinning_value = None
+    thinning_reason = None
 
+    # Primary check: Use estimated_points from get_series_statistics
     if estimated_points and estimated_points > 500:
         # Calculate thinning: view period in ms / display pixels
         # For 5 years on 1024 pixels: 157784760000 / 1024 = 15408668 ms/pixel
@@ -143,6 +145,7 @@ async def get_series_data(
         display_pixels = 1024  # Standard display width
         thinning_value = time_span_ms // display_pixels
         thinning_applied = True
+        thinning_reason = f"Automatic thinning applied for large dataset ({estimated_points:,} estimated points > 500)"
 
     # Step 3: Construct URL with optional thinning parameter
     url = (
@@ -185,8 +188,6 @@ async def get_series_data(
         metadata["thinning_applied"] = True
         metadata["thinning_value"] = thinning_value
         metadata["estimated_original_points"] = estimated_points
-        metadata["thinning_reason"] = (
-            f"Automatic thinning applied for large dataset ({estimated_points:,} estimated points > 500)"
-        )
+        metadata["thinning_reason"] = thinning_reason
 
     return GetSeriesDataOutput(values=values, metadata=metadata)

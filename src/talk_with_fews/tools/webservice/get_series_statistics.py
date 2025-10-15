@@ -422,6 +422,14 @@ async def get_series_statistics(
                 time_step_unit, time_step_multiplier
             )
 
+            # Create timestep_info for thinning decisions
+            timestep_info = None
+            if time_step_unit and time_step_multiplier:
+                timestep_info = {
+                    "unit": time_step_unit,
+                    "multiplier": time_step_multiplier,
+                }
+
             # Generate actionable description
             description = generate_actionable_description(
                 count,
@@ -445,14 +453,48 @@ async def get_series_statistics(
                 last_value_time=last_datetime,
                 interval_analysis=interval_analysis,
                 time_step=time_step_description,
+                timestep_info=timestep_info,
                 parameter_units=parameter_units,
                 estimated_data_points_in_range=estimated_data_points,
             )
     else:
         # Fallback if we can't determine time ranges
         if count == 0:
+            # Even when count is 0 (due to FEWS API bug), extract timestep info and calculate real estimates
+            timestep_info = None
+            estimated_data_points = None
+
+            if time_step_unit and time_step_multiplier:
+                # Calculate timestep in minutes for thinning decisions
+                timestep_minutes = None
+                if time_step_unit == "second":
+                    timestep_minutes = time_step_multiplier / 60.0
+                elif time_step_unit == "minute":
+                    timestep_minutes = float(time_step_multiplier)
+                elif time_step_unit == "hour":
+                    timestep_minutes = time_step_multiplier * 60.0
+                elif time_step_unit == "day":
+                    timestep_minutes = time_step_multiplier * 24 * 60.0
+
+                if timestep_minutes is not None:
+                    timestep_info = {
+                        "timestep_minutes": timestep_minutes,
+                        "unit": time_step_unit,
+                        "multiplier": time_step_multiplier,
+                    }
+
+                    # Calculate the real estimated data points from timestep info
+                    estimated_data_points = estimate_data_points_in_range(
+                        input.start_time,
+                        input.end_time,
+                        time_step_unit,
+                        time_step_multiplier,
+                    )
+
             return GetSeriesStatisticsOutput(
-                description=f"No data found for parameter '{parameter_id}' and location '{location_id}'. This combination has no data available."
+                description=f"No data found for parameter '{parameter_id}' and location '{location_id}'. This combination has no data available.",
+                timestep_info=timestep_info,
+                estimated_data_points_in_range=estimated_data_points,
             )
         else:
             # Extract minValue and maxValue
@@ -484,6 +526,14 @@ async def get_series_statistics(
                 time_step_unit, time_step_multiplier
             )
 
+            # Create timestep_info for thinning decisions
+            timestep_info = None
+            if time_step_unit and time_step_multiplier:
+                timestep_info = {
+                    "unit": time_step_unit,
+                    "multiplier": time_step_multiplier,
+                }
+
             # Generate actionable description
             description = generate_actionable_description(
                 count,
@@ -505,6 +555,7 @@ async def get_series_statistics(
                 max_value=max_value,
                 interval_analysis=interval_analysis,
                 time_step=time_step_description,
+                timestep_info=timestep_info,
                 parameter_units=parameter_units,
                 estimated_data_points_in_range=estimated_data_points,
             )
