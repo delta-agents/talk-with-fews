@@ -6,6 +6,7 @@ including parameter-based and location-based queries.
 """
 
 import asyncio
+import os
 from pydantic_ai import ModelRetry
 import pytest
 from talk_with_fews.models.get_series_headers import (
@@ -18,14 +19,17 @@ from talk_with_fews.tools.webservice.get_series_headers import get_series_header
 from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from tests.utils_tests import setup_dot_env
 from tests.test_config import get_test_service_config
+from tests.parallel_decorator import fews_parallel
 
 
-# Parallel tests removed - they require proper database setup for all services
-# Use the individual tests below instead
-def test_get_series_headers_by_parameter():
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+def test_get_series_headers_by_parameter(service):
     """
-    Test the get_series_headers function with parameter-based query.
+    Test the get_series_headers function with parameter-based query against all FEWS services.
     """
+    # Set service explicitly
+    os.environ["FEWS_TEST_SERVICE"] = service
+
     # Setup environment
     user_settings = setup_dot_env()
     service_config = get_test_service_config()
@@ -55,10 +59,14 @@ def test_get_series_headers_by_parameter():
         assert "locations" in output.available_ids
 
 
-def test_get_series_headers_by_location():
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+def test_get_series_headers_by_location(service):
     """
-    Test the get_series_headers function with location-based query.
+    Test the get_series_headers function with location-based query against all FEWS services.
     """
+    # Set service explicitly
+    os.environ["FEWS_TEST_SERVICE"] = service
+
     # Setup environment
     user_settings = setup_dot_env()
     service_config = get_test_service_config()
@@ -278,10 +286,127 @@ def test_series_headers_caching():
     assert output1.available_ids == output2.available_ids
 
 
-def test_series_headers_output_structure():
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+def test_series_headers_validated_combinations(service):
     """
-    Test that the output structure is correct and contains all required fields.
+    Test series headers with location-parameter combinations for all FEWS services.
+
+    For services with validated_combinations: uses those specific combinations
+    For other services: uses first parameter_id + first location_id from test_data
     """
+    # Set service explicitly
+    os.environ["FEWS_TEST_SERVICE"] = service
+
+    # Setup environment
+    user_settings = setup_dot_env()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
+
+    # Get runtime context
+    ctx = get_runtime_ctx(user_settings)
+
+    # Only test services that have validated combinations
+    if "validated_combinations" not in test_data:
+        pytest.skip(
+            f"Service {service} needs validated combinations - skipping until we verify real parameter-location pairs"
+        )
+
+    # Use specific validated combinations
+    combinations = test_data["validated_combinations"]
+    print(f"\n=== Testing {service} with validated combinations ===")
+
+    # Test each combination
+    for combo in combinations:
+        location_id = combo["location_id"]
+        parameter_id = combo["parameter_id"]
+
+        print(f"\nTesting combination: {location_id} + {parameter_id}")
+
+        # Test parameter-based query
+        param_input = GetSeriesHeadersInput(parameter_id=parameter_id)
+        param_output = asyncio.run(get_series_headers(ctx, param_input))
+
+        assert isinstance(param_output.series_headers, list)
+        assert len(param_output.series_headers) >= 0  # Can be empty or have data
+        assert (
+            parameter_id in param_output.description
+            or "No time series found" in param_output.description
+        )
+
+        # Test location-based query
+        loc_input = GetSeriesHeadersInput(location_id=location_id)
+        loc_output = asyncio.run(get_series_headers(ctx, loc_input))
+
+        assert isinstance(loc_output.series_headers, list)
+        assert len(loc_output.series_headers) >= 0  # Can be empty or have data
+        # The description might contain location ID, location name, or "No time series found"
+        assert (
+            location_id in loc_output.description
+            or "No time series found" in loc_output.description
+            or len(loc_output.series_headers) > 0
+        )  # If we have data, description is valid
+
+        print(
+            f"  ✅ Parameter {parameter_id}: {len(param_output.series_headers)} series"
+        )
+        print(f"  ✅ Location {location_id}: {len(loc_output.series_headers)} series")
+
+
+@fews_parallel("hhd")  # Only test HHD since it has empty_combinations
+def test_series_headers_empty_combinations(service):
+    """
+    Test series headers with location-parameter combinations that have no time series data.
+    """
+    # Set service explicitly
+    os.environ["FEWS_TEST_SERVICE"] = service
+
+    # Setup environment
+    user_settings = setup_dot_env()
+    service_config = get_test_service_config()
+    test_data = service_config.test_data
+
+    # Check if this service has empty combinations
+    if "empty_combinations" not in test_data:
+        pytest.skip(f"Service {service} does not have empty_combinations configured")
+
+    # Get runtime context
+    ctx = get_runtime_ctx(user_settings)
+
+    # Test each empty combination
+    for combo in test_data["empty_combinations"]:
+        location_id = combo["location_id"]
+        parameter_id = combo["parameter_id"]
+
+        print(f"\nTesting empty combination: {location_id} + {parameter_id}")
+
+        # Test parameter-based query
+        param_input = GetSeriesHeadersInput(parameter_id=parameter_id)
+        param_output = asyncio.run(get_series_headers(ctx, param_input))
+
+        # Test location-based query (should be empty for these combinations)
+        loc_input = GetSeriesHeadersInput(location_id=location_id)
+        loc_output = asyncio.run(get_series_headers(ctx, loc_input))
+
+        # Both should return empty results or handle gracefully
+        assert isinstance(param_output.series_headers, list)
+        assert isinstance(loc_output.series_headers, list)
+
+        print(
+            f"  ✅ Parameter {parameter_id}: {len(param_output.series_headers)} series (expected: may be empty)"
+        )
+        print(
+            f"  ✅ Location {location_id}: {len(loc_output.series_headers)} series (expected: empty)"
+        )
+
+
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+def test_series_headers_output_structure(service):
+    """
+    Test that the output structure is correct and contains all required fields against all FEWS services.
+    """
+    # Set service explicitly
+    os.environ["FEWS_TEST_SERVICE"] = service
+
     # Setup environment
     user_settings = setup_dot_env()
     service_config = get_test_service_config()

@@ -127,14 +127,23 @@ async def get_series_headers(
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
     webservice_url = ctx.deps.webservice_url
 
+    # Initialize variables
+    df_results = None
+
     # Check if we have data cached
     if input.parameter_id:
-        series_headers_retrieved = cache_FewsWebServices_db.execute(
+        result = cache_FewsWebServices_db.execute(
             """
             SELECT series_headers_retrieved FROM parameters WHERE id = ?
             """,
             [input.parameter_id],
-        ).fetchone()[0]
+        ).fetchone()
+
+        # Handle case where parameter doesn't exist in database
+        if result is None:
+            series_headers_retrieved = False
+        else:
+            series_headers_retrieved = result[0]
 
         if not series_headers_retrieved:
             # No data cached - trigger ingestion
@@ -150,18 +159,24 @@ async def get_series_headers(
                 [input.parameter_id],
             )
 
-        # Query cached data
+        # Query cached data (always do this, even if we just ingested)
         df_results = get_series_headers_with_details(
             cache_FewsWebServices_db, parameter_id=input.parameter_id
         )
 
     else:  # location_id
-        series_headers_retrieved = cache_FewsWebServices_db.execute(
+        result = cache_FewsWebServices_db.execute(
             """
             SELECT series_headers_retrieved FROM locations WHERE locationId = ?
             """,
             [input.location_id],
-        ).fetchone()[0]
+        ).fetchone()
+
+        # Handle case where location doesn't exist in database
+        if result is None:
+            series_headers_retrieved = False
+        else:
+            series_headers_retrieved = result[0]
 
         if not series_headers_retrieved:
             # No data cached - trigger ingestion
@@ -176,7 +191,8 @@ async def get_series_headers(
             """,
                 [input.location_id],
             )
-        # Query cached data
+
+        # Query cached data (always do this, even if we just ingested)
         df_results = get_series_headers_with_details(
             cache_FewsWebServices_db, location_id=input.location_id
         )

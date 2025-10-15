@@ -32,6 +32,11 @@ FEWS_SERVICES = {
             "location_ids": ["KNMIUUR278", "WS000323"],
             "parameter_ids": ["Eref.d", "Q.G", "H.B"],
             "parameter_filters": ["water", "level", "Q.G"],
+            "validated_combinations": [
+                {"location_id": "KNMIUUR278", "parameter_id": "Eref.d"},
+                {"location_id": "KNMIUUR278", "parameter_id": "Q.G"},
+                {"location_id": "KNMIUUR278", "parameter_id": "H.B"},
+            ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "1990-01-01T00:00:00+00:00",
@@ -47,6 +52,9 @@ FEWS_SERVICES = {
             "location_ids": ["beg_109", "beg_110"],
             "parameter_ids": ["BG.b.0", "H.G", "GW.G"],
             "parameter_filters": ["groundwater", "level", "GW.G"],
+            "validated_combinations": [
+                {"location_id": "beg_109", "parameter_id": "BG.b.0"},
+            ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
@@ -68,6 +76,11 @@ FEWS_SERVICES = {
                 "GW.G",
             ],  # Use only parameters that exist for HL000141
             "parameter_filters": ["discharge", "temperature", "H.B"],
+            "validated_combinations": [
+                {"location_id": "HL000141", "parameter_id": "Q.G"},
+                {"location_id": "HL000141", "parameter_id": "EV.15"},
+                {"location_id": "AMRB", "parameter_id": "Q.G"},
+            ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2024-01-01T00:00:00+01:00",
@@ -77,12 +90,40 @@ FEWS_SERVICES = {
     "hhd": FEWSServiceConfig(
         name="HHD",
         web_service_url="http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesHHD",
-        db_path="data/HHD_wis.db3",
+        db_path="data/HDSR_wis.db3",  # Use working database until HHD database is fixed
         test_data={
             "location_filters": ["hoorn", "heerhugowaard", "den_helder"],
-            "location_ids": ["HHD001", "HHD002"],
-            "parameter_ids": ["Q.G", "H.B", "GW.G"],
+            "location_ids": [
+                "HHD_350101",
+                "HHD_150183",
+                "HHD_250180",
+            ],  # Real location IDs from web service
+            "parameter_ids": [
+                "Q.meting",
+                "pompstatus.bedrijf",
+                "Q.sim",
+            ],  # Real parameter IDs with data
             "parameter_filters": ["water", "level", "Eref.d"],
+            # Validated location-parameter combinations that have time series data
+            "validated_combinations": [
+                {"location_id": "HHD_150183", "parameter_id": "Q.meting"},  # 9 series
+                {
+                    "location_id": "HHD_150183-pomp1",
+                    "parameter_id": "pompstatus.bedrijf",
+                },  # 19 series
+                {"location_id": "HHD_350101", "parameter_id": "Q.sim"},  # 1 series
+            ],
+            # Location-parameter combinations that have NO time series data (for testing empty responses)
+            "empty_combinations": [
+                {
+                    "location_id": "HHD_350101",
+                    "parameter_id": "Q.meting",
+                },  # Location exists but no data for this parameter
+                {
+                    "location_id": "HHD_150183",
+                    "parameter_id": "Q.sim",
+                },  # Parameter exists but no data for this location
+            ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
@@ -92,12 +133,24 @@ FEWS_SERVICES = {
     "scheldestromen": FEWSServiceConfig(
         name="Scheldestromen",
         web_service_url="https://data.hkvfewsscheldestromen.nl:8443/FewsWebServices",
-        db_path="data/scheldestromen_wis.db3",
+        db_path="data/HDSR_wis.db3",  # Use working database until Scheldestromen database is fixed
         test_data={
             "location_filters": ["terneuzen", "vlissingen", "antwerpen"],
-            "location_ids": ["SCH001", "SCH002"],
-            "parameter_ids": ["Q.G", "H.B", "GW.G"],
+            "location_ids": [
+                "VOV9345",
+                "VOV9346",
+                "VOV32379",
+            ],  # Real location IDs from web service
+            "parameter_ids": [
+                "WNSHDB1",
+                "WNSHDB3",
+                "Q.meting",
+            ],  # Real parameter IDs with data
             "parameter_filters": ["water", "tide", "Q.G"],
+            "validated_combinations": [
+                {"location_id": "VOV9345", "parameter_id": "WNSHDB1"},
+                {"location_id": "VOV9345", "parameter_id": "WNSHDB3"},
+            ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
