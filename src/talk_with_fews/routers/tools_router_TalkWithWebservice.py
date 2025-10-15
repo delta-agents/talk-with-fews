@@ -55,7 +55,7 @@ from talk_with_fews.tools.webservice.analyze_flags import (
 )
 from talk_with_fews.models.flags.io import (
     SeriesFlagsInput,
-    SeriesFlagsSummary,
+    SeriesFlagsOutput,
 )
 
 tokens = setup_env()
@@ -202,7 +202,7 @@ async def get_series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
     "- Compare quality between locations/parameters "
     "- Identify problematic data sources"
 )
-async def analyze_series_flags(input: SeriesFlagsInput) -> SeriesFlagsSummary:
+async def analyze_series_flags(input: SeriesFlagsInput) -> SeriesFlagsOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await analyze_series_flags_pyantic_ai(ctx, input)

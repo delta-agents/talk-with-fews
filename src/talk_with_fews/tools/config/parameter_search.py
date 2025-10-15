@@ -44,8 +44,10 @@ async def search_parameters(
         result = ParameterBase(id=row[0])
         results.append(result)
 
-    # Generate markdown content
-    markdown_content = "## Parameter Search Results\n\n"
-    markdown_content += f"Found {len(results)} parameters matching the criteria.\n\n"
-    markdown_content += "These parameters ids can be used to search for timeseries using the tool: search_timeseries\n"
-    return GetParameterOutput(parameters=results, markdown_content=markdown_content)
+    # Generate description
+    if len(results) > 0:
+        description = f"Found {len(results)} parameter IDs matching the criteria. These parameter IDs can be used to search for timeseries using the search_timeseries tool."
+    else:
+        description = "No parameter IDs found matching the criteria."
+
+    return GetParameterOutput(parameters=results, description=description)
