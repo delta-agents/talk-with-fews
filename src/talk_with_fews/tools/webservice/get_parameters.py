@@ -30,9 +30,12 @@ async def get_parameters(
     else:
         n = 10
 
-    columns = "id,name,parameter_type,unit,display_unit,uses_datum,parameter_group,parameter_group_name,short_name,attributes"
+    columns = "id,name,parameter_type,unit,display_unit,uses_datum,parameter_group,short_name,attributes"
+
+    # Build WHERE clause - enhanced search across multiple columns
     if input.filter_parameters_name is not None:
-        query = f"SELECT {columns} FROM parameters WHERE name ILIKE '%{input.filter_parameters_name}%'"
+        # Search across id, name, and short_name columns (enhanced search like get_locations)
+        query = f"SELECT {columns} FROM parameters WHERE id ILIKE '%{input.filter_parameters_name}%' OR name ILIKE '%{input.filter_parameters_name}%' OR short_name ILIKE '%{input.filter_parameters_name}%'"
     else:
         query = f"SELECT {columns} FROM parameters"
 
@@ -52,31 +55,79 @@ async def get_parameters(
         "display_unit",
         "uses_datum",
         "parameter_group",
-        "parameter_group_name",
         "short_name",
         "attributes",
     ]
     # Convert rows to Parameter objects
     parameters = [Parameter(**dict(zip(col_names, row))) for row in rows]
 
-    # make a summary of the locations
-
-    # TODO change this to make a summary of the parameters
-    # Generate markdown content
-
-    markdown_content = "## Parameters\n\n"
-    markdown_content += f"Found {len(parameters)} parameters.\n\n"
-
-    if parameters:
-        markdown_content += "| ID | Name | Unit | parameterGroup |\n"
-        markdown_content += "|----|------|------|----------------|\n"
-
-        for parameter in parameters:
-            markdown_content += f"| {parameter.id} | {parameter.name} | {parameter.unit} | {parameter.parameter_group} |\n"
+    # Generate brief, clear summary following get_locations pattern
+    if not parameters:
+        if input.filter_parameters_name:
+            description = (
+                f"No parameters found matching '{input.filter_parameters_name}'"
+            )
+        else:
+            description = "No parameters available"
     else:
-        markdown_content += "No parameters found matching the criteria.\n"
+        count = len(parameters)
+
+        # Analyze the results to provide clear summary based on actual data structure
+        parameter_groups = {}
+        for param in parameters:
+            group = param.parameter_group or "Unknown"
+            parameter_groups[group] = parameter_groups.get(group, 0) + 1
+
+        if count == 1:
+            param = parameters[0]
+            short_name = param.short_name if param.short_name else param.name
+            # Only show display_unit if it's different from what's already in short_name
+            display_unit = (
+                f" ({param.display_unit})"
+                if param.display_unit and param.display_unit not in short_name
+                else ""
+            )
+            description = f"Found 1 parameter: '{short_name}{display_unit}'"
+        elif count <= 5:
+            # For small results, mention key details
+            if len(parameter_groups) == 1:
+                group_name = list(parameter_groups.keys())[0]
+                description = f"Found {count} parameters in group '{group_name}'"
+            else:
+                parameter_summaries = []
+                for p in parameters[:3]:
+                    short_name = p.short_name if p.short_name else p.name
+                    # Only show display_unit if it's different from what's already in short_name
+                    display_unit = (
+                        f" ({p.display_unit})"
+                        if p.display_unit and p.display_unit not in short_name
+                        else ""
+                    )
+                    parameter_summaries.append(f"'{short_name}{display_unit}'")
+                if count > 3:
+                    parameter_summaries.append(f"and {count - 3} more")
+                description = (
+                    f"Found {count} parameters: {', '.join(parameter_summaries)}"
+                )
+        else:
+            # For larger results, provide summary
+            if len(parameter_groups) == 1:
+                group_name = list(parameter_groups.keys())[0]
+                description = f"Found {count} parameters in group '{group_name}'"
+            elif len(parameter_groups) <= 3:
+                group_summary = ", ".join(
+                    [
+                        f"{count} in '{group}'"
+                        for group, count in parameter_groups.items()
+                    ]
+                )
+                description = f"Found {count} parameters: {group_summary}"
+            else:
+                description = (
+                    f"Found {count} parameters across {len(parameter_groups)} groups"
+                )
 
     return GetParameterOutput(
         parameters=parameters,
-        markdown_content=markdown_content,
+        description=description,
     )

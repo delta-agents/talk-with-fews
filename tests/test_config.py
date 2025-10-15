@@ -30,7 +30,8 @@ FEWS_SERVICES = {
         test_data={
             "location_filters": ["ede", "amsterdam", "rotterdam"],
             "location_ids": ["KNMIUUR278", "WS000323"],
-            "parameter_ids": ["Eref.d", "WaterLevel", "Discharge"],
+            "parameter_ids": ["Eref.d", "Q.G", "H.B"],
+            "parameter_filters": ["water", "level", "Q.G"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "1990-01-01T00:00:00+00:00",
@@ -44,7 +45,8 @@ FEWS_SERVICES = {
         test_data={
             "location_filters": ["gouda", "utrecht", "leiden"],
             "location_ids": ["beg_109", "beg_110"],
-            "parameter_ids": ["BG.b.0", "H.G"],
+            "parameter_ids": ["BG.b.0", "H.G", "GW.G"],
+            "parameter_filters": ["groundwater", "level", "GW.G"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
@@ -62,8 +64,10 @@ FEWS_SERVICES = {
             ],  # Use only location where we know parameters exist
             "parameter_ids": [
                 "Q.G",
-                "T.ow.G",
+                "H.B",
+                "GW.G",
             ],  # Use only parameters that exist for HL000141
+            "parameter_filters": ["discharge", "temperature", "H.B"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2024-01-01T00:00:00+01:00",
@@ -77,7 +81,8 @@ FEWS_SERVICES = {
         test_data={
             "location_filters": ["hoorn", "heerhugowaard", "den_helder"],
             "location_ids": ["HHD001", "HHD002"],
-            "parameter_ids": ["WaterLevel", "Discharge", "Salinity"],
+            "parameter_ids": ["Q.G", "H.B", "GW.G"],
+            "parameter_filters": ["water", "level", "Eref.d"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
@@ -91,7 +96,8 @@ FEWS_SERVICES = {
         test_data={
             "location_filters": ["terneuzen", "vlissingen", "antwerpen"],
             "location_ids": ["SCH001", "SCH002"],
-            "parameter_ids": ["WaterLevel", "Discharge", "Tide"],
+            "parameter_ids": ["Q.G", "H.B", "GW.G"],
+            "parameter_filters": ["water", "tide", "Q.G"],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",

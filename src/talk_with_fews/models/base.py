@@ -115,13 +115,16 @@ class Parameter(ParameterBase):
     name: str = Field(..., description="Name of the parameter")
     parameter_type: str = Field(..., description="Type of parameter")
     unit: str = Field(..., description="Unit of measurement for the parameter")
-    display_unit: str = Field(..., description="Unit used for display purposes")
+    display_unit: str = Field(
+        ..., description="Unit used for display and expression purposes"
+    )
     uses_datum: bool = Field(..., description="Whether the parameter uses datum")
     parameter_group: str = Field(
         ..., description="Parameter group to which this parameter belongs"
     )
-    parameter_group_name: str = Field(..., description="Parameter group name")
-    short_name: str = Field(..., description="Short name of the parameter")
+    short_name: str = Field(
+        ..., description="Short name of the parameter, use this for expression purposes"
+    )
     attributes: str | None = Field(
         None, description="Stringified JSON of additional attributes for the parameter"
     )

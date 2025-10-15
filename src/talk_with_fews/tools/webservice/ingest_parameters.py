@@ -41,27 +41,27 @@ def ingest_parameters(
             display_unit=value["displayUnit"],
             uses_datum=value["usesDatum"],
             parameter_group=value["parameterGroup"],
-            parameter_group_name=value["parameterGroupName"],
             short_name=value["shortName"],
             attributes=str(value["attributes"]),
         )
         parameters.append(parameter)
 
-    # Convert locations to DataFrame for easy DuckDB insertion
+    # Convert parameters to DataFrame for easy DuckDB insertion
     parameters_data = []
-    for loc in parameters:
+    for param in parameters:
         parameters_data.append(
             {
-                "id": loc.id,
-                "name": loc.name,
-                "parameter_type": loc.parameter_type,
-                "unit": loc.unit,
-                "display_unit": loc.display_unit,
-                "uses_datum": loc.uses_datum,
-                "parameter_group": loc.parameter_group,
-                "parameter_group_name": loc.parameter_group_name,
-                "short_name": loc.short_name,
-                "attributes": json.dumps(loc.attributes) if loc.attributes else None,
+                "id": param.id,
+                "name": param.name,
+                "parameter_type": param.parameter_type,
+                "unit": param.unit,
+                "display_unit": param.display_unit,
+                "uses_datum": param.uses_datum,
+                "parameter_group": param.parameter_group,
+                "short_name": param.short_name,
+                "attributes": json.dumps(param.attributes)
+                if param.attributes
+                else None,
             }
         )
 
@@ -79,7 +79,6 @@ def ingest_parameters(
             display_unit VARCHAR,
             uses_datum BOOLEAN,
             parameter_group VARCHAR,
-            parameter_group_name VARCHAR,
             short_name VARCHAR,
             attributes VARCHAR,
             -- New column to track if series headers have been ingested
