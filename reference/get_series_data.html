@@ -195,6 +195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>get_series_data</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.get_series_data(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Retrieve timeseries data for a specific location-parameter combination.</p>
+<p>Automatically applies thinning for large datasets (&gt;500 estimated points) to ensure manageable data retrieval for AI assistants.</p>
 <p>Note: Flag source retrieval requires FEWS API support (feature request pending).</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
@@ -233,9 +234,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h2>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 6%">
-<col style="width: 17%">
-<col style="width: 75%">
+<col style="width: 7%">
+<col style="width: 18%">
+<col style="width: 74%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -248,7 +249,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td></td>
 <td>GetSeriesDataOutput</td>
-<td>GetSeriesDataOutput containing the timeseries values, metadata, and CSV formatted data</td>
+<td>GetSeriesDataOutput containing optimized timeseries values (only changing data)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>GetSeriesDataOutput</td>
+<td>and metadata (static information). AI assistants can generate CSV format if needed.</td>
 </tr>
 </tbody>
 </table>
