@@ -223,7 +223,22 @@ async def ingest_series_headers(
     # Fetch data from webservice
     error, data = get_request(request_url, params=params)
     if error is not None:
-        raise ValueError(f"Error fetching series headers for {query_type}: {error}")
+        # Handle expected "no data" responses as normal, not errors
+        error_str = str(error)
+        if (
+            "No timeSeries found" in error_str
+            or "Some of the parameters do not exists" in error_str
+            or "Some of the location ids do not exist" in error_str
+        ):
+            # Return empty result for expected no-data scenarios
+            return IngestSeriesHeadersOutput(
+                description=f"No time series found for {query_type}",
+                series_count=0,
+                sql_examples=[],
+            )
+        else:
+            # Re-raise actual errors
+            raise ValueError(f"Error fetching series headers for {query_type}: {error}")
 
     latest_id = cache_FewsWebServices_db.execute(
         "SELECT COALESCE(MAX(id), 0) FROM series_headers"
