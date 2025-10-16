@@ -123,6 +123,7 @@ async def get_series_data(
     stats_input = GetSeriesStatisticsInput(
         location_id=input.location_id,
         parameter_id=input.parameter_id,
+        module_instance_id=input.module_instance_id,
         start_time=input.start_time,
         end_time=input.end_time,
         include_interval_analysis=False,
@@ -130,7 +131,12 @@ async def get_series_data(
     )
 
     stats_result = await get_series_statistics(ctx, stats_input)
-    estimated_points = getattr(stats_result, "estimated_data_points_in_range", None)
+
+    # Get estimated points from the series (should be only one since moduleInstanceId is specified)
+    estimated_points = None
+    if stats_result:
+        # Since moduleInstanceId is specified, we should get exactly one series
+        estimated_points = stats_result[0].estimated_data_points_in_range
 
     # Step 2: Determine if thinning is needed
     thinning_applied = False
@@ -147,11 +153,12 @@ async def get_series_data(
         thinning_applied = True
         thinning_reason = f"Automatic thinning applied for large dataset ({estimated_points:,} estimated points > 500)"
 
-    # Step 3: Construct URL with optional thinning parameter
+    # Step 3: Construct URL with moduleInstanceId and optional thinning parameter
     url = (
         f"{ctx.deps.webservice_url}/rest/fewspiservice/v1/timeseries"
         f"?locationIds={input.location_id}"
         f"&parameterIds={input.parameter_id}"
+        f"&moduleInstanceIds={input.module_instance_id}"
         f"&startTime={format_datetime(input.start_time)}"
         f"&endTime={format_datetime(input.end_time)}"
         f"&documentFormat=PI_XML"
@@ -161,7 +168,7 @@ async def get_series_data(
     if thinning_applied:
         url += f"&thinning={thinning_value}"
 
-    # Add flag source parameter if requested (requires FEWS API support)
+    # Add flag source parameter if requested
     if input.include_flag_sources:
         url += "&includeFlagSources=true"
 

@@ -25,6 +25,9 @@ class SeriesFlagsInput(BaseModel):
 
     location_id: str = Field(..., description="Location ID to analyze")
     parameter_id: str = Field(..., description="Parameter ID to analyze")
+    module_instance_id: str = Field(
+        ..., description="Module instance ID that manages this specific series"
+    )
     start_time: datetime = Field(..., description="Start time for analysis")
     end_time: datetime = Field(..., description="End time for analysis")
     include_flag_sources: bool = Field(
