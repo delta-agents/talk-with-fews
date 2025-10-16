@@ -779,65 +779,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>get_series_statistics_output: GetSeriesStatisticsOutput <span class="op">=</span> <span class="cf">await</span> get_series_statistics(</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_statistics_input</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>get_series_statistics_output: <span class="bu">list</span>[</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    GetSeriesStatisticsOutput</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>] <span class="op">=</span> <span class="cf">await</span> get_series_statistics(ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_statistics_input)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-22" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_statistics_output, root_tag<span class="op">=</span><span class="st">"GetSeriesStatisticsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;GetSeriesStatisticsOutput&gt;
-  &lt;description&gt;Found 626 values for parameter 'Eref.d' and location 'KNMIUUR260'. Data available from 2023-11-21 to 2025-10-14. Daily data. Units: mm. Value range: 0 to 5.8 (mm). Interval analysis available by month.&lt;/description&gt;
-  &lt;min_value&gt;0&lt;/min_value&gt;
-  &lt;max_value&gt;5.8&lt;/max_value&gt;
-  &lt;parameter_units&gt;mm&lt;/parameter_units&gt;
-  &lt;first_value_time&gt;2023-11-21T00:00:00+00:00&lt;/first_value_time&gt;
-  &lt;last_value_time&gt;2025-10-14T00:00:00+00:00&lt;/last_value_time&gt;
-  &lt;time_step&gt;Daily data&lt;/time_step&gt;
-  &lt;timestep_info&gt;
-    &lt;unit&gt;second&lt;/unit&gt;
-    &lt;multiplier&gt;86400&lt;/multiplier&gt;
-  &lt;/timestep_info&gt;
-  &lt;interval_analysis&gt;
-    &lt;interval_type&gt;MONTH&lt;/interval_type&gt;
-    &lt;statistics&gt;
-      &lt;example&gt;
-        &lt;name&gt;aantal waarden&lt;/name&gt;
-        &lt;values&gt;
-          &lt;jan&gt;31.0&lt;/jan&gt;
-          &lt;feb&gt;29.0&lt;/feb&gt;
-          &lt;mrt&gt;31.0&lt;/mrt&gt;
-          &lt;apr&gt;30.0&lt;/apr&gt;
-          &lt;mei&gt;31.0&lt;/mei&gt;
-          &lt;jun&gt;30.0&lt;/jun&gt;
-          &lt;jul&gt;31.0&lt;/jul&gt;
-          &lt;aug&gt;31.0&lt;/aug&gt;
-          &lt;sep&gt;30.0&lt;/sep&gt;
-          &lt;okt&gt;31.0&lt;/okt&gt;
-          &lt;nov&gt;40.0&lt;/nov&gt;
-          &lt;dec&gt;63.0&lt;/dec&gt;
-        &lt;/values&gt;
-      &lt;/example&gt;
-      &lt;example&gt;
-        &lt;name&gt;% betrouwbaar&lt;/name&gt;
-        &lt;values&gt;
-          &lt;jan&gt;100.0&lt;/jan&gt;
-          &lt;feb&gt;100.0&lt;/feb&gt;
-          &lt;mrt&gt;100.0&lt;/mrt&gt;
-          &lt;apr&gt;100.0&lt;/apr&gt;
-          &lt;mei&gt;100.0&lt;/mei&gt;
-          &lt;jun&gt;100.0&lt;/jun&gt;
-          &lt;jul&gt;100.0&lt;/jul&gt;
-          &lt;aug&gt;100.0&lt;/aug&gt;
-          &lt;sep&gt;100.0&lt;/sep&gt;
-          &lt;okt&gt;100.0&lt;/okt&gt;
-          &lt;nov&gt;100.0&lt;/nov&gt;
-          &lt;dec&gt;100.0&lt;/dec&gt;
-        &lt;/values&gt;
-      &lt;/example&gt;
-    &lt;/statistics&gt;
-  &lt;/interval_analysis&gt;
-  &lt;estimated_data_points_in_range&gt;12785&lt;/estimated_data_points_in_range&gt;
+  &lt;GetSeriesStatisticsOutput&gt;
+    &lt;description&gt;Series 1 (im.wiwb.knmi): 627 values. Daily data. Units: mm. Range: 0 to 5.8.&lt;/description&gt;
+    &lt;min_value&gt;0&lt;/min_value&gt;
+    &lt;max_value&gt;5.8&lt;/max_value&gt;
+    &lt;parameter_units&gt;mm&lt;/parameter_units&gt;
+    &lt;first_value_time&gt;2023-11-21T00:00:00+00:00&lt;/first_value_time&gt;
+    &lt;last_value_time&gt;2025-10-15T00:00:00+00:00&lt;/last_value_time&gt;
+    &lt;time_step&gt;Daily data&lt;/time_step&gt;
+    &lt;timestep_info&gt;
+      &lt;unit&gt;second&lt;/unit&gt;
+      &lt;multiplier&gt;86400&lt;/multiplier&gt;
+    &lt;/timestep_info&gt;
+    &lt;interval_analysis&gt;null&lt;/interval_analysis&gt;
+    &lt;estimated_data_points_in_range&gt;12785&lt;/estimated_data_points_in_range&gt;
+    &lt;module_instance_id&gt;im.wiwb.knmi&lt;/module_instance_id&gt;
+  &lt;/GetSeriesStatisticsOutput&gt;
 &lt;/GetSeriesStatisticsOutput&gt;</code></pre>
 </div>
 </div>
@@ -849,7 +814,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> timedelta</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> get_series_statistics_output.first_value_time</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> get_series_statistics_output[<span class="dv">0</span>].first_value_time</span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>end_time <span class="op">=</span> start_time <span class="op">+</span> timedelta(days<span class="op">=</span><span class="dv">10</span>)</span>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(start_time, end_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -869,17 +834,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    GetSeriesDataOutput,</span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>get_series_data_input <span class="op">=</span> GetSeriesDataInput(</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    include_flag_sources<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>get_series_data_output: GetSeriesDataOutput <span class="op">=</span> <span class="cf">await</span> get_series_data(</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_data_input</span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the module_instance_id from the statistics output</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>module_instance_id <span class="op">=</span> get_series_statistics_output[<span class="dv">0</span>].module_instance_id</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>get_series_data_input <span class="op">=</span> GetSeriesDataInput(</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    module_instance_id<span class="op">=</span>module_instance_id,</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    include_flag_sources<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>get_series_data_output: GetSeriesDataOutput <span class="op">=</span> <span class="cf">await</span> get_series_data(</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>get_series_data_input</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="cell-27" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(get_series_data_output, root_tag<span class="op">=</span><span class="st">"GetSeriesDataOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -980,14 +949,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>analyze_flags_input <span class="op">=</span> SeriesFlagsInput(</span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    parameter_id<span class="op">=</span>parameter_id,</span>
 <span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    location_id<span class="op">=</span>location_id,</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>analyze_flags_output: SeriesFlagsOutput <span class="op">=</span> <span class="cf">await</span> analyze_series_flags(</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>analyze_flags_input</span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(analyze_flags_output, root_tag<span class="op">=</span><span class="st">"AnalyzeFlagsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    module_instance_id<span class="op">=</span>module_instance_id,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    start_time<span class="op">=</span>start_time,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    end_time<span class="op">=</span>end_time,</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>analyze_flags_output: SeriesFlagsOutput <span class="op">=</span> <span class="cf">await</span> analyze_series_flags(</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>analyze_flags_input</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(analyze_flags_output, root_tag<span class="op">=</span><span class="st">"AnalyzeFlagsOutput"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;AnalyzeFlagsOutput&gt;
   &lt;description&gt;Flag analysis for Eref.d at KNMIUUR260: 11 values analyzed from 2023-11-21T00:00:00Z to 2023-12-01T00:00:00Z. Data quality: 100.0% reliable, 0.0% doubtful, 0.0% unreliable.&lt;/description&gt;
