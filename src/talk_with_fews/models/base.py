@@ -7,14 +7,10 @@ This module defines the base models used by the agent to query and analyze FEWS 
 import ast
 import json
 import sqlite3
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 import duckdb
-
-from talk_with_fews.models.ingest_webservice import (
-    IngestLocationsOutput,
-    IngestParameterOutput,
-)
 
 
 class LaxBaseModel(BaseModel):
@@ -262,7 +258,7 @@ class SeriesHeader(BaseModel):
 
     A series header defines the metadata for a time series, including its type, location,
     parameter, and timing characteristics. This model represents the structure returned
-    by the FEWS webservice timeseries endpoint with onlyHeaders=True.
+    by the FEWS webservice timeseries endpoint with onlyHeaders=True and showStatistics=true.
     """
 
     id: int = Field(..., description="Unique identifier of the series header")
@@ -287,6 +283,12 @@ class SeriesHeader(BaseModel):
     timeZone: str = Field(..., description="Time zone offset (e.g., '0.0')")
     qualifiers: Optional[str] = Field(
         None, description="Optional qualifiers for the series"
+    )
+    first_value_time: Optional[datetime] = Field(
+        None, description="Timestamp of the first data value in the series"
+    )
+    last_value_time: Optional[datetime] = Field(
+        None, description="Timestamp of the last data value in the series"
     )
 
 
@@ -326,6 +328,4 @@ class Deps:
         self.schema: Optional[Dict[str, Any]] = None
         self.webservice_url: Optional[str] = None
         self.cache_FewsWebServices_db: Optional[duckdb.DuckDBPyConnection] = None
-        self.ingest_locations_output: Optional[IngestLocationsOutput] = None
-        self.ingest_parameters_output: Optional[IngestParameterOutput] = None
         self.cache_fews_schemas_dir: Optional[str] = None

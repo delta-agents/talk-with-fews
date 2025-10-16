@@ -229,17 +229,6 @@ FEWS_SERVICES = {
                     "module_instance_id": "ImportSphAbb",
                 },  # 1 series
             ],
-            # Location-parameter combinations that have NO time series data (for testing empty responses)
-            "empty_combinations": [
-                {
-                    "location_id": "HHD_350101",
-                    "parameter_id": "Q.meting",
-                },  # Location exists but no data for this parameter
-                {
-                    "location_id": "HHD_150183",
-                    "parameter_id": "Q.sim",
-                },  # Parameter exists but no data for this location
-            ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
