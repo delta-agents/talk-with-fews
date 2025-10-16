@@ -126,8 +126,6 @@ async def analyze_series_flags(
     3. Groups and summarizes these counts
     4. Formats results for reporting
 
-    Note: Flag source analysis requires FEWS API support (feature request pending).
-
     Args:
         ctx: Runtime context with dependencies
         input: Analysis parameters including location, parameter, and time range
@@ -143,7 +141,17 @@ async def analyze_series_flags(
     validate_time_range(input.start_time, input.end_time)
 
     # 2. Get timeseries with flags
-    series_data = await get_series_data(ctx, input)
+    from talk_with_fews.models.get_series_data import GetSeriesDataInput
+
+    series_input = GetSeriesDataInput(
+        location_id=input.location_id,
+        parameter_id=input.parameter_id,
+        module_instance_id=input.module_instance_id,
+        start_time=input.start_time,
+        end_time=input.end_time,
+        include_flag_sources=input.include_flag_sources,
+    )
+    series_data = await get_series_data(ctx, series_input)
 
     # 3. Handle empty data case
     if not series_data.values:

@@ -30,9 +30,10 @@ class TimeseriesValue(BaseModel):
 
 
 class GetSeriesDataInput(LaxBaseModel):
-    """Retrieve time series measurements from a specific location and parameter.
+    """Retrieve time series measurements from a specific location, parameter, and module instance.
 
     Use this to get actual measurement data for analysis, visualization, and reporting.
+    Requires moduleInstanceId to ensure you get data from the exact series you want.
     Supports flexible date formats and automatic handling of large datasets.
     """
 
@@ -41,6 +42,10 @@ class GetSeriesDataInput(LaxBaseModel):
     )
     parameter_id: str = Field(
         ..., description="Parameter identifier (e.g., 'BG.b.0', 'WNSHDB1')"
+    )
+    module_instance_id: str = Field(
+        ...,
+        description="Module instance ID that manages this specific series (use get_series_headers or get_series_statistics to find available moduleInstanceIds)",
     )
     start_time: datetime = Field(
         description="Start date/time for the time series (accepts '2024-01-01' or '2024-01-01T00:00:00')"

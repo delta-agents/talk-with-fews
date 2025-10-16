@@ -31,15 +31,61 @@ def create_test_values(flags: List[int]) -> List[TimeseriesValue]:
     for i, flag in enumerate(flags):
         value = TimeseriesValue(
             datetime=datetime(2024, 1, 1) + timedelta(hours=i),
-            location_id="KNMIUUR278",
-            station_name="Test Station",
-            parameter_id="Eref.d",
-            moduleinstance_id="TEST_MOD",
             value=float(i),
             flag=flag,
         )
         values.append(value)
     return values
+
+
+async def get_module_instance_id_for_flags(
+    ctx, location_id: str, parameter_id: str
+) -> str:
+    """
+    Helper function to get the module_instance_id for a location-parameter combination from test config.
+
+    Args:
+        ctx: Runtime context
+        location_id: Location ID
+        parameter_id: Parameter ID
+
+    Returns:
+        str: Module instance ID from test configuration
+
+    Raises:
+        Exception: If no valid module_instance_id can be found in test config
+    """
+    from tests.test_config import get_test_service_config
+
+    try:
+        # Get the test service configuration
+        service_config = get_test_service_config()
+        test_data = service_config.test_data
+
+        # Check if we have a module instance mapping
+        module_instance_mapping = test_data.get("module_instance_mapping", {})
+
+        # Look up the module instance ID for this location-parameter combination
+        if location_id in module_instance_mapping:
+            location_mapping = module_instance_mapping[location_id]
+            if parameter_id in location_mapping:
+                return location_mapping[parameter_id]
+
+        # Fallback: try to find any module instance ID for this parameter
+        for loc_id, param_mapping in module_instance_mapping.items():
+            if parameter_id in param_mapping:
+                return param_mapping[parameter_id]
+
+        # If still not found, raise an exception
+        raise Exception(
+            f"No module instance ID found in test config for location '{location_id}' and parameter '{parameter_id}'"
+        )
+
+    except Exception as e:
+        # Re-raise the exception with more context
+        raise Exception(
+            f"Failed to get module instance ID for location '{location_id}' and parameter '{parameter_id}': {str(e)}"
+        )
 
 
 @pytest.fixture
@@ -122,17 +168,23 @@ def test_analyze_series_flags_with_real_data(service):
     print(f"Testing {service}: {location_id}/{parameter_id}")
     print(f"Period: {start_time} to {end_time}")
 
+    # Create context
+    ctx = get_runtime_ctx(user_settings)
+
+    # Get module instance ID
+    module_instance_id = asyncio.run(
+        get_module_instance_id_for_flags(ctx, location_id, parameter_id)
+    )
+
     # Create test input
     input = SeriesFlagsInput(
         location_id=location_id,
         parameter_id=parameter_id,
+        module_instance_id=module_instance_id,
         start_time=start_time,
         end_time=end_time,
         include_flag_sources=False,
     )
-
-    # Create context
-    ctx = get_runtime_ctx(user_settings)
 
     # Run analysis
     try:
@@ -204,6 +256,7 @@ async def test_analyze_series_flags_invalid_time_range(test_context):
     input = SeriesFlagsInput(
         location_id="KNMIUUR278",
         parameter_id="Eref.d",
+        module_instance_id="default_module_instance",
         start_time=datetime(2024, 1, 2, tzinfo=timezone.utc),
         end_time=datetime(2024, 1, 1, tzinfo=timezone.utc),
     )
@@ -217,6 +270,7 @@ async def test_analyze_series_flags_invalid_time_range(test_context):
     input = SeriesFlagsInput(
         location_id="KNMIUUR278",
         parameter_id="Eref.d",
+        module_instance_id="default_module_instance",
         start_time=datetime.now(timezone.utc),
         end_time=future,
     )
@@ -275,16 +329,22 @@ def test_analyze_series_flags_datetime_comparison_error(service):
             f"Testing {service} with working parameters: {location_id}/{parameter_id}"
         )
 
+    # Create context
+    ctx = get_runtime_ctx(user_settings)
+
+    # Get module instance ID
+    module_instance_id = asyncio.run(
+        get_module_instance_id_for_flags(ctx, location_id, parameter_id)
+    )
+
     # Create test input
     input_data = SeriesFlagsInput(
         location_id=location_id,
         parameter_id=parameter_id,
+        module_instance_id=module_instance_id,
         start_time=start_time,
         end_time=end_time,
     )
-
-    # Create context
-    ctx = get_runtime_ctx(user_settings)
 
     try:
         # This should work for both services now (error may have been fixed)

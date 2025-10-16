@@ -849,6 +849,7 @@
 			<enumeration value="DHI-SFA"/>
 			<enumeration value="DHILAWRArcInfoAsciiGrid"/>
 			<enumeration value="DigitalDelta"/>
+			<enumeration value="DigitalDelta3.0"/>
 			<enumeration value="dino"/>
 			<enumeration value="dinoservice"/>
 			<enumeration value="divermon"/>
@@ -987,6 +988,7 @@
 				</annotation>
 			</enumeration>
 			<enumeration value="lubw"/>
+			<enumeration value="LUBWImport"/>
 			<enumeration value="MactaquacDischarge"/>
 			<enumeration value="matroos_netcdf-cf_grid"/>
 			<enumeration value="matroos_netcdf-cf_timeseries"/>

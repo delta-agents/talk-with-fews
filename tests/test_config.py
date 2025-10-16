@@ -33,14 +33,50 @@ FEWS_SERVICES = {
             "parameter_ids": ["Eref.d", "Q.G", "H.B"],
             "parameter_filters": ["water", "level", "Q.G"],
             "validated_combinations": [
-                {"location_id": "KNMIUUR278", "parameter_id": "Eref.d"},
-                {"location_id": "KNMIUUR278", "parameter_id": "Q.G"},
-                {"location_id": "KNMIUUR278", "parameter_id": "H.B"},
+                {
+                    "location_id": "KNMIUUR278",
+                    "parameter_id": "Eref.d",
+                    "module_instance_id": "im.wiwb.knmi",
+                },
+                {
+                    "location_id": "KNMIUUR278",
+                    "parameter_id": "Q.G",
+                    "module_instance_id": "im.wiwb.knmi",
+                },
+                {
+                    "location_id": "KNMIUUR278",
+                    "parameter_id": "H.B",
+                    "module_instance_id": "im.wiwb.knmi",
+                },
             ],
+            # Test cases for multiple locations/parameters
+            "multiple_location_test": {
+                "parameter_id": "Eref.d",
+                "location_id": ["KNMIUUR278", "WS000323"],
+                "description": "Single parameter with multiple locations",
+            },
+            "multiple_parameter_test": {
+                "parameter_id": ["Eref.d", "Q.G", "H.B"],
+                "location_id": "KNMIUUR278",
+                "description": "Multiple parameters with single location",
+            },
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "1990-01-01T00:00:00+00:00",
             "end_time": "2025-12-31T23:59:59+00:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "KNMIUUR278": {
+                    "Eref.d": "im.wiwb.knmi",
+                    "Q.G": "im.wiwb.knmi",
+                    "H.B": "im.wiwb.knmi",
+                },
+                "WS000323": {
+                    "Eref.d": "im.wiwb.knmi",
+                    "Q.G": "im.wiwb.knmi",
+                    "H.B": "im.wiwb.knmi",
+                },
+            },
         },
     ),
     "hdsr": FEWSServiceConfig(
@@ -53,12 +89,40 @@ FEWS_SERVICES = {
             "parameter_ids": ["BG.b.0", "H.G", "GW.G"],
             "parameter_filters": ["groundwater", "level", "GW.G"],
             "validated_combinations": [
-                {"location_id": "beg_109", "parameter_id": "BG.b.0"},
+                {
+                    "location_id": "beg_109",
+                    "parameter_id": "BG.b.0",
+                    "module_instance_id": "ImportBegroeiingsMonitoring",
+                },
             ],
+            # Test cases for multiple locations/parameters
+            "multiple_location_test": {
+                "parameter_id": "BG.b.0",
+                "location_id": ["beg_109", "beg_110"],
+                "description": "Single parameter with multiple locations",
+            },
+            "multiple_parameter_test": {
+                "parameter_id": ["BG.b.0", "H.G", "GW.G"],
+                "location_id": "beg_109",
+                "description": "Multiple parameters with single location",
+            },
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
             "end_time": "2024-12-31T23:59:59+01:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "beg_109": {
+                    "BG.b.0": "ImportBegroeiingsMonitoring",
+                    "H.G": "ImportBegroeiingsMonitoring",
+                    "GW.G": "ImportBegroeiingsMonitoring",
+                },
+                "beg_110": {
+                    "BG.b.0": "ImportBegroeiingsMonitoring",
+                    "H.G": "ImportBegroeiingsMonitoring",
+                    "GW.G": "ImportBegroeiingsMonitoring",
+                },
+            },
         },
     ),
     "wsvv": FEWSServiceConfig(
@@ -82,20 +146,52 @@ FEWS_SERVICES = {
                 {
                     "location_id": "HL000141",
                     "parameter_id": "EV.15",
+                    "module_instance_id": "Validatie",
                 },  # 577 values (all flagged but real data)
                 {
                     "location_id": "HL000005",
                     "parameter_id": "EV.15",
+                    "module_instance_id": "Validatie",
                 },  # 577 values (all flagged but real data)
                 {
                     "location_id": "HL000041",
                     "parameter_id": "EV.15",
+                    "module_instance_id": "Validatie",
                 },  # 577 values (all flagged but real data)
             ],
+            # Test cases for multiple locations/parameters
+            "multiple_location_test": {
+                "parameter_id": "EV.15",
+                "location_id": ["HL000141", "HL000005", "HL000041"],
+                "description": "Single parameter with multiple locations",
+            },
+            "multiple_parameter_test": {
+                "parameter_id": ["EV.15", "EV.hrsfi.m", "EV.lrsfi.m"],
+                "location_id": "HL000141",
+                "description": "Multiple parameters with single location",
+            },
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2024-01-01T00:00:00+01:00",
-            "end_time": "2024-01-14T00:00:00+01:00",
+            "end_time": "2025-01-14T00:00:00+01:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "HL000141": {
+                    "EV.15": "Validatie",
+                    "EV.hrsfi.m": "Validatie",
+                    "EV.lrsfi.m": "Validatie",
+                },
+                "HL000005": {
+                    "EV.15": "Validatie",
+                    "EV.hrsfi.m": "Validatie",
+                    "EV.lrsfi.m": "Validatie",
+                },
+                "HL000041": {
+                    "EV.15": "Validatie",
+                    "EV.hrsfi.m": "Validatie",
+                    "EV.lrsfi.m": "Validatie",
+                },
+            },
         },
     ),
     "hhd": FEWSServiceConfig(
@@ -120,9 +216,18 @@ FEWS_SERVICES = {
                 {
                     "location_id": "HHD_150183-pomp1",
                     "parameter_id": "pompstatus.bedrijf",
+                    "module_instance_id": "ImportSphAbb",
                 },  # 8641 values (all flagged but real data)
-                {"location_id": "HHD_150183", "parameter_id": "Q.meting"},  # 9 series
-                {"location_id": "HHD_350101", "parameter_id": "Q.sim"},  # 1 series
+                {
+                    "location_id": "HHD_150183",
+                    "parameter_id": "Q.meting",
+                    "module_instance_id": "ImportSphAbb",
+                },  # 9 series
+                {
+                    "location_id": "HHD_350101",
+                    "parameter_id": "Q.sim",
+                    "module_instance_id": "ImportSphAbb",
+                },  # 1 series
             ],
             # Location-parameter combinations that have NO time series data (for testing empty responses)
             "empty_combinations": [
@@ -139,6 +244,24 @@ FEWS_SERVICES = {
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
             "end_time": "2024-12-31T23:59:59+01:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "HHD_150183-pomp1": {
+                    "pompstatus.bedrijf": "ImportSphAbb",
+                    "Q.meting": "ImportSphAbb",
+                    "Q.sim": "ImportSphAbb",
+                },
+                "HHD_350101": {
+                    "pompstatus.bedrijf": "ImportSphAbb",
+                    "Q.meting": "ImportSphAbb",
+                    "Q.sim": "ImportSphAbb",
+                },
+                "HHD_150183": {
+                    "pompstatus.bedrijf": "ImportSphAbb",
+                    "Q.meting": "ImportSphAbb",
+                    "Q.sim": "ImportSphAbb",
+                },
+            },
         },
     ),
     "scheldestromen": FEWSServiceConfig(
@@ -159,13 +282,39 @@ FEWS_SERVICES = {
             ],  # Real parameter IDs with data
             "parameter_filters": ["water", "tide", "Q.G"],
             "validated_combinations": [
-                {"location_id": "VOV9345", "parameter_id": "WNSHDB1"},
-                {"location_id": "VOV9345", "parameter_id": "WNSHDB3"},
+                {
+                    "location_id": "VOV9345",
+                    "parameter_id": "WNSHDB1",
+                    "module_instance_id": "Productie",
+                },
+                {
+                    "location_id": "VOV9345",
+                    "parameter_id": "WNSHDB3",
+                    "module_instance_id": "Productie",
+                },
             ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
             "start_time": "2020-01-01T00:00:00+01:00",
             "end_time": "2024-12-31T23:59:59+01:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "VOV9345": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+                "VOV9346": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+                "VOV32379": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+            },
         },
     ),
 }

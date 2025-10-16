@@ -7,7 +7,7 @@ series statistics from the FEWS webservice with incremental caching.
 
 from datetime import datetime
 from pydantic import BaseModel, Field, model_validator
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Union, List
 from enum import Enum
 
 from pydantic_ai import ModelRetry
@@ -33,17 +33,22 @@ class GetSeriesStatisticsInput(LaxBaseModel):
 
     Supports querying by parameter_id AND location_id for incremental caching.
     Can provide both data summary and interval analysis for comprehensive insights.
+    Optional moduleInstanceId allows filtering to a specific module instance.
 
     This model can handle both object input and string input that represents a dict.
     """
 
-    parameter_id: str = Field(
+    parameter_id: Union[str, List[str]] = Field(
         ...,
-        description="Parameter ID that exists for the given location_id (use get_series_headers to find valid combinations)",
+        description="Parameter ID(s) - can be a single ID string or list of IDs (use get_series_headers to find valid combinations)",
     )
-    location_id: str = Field(
+    location_id: Union[str, List[str]] = Field(
         ...,
-        description="Location ID that exists for the given parameter_id (use get_series_headers to find valid combinations)",
+        description="Location ID(s) - can be a single ID string or list of IDs (use get_series_headers to find valid combinations)",
+    )
+    module_instance_id: Optional[str] = Field(
+        None,
+        description="Optional module instance ID to filter to a specific series (use get_series_headers to find available moduleInstanceIds)",
     )
     start_time: datetime = Field(
         description="Start date time for interval analysis (data summary uses full available range, not this range)"
@@ -63,8 +68,30 @@ class GetSeriesStatisticsInput(LaxBaseModel):
     @model_validator(mode="after")
     def validate_exclusive_fields(cls, values):
         parameter_id, location_id = values.parameter_id, values.location_id
-        if not (parameter_id and location_id):
+
+        # Convert to lists for easier processing
+        if isinstance(parameter_id, str):
+            param_list = [parameter_id.strip()] if parameter_id.strip() else []
+        else:
+            param_list = parameter_id if parameter_id else []
+
+        if isinstance(location_id, str):
+            loc_list = [location_id.strip()] if location_id.strip() else []
+        else:
+            loc_list = location_id if location_id else []
+
+        if not param_list or not loc_list:
             raise ModelRetry("Both 'parameter_id' and 'location_id' must be provided.")
+
+        # Check that we don't have multiple of both - only one can be a list with multiple items
+        param_is_multiple = len(param_list) > 1
+        loc_is_multiple = len(loc_list) > 1
+
+        if param_is_multiple and loc_is_multiple:
+            raise ModelRetry(
+                "Cannot specify multiple parameter_ids AND multiple location_ids. Choose one to be multiple and the other to be single."
+            )
+
         return values
 
 
@@ -120,4 +147,10 @@ class GetSeriesStatisticsOutput(BaseModel):
     estimated_data_points_in_range: Optional[int] = Field(
         None,
         description="Estimated number of data points if get_series_data is called with the same start_time/end_time range (only for equidistant data)",
+    )
+
+    # Series identification
+    module_instance_id: Optional[str] = Field(
+        None,
+        description="Module instance ID that manages this specific series",
     )

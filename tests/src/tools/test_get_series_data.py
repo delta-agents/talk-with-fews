@@ -16,6 +16,80 @@ from tests.test_config import get_test_service_config
 from tests.parallel_decorator import fews_parallel
 
 
+async def get_module_instance_id(ctx, location_id: str, parameter_id: str) -> str:
+    """
+    Helper function to get the module_instance_id for a location-parameter combination from test config.
+
+    Args:
+        ctx: Runtime context
+        location_id: Location ID
+        parameter_id: Parameter ID
+
+    Returns:
+        str: Module instance ID from test configuration
+
+    Raises:
+        Exception: If no valid module_instance_id can be found in test config
+    """
+    from tests.test_config import get_test_service_config
+
+    try:
+        # Get the test service configuration
+        service_config = get_test_service_config()
+        test_data = service_config.test_data
+
+        # Check if we have a module instance mapping
+        module_instance_mapping = test_data.get("module_instance_mapping", {})
+
+        # Look up the module instance ID for this location-parameter combination
+        if location_id in module_instance_mapping:
+            location_mapping = module_instance_mapping[location_id]
+            if parameter_id in location_mapping:
+                return location_mapping[parameter_id]
+
+        # Fallback: try to find any module instance ID for this parameter
+        for loc_id, param_mapping in module_instance_mapping.items():
+            if parameter_id in param_mapping:
+                return param_mapping[parameter_id]
+
+        # If still not found, raise an exception
+        raise Exception(
+            f"No module instance ID found in test config for location '{location_id}' and parameter '{parameter_id}'"
+        )
+
+    except Exception as e:
+        # Re-raise the exception with more context
+        raise Exception(
+            f"Failed to get module instance ID for location '{location_id}' and parameter '{parameter_id}': {str(e)}"
+        )
+
+
+async def create_series_data_input(
+    ctx, location_id: str, parameter_id: str, start_time: datetime, end_time: datetime
+) -> GetSeriesDataInput:
+    """
+    Helper function to create GetSeriesDataInput with module_instance_id.
+
+    Args:
+        ctx: Runtime context
+        location_id: Location ID
+        parameter_id: Parameter ID
+        start_time: Start time
+        end_time: End time
+
+    Returns:
+        GetSeriesDataInput: Input object with module_instance_id
+    """
+    module_instance_id = await get_module_instance_id(ctx, location_id, parameter_id)
+    return GetSeriesDataInput(
+        location_id=location_id,
+        parameter_id=parameter_id,
+        module_instance_id=module_instance_id,
+        start_time=start_time,
+        end_time=end_time,
+    )
+
+
 def normalize_line_endings(text: str) -> str:
     """Normalize line endings to \n for consistent comparison."""
     return text.replace("\r\n", "\n").replace("\r", "\n")
@@ -40,20 +114,21 @@ def test_get_series_data(service):
     service_config = get_test_service_config()
     test_data = service_config.test_data
 
+    # Get runtime context
+    ctx = get_runtime_ctx(user_settings)
+
     # Create input using service-specific test data
     t_start = datetime.fromisoformat(test_data["start_time"])
     t_end = datetime.fromisoformat(test_data["end_time"])
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],  # Use first location from test data
-        parameter_id=test_data["parameter_ids"][
-            0
-        ],  # Use first parameter from test data
-        start_time=t_start,
-        end_time=t_end,
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
     )
-
-    # Get runtime context
-    ctx = get_runtime_ctx(user_settings)
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -89,16 +164,21 @@ def test_get_series_data_missing_values(service):
     service_config = get_test_service_config()
     test_data = service_config.test_data
 
-    # Create input using service-specific test data
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],
-        parameter_id=test_data["parameter_ids"][0],
-        start_time=datetime.fromisoformat(test_data["start_time"]),
-        end_time=datetime.fromisoformat(test_data["end_time"]),
-    )
-
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
+
+    # Create input using service-specific test data
+    t_start = datetime.fromisoformat(test_data["start_time"])
+    t_end = datetime.fromisoformat(test_data["end_time"])
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
+    )
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -130,6 +210,7 @@ def test_get_series_data_invalid_location(service):
     input_data = GetSeriesDataInput(
         location_id="INVALID_LOCATION",
         parameter_id=test_data["parameter_ids"][0],
+        module_instance_id="default_module_instance",  # Use default for invalid location
         start_time=datetime.fromisoformat(test_data["start_time"]),
         end_time=datetime.fromisoformat(test_data["end_time"]),
     )
@@ -158,6 +239,7 @@ def test_get_series_data_invalid_parameter(service):
     input_data = GetSeriesDataInput(
         location_id=test_data["location_ids"][0],
         parameter_id="INVALID_PARAMETER",
+        module_instance_id="default_module_instance",  # Use default for invalid parameter
         start_time=datetime.fromisoformat(test_data["start_time"]),
         end_time=datetime.fromisoformat(test_data["end_time"]),
     )
@@ -186,16 +268,21 @@ def test_get_series_data_availability(service):
     service_config = get_test_service_config()
     test_data = service_config.test_data
 
-    # Create input using service-specific test data
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],
-        parameter_id=test_data["parameter_ids"][0],
-        start_time=datetime.fromisoformat(test_data["start_time"]),
-        end_time=datetime.fromisoformat(test_data["end_time"]),
-    )
-
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
+
+    # Create input using service-specific test data
+    t_start = datetime.fromisoformat(test_data["start_time"])
+    t_end = datetime.fromisoformat(test_data["end_time"])
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
+    )
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -277,16 +364,21 @@ def test_get_series_data_large_dataset():
     service_config = get_test_service_config()
     test_data = service_config.test_data
 
-    # Create input for the large dataset using service-specific test data
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],
-        parameter_id=test_data["parameter_ids"][0],
-        start_time=datetime.fromisoformat(test_data["start_time"]),
-        end_time=datetime.fromisoformat(test_data["end_time"]),
-    )
-
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
+
+    # Create input for the large dataset using service-specific test data
+    t_start = datetime.fromisoformat(test_data["start_time"])
+    t_end = datetime.fromisoformat(test_data["end_time"])
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
+    )
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -332,16 +424,21 @@ def test_get_series_data_large_dataset_with_thinning():
     service_config = get_test_service_config()
     test_data = service_config.test_data
 
-    # Create input for the dataset with thinning
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],
-        parameter_id=test_data["parameter_ids"][0],
-        start_time=datetime.fromisoformat(test_data["start_time"]),
-        end_time=datetime.fromisoformat(test_data["end_time"]),
-    )
-
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
+
+    # Create input for the dataset with thinning
+    t_start = datetime.fromisoformat(test_data["start_time"])
+    t_end = datetime.fromisoformat(test_data["end_time"])
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
+    )
 
     # Call the function
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -384,11 +481,16 @@ def test_get_series_data_automatic_thinning():
     ctx = get_runtime_ctx(user_settings)
 
     # Test with service-specific date range - may or may not trigger automatic thinning
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],
-        parameter_id=test_data["parameter_ids"][0],
-        start_time=datetime.fromisoformat(test_data["start_time"]),
-        end_time=datetime.fromisoformat(test_data["end_time"]),
+    t_start = datetime.fromisoformat(test_data["start_time"])
+    t_end = datetime.fromisoformat(test_data["end_time"])
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
     )
 
     result = asyncio.run(get_series_data(ctx, input_data))
@@ -436,11 +538,16 @@ def test_get_series_data_no_thinning_needed():
     ctx = get_runtime_ctx(user_settings)
 
     # Test with service-specific dataset - may or may not trigger thinning
-    input_data = GetSeriesDataInput(
-        location_id=test_data["location_ids"][0],
-        parameter_id=test_data["parameter_ids"][0],
-        start_time=datetime.fromisoformat(test_data["start_time"]),
-        end_time=datetime.fromisoformat(test_data["end_time"]),
+    t_start = datetime.fromisoformat(test_data["start_time"])
+    t_end = datetime.fromisoformat(test_data["end_time"])
+    input_data = asyncio.run(
+        create_series_data_input(
+            ctx,
+            test_data["location_ids"][0],
+            test_data["parameter_ids"][0],
+            t_start,
+            t_end,
+        )
     )
 
     result = asyncio.run(get_series_data(ctx, input_data))
