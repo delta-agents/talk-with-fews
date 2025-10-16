@@ -113,9 +113,7 @@ def test_get_runtime_ctx_with_ingestion_disabled():
                 # Expected - table doesn't exist
                 assert "does not exist" in str(e)
 
-            # Ingestion outputs should be None
-            assert ctx.deps.ingest_locations_output is None
-            assert ctx.deps.ingest_parameters_output is None
+            # Ingestion outputs are no longer stored in Deps model
     finally:
         os.environ.pop("DEV_DISABLE_WEBSERVICE_INGEST", None)
 

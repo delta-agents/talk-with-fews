@@ -36,6 +36,8 @@ def get_series_headers_with_details(
             sh.missVal,
             sh.timeZone,
             sh.qualifiers,
+            sh.first_value_time,
+            sh.last_value_time,
             sh.created_at,
             -- Location details
             l.shortName as location_name,

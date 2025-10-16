@@ -91,6 +91,7 @@ class UserContextCache:
     cache_FewsWebServices_db: Optional[Any] = None
     ingest_locations_output: Optional[Any] = None
     ingest_parameters_output: Optional[Any] = None
+    ingest_series_headers_output: Optional[Any] = None
     cache_fews_schemas_dir: Optional[str] = None
 
 
@@ -168,15 +169,15 @@ def _setup_webservice_cache(
         enable_webservice_ingest: Whether to ingest locations/parameters
 
     Returns:
-        Tuple of (cache_db, locations_output, parameters_output)
+        Tuple of (cache_db, locations_output, parameters_output, series_headers_output)
     """
     # Return cached values if available
     if cached_db is not None:
-        return cached_db, None, None
+        return cached_db, None, None, None
 
     # No webservice URL provided
     if webservice_url is None:
-        return None, None, None
+        return None, None, None, None
 
     # Create in-memory DuckDB database
     cache_db = duckdb.connect(database=":memory:", read_only=False)
@@ -186,13 +187,14 @@ def _setup_webservice_cache(
     # Optionally ingest data (this is the slow part)
     locations_output = None
     parameters_output = None
+    series_headers_output = None
     if enable_webservice_ingest:
         locations_output = ingest_locations(webservice_url, cache_db)
         parameters_output = ingest_parameters(webservice_url, cache_db)
         # Setup the series_headers table (requires locations and parameters tables)
         cache_db = setup_series_headers_table(cache_db)
 
-    return cache_db, locations_output, parameters_output
+    return cache_db, locations_output, parameters_output, series_headers_output
 
 
 def get_runtime_ctx(user_settings: dict) -> RunContext:
@@ -252,8 +254,10 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     ).lower() not in ("true", "1", "yes")
 
     # Setup webservice cache (creates in-memory DB, optionally ingests data)
-    cache_db, locations_out, parameters_out = _setup_webservice_cache(
-        webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
+    cache_db, locations_output, parameters_output, series_headers_output = (
+        _setup_webservice_cache(
+            webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
+        )
     )
 
     # Get schemas directory for XML validation
@@ -267,16 +271,12 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     deps.webservice_url = webservice_url
     deps.schema = schema
     deps.cache_FewsWebServices_db = cache_db
-    deps.ingest_locations_output = locations_out or cache.ingest_locations_output
-    deps.ingest_parameters_output = parameters_out or cache.ingest_parameters_output
     deps.cache_fews_schemas_dir = schemas_dir
 
     # Update cache with new values
     cache.db_connection = db_connection
     cache.schema = schema
     cache.cache_FewsWebServices_db = cache_db
-    cache.ingest_locations_output = deps.ingest_locations_output
-    cache.ingest_parameters_output = deps.ingest_parameters_output
     cache.cache_fews_schemas_dir = schemas_dir
 
     return CtxWithDeps(deps)
@@ -304,6 +304,8 @@ def setup_series_headers_table(
             missVal DOUBLE,
             timeZone VARCHAR,
             qualifiers VARCHAR,
+            first_value_time TIMESTAMP,
+            last_value_time TIMESTAMP,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
             -- Foreign key constraints
@@ -324,5 +326,11 @@ def setup_series_headers_table(
     )
     _cache_FewsWebServices_db.execute(
         "CREATE INDEX idx_series_headers_type ON series_headers(type)"
+    )
+    _cache_FewsWebServices_db.execute(
+        "CREATE INDEX idx_series_headers_first_value_time ON series_headers(first_value_time)"
+    )
+    _cache_FewsWebServices_db.execute(
+        "CREATE INDEX idx_series_headers_last_value_time ON series_headers(last_value_time)"
     )
     return _cache_FewsWebServices_db
