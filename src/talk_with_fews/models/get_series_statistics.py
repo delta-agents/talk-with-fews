@@ -113,11 +113,15 @@ class GetSeriesStatisticsOutput(BaseModel):
     # Data characteristics
     min_value: Optional[str] = Field(
         None,
-        description="Minimum value across series (from full available data range, not requested time range)",
+        description="Minimum value across series (from requested time range)",
     )
     max_value: Optional[str] = Field(
         None,
-        description="Maximum value across series (from full available data range, not requested time range)",
+        description="Maximum value across series (from requested time range)",
+    )
+    data_count_in_range: Optional[int] = Field(
+        None,
+        description="Number of data points in the requested time range",
     )
     parameter_units: Optional[str] = Field(
         None, description="Parameter units (e.g., 'mm', 'm3/s', '°C')"

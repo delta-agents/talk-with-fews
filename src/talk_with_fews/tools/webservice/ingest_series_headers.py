@@ -15,6 +15,285 @@ from talk_with_fews.models.ingest_series_headers import IngestSeriesHeadersOutpu
 from talk_with_fews.utils.webservice_utils import get_timeseries_headers
 
 
+def find_last_value_time(
+    webservice_url: str,
+    parameter_id: str = None,
+    location_id: str = None,
+    module_instance_id: str = None,
+    max_attempts: int = 10,
+) -> datetime:
+    """
+    Find the last value time by starting from future time and working backwards.
+
+    Uses an iterative approach starting from 3 months in the future and moving backwards
+    until we find the actual last data point. This ensures we capture recent data that
+    might still be actively collected or processed.
+
+    Starting from the future is important because:
+    - Data might be collected in real-time or near real-time
+    - Processing delays might mean recent data isn't immediately available
+    - Starting from current time might miss the most recent data points
+    """
+    # Start from a few months in the future to ensure we capture recent data
+    current_time = datetime.now(timezone.utc) + timedelta(
+        days=90
+    )  # 3 months in the future
+    step_back = timedelta(
+        days=30
+    )  # Start with 1 month steps to avoid missing recent data
+
+    global_latest_last_value = None
+    found_data = False
+
+    for attempt in range(max_attempts):
+        start_time = current_time - timedelta(
+            days=30
+        )  # Look back 30 days from current point
+        end_time = current_time
+
+        error, xml_content, _ = get_timeseries_headers(
+            webservice_url=webservice_url,
+            parameter_id=parameter_id,
+            location_id=location_id,
+            module_instance_id=module_instance_id,
+            start_time=start_time,
+            end_time=end_time,
+            show_statistics=True,
+            document_format="PI_XML",
+        )
+
+        if error or not xml_content:
+            # No data in this range
+            if found_data:
+                # We already found data, so move forward to find more recent data
+                current_time += step_back
+                step_back = timedelta(days=30)  # Use smaller steps when going forward
+            else:
+                # Haven't found data yet, keep going backward
+                current_time -= step_back
+                step_back = min(
+                    step_back * 1.5, timedelta(days=365)
+                )  # Max 1 year steps
+            continue
+
+        # Parse XML to find the LATEST lastValueTime across ALL series
+        namespace = {"pi": "http://www.wldelft.nl/fews/PI"}
+        current_attempt_latest = None
+        try:
+            root = ET.fromstring(xml_content)
+            series_list = root.findall("pi:series", namespace)
+
+            for series_elem in series_list:
+                header_elem = series_elem.find("pi:header", namespace)
+                if header_elem is not None:
+                    last_value_elem = header_elem.find("pi:lastValueTime", namespace)
+                    if last_value_elem is not None:
+                        # Parse the last value time for this series
+                        last_date = last_value_elem.get("date")
+                        last_time = last_value_elem.get("time")
+                        if last_date and last_time:
+                            last_datetime_str = f"{last_date}T{last_time}+00:00"
+                            candidate_last_value = datetime.fromisoformat(
+                                last_datetime_str
+                            )
+
+                            # Keep track of the latest one in this attempt
+                            if (
+                                current_attempt_latest is None
+                                or candidate_last_value > current_attempt_latest
+                            ):
+                                current_attempt_latest = candidate_last_value
+
+        except Exception:
+            pass
+
+        # If we found data in this attempt
+        if current_attempt_latest is not None:
+            found_data = True
+
+            # Update global latest if this is newer
+            if (
+                global_latest_last_value is None
+                or current_attempt_latest > global_latest_last_value
+            ):
+                global_latest_last_value = current_attempt_latest
+                print(f"🔍 Found newer data: {global_latest_last_value}")
+
+            # Move FORWARD to find even more recent data
+            current_time += step_back
+            step_back = timedelta(days=30)  # Use smaller steps when going forward
+        else:
+            # No data in this range
+            if found_data:
+                # We already found data, so move forward to find more recent data
+                current_time += step_back
+                step_back = timedelta(days=30)  # Use smaller steps when going forward
+            else:
+                # Haven't found data yet, keep going backward
+                current_time -= step_back
+                step_back = min(
+                    step_back * 1.5, timedelta(days=365)
+                )  # Max 1 year steps
+
+    # Return the latest value we found across all attempts
+    if global_latest_last_value is not None:
+        return global_latest_last_value
+
+    raise ValueError(f"Could not find last value time after {max_attempts} attempts")
+
+
+def find_first_value_time(
+    webservice_url: str,
+    parameter_id: str = None,
+    location_id: str = None,
+    module_instance_id: str = None,
+    last_value_time: datetime = None,
+    max_attempts: int = 20,
+) -> datetime:
+    """
+    Find the first value time by starting from a historical point and working forwards.
+
+    Uses a more aggressive approach to find the earliest possible data.
+    Only stops when firstValueTime is later than the requested startTime.
+    """
+    # Start from a very early historical point to ensure we capture all data
+    start_search = datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+    current_start = start_search
+    step_forward = timedelta(days=365 * 2)  # Start with 2 year steps
+
+    earliest_found = None
+
+    for attempt in range(max_attempts):
+        end_time = min(
+            current_start + timedelta(days=365 * 5), datetime.now(timezone.utc)
+        )
+
+        error, xml_content, _ = get_timeseries_headers(
+            webservice_url=webservice_url,
+            parameter_id=parameter_id,
+            location_id=location_id,
+            module_instance_id=module_instance_id,
+            start_time=current_start,
+            end_time=end_time,
+            show_statistics=True,
+            document_format="PI_XML",
+        )
+
+        if error or not xml_content:
+            # No data in this range, move forward
+            current_start += step_forward
+            continue
+
+        # Parse XML to check if we have data
+        namespace = {"pi": "http://www.wldelft.nl/fews/PI"}
+        try:
+            root = ET.fromstring(xml_content)
+            series_elem = root.find("pi:series", namespace)
+            if series_elem is not None:
+                header_elem = series_elem.find("pi:header", namespace)
+                if header_elem is not None:
+                    first_value_elem = header_elem.find("pi:firstValueTime", namespace)
+                    if first_value_elem is not None:
+                        # Found data! Parse the first value time
+                        first_date = first_value_elem.get("date")
+                        first_time = first_value_elem.get("time")
+                        if first_date and first_time:
+                            first_datetime_str = f"{first_date}T{first_time}+00:00"
+                            candidate_first = datetime.fromisoformat(first_datetime_str)
+
+                            # Keep track of the earliest we've found
+                            if (
+                                earliest_found is None
+                                or candidate_first < earliest_found
+                            ):
+                                earliest_found = candidate_first
+
+                            # KEY INSIGHT: Only stop when firstValueTime is later than requested startTime
+                            # If firstValueTime equals startTime, there might be data before it
+                            if candidate_first > current_start:
+                                # We found the true beginning! firstValueTime is later than our search start
+                                print(
+                                    f"✅ Found true beginning: {candidate_first} > {current_start}"
+                                )
+                                return candidate_first
+                            else:
+                                # firstValueTime equals startTime, there might be earlier data
+                                print(
+                                    f"🔍 Found data at boundary: {candidate_first} = {current_start}, continuing search..."
+                                )
+                                # Move to an earlier time period to check for data before this range
+                                current_start = current_start - timedelta(days=365 * 2)
+                                step_forward = timedelta(
+                                    days=365
+                                )  # Use smaller steps when close to boundary
+                                continue
+        except Exception:
+            pass
+
+        # Move further forward
+        current_start += step_forward
+        step_forward = min(
+            step_forward * 1.5, timedelta(days=365 * 10)
+        )  # Increase step size gradually
+
+    # Return the earliest we found, or raise error if nothing found
+    if earliest_found:
+        print(
+            f"⚠️  Could not find true beginning, returning earliest found: {earliest_found}"
+        )
+        return earliest_found
+
+    raise ValueError(f"Could not find first value time after {max_attempts} attempts")
+
+
+def get_true_data_range(
+    webservice_url: str,
+    parameter_id: str = None,
+    location_id: str = None,
+    module_instance_id: str = None,
+) -> tuple[datetime, datetime]:
+    """
+    Find the true data availability range using iterative binary search approach.
+
+    This is more efficient than using a large time window as it:
+    1. Finds the lastValueTime by working backwards from current time
+    2. Finds the firstValueTime by working forwards from historical point
+
+    Args:
+        webservice_url: Base URL of the FEWS webservice
+        parameter_id: Parameter ID to query for
+        location_id: Location ID to query for
+        module_instance_id: Module instance ID to filter by
+
+    Returns:
+        Tuple of (first_value_time, last_value_time) representing the true data availability range
+
+    Raises:
+        ValueError: If unable to determine data range
+    """
+    print("🔍 Finding last value time...")
+    last_value_time = find_last_value_time(
+        webservice_url=webservice_url,
+        parameter_id=parameter_id,
+        location_id=location_id,
+        module_instance_id=module_instance_id,
+    )
+    print(f"✅ Found last value time: {last_value_time}")
+
+    print("🔍 Finding first value time...")
+    first_value_time = find_first_value_time(
+        webservice_url=webservice_url,
+        parameter_id=parameter_id,
+        location_id=location_id,
+        module_instance_id=module_instance_id,
+        last_value_time=last_value_time,
+    )
+    print(f"✅ Found first value time: {first_value_time}")
+
+    return first_value_time, last_value_time
+
+
 def validate_foreign_keys(
     cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
     location_id: str,
@@ -86,6 +365,9 @@ def parse_series_headers_xml(xml_content: str, start_id: int) -> List[SeriesHead
         first_value_time = None
         last_value_time = None
 
+        # Extract time range information (when showStatistics=true)
+        # Use firstValueTime/lastValueTime which represent actual data availability
+        # Do NOT use startDate/endDate as they represent requested time range, not actual data
         first_value_elem = header_elem.find("pi:firstValueTime", namespace)
         last_value_elem = header_elem.find("pi:lastValueTime", namespace)
 
@@ -280,10 +562,22 @@ async def ingest_series_headers(
     )
 
     try:
+        # Use iterative approach to find true data availability range
+        # This is more efficient than large time windows and avoids server memory issues
+        print(f"🔍 Finding true data availability range for {query_type}...")
+        first_value_time, last_value_time = get_true_data_range(
+            webservice_url=webservice_url,
+            parameter_id=parameter_id,
+            location_id=location_id,
+        )
+
+        # Now make the actual API call with the discovered range
         error, data, request_time = get_timeseries_headers(
             webservice_url=webservice_url,
             parameter_id=parameter_id,
             location_id=location_id,
+            start_time=first_value_time,
+            end_time=last_value_time,
             show_statistics=True,  # Enable statistics to get first/last value times
             document_format="PI_XML",  # Use XML format for proper header discovery with statistics
             # Note: CSV format doesn't respect onlyHeaders=True parameter in this FEWS implementation

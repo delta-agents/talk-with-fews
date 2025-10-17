@@ -85,25 +85,25 @@ FEWS_SERVICES = {
         db_path="data/HDSR_wis.db3",
         test_data={
             "location_filters": ["gouda", "utrecht", "leiden"],
-            "location_ids": ["beg_109", "beg_110"],
-            "parameter_ids": ["BG.b.0", "H.G", "GW.G"],
-            "parameter_filters": ["groundwater", "level", "GW.G"],
+            "location_ids": ["S6458", "S6459"],
+            "parameter_ids": ["H.G.h", "Q.G.h", "H.G.d"],
+            "parameter_filters": ["water", "level", "H.G"],
             "validated_combinations": [
                 {
-                    "location_id": "beg_109",
-                    "parameter_id": "BG.b.0",
-                    "module_instance_id": "ImportBegroeiingsMonitoring",
+                    "location_id": "S6458",
+                    "parameter_id": "H.G.h",
+                    "module_instance_id": "ImportOwWsSa",
                 },
             ],
             # Test cases for multiple locations/parameters
             "multiple_location_test": {
-                "parameter_id": "BG.b.0",
-                "location_id": ["beg_109", "beg_110"],
+                "parameter_id": "H.G.h",
+                "location_id": ["S6458", "S6459"],
                 "description": "Single parameter with multiple locations",
             },
             "multiple_parameter_test": {
-                "parameter_id": ["BG.b.0", "H.G", "GW.G"],
-                "location_id": "beg_109",
+                "parameter_id": ["H.G.h", "Q.G.h", "H.G.d"],
+                "location_id": "S6458",
                 "description": "Multiple parameters with single location",
             },
             "expected_location_count": 6,
@@ -359,6 +359,33 @@ def get_test_data_for_service(service_name: str) -> Dict[str, Any]:
 def get_available_services() -> list[str]:
     """Get list of available FEWS service names."""
     return list(FEWS_SERVICES.keys())
+
+
+def generate_test_client_id(service: str = None, test_name: str = None) -> str:
+    """
+    Generate a unique client ID for testing to ensure database isolation.
+
+    This is especially important for parallel tests to prevent cache conflicts
+    between different test instances running simultaneously.
+
+    Args:
+        service: FEWS service name (e.g., 'actueelwaterbeeld', 'scheldestromen')
+        test_name: Optional test name to make the ID more specific
+
+    Returns:
+        str: Client ID based on service name for predictable isolation
+    """
+    import os
+
+    # Get current service from environment or parameter
+    if service is None:
+        service = os.getenv("FEWS_TEST_SERVICE", "actueelwaterbeeld")
+
+    # Use service name directly for predictable client IDs
+    if test_name:
+        return f"test_{service}_{test_name}"
+    else:
+        return f"test_{service}"
 
 
 def print_service_info():
