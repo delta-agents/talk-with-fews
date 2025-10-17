@@ -178,9 +178,11 @@ def parse_series_headers_xml(xml_content: str, start_id: int) -> List[SeriesHead
 
 
 def insert_series_header(
-    cache_FewsWebServices_db: duckdb.DuckDBPyConnection, series_header: SeriesHeader
+    cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
+    series_header: SeriesHeader,
+    skip_empty_data: bool = True,
 ) -> bool:
-    """Insert series header with foreign key validation"""
+    """Insert series header with foreign key validation and optional empty data filtering"""
 
     # Validate foreign keys before insertion
     if not validate_foreign_keys(
@@ -188,6 +190,17 @@ def insert_series_header(
     ):
         print(
             f"Warning: Foreign key validation failed for locationId={series_header.locationId}, parameterId={series_header.parameterId}"
+        )
+        return False
+
+    # Skip series headers that have no actual data (both first_value_time and last_value_time are None)
+    if (
+        skip_empty_data
+        and series_header.first_value_time is None
+        and series_header.last_value_time is None
+    ):
+        print(
+            f"Skipping series header with no data: locationId={series_header.locationId}, parameterId={series_header.parameterId}"
         )
         return False
 
@@ -239,6 +252,7 @@ async def ingest_series_headers(
     cache_FewsWebServices_db: duckdb.DuckDBPyConnection,
     parameter_id: str = None,
     location_id: str = None,
+    skip_empty_data: bool = True,
 ) -> IngestSeriesHeadersOutput:
     """
     Ingest series headers from FEWS webservice into local DuckDB cache.
@@ -248,6 +262,7 @@ async def ingest_series_headers(
         cache_FewsWebServices_db: DuckDB connection for caching
         parameter_id: Parameter ID to ingest series headers for
         location_id: Location ID to ingest series headers for
+        skip_empty_data: If True (default), skip location-parameter combinations that have no actual time series data
 
     Returns:
         IngestSeriesHeadersOutput with status and SQL examples
@@ -294,9 +309,18 @@ async def ingest_series_headers(
     series_headers = parse_series_headers_xml(data, start_id)
 
     inserted_count = 0
+    skipped_count = 0
     for series_header in series_headers:
-        if insert_series_header(cache_FewsWebServices_db, series_header):
+        if insert_series_header(
+            cache_FewsWebServices_db, series_header, skip_empty_data
+        ):
             inserted_count += 1
+        elif (
+            skip_empty_data
+            and series_header.first_value_time is None
+            and series_header.last_value_time is None
+        ):
+            skipped_count += 1
 
     # Generate SQL examples
     sql_examples = [
@@ -306,8 +330,15 @@ async def ingest_series_headers(
         "SELECT locationId, parameterId, first_value_time, last_value_time FROM series_headers WHERE first_value_time IS NOT NULL ORDER BY first_value_time DESC LIMIT 10",
     ]
 
+    # Build description message
+    description_parts = [
+        f"Successfully ingested {inserted_count} series headers for {query_type}"
+    ]
+    if skip_empty_data and skipped_count > 0:
+        description_parts.append(f"Skipped {skipped_count} series headers with no data")
+
     return IngestSeriesHeadersOutput(
-        description=f"Successfully ingested {inserted_count} series headers for {query_type}",
+        description=". ".join(description_parts),
         series_count=inserted_count,
         sql_examples=sql_examples,
     )
