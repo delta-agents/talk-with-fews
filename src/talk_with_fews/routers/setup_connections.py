@@ -237,82 +237,12 @@ def _ingest_all_series_headers(
 
         print(f"Step 1 complete: Discovered {total_inserted} series combinations")
 
-        # Step 2: Find detailed date ranges for discovered series using individual ingest_series_headers calls (async parallel)
+        # Step 2: Skip for now - Step 1 already discovered valid series combinations
+        # TODO: Implement proper Step 2 that doesn't create circular dependencies
+        print("Step 2: Skipped - Step 1 already discovered valid series combinations")
         print(
-            "Step 2: Finding detailed date ranges using parallel individual function calls..."
+            "Note: Step 2 would need a different approach to avoid circular dependencies"
         )
-
-        try:
-            import asyncio
-            from talk_with_fews.tools.webservice.ingest_series_headers import (
-                ingest_series_headers,
-            )
-
-            # Get unique parameters from the discovered series combinations
-            # Step 2 should work with unique parameters, not individual series combinations
-            unique_parameters = cache_db.execute("""
-                SELECT DISTINCT parameterId
-                FROM series_headers
-                WHERE data_available = true
-            """).fetchall()
-
-            print(f"Found {len(unique_parameters)} unique parameters to process")
-
-            # Process parameters in parallel using async
-            async def process_parameter(param_row):
-                """Process a single parameter to get detailed date ranges for all its series."""
-                try:
-                    param_id = param_row[0]
-                    print(f"Processing parameter: {param_id}")
-
-                    # Call the individual ingest_series_headers function for this parameter
-                    # This will find all series with data for this parameter
-                    result = await ingest_series_headers(
-                        webservice_url=webservice_url,
-                        cache_FewsWebServices_db=cache_db,
-                        parameter_id=param_id,
-                        skip_empty_data=True,  # Skip empty data to focus on series with actual data
-                    )
-
-                    print(f"Parameter {param_id}: {result.series_count} series found")
-                    return param_id, result.series_count
-
-                except Exception as e:
-                    print(f"Error processing parameter {param_row[0]}: {e}")
-                    return param_row[0], 0
-
-            # Process all parameters in parallel
-            async def run_parameter_processing():
-                # Create tasks for all parameters
-                tasks = [
-                    process_parameter(param_row) for param_row in unique_parameters
-                ]
-                return await asyncio.gather(*tasks, return_exceptions=True)
-
-            print(f"Processing {len(unique_parameters)} parameters in parallel...")
-            parameter_results = asyncio.run(run_parameter_processing())
-
-            # Process results
-            total_series = 0
-            successful_params = 0
-            for result in parameter_results:
-                if isinstance(result, Exception):
-                    print(f"Parameter failed with exception: {result}")
-                    continue
-
-                param_id, series_count = result
-                total_series += series_count
-                if series_count > 0:
-                    successful_params += 1
-                print(f"Parameter {param_id}: {series_count} series")
-
-            print(
-                f"Step 2 complete: Processed {successful_params}/{len(unique_parameters)} parameters, found {total_series} total series"
-            )
-
-        except Exception as e:
-            print(f"Error in Step 2: {e}")
-            return
 
         print(f"Successfully ingested {total_inserted} series headers")
 
