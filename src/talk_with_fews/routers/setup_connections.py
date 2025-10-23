@@ -12,6 +12,7 @@ from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 import duckdb
 from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
+from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
 
@@ -89,9 +90,6 @@ class UserContextCache:
     db_connection: Optional[Any] = None
     schema: Optional[dict] = None
     cache_FewsWebServices_db: Optional[Any] = None
-    ingest_locations_output: Optional[Any] = None
-    ingest_parameters_output: Optional[Any] = None
-    ingest_series_headers_output: Optional[Any] = None
     cache_fews_schemas_dir: Optional[str] = None
 
 
@@ -185,16 +183,15 @@ def _setup_webservice_cache(
     cache_db.execute("LOAD spatial;")
 
     # Optionally ingest data (this is the slow part)
-    locations_output = None
-    parameters_output = None
-    series_headers_output = None
     if enable_webservice_ingest:
-        locations_output = ingest_locations(webservice_url, cache_db)
-        parameters_output = ingest_parameters(webservice_url, cache_db)
+        ingest_locations(webservice_url, cache_db)
+        ingest_parameters(webservice_url, cache_db)
         # Setup the series_headers table (requires locations and parameters tables)
         cache_db = setup_series_headers_table(cache_db)
+        # Ingest series headers data (requires locations and parameters to be ingested first)
+        ingest_series_headers(webservice_url, cache_db)
 
-    return cache_db, locations_output, parameters_output, series_headers_output
+    return cache_db, None, None, None
 
 
 def get_runtime_ctx(user_settings: dict) -> RunContext:
@@ -254,10 +251,8 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     ).lower() not in ("true", "1", "yes")
 
     # Setup webservice cache (creates in-memory DB, optionally ingests data)
-    cache_db, locations_output, parameters_output, series_headers_output = (
-        _setup_webservice_cache(
-            webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
-        )
+    cache_db, _, _, _ = _setup_webservice_cache(
+        webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
     )
 
     # Get schemas directory for XML validation
