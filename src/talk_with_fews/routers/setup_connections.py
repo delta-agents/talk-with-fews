@@ -275,12 +275,14 @@ def _ingest_all_series_headers(
 
                     # Update the database with actual date ranges from the result
                     updated_count = 0
-                    if param_id in result:
+                    # The discover_all_series_async function returns keys with "params_" prefix
+                    result_key = f"params_{param_id}"
+                    if result_key in result:
                         for (
                             module_instance_id,
                             location_id,
                             param_id_key,
-                        ), series_data in result[param_id].items():
+                        ), series_data in result[result_key].items():
                             if series_data.get("hasData", False):
                                 # Update the existing series record with actual date ranges
                                 cache_db.execute(
