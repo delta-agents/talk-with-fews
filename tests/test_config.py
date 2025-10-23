@@ -112,6 +112,16 @@ FEWS_SERVICES = {
             "end_time": "2024-12-31T23:59:59+01:00",
             # Module instance mapping for test combinations
             "module_instance_mapping": {
+                "S6458": {
+                    "H.G.h": "ImportOwWsSa",
+                    "Q.G.h": "ImportOwWsSa",
+                    "H.G.d": "ImportOwWsSa",
+                },
+                "S6459": {
+                    "H.G.h": "ImportOwWsSa",
+                    "Q.G.h": "ImportOwWsSa",
+                    "H.G.d": "ImportOwWsSa",
+                },
                 "beg_109": {
                     "BG.b.0": "ImportBegroeiingsMonitoring",
                     "H.G": "ImportBegroeiingsMonitoring",
@@ -219,15 +229,15 @@ FEWS_SERVICES = {
                     "module_instance_id": "ImportSphAbb",
                 },  # 8641 values (all flagged but real data)
                 {
-                    "location_id": "HHD_150183",
-                    "parameter_id": "Q.meting",
+                    "location_id": "HHD_150183-pomp1",
+                    "parameter_id": "pompstatus.paraat",
                     "module_instance_id": "ImportSphAbb",
-                },  # 9 series
+                },  # 3 series with data
                 {
-                    "location_id": "HHD_350101",
-                    "parameter_id": "Q.sim",
+                    "location_id": "HHD_150183-pomp1",
+                    "parameter_id": "pompstatus.storing",
                     "module_instance_id": "ImportSphAbb",
-                },  # 1 series
+                },  # 3 series with data
             ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
