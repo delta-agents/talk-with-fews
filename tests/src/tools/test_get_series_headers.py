@@ -260,8 +260,8 @@ def test_ingest_series_headers_no_input():
         )
 
 
-# @fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
-@fews_parallel("actueelwaterbeeld", "scheldestromen")
+# @fews_parallel("actueelwaterbeeld", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
 def test_ingest_series_headers_skip_empty_data(service):
     """
     Test the skip_empty_data parameter functionality in ingest_series_headers.
