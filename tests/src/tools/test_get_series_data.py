@@ -318,12 +318,12 @@ def test_get_series_data_availability(service):
 
         # THINNING ASSERTION: Ensure automatic thinning is working for large datasets
         # Any endpoint with >500 values should trigger automatic thinning to a reasonable number of points
-        # FEWS thinning algorithm keeps peaks and gaps, so exact pixel count may not be achieved
+        # FEWS thinning algorithm keeps peaks and gaps, so exact target may not be achieved
         if len(result.values) > 500:
-            # For 5-year datasets, expect significant reduction but not exactly 1024 points
+            # For 5-year datasets, expect significant reduction to ~1,500-2,000 points
             # The FEWS thinning algorithm is designed to preserve important data points
             expected_max = (
-                5000  # Allow up to 5x the target pixel count for complex datasets
+                2000  # Allow up to 4x the target for complex datasets with peaks/gaps
             )
             assert len(result.values) <= expected_max, (
                 f"{service} should have ≤{expected_max} values due to automatic thinning (got {len(result.values)}). "
