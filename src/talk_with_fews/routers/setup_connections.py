@@ -237,12 +237,122 @@ def _ingest_all_series_headers(
 
         print(f"Step 1 complete: Discovered {total_inserted} series combinations")
 
-        # Step 2: Skip for now - Step 1 already discovered valid series combinations
-        # TODO: Implement proper Step 2 that doesn't create circular dependencies
-        print("Step 2: Skipped - Step 1 already discovered valid series combinations")
-        print(
-            "Note: Step 2 would need a different approach to avoid circular dependencies"
-        )
+        # Step 2: Find actual date ranges for discovered series using showStatistics=True
+        print("Step 2: Finding actual date ranges for discovered series...")
+
+        try:
+            import asyncio
+            from talk_with_fews.tools.webservice.ingest_series_headers import (
+                discover_all_series_async,
+            )
+
+            # Get unique parameters from the discovered series combinations
+            unique_parameters = cache_db.execute("""
+                SELECT DISTINCT parameterId
+                FROM series_headers
+                WHERE data_available = true
+            """).fetchall()
+
+            print(
+                f"Found {len(unique_parameters)} unique parameters to process for date ranges"
+            )
+
+            # Process parameters in batches to get actual date ranges
+            async def process_parameter_for_dates(param_row):
+                """Process a single parameter to get actual date ranges using showStatistics=True."""
+                try:
+                    param_id = param_row[0]
+                    print(f"Processing parameter for dates: {param_id}")
+
+                    # Use discover_all_series_async with showStatistics=True to get actual date ranges
+                    # This will NOT trigger the full ingestion process, just get the statistics
+                    result = await discover_all_series_async(
+                        webservice_url=webservice_url,
+                        parameter_ids=[param_id],
+                        show_statistics=True,
+                        max_concurrent=1,  # Process one parameter at a time to avoid overwhelming the API
+                    )
+
+                    # Update the database with actual date ranges from the result
+                    updated_count = 0
+                    if param_id in result:
+                        for (
+                            module_instance_id,
+                            location_id,
+                            param_id_key,
+                        ), series_data in result[param_id].items():
+                            if series_data.get("hasData", False):
+                                # Update the existing series record with actual date ranges
+                                cache_db.execute(
+                                    """
+                                    UPDATE series_headers
+                                    SET first_value_time = ?, last_value_time = ?, data_available = ?
+                                    WHERE moduleInstanceId = ? AND locationId = ? AND parameterId = ?
+                                """,
+                                    [
+                                        series_data.get("firstValueTime"),
+                                        series_data.get("lastValueTime"),
+                                        True,
+                                        module_instance_id,
+                                        location_id,
+                                        param_id_key,
+                                    ],
+                                )
+                                updated_count += 1
+                            else:
+                                # Mark as no data
+                                cache_db.execute(
+                                    """
+                                    UPDATE series_headers
+                                    SET data_available = ?
+                                    WHERE moduleInstanceId = ? AND locationId = ? AND parameterId = ?
+                                """,
+                                    [
+                                        False,
+                                        module_instance_id,
+                                        location_id,
+                                        param_id_key,
+                                    ],
+                                )
+
+                    print(
+                        f"Parameter {param_id}: Updated {updated_count} series with actual date ranges"
+                    )
+                    return param_id, updated_count
+
+                except Exception as e:
+                    print(f"Error processing parameter {param_row[0]} for dates: {e}")
+                    return param_row[0], 0
+
+            # Process all parameters sequentially to avoid overwhelming the API
+            async def run_date_range_processing():
+                results = []
+                for param_row in unique_parameters:
+                    result = await process_parameter_for_dates(param_row)
+                    results.append(result)
+                return results
+
+            print(
+                f"Processing {len(unique_parameters)} parameters for actual date ranges..."
+            )
+            date_results = asyncio.run(run_date_range_processing())
+
+            # Process results
+            total_updated = 0
+            successful_params = 0
+            for param_id, updated_count in date_results:
+                total_updated += updated_count
+                if updated_count > 0:
+                    successful_params += 1
+                print(f"Parameter {param_id}: {updated_count} series updated")
+
+            print(
+                f"Step 2 complete: Updated {total_updated} series with actual date ranges from {successful_params}/{len(unique_parameters)} parameters"
+            )
+
+        except Exception as e:
+            print(f"Error in Step 2: {e}")
+            return
 
         print(f"Successfully ingested {total_inserted} series headers")
 
