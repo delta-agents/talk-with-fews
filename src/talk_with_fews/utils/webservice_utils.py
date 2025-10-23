@@ -124,11 +124,11 @@ def get_timeseries_headers(
         ValueError: For invalid input parameters or unexpected errors
     """
 
-    # Validate input - must have either parameter_id or location_id, not both
-    if parameter_id and location_id:
-        raise ValueError("Cannot specify both parameter_id and location_id")
+    # Validate input - must have either parameter_id or location_id, or both for batched queries
+    # Allow both to be None for discovering all available series
     if not parameter_id and not location_id:
-        raise ValueError("Must specify either parameter_id or location_id")
+        # This is allowed for discovering all available series
+        pass
 
     # Construct request URL and parameters
     request_url = f"{webservice_url}/rest/fewspiservice/v1/timeseries"
@@ -137,13 +137,20 @@ def get_timeseries_headers(
         "documentFormat": document_format,  # Use the selected format (PI_XML or PI_CSV)
     }
 
-    # Add location or parameter filter
+    # Add parameter and location filters (both can be specified for batched queries)
     if parameter_id:
         params["parameterIds"] = parameter_id
         query_type = f"parameter {parameter_id}"
-    else:
+    if location_id:
         params["locationIds"] = location_id
-        query_type = f"location {location_id}"
+        if parameter_id:
+            query_type += f" with locations {location_id}"
+        else:
+            query_type = f"location {location_id}"
+
+    # If neither parameter_id nor location_id is specified, query all available series
+    if not parameter_id and not location_id:
+        query_type = "all available series"
 
     # Add optional parameters
     if module_instance_id:

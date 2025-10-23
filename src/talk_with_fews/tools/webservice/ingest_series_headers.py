@@ -6,13 +6,16 @@ DuckDB database for incremental caching. Supports both parameter-based and locat
 """
 
 import xml.etree.ElementTree as ET
-from typing import List
+from typing import List, Dict, Any
 import duckdb
 from datetime import datetime, timezone, timedelta
 from pydantic_ai import ModelRetry
 from talk_with_fews.models.base import SeriesHeader
 from talk_with_fews.models.ingest_series_headers import IngestSeriesHeadersOutput
 from talk_with_fews.utils.webservice_utils import get_timeseries_headers
+import asyncio
+import httpx
+from talk_with_fews.utils.logging_utils import logger
 
 
 def find_last_value_time(
@@ -350,12 +353,216 @@ def find_first_value_time(
     return None
 
 
+def discover_all_series(
+    webservice_url: str,
+    parameter_ids: list = None,
+    location_ids: list = None,
+    show_statistics: bool = False,
+) -> dict:
+    """
+    Discover all available series combinations with a single API call.
+    This is much faster than the iterative approach when we just need to discover series.
+
+    Args:
+        webservice_url: Base URL of the FEWS webservice
+        show_statistics: Whether to include statistics in the response
+
+    Returns:
+        Dictionary mapping (module_instance_id, location_id, parameter_id) to series metadata
+    """
+    print("Discovering all available series with single API call...")
+
+    # Make a single API call to get available series for the specified parameters/locations
+    param_ids_str = ",".join(parameter_ids) if parameter_ids else None
+    location_ids_str = ",".join(location_ids) if location_ids else None
+
+    error, xml_content, _ = get_timeseries_headers(
+        webservice_url=webservice_url,
+        parameter_id=param_ids_str,  # Filter by parameters
+        location_id=location_ids_str,  # Filter by locations
+        module_instance_id=None,  # No module filter - get all
+        start_time=None,  # No time filter - get all
+        end_time=None,  # No time filter - get all
+        show_statistics=show_statistics,
+        document_format="PI_XML",
+    )
+
+    if error:
+        print(f"Error discovering series: {error}")
+        return {}
+
+    if not xml_content:
+        print("No XML content received")
+        return {}
+
+    # Parse the XML to extract series information
+    series_data = {}
+
+    try:
+        import xml.etree.ElementTree as ET
+
+        # Debug: Check XML content
+        print(f"XML content length: {len(xml_content)}")
+        print(f"XML starts with: {xml_content[:200]}")
+        print(f"XML ends with: {xml_content[-200:]}")
+
+        root = ET.fromstring(xml_content)
+
+        # Find all series elements - try different namespace approaches
+        series_elements = root.findall(".//series")
+        if not series_elements:
+            # Try with namespace
+            series_elements = root.findall(".//{http://www.wldelft.nl/fews/PI}series")
+
+        print(f"Found {len(series_elements)} series elements in XML")
+
+        for i, series in enumerate(series_elements):
+            # Extract series metadata from header element (not directly on series)
+            # Try both with and without namespace
+            header_elem = series.find("header")
+            if header_elem is None:
+                # Try with namespace
+                header_elem = series.find("{http://www.wldelft.nl/fews/PI}header")
+
+            if header_elem is None:
+                if i < 3:
+                    print(f"  Series {i}: No header element found")
+                continue
+
+            # Try both with and without namespace for child elements
+            module_instance_id = header_elem.find(
+                "moduleInstanceId"
+            ) or header_elem.find("{http://www.wldelft.nl/fews/PI}moduleInstanceId")
+            location_id_elem = header_elem.find("locationId") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}locationId"
+            )
+            parameter_id_elem = header_elem.find("parameterId") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}parameterId"
+            )
+
+            # Extract text content from elements
+            module_instance_id = (
+                module_instance_id.text if module_instance_id is not None else None
+            )
+            location_id = (
+                location_id_elem.text if location_id_elem is not None else None
+            )
+            parameter_id = (
+                parameter_id_elem.text if parameter_id_elem is not None else None
+            )
+
+            # Debug: Print first few series to understand structure
+            if i < 3:
+                print(
+                    f"  Series {i}: moduleInstanceId='{module_instance_id}', locationId='{location_id}', parameterId='{parameter_id}'"
+                )
+
+            if not all([module_instance_id, location_id, parameter_id]):
+                if i < 3:
+                    print(f"    Skipping series {i}: missing required attributes")
+                continue
+
+            # Extract time information from header element
+            first_value_time = None
+            last_value_time = None
+            has_data = False
+
+            first_value_elem = header_elem.find("firstValueTime") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}firstValueTime"
+            )
+            if first_value_elem is not None and first_value_elem.text:
+                try:
+                    first_value_time = datetime.fromisoformat(
+                        first_value_elem.text.replace("Z", "+00:00")
+                    )
+                    has_data = True
+                except ValueError:
+                    pass
+
+            last_value_elem = header_elem.find("lastValueTime") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}lastValueTime"
+            )
+            if last_value_elem is not None and last_value_elem.text:
+                try:
+                    last_value_time = datetime.fromisoformat(
+                        last_value_elem.text.replace("Z", "+00:00")
+                    )
+                    has_data = True
+                except ValueError:
+                    pass
+
+            # Extract other metadata from header element
+            type_elem = header_elem.find("type") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}type"
+            )
+            series_type = type_elem.text if type_elem is not None else None
+
+            time_step_elem = header_elem.find("timeStep") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}timeStep"
+            )
+            time_step_unit = None
+            time_step_multiplier = None
+            if time_step_elem is not None:
+                time_step_unit = time_step_elem.get("unit")
+                time_step_multiplier = time_step_elem.get("multiplier")
+                if time_step_multiplier:
+                    try:
+                        time_step_multiplier = int(time_step_multiplier)
+                    except ValueError:
+                        time_step_multiplier = None
+
+            miss_val_elem = header_elem.find("missVal") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}missVal"
+            )
+            miss_val = None
+            if miss_val_elem is not None and miss_val_elem.text:
+                try:
+                    miss_val = float(miss_val_elem.text)
+                except ValueError:
+                    pass
+
+            time_zone_elem = header_elem.find("timeZone") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}timeZone"
+            )
+            time_zone = time_zone_elem.text if time_zone_elem is not None else None
+
+            qualifiers_elem = header_elem.find("qualifiers") or header_elem.find(
+                "{http://www.wldelft.nl/fews/PI}qualifiers"
+            )
+            qualifiers = qualifiers_elem.text if qualifiers_elem is not None else None
+
+            # Store the series data
+            series_key = (module_instance_id, location_id, parameter_id)
+            series_data[series_key] = {
+                "type": series_type,
+                "timeStepUnit": time_step_unit,
+                "timeStepMultiplier": time_step_multiplier,
+                "missVal": miss_val,
+                "timeZone": time_zone,
+                "qualifiers": qualifiers,
+                "firstValueTime": first_value_time,
+                "lastValueTime": last_value_time,
+                "hasData": has_data,
+            }
+
+    except ET.ParseError as e:
+        print(f"Error parsing XML: {e}")
+        return {}
+    except Exception as e:
+        print(f"Error processing series data: {e}")
+        return {}
+
+    print(f"Discovered {len(series_data)} series combinations")
+    return series_data
+
+
 def find_series_data_range(
     webservice_url: str,
-    parameter_id: str = None,
-    location_id: str = None,
+    parameter_ids: list = None,
+    location_ids: list = None,
     module_instance_id: str = None,
     max_attempts: int = 20,
+    show_statistics: bool = True,
 ) -> dict:
     """
     Find the data range for all series combinations by working backward iteratively.
@@ -393,14 +600,18 @@ def find_series_data_range(
 
         print(f"Searching series data: {current_start} to {current_end}")
 
+        # Build comma-separated parameter and location IDs for batched API call
+        param_ids_str = ",".join(parameter_ids) if parameter_ids else None
+        location_ids_str = ",".join(location_ids) if location_ids else None
+
         error, xml_content, _ = get_timeseries_headers(
             webservice_url=webservice_url,
-            parameter_id=parameter_id,
-            location_id=location_id,
+            parameter_id=param_ids_str,
+            location_id=location_ids_str,
             module_instance_id=module_instance_id,
             start_time=current_start,
             end_time=current_end,
-            show_statistics=True,
+            show_statistics=show_statistics,
             document_format="PI_XML",
         )
 
@@ -482,11 +693,43 @@ def find_series_data_range(
                                         last_datetime_str
                                     )
 
-                            # Store series data
+                            # Extract additional metadata (only if present in XML)
+                            type_elem = header_elem.find("pi:type", namespace)
+                            time_step_elem = header_elem.find("pi:timeStep", namespace)
+                            miss_val_elem = header_elem.find("pi:missVal", namespace)
+                            time_zone_elem = header_elem.find("pi:timeZone", namespace)
+                            qualifiers_elem = header_elem.find(
+                                "pi:qualifiers", namespace
+                            )
+
+                            # Parse timeStep element (has unit and multiplier attributes)
+                            time_step_unit = None
+                            time_step_multiplier = None
+                            if time_step_elem is not None:
+                                time_step_unit = time_step_elem.get("unit")
+                                time_step_multiplier = time_step_elem.get("multiplier")
+                                if time_step_multiplier is not None:
+                                    time_step_multiplier = int(time_step_multiplier)
+
+                            # Store series data with actual metadata from API
                             series_data[series_key] = {
                                 "firstValueTime": first_time,
                                 "lastValueTime": last_time,
                                 "hasData": True,
+                                "type": type_elem.text
+                                if type_elem is not None
+                                else None,
+                                "timeStepUnit": time_step_unit,
+                                "timeStepMultiplier": time_step_multiplier,
+                                "missVal": float(miss_val_elem.text)
+                                if miss_val_elem is not None and miss_val_elem.text
+                                else None,
+                                "timeZone": time_zone_elem.text
+                                if time_zone_elem is not None
+                                else None,
+                                "qualifiers": qualifiers_elem.text
+                                if qualifiers_elem is not None
+                                else None,
                             }
 
                             print(
@@ -497,14 +740,41 @@ def find_series_data_range(
                             if first_time and last_time:
                                 completed_series.add(series_key)
                                 print(f"Series completed: {series_key}")
-                        else:
-                            # Series exists but has no data
-                            series_data[series_key] = {
-                                "firstValueTime": None,
-                                "lastValueTime": None,
-                                "hasData": False,
-                            }
-                            print(f"Series has no data: {series_key}")
+                    else:
+                        # Series exists but has no data - still extract metadata if available
+                        type_elem = header_elem.find("pi:type", namespace)
+                        time_step_elem = header_elem.find("pi:timeStep", namespace)
+                        miss_val_elem = header_elem.find("pi:missVal", namespace)
+                        time_zone_elem = header_elem.find("pi:timeZone", namespace)
+                        qualifiers_elem = header_elem.find("pi:qualifiers", namespace)
+
+                        # Parse timeStep element (has unit and multiplier attributes)
+                        time_step_unit = None
+                        time_step_multiplier = None
+                        if time_step_elem is not None:
+                            time_step_unit = time_step_elem.get("unit")
+                            time_step_multiplier = time_step_elem.get("multiplier")
+                            if time_step_multiplier is not None:
+                                time_step_multiplier = int(time_step_multiplier)
+
+                        series_data[series_key] = {
+                            "firstValueTime": None,
+                            "lastValueTime": None,
+                            "hasData": False,
+                            "type": type_elem.text if type_elem is not None else None,
+                            "timeStepUnit": time_step_unit,
+                            "timeStepMultiplier": time_step_multiplier,
+                            "missVal": float(miss_val_elem.text)
+                            if miss_val_elem is not None and miss_val_elem.text
+                            else None,
+                            "timeZone": time_zone_elem.text
+                            if time_zone_elem is not None
+                            else None,
+                            "qualifiers": qualifiers_elem.text
+                            if qualifiers_elem is not None
+                            else None,
+                        }
+                        print(f"Series has no data: {series_key}")
 
         except Exception as e:
             print(f"XML parsing error: {e}")
@@ -550,8 +820,8 @@ def get_true_data_range(
     # Get all series data using the series-aware approach
     series_data = find_series_data_range(
         webservice_url=webservice_url,
-        parameter_id=parameter_id,
-        location_id=location_id,
+        parameter_ids=[parameter_id] if parameter_id else None,
+        location_ids=[location_id] if location_id else None,
         module_instance_id=module_instance_id,
     )
 
@@ -576,30 +846,27 @@ def get_true_data_range(
         print(
             "Series-aware approach found no data, falling back to traditional search..."
         )
-        last_value_time = find_last_value_time(
-            webservice_url=webservice_url,
-            parameter_id=parameter_id,
-            location_id=location_id,
-            module_instance_id=module_instance_id,
+    last_value_time = find_last_value_time(
+        webservice_url=webservice_url,
+        parameter_id=parameter_id,
+        location_id=location_id,
+        module_instance_id=module_instance_id,
+    )
+    first_value_time = find_first_value_time(
+        webservice_url=webservice_url,
+        parameter_id=parameter_id,
+        location_id=location_id,
+        module_instance_id=module_instance_id,
+        last_value_time=last_value_time,
+    )
+
+    # If we can't determine the first value time, skip this series
+    if first_value_time is None:
+        raise ValueError(
+            f"Cannot determine data range for parameter {parameter_id} - skipping series"
         )
-        first_value_time = find_first_value_time(
-            webservice_url=webservice_url,
-            parameter_id=parameter_id,
-            location_id=location_id,
-            module_instance_id=module_instance_id,
-            last_value_time=last_value_time,
-        )
 
-        # If we can't determine the first value time, skip this series
-        if first_value_time is None:
-            raise ValueError(
-                f"Cannot determine data range for parameter {parameter_id} - skipping series"
-            )
-
-        return first_value_time, last_value_time
-
-    print(f"Found data range: {earliest_first} to {latest_last}")
-    return earliest_first, latest_last
+    return first_value_time, last_value_time
 
 
 def validate_foreign_keys(
@@ -880,17 +1147,31 @@ async def ingest_series_headers(
         )
 
         # Now make the actual API call with the discovered range
+        # Try with statistics first, fall back to without if not supported
         error, data, request_time = get_timeseries_headers(
             webservice_url=webservice_url,
             parameter_id=parameter_id,
             location_id=location_id,
             start_time=first_value_time,
             end_time=last_value_time,
-            show_statistics=True,  # Enable statistics to get first/last value times
+            show_statistics=True,  # Try with statistics first
             document_format="PI_XML",  # Use XML format for proper header discovery with statistics
             # Note: CSV format doesn't respect onlyHeaders=True parameter in this FEWS implementation
             # CSV always returns full time series data, not just headers with statistics
         )
+
+        # If statistics are not supported by this API, try without
+        if error and "unexpected parameter" in str(error).lower():
+            print("Statistics not supported by this API, trying without...")
+            error, data, request_time = get_timeseries_headers(
+                webservice_url=webservice_url,
+                parameter_id=parameter_id,
+                location_id=location_id,
+                start_time=first_value_time,
+                end_time=last_value_time,
+                show_statistics=False,  # Try without statistics
+                document_format="PI_XML",
+            )
 
         if error is None and data is None:
             # No data found - this is normal
@@ -944,3 +1225,311 @@ async def ingest_series_headers(
         series_count=inserted_count,
         sql_examples=sql_examples,
     )
+
+
+async def discover_all_series_async(
+    webservice_url: str,
+    parameter_ids: List[str] = None,
+    location_ids: List[str] = None,
+    show_statistics: bool = False,
+    max_concurrent: int = 20,
+) -> Dict[str, Dict[tuple, Dict[str, Any]]]:
+    """
+    Async version of discover_all_series for high-performance parallel processing.
+
+    Uses httpx.AsyncClient with connection pooling and HTTP/2 support for optimal
+    performance when processing many parameters in parallel.
+
+    Args:
+        webservice_url: Base URL of the FEWS webservice
+        parameter_ids: List of parameter IDs to process (optional)
+        location_ids: List of location IDs to process (optional)
+        show_statistics: Whether to include statistics in the response
+        max_concurrent: Maximum number of concurrent requests (default: 20)
+
+    Returns:
+        Dictionary mapping parameter_id -> series_data (same format as discover_all_series)
+    """
+    # Configure connection limits for optimal performance
+    limits = httpx.Limits(
+        max_connections=max_concurrent,
+        max_keepalive_connections=max_concurrent,
+        keepalive_expiry=30.0,
+    )
+
+    # Configure timeout
+    timeout = httpx.Timeout(60.0, connect=10.0)
+
+    results = {}
+
+    async with httpx.AsyncClient(
+        limits=limits,
+        timeout=timeout,
+        http2=True,  # Enable HTTP/2 for better multiplexing
+    ) as client:
+
+        async def fetch_series_data(
+            request_params: dict,
+        ) -> tuple[str, Dict[tuple, Dict[str, Any]]]:
+            """Fetch series data for given parameters/locations."""
+            try:
+                # Construct request URL and parameters
+                request_url = f"{webservice_url}/rest/fewspiservice/v1/timeseries"
+                params = {
+                    "onlyHeaders": "True",
+                    "documentFormat": "PI_XML",
+                }
+
+                # Add parameter and location filters
+                if request_params.get("parameter_ids"):
+                    params["parameterIds"] = ",".join(request_params["parameter_ids"])
+                if request_params.get("location_ids"):
+                    params["locationIds"] = ",".join(request_params["location_ids"])
+                if show_statistics:
+                    params["showStatistics"] = "true"
+
+                # Make async request
+                response = await client.get(request_url, params=params)
+                response.raise_for_status()
+
+                xml_content = response.text
+                logger.info(f"📄 Response size: {len(xml_content)} characters")
+
+                # Parse XML and extract series data
+                series_data = {}
+
+                try:
+                    root = ET.fromstring(xml_content)
+
+                    # Find all series elements - try different namespace approaches
+                    series_elements = root.findall(".//series")
+                    if not series_elements:
+                        # Try with namespace
+                        series_elements = root.findall(
+                            ".//{http://www.wldelft.nl/fews/PI}series"
+                        )
+
+                    logger.info(f"Found {len(series_elements)} series elements in XML")
+
+                    for i, series in enumerate(series_elements):
+                        # Extract series metadata from header element (not directly on series)
+                        # Try both with and without namespace
+                        header_elem = series.find("header")
+                        if header_elem is None:
+                            # Try with namespace
+                            header_elem = series.find(
+                                "{http://www.wldelft.nl/fews/PI}header"
+                            )
+
+                        if header_elem is None:
+                            continue
+
+                        # Try both with and without namespace for child elements
+                        module_instance_id = header_elem.find(
+                            "moduleInstanceId"
+                        ) or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}moduleInstanceId"
+                        )
+                        location_id_elem = header_elem.find(
+                            "locationId"
+                        ) or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}locationId"
+                        )
+                        parameter_id_elem = header_elem.find(
+                            "parameterId"
+                        ) or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}parameterId"
+                        )
+
+                        # Extract text content from elements
+                        module_instance_id = (
+                            module_instance_id.text
+                            if module_instance_id is not None
+                            else None
+                        )
+                        location_id = (
+                            location_id_elem.text
+                            if location_id_elem is not None
+                            else None
+                        )
+                        parameter_id = (
+                            parameter_id_elem.text
+                            if parameter_id_elem is not None
+                            else None
+                        )
+
+                        if not all([module_instance_id, location_id, parameter_id]):
+                            continue
+
+                        # Extract time information from header element
+                        first_value_time = None
+                        last_value_time = None
+                        has_data = False
+
+                        first_value_elem = header_elem.find(
+                            "firstValueTime"
+                        ) or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}firstValueTime"
+                        )
+                        if first_value_elem is not None and first_value_elem.text:
+                            try:
+                                first_value_time = datetime.fromisoformat(
+                                    first_value_elem.text.replace("Z", "+00:00")
+                                )
+                                has_data = True
+                            except ValueError:
+                                pass
+
+                        last_value_elem = header_elem.find(
+                            "lastValueTime"
+                        ) or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}lastValueTime"
+                        )
+                        if last_value_elem is not None and last_value_elem.text:
+                            try:
+                                last_value_time = datetime.fromisoformat(
+                                    last_value_elem.text.replace("Z", "+00:00")
+                                )
+                                has_data = True
+                            except ValueError:
+                                pass
+
+                        # Extract other metadata from header element
+                        type_elem = header_elem.find("type") or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}type"
+                        )
+                        series_type = type_elem.text if type_elem is not None else None
+
+                        time_step_elem = header_elem.find(
+                            "timeStep"
+                        ) or header_elem.find("{http://www.wldelft.nl/fews/PI}timeStep")
+                        time_step_unit = None
+                        time_step_multiplier = None
+                        if time_step_elem is not None:
+                            time_step_unit = time_step_elem.get("unit")
+                            time_step_multiplier = time_step_elem.get("multiplier")
+                            if time_step_multiplier:
+                                try:
+                                    time_step_multiplier = int(time_step_multiplier)
+                                except ValueError:
+                                    time_step_multiplier = None
+
+                        miss_val_elem = header_elem.find("missVal") or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}missVal"
+                        )
+                        miss_val = None
+                        if miss_val_elem is not None and miss_val_elem.text:
+                            try:
+                                miss_val = float(miss_val_elem.text)
+                            except ValueError:
+                                pass
+
+                        time_zone_elem = header_elem.find(
+                            "timeZone"
+                        ) or header_elem.find("{http://www.wldelft.nl/fews/PI}timeZone")
+                        time_zone = (
+                            time_zone_elem.text if time_zone_elem is not None else None
+                        )
+
+                        qualifiers_elem = header_elem.find(
+                            "qualifiers"
+                        ) or header_elem.find(
+                            "{http://www.wldelft.nl/fews/PI}qualifiers"
+                        )
+                        qualifiers = (
+                            qualifiers_elem.text
+                            if qualifiers_elem is not None
+                            else None
+                        )
+
+                        # Store the series data
+                        series_key = (module_instance_id, location_id, parameter_id)
+                        series_data[series_key] = {
+                            "type": series_type,
+                            "moduleInstanceId": module_instance_id,
+                            "locationId": location_id,
+                            "parameterId": parameter_id,
+                            "timeStepUnit": time_step_unit,
+                            "timeStepMultiplier": time_step_multiplier,
+                            "missVal": miss_val,
+                            "timeZone": time_zone,
+                            "qualifiers": qualifiers,
+                            "firstValueTime": first_value_time,
+                            "lastValueTime": last_value_time,
+                            "hasData": has_data,
+                        }
+
+                except ET.ParseError as e:
+                    logger.error(f"Error parsing XML for parameter {param_id}: {e}")
+                    return param_id, {}
+                except Exception as e:
+                    logger.error(
+                        f"Error processing series data for parameter {param_id}: {e}"
+                    )
+                    return param_id, {}
+
+                # Create a key for the request (either parameter or location based)
+                request_key = (
+                    "params_" + "_".join(request_params.get("parameter_ids", []))
+                    if request_params.get("parameter_ids")
+                    else "locs_" + "_".join(request_params.get("location_ids", []))
+                )
+
+                logger.info(
+                    f"Discovered {len(series_data)} series combinations for {request_key}"
+                )
+                return request_key, series_data
+
+            except Exception as e:
+                logger.error(f"Error fetching series for {request_params}: {e}")
+                return "error", {}
+
+        # Process requests with controlled concurrency
+        semaphore = asyncio.Semaphore(max_concurrent)
+
+        async def fetch_with_semaphore(request_params: dict):
+            async with semaphore:
+                return await fetch_series_data(request_params)
+
+        # Create request tasks based on what we're processing
+        tasks = []
+
+        if parameter_ids:
+            # Process each parameter individually
+            for param_id in parameter_ids:
+                tasks.append(fetch_with_semaphore({"parameter_ids": [param_id]}))
+        elif location_ids:
+            # Process each location individually
+            for location_id in location_ids:
+                tasks.append(fetch_with_semaphore({"location_ids": [location_id]}))
+        else:
+            # Process as a single batch request
+            request_params = {}
+            if parameter_ids:
+                request_params["parameter_ids"] = parameter_ids
+            if location_ids:
+                request_params["location_ids"] = location_ids
+            tasks.append(fetch_with_semaphore(request_params))
+
+        # Execute all tasks concurrently
+        logger.info(
+            f"Starting async processing of {len(tasks)} requests with max {max_concurrent} concurrent requests"
+        )
+        start_time = datetime.now()
+
+        completed_tasks = await asyncio.gather(*tasks, return_exceptions=True)
+
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
+        logger.info(f"Completed async processing in {duration:.2f} seconds")
+
+        # Process results
+        for result in completed_tasks:
+            if isinstance(result, Exception):
+                logger.error(f"Task failed with exception: {result}")
+                continue
+
+            request_key, series_data = result
+            results[request_key] = series_data
+
+    return results

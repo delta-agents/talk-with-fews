@@ -12,9 +12,9 @@ from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 import duckdb
 from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
-from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
+from datetime import datetime, timezone
 
 
 def setup_env():
@@ -155,6 +155,212 @@ def _setup_database_connection(db_path: str, cached_connection):
     return None
 
 
+def _ingest_all_series_headers(
+    webservice_url: str, cache_db: duckdb.DuckDBPyConnection
+):
+    """
+    Ingest series headers for all parameters using the series-aware approach.
+    This finds all unique (parameter_id, location_id, module_instance_id) combinations
+    and their individual first/last value times.
+    """
+    try:
+        # Get all parameters from the database
+        parameters = cache_db.execute("SELECT id FROM parameters").fetchall()
+        print(f"Found {len(parameters)} parameters to process")
+
+        total_inserted = 0
+
+        # Step 1: Discover series combinations by parameter (async parallel processing)
+        print(
+            "Step 1: Discovering series combinations by parameter (async parallel)..."
+        )
+
+        try:
+            import asyncio
+            from talk_with_fews.tools.webservice.ingest_series_headers import (
+                discover_all_series_async,
+            )
+
+            # Get all parameters
+            parameter_ids = [param_row[0] for param_row in parameters]
+
+            print(
+                f"Processing {len(parameter_ids)} parameters with async HTTP client..."
+            )
+
+            # Run the async discovery
+            series_results = asyncio.run(
+                discover_all_series_async(
+                    webservice_url=webservice_url,
+                    parameter_ids=parameter_ids,
+                    max_concurrent=20,  # Limit concurrent requests
+                )
+            )
+
+            # Insert all discovered series into database
+            for param_id, series_data in series_results.items():
+                for series_key, data in series_data.items():
+                    module_instance_id, location_id, param_id = series_key
+
+                    # Insert series with basic metadata and data_available flag
+                    cache_db.execute(
+                        """
+                        INSERT INTO series_headers (
+                            id, type, moduleInstanceId, locationId, parameterId,
+                            timeStepUnit, timeStepMultiplier, missVal, timeZone, qualifiers,
+                            first_value_time, last_value_time, data_available, created_at
+                        ) VALUES (nextval('series_headers_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                        [
+                            data.get("type"),
+                            module_instance_id,
+                            location_id,
+                            param_id,
+                            data.get("timeStepUnit"),
+                            data.get("timeStepMultiplier"),
+                            data.get("missVal"),
+                            data.get("timeZone"),
+                            data.get("qualifiers"),
+                            data.get("firstValueTime"),
+                            data.get("lastValueTime"),
+                            True,  # Assume all discovered series have data initially, Step 2 will filter out empty ones
+                            datetime.now(timezone.utc),
+                        ],
+                    )
+                    total_inserted += 1
+                    if total_inserted % 100 == 0:
+                        print(f"  Inserted {total_inserted} series...")
+
+        except Exception as e:
+            print(f"Error discovering series combinations: {e}")
+            return
+
+        print(f"Step 1 complete: Discovered {total_inserted} series combinations")
+
+        # Step 2: Find detailed date ranges for discovered series using individual ingest_series_headers calls (async parallel)
+        print(
+            "Step 2: Finding detailed date ranges using parallel individual function calls..."
+        )
+
+        try:
+            import asyncio
+            from talk_with_fews.tools.webservice.ingest_series_headers import (
+                ingest_series_headers,
+            )
+
+            # Get unique parameters from the discovered series combinations
+            # Step 2 should work with unique parameters, not individual series combinations
+            unique_parameters = cache_db.execute("""
+                SELECT DISTINCT parameterId
+                FROM series_headers
+                WHERE data_available = true
+            """).fetchall()
+
+            print(f"Found {len(unique_parameters)} unique parameters to process")
+
+            # Process parameters in parallel using async
+            async def process_parameter(param_row):
+                """Process a single parameter to get detailed date ranges for all its series."""
+                try:
+                    param_id = param_row[0]
+                    print(f"Processing parameter: {param_id}")
+
+                    # Call the individual ingest_series_headers function for this parameter
+                    # This will find all series with data for this parameter
+                    result = await ingest_series_headers(
+                        webservice_url=webservice_url,
+                        cache_FewsWebServices_db=cache_db,
+                        parameter_id=param_id,
+                        skip_empty_data=True,  # Skip empty data to focus on series with actual data
+                    )
+
+                    print(f"Parameter {param_id}: {result.series_count} series found")
+                    return param_id, result.series_count
+
+                except Exception as e:
+                    print(f"Error processing parameter {param_row[0]}: {e}")
+                    return param_row[0], 0
+
+            # Process all parameters in parallel
+            async def run_parameter_processing():
+                # Create tasks for all parameters
+                tasks = [
+                    process_parameter(param_row) for param_row in unique_parameters
+                ]
+                return await asyncio.gather(*tasks, return_exceptions=True)
+
+            print(f"Processing {len(unique_parameters)} parameters in parallel...")
+            parameter_results = asyncio.run(run_parameter_processing())
+
+            # Process results
+            total_series = 0
+            successful_params = 0
+            for result in parameter_results:
+                if isinstance(result, Exception):
+                    print(f"Parameter failed with exception: {result}")
+                    continue
+
+                param_id, series_count = result
+                total_series += series_count
+                if series_count > 0:
+                    successful_params += 1
+                print(f"Parameter {param_id}: {series_count} series")
+
+            print(
+                f"Step 2 complete: Processed {successful_params}/{len(unique_parameters)} parameters, found {total_series} total series"
+            )
+
+        except Exception as e:
+            print(f"Error in Step 2: {e}")
+            return
+
+        print(f"Successfully ingested {total_inserted} series headers")
+
+    except Exception as e:
+        print(f"Error in series headers ingestion: {e}")
+
+
+def _save_database_to_file(
+    cache_db: duckdb.DuckDBPyConnection, webservice_url: str
+) -> str:
+    """
+    Save the in-memory DuckDB database to a file for debugging and investigation.
+
+    Args:
+        cache_db: The in-memory DuckDB connection
+        webservice_url: The webservice URL to use in the filename
+
+    Returns:
+        Path to the saved database file
+    """
+    # Create a filename based on the webservice URL and timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    # Extract service name from URL (e.g., "hdsr" from "http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesHDSR")
+    service_name = "unknown"
+    if webservice_url:
+        # Extract service name from URL path
+        url_parts = webservice_url.split("/")
+        for part in url_parts:
+            if "FewsWebServices" in part:
+                service_name = part.replace("FewsWebServices", "").lower()
+                break
+
+    # Create output directory
+    output_dir = Path("data") / "webservice_cache"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create filename
+    filename = f"fews_cache_{service_name}_{timestamp}.duckdb"
+    filepath = output_dir / filename
+
+    # Save the database to file
+    cache_db.execute(f"EXPORT DATABASE '{filepath}'")
+
+    print(f"Saved webservice cache to: {filepath}")
+    return str(filepath)
+
+
 def _setup_webservice_cache(
     webservice_url: str | None, cached_db, enable_webservice_ingest: bool
 ) -> tuple:
@@ -189,7 +395,19 @@ def _setup_webservice_cache(
         # Setup the series_headers table (requires locations and parameters tables)
         cache_db = setup_series_headers_table(cache_db)
         # Ingest series headers data (requires locations and parameters to be ingested first)
-        ingest_series_headers(webservice_url, cache_db)
+        # We need to ingest series headers for all parameters to populate the cache
+        print("Ingesting series headers for all parameters...")
+        _ingest_all_series_headers(webservice_url, cache_db)
+
+        # Save the database to file for debugging and investigation
+        # Controlled by DEV_SAVE_WEBSERVICE_CACHE environment variable
+        save_cache = os.environ.get("DEV_SAVE_WEBSERVICE_CACHE", "false").lower() in (
+            "true",
+            "1",
+            "yes",
+        )
+        if webservice_url and save_cache:
+            _save_database_to_file(cache_db, webservice_url)
 
     return cache_db, None, None, None
 
@@ -211,6 +429,7 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
         - Database connections and schemas are cached per client_id
         - Use DEV_DISABLE_CONFIG_DB=true to skip database connection (development)
         - Use DEV_DISABLE_WEBSERVICE_INGEST=true to skip slow webservice data ingestion (development)
+        - Use DEV_SAVE_WEBSERVICE_CACHE=true to save in-memory databases to files for debugging (development)
     """
 
     # Extract user settings
@@ -301,6 +520,7 @@ def setup_series_headers_table(
             qualifiers VARCHAR,
             first_value_time TIMESTAMP,
             last_value_time TIMESTAMP,
+            data_available BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
             -- Foreign key constraints
