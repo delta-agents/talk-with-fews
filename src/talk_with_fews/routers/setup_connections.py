@@ -239,7 +239,7 @@ def _ingest_all_series_headers(
 
         print(f"Step 1 complete: Discovered {total_inserted} series combinations")
 
-        # Skip step 2 for now
+        # Skip step 2 for now - instead do this on the fly.
         # Step 2: Find actual date ranges for discovered series using showStatistics=True
         # print("Step 2: Finding actual date ranges for discovered series...")
 

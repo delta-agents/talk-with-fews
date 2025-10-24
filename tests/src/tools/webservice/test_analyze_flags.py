@@ -141,7 +141,7 @@ async def test_count_series_flags_unknown():
     assert "99" in str(exc.value)
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_analyze_series_flags_with_real_data(service):
     """
     Test flag analysis with real data from FEWS services using service-specific configuration.

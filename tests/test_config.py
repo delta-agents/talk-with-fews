@@ -275,21 +275,74 @@ FEWS_SERVICES = {
                 "VOV32379",
             ],  # Real location IDs from web service
             "parameter_ids": [
-                "WNSHDB1",
-                "WNSHDB3",
-                "Q.meting",
+                "H.meting",
+                "Q.afgeleid",
+                "K.meting",
             ],  # Real parameter IDs with data
             "parameter_filters": ["water", "tide", "Q.G"],
             "validated_combinations": [
                 {
-                    "location_id": "VOV9345",
-                    "parameter_id": "WNSHDB1",
-                    "module_instance_id": "Productie",
+                    "location_id": "0032",
+                    "parameter_id": "H.meting",
+                    "module_instance_id": "Aggregeren_uur_bewerkt",
                 },
                 {
-                    "location_id": "VOV9345",
-                    "parameter_id": "WNSHDB3",
-                    "module_instance_id": "Productie",
+                    "location_id": "0033",
+                    "parameter_id": "H.meting",
+                    "module_instance_id": "ImportTMX",
+                },
+            ],
+            "expected_location_count": 6,
+            "expected_parameter_count": 6,
+            "start_time": "2020-01-01T00:00:00+01:00",
+            "end_time": "2024-12-31T23:59:59+01:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "VOV9345": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+                "VOV9346": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+                "VOV32379": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+            },
+        },
+    ),
+    "wsdd": FEWSServiceConfig(
+        name="wsdd",
+        web_service_url="http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesWSDD",
+        db_path="data/HDSR_wis.db3",  # Use working database until Scheldestromen database is fixed
+        test_data={
+            "location_filters": ["boxtel", "eindhoven", "tilburg"],
+            "location_ids": [
+                "0032",
+                "0033",
+                "0034",
+            ],  # Real location IDs from web service
+            "parameter_ids": [
+                "H.meting",
+                "Q.afgeleid",
+                "K.meting",
+            ],  # Real parameter IDs with data
+            "parameter_filters": ["water", "tide", "Q.G"],
+            "validated_combinations": [
+                {
+                    "location_id": "0032",
+                    "parameter_id": "H.meting",
+                    "module_instance_id": "Aggregeren_uur_bewerkt",
+                },
+                {
+                    "location_id": "0033",
+                    "parameter_id": "H.meting",
+                    "module_instance_id": "ImportTMX",
                 },
             ],
             "expected_location_count": 6,

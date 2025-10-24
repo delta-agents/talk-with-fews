@@ -16,7 +16,7 @@ def fews_parallel(*services):
     Automatically detects CI and only runs against production service in CI.
 
     Usage:
-        @fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+        @fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
         def test_get_locations(service):
             # In CI: only runs against "actueelwaterbeeld"
             # Locally: runs against all 5 services

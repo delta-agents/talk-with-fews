@@ -18,11 +18,12 @@ import sys
 from pathlib import Path
 
 # Add src and tests to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-sys.path.insert(0, str(Path(__file__).parent.parent / "tests"))
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root / "src"))
+sys.path.insert(0, str(project_root / "tests"))
 
-from talk_with_fews.routers.setup_connections import get_runtime_ctx
-from test_config import FEWS_SERVICES
+from talk_with_fews.routers.setup_connections import get_runtime_ctx  # noqa: E402
+from test_config import FEWS_SERVICES  # noqa: E402
 
 
 def save_cache_for_service(service_name: str):

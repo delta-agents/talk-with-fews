@@ -39,7 +39,9 @@ def test_get_webservice_info(service):
 
     # Get runtime context
     ctx = get_runtime_ctx(user_settings)
-
+    ctx.deps.webservice_name = (
+        "TEST Config"  # this is retrieved from the static token info...
+    )
     # Call the function
     output: GetWebServiceInfoOutput = asyncio.run(get_webservice_info(ctx, input_data))
 

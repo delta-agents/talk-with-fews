@@ -95,7 +95,7 @@ def normalize_line_endings(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data(service):
     """Test retrieving timeseries data from all FEWS services.
 
@@ -153,7 +153,7 @@ def test_get_series_data(service):
         assert first_value.flag is not None
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_missing_values(service):
     """Test handling of missing values in timeseries data across all FEWS services."""
     # Set the service for this test run
@@ -195,7 +195,7 @@ def test_get_series_data_missing_values(service):
         assert value.value is None or isinstance(value.value, (int, float))
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_invalid_location(service):
     """Test error handling for invalid location ID across all FEWS services."""
     # Set the service for this test run
@@ -224,7 +224,7 @@ def test_get_series_data_invalid_location(service):
     assert "Failed to fetch data" in str(exc_info.value)
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_invalid_parameter(service):
     """Test error handling for invalid parameter ID across all FEWS services."""
     # Set the service for this test run
@@ -253,7 +253,7 @@ def test_get_series_data_invalid_parameter(service):
     assert "Failed to fetch data" in str(exc_info.value)
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_availability(service):
     """Test data availability across all FEWS services.
 

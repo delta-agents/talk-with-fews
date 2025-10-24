@@ -8,7 +8,7 @@ from tests.parallel_decorator import fews_parallel
 import asyncio
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_locations(service):
     """
     Test the get_locations function against all FEWS services.

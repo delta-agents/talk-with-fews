@@ -24,7 +24,7 @@ from tests.test_config import get_test_service_config, generate_test_client_id
 from tests.parallel_decorator import fews_parallel
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_headers_by_parameter(service):
     """
     Test the get_series_headers function with parameter-based query against all FEWS services.
@@ -61,7 +61,7 @@ def test_get_series_headers_by_parameter(service):
         assert "locations" in output.available_ids
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_headers_by_location(service):
     """
     Test the get_series_headers function with location-based query against all FEWS services.
@@ -263,7 +263,7 @@ def test_ingest_series_headers_no_input():
 
 
 # @fews_parallel("actueelwaterbeeld", "scheldestromen")
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_ingest_series_headers_skip_empty_data(service):
     """
     Test the skip_empty_data parameter functionality in ingest_series_headers.
@@ -511,7 +511,7 @@ def test_series_headers_caching():
     assert output1.available_ids == output2.available_ids
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_series_headers_validated_combinations(service):
     """
     Test series headers with location-parameter combinations for all FEWS services.
@@ -577,7 +577,7 @@ def test_series_headers_validated_combinations(service):
         print(f"  ✅ Location {location_id}: {len(loc_output.series_headers)} series")
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_series_headers_output_structure(service):
     """
     Test that the output structure is correct and contains all required fields against all FEWS services.

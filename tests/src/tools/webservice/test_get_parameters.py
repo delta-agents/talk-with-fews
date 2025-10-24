@@ -8,7 +8,7 @@ from tests.parallel_decorator import fews_parallel
 import asyncio
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_parameters(service):
     """
     Test the get_parameters function against all FEWS services.
@@ -65,7 +65,7 @@ def test_get_parameters(service):
         # Note: We don't verify the filter worked because the filter might not match all services
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_parameters_no_filter(service):
     """
     Test the get_parameters function without any filter against all FEWS services.
