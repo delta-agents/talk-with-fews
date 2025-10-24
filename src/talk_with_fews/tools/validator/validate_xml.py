@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import xmlschema
 
-from talk_with_fews.models.validate_xml import (
+from talk_with_fews.models.validator.validate_xml import (
     XMLValidationInput,
     XMLValidationOutput,
     ValidationError,

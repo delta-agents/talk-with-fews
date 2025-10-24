@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
-from talk_with_fews.models.get_series_statistics import (
+from talk_with_fews.models.webservice.get_series_statistics import (
     GetSeriesStatisticsOutput,
 )
 from talk_with_fews.utils.logging_utils import logger

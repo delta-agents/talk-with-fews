@@ -6,7 +6,7 @@ capabilities similar to get_locations, including searching across multiple colum
 and supporting specific field filters.
 """
 
-from talk_with_fews.models.get_parameters import GetParameterInput
+from talk_with_fews.models.webservice.get_parameters import GetParameterInput
 
 
 def test_get_parameter_input_enhanced_functionality():
@@ -85,7 +85,7 @@ def test_get_parameter_output_structure():
     """
     This test demonstrates what the GetParameterOutput object looks like.
     """
-    from talk_with_fews.models.get_parameters import GetParameterOutput
+    from talk_with_fews.models.webservice.get_parameters import GetParameterOutput
     from talk_with_fews.models.base import Parameter
 
     # Create sample parameter data (mimicking what would come from the database)

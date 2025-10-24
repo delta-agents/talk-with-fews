@@ -8,7 +8,7 @@ import asyncio
 import pytest
 import os
 from datetime import datetime
-from talk_with_fews.models.get_series_data import GetSeriesDataInput
+from talk_with_fews.models.webservice.get_series_data import GetSeriesDataInput
 from talk_with_fews.tools.webservice.get_series_data import get_series_data
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from tests.utils_tests import setup_dot_env

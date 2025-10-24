@@ -1,4 +1,4 @@
-from talk_with_fews.models.transformation_details import (
+from talk_with_fews.models.config.transformation_details import (
     TransformationDetails,
     TransformationDetailsInput,
     TransformationDetailsOutput,

@@ -49,7 +49,9 @@ def get_user_settings(verifier) -> dict:
         user_settings = {
             "client_id": "test-no-auth",
             "FEWS_DB_PATH": db_path,
+            "FEWS_CONFIG_NAME": "test-config",
             "FEWS_WEB_SERVICE_URL": webservice_url,
+            "FEWS_WEB_SERVICE_NAME": "test-web-service",
         }
     else:
         authorization = request.headers.get("Authorization", None)
@@ -477,7 +479,9 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     # Extract user settings
     client_id = user_settings["client_id"]
     db_path = user_settings["FEWS_DB_PATH"]  # Already validated in get_user_settings()
+    config_name = user_settings.get("FEWS_CONFIG_NAME")
     webservice_url = user_settings.get("FEWS_WEB_SERVICE_URL")
+    webservice_name = user_settings.get("FEWS_WEB_SERVICE_NAME")
 
     # Clean webservice URL (remove trailing slash)
     if webservice_url and webservice_url.endswith("/"):
@@ -528,6 +532,8 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     deps.schema = schema
     deps.cache_FewsWebServices_db = cache_db
     deps.cache_fews_schemas_dir = schemas_dir
+    deps.config_name = config_name
+    deps.webservice_name = webservice_name
 
     # Update cache with new values
     cache.db_connection = db_connection

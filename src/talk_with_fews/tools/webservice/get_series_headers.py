@@ -10,7 +10,7 @@ import duckdb
 import pandas as pd
 from pydantic_ai import ModelRetry, RunContext
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.get_series_headers import (
+from talk_with_fews.models.webservice.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )

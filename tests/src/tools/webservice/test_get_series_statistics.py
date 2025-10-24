@@ -10,7 +10,7 @@ from datetime import datetime
 from pydantic import ValidationError
 import pytest
 
-from talk_with_fews.models.get_series_statistics import (
+from talk_with_fews.models.webservice.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
 )

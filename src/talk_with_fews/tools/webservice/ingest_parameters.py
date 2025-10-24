@@ -1,5 +1,5 @@
 from talk_with_fews.models.base import Parameter
-from talk_with_fews.models.ingest_webservice import IngestParameterOutput
+from talk_with_fews.models.webservice.ingest_webservice import IngestParameterOutput
 from talk_with_fews.utils.webservice_utils import get_request
 
 import pandas as pd

@@ -11,7 +11,7 @@ from datetime import datetime, timezone, timedelta
 import httpx
 from pydantic_ai import RunContext
 
-from talk_with_fews.models.get_series_data import (
+from talk_with_fews.models.webservice.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
     TimeseriesValue,
@@ -115,7 +115,7 @@ async def get_series_data(
     from talk_with_fews.tools.webservice.get_series_statistics import (
         get_series_statistics,
     )
-    from talk_with_fews.models.get_series_statistics import (
+    from talk_with_fews.models.webservice.get_series_statistics import (
         GetSeriesStatisticsInput,
         IntervalType,
     )

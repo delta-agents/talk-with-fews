@@ -11,7 +11,7 @@ import asyncio
 import xmlschema
 from pydantic_ai import ModelRetry
 
-from talk_with_fews.models.generate_xml_template import (
+from talk_with_fews.models.validator.generate_xml_template import (
     XMLTemplateInput,
     XMLTemplateOutput,
 )

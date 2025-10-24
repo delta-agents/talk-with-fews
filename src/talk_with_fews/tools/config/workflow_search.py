@@ -1,9 +1,9 @@
 from pydantic_ai import RunContext
 
-from talk_with_fews.models.sql_query import SQLQueryInput
+from talk_with_fews.models.config.sql_query import SQLQueryInput
 from talk_with_fews.models.base import Deps
 
-from talk_with_fews.models.workflow_search import (
+from talk_with_fews.models.config.workflow_search import (
     WorkflowSearchInput,
     WorkflowSearchOutput,
     WorkflowSearchResult,

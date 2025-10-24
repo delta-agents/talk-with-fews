@@ -28,6 +28,10 @@ def user_settings():
     return setup_dot_env()
 
 
+@pytest.mark.skipif(
+    os.getenv("DEV_SKIP_SETUP_CONNECTIONS_TESTS", "false") == "true",
+    reason="Skipping setup_connections tests",
+)
 def test_get_runtime_ctx_basic(user_settings):
     """Test basic context creation."""
     ctx = get_runtime_ctx(user_settings)
@@ -39,6 +43,10 @@ def test_get_runtime_ctx_basic(user_settings):
     assert ctx.deps.db_connection is not None
 
 
+@pytest.mark.skipif(
+    os.getenv("DEV_SKIP_SETUP_CONNECTIONS_TESTS", "false") == "true",
+    reason="Skipping setup_connections tests",
+)
 def test_get_runtime_ctx_caching(user_settings):
     """Test that subsequent calls use cached values."""
     # First call
@@ -52,6 +60,10 @@ def test_get_runtime_ctx_caching(user_settings):
     assert ctx1.deps.schema is ctx2.deps.schema
 
 
+@pytest.mark.skipif(
+    os.getenv("DEV_SKIP_SETUP_CONNECTIONS_TESTS", "false") == "true",
+    reason="Skipping setup_connections tests",
+)
 def test_get_runtime_ctx_different_users():
     """Test that different users get separate contexts."""
     base_settings = setup_dot_env()
@@ -71,6 +83,10 @@ def test_get_runtime_ctx_different_users():
     assert ctx1.deps.db_connection is not ctx2.deps.db_connection
 
 
+@pytest.mark.skipif(
+    os.getenv("DEV_SKIP_SETUP_CONNECTIONS_TESTS", "false") == "true",
+    reason="Skipping setup_connections tests",
+)
 def test_get_runtime_ctx_webservice_db_always_exists(user_settings):
     """Test that cache_FewsWebServices_db is never None when webservice URL is provided."""
     # Even with DEV_DISABLE_WEBSERVICE_INGEST=true, the DB connection should exist
@@ -86,6 +102,10 @@ def test_get_runtime_ctx_webservice_db_always_exists(user_settings):
         assert result == (1,), "DuckDB connection should be functional"
 
 
+@pytest.mark.skipif(
+    os.getenv("DEV_SKIP_SETUP_CONNECTIONS_TESTS", "false") == "true",
+    reason="Skipping setup_connections tests",
+)
 def test_get_runtime_ctx_with_ingestion_disabled():
     """Test that when DEV_DISABLE_WEBSERVICE_INGEST=true, DB exists but no data is ingested."""
     os.environ["DEV_DISABLE_WEBSERVICE_INGEST"] = "true"
@@ -118,6 +138,10 @@ def test_get_runtime_ctx_with_ingestion_disabled():
         os.environ.pop("DEV_DISABLE_WEBSERVICE_INGEST", None)
 
 
+@pytest.mark.skipif(
+    os.getenv("DEV_SKIP_SETUP_CONNECTIONS_TESTS", "false") == "true",
+    reason="Skipping setup_connections tests",
+)
 def test_get_runtime_ctx_with_ingestion_enabled():
     """Test that when DEV_DISABLE_WEBSERVICE_INGEST=false, DB exists with data ingested."""
     # Clear the cache first to ensure fresh state

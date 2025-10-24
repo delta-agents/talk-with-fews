@@ -11,7 +11,9 @@ import duckdb
 from datetime import datetime, timezone, timedelta
 from pydantic_ai import ModelRetry
 from talk_with_fews.models.base import SeriesHeader
-from talk_with_fews.models.ingest_series_headers import IngestSeriesHeadersOutput
+from talk_with_fews.models.webservice.ingest_series_headers import (
+    IngestSeriesHeadersOutput,
+)
 from talk_with_fews.utils.webservice_utils import get_timeseries_headers
 import asyncio
 import httpx

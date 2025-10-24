@@ -1,5 +1,5 @@
 from talk_with_fews.models.base import Location
-from talk_with_fews.models.ingest_webservice import IngestLocationsOutput
+from talk_with_fews.models.webservice.ingest_webservice import IngestLocationsOutput
 from talk_with_fews.utils.webservice_utils import get_request
 from talk_with_fews.utils.logging_utils import logger
 
