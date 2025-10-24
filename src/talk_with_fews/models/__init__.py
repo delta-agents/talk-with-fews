@@ -87,7 +87,7 @@ from talk_with_fews.models.validator.get_available_elements import (
     GetAvailableElementsInput,
     GetAvailableElementsOutput,
 )
-
+from talk_with_fews.models.validator.fews_schema_options import FEWSSchemaOption
 
 __all__ = [
     # config models
@@ -137,4 +137,5 @@ __all__ = [
     "XMLTemplateOutput",
     "GetAvailableElementsInput",
     "GetAvailableElementsOutput",
+    "FEWSSchemaOption",
 ]

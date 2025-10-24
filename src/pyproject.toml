@@ -11,11 +11,11 @@ packages = ["talk_with_fews"]
 [project]
 name = "talk_with_fews"
 version = "0.0.1"
-description = "Python package template"
+description = "Talk with FEWS install"
 readme = "README.md"
 license = {text = "GNU-GPL V3"}
 authors = [
-  { name = "Guy Dupuits"},
+  { name = "Mattijn van Hoek"},
   { name = "David Haasnoot"},
 ]
 

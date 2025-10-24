@@ -106,6 +106,8 @@ quartodoc:
       package: talk_with_fews.models
       desc: Data modellen per webservice tool.
       contents:
+        - GetWebServiceInfoInput
+        - GetWebServiceInfoOutput
         - GetParameterInput
         - GetParameterOutput
         - GetLocationInput
