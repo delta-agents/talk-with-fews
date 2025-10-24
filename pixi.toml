@@ -35,7 +35,8 @@ quarto-render = { cmd = "export QUARTO_PYTHON=python && quarto render docs --to 
 docs = { depends-on = ["quarto-preview"] }
 pre-commit = "pre-commit run --all-files"
 
-test = "pytest"
+tests-all = "python -m pytest"
+tests-github = "python -m pytest tests/src/tools/webservice/test_get_locations.py::test_get_locations -v --cov"
 
 [tool.ruff]
 # Ruff configuration, see https://docs.astral.sh/ruff/configuration/
