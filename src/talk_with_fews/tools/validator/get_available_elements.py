@@ -5,7 +5,7 @@ This module provides functionality to retrieve available elements
 from FEWS XSD schemas with pagination support.
 """
 
-from talk_with_fews.models.get_available_elements import (
+from talk_with_fews.models.validator.get_available_elements import (
     GetAvailableElementsInput,
     GetAvailableElementsOutput,
 )

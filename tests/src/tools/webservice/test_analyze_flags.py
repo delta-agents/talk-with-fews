@@ -13,9 +13,12 @@ import pytest
 from typing import List
 
 
-from talk_with_fews.models.flags.errors import UnknownFlagError, InvalidTimeRangeError
-from talk_with_fews.models.flags.io import SeriesFlagsInput
-from talk_with_fews.models.get_series_data import TimeseriesValue
+from talk_with_fews.models.webservice.flags.errors import (
+    UnknownFlagError,
+    InvalidTimeRangeError,
+)
+from talk_with_fews.models.webservice.flags.io import SeriesFlagsInput
+from talk_with_fews.models.webservice.get_series_data import TimeseriesValue
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from talk_with_fews.tools.webservice.analyze_flags import (
     count_series_flags,

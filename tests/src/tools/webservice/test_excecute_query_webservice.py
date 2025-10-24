@@ -1,4 +1,4 @@
-from talk_with_fews.models.sql_query import (
+from talk_with_fews.models.config.sql_query import (
     SQLQueryInput,
     SQLQueryOutput,
 )

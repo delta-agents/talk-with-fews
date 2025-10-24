@@ -11,11 +11,17 @@ from typing import Dict, List, Any
 from pydantic_ai import RunContext
 
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.flags.counts import FlagCount, FlagCounts
-from talk_with_fews.models.flags.errors import UnknownFlagError, InvalidTimeRangeError
-from talk_with_fews.models.flags.io import SeriesFlagsInput, SeriesFlagsOutput
-from talk_with_fews.models.flags.mappings import QUALITY_FLAGS
-from talk_with_fews.models.get_series_data import TimeseriesValue
+from talk_with_fews.models.webservice.flags.counts import FlagCount, FlagCounts
+from talk_with_fews.models.webservice.flags.errors import (
+    UnknownFlagError,
+    InvalidTimeRangeError,
+)
+from talk_with_fews.models.webservice.flags.io import (
+    SeriesFlagsInput,
+    SeriesFlagsOutput,
+)
+from talk_with_fews.models.webservice.flags.mappings import QUALITY_FLAGS
+from talk_with_fews.models.webservice.get_series_data import TimeseriesValue
 from talk_with_fews.tools.webservice.get_series_data import get_series_data
 from talk_with_fews.utils.logging_utils import log_tool_call
 from talk_with_fews.utils.utils import format_datetime
@@ -141,7 +147,7 @@ async def analyze_series_flags(
     validate_time_range(input.start_time, input.end_time)
 
     # 2. Get timeseries with flags
-    from talk_with_fews.models.get_series_data import GetSeriesDataInput
+    from talk_with_fews.models.webservice.get_series_data import GetSeriesDataInput
 
     series_input = GetSeriesDataInput(
         location_id=input.location_id,
