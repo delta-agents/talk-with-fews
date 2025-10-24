@@ -11665,7 +11665,7 @@ packages:
 - pypi: ./src
   name: talk-with-fews
   version: 0.0.1
-  sha256: 69a42b7b81ed54765707e72acb3f24a4fda3c7081f1bf2fad4c1801692ebea8c
+  sha256: 8378d288dd5814184fe660551405450a626cf8233be6032ffb84ced583e0d0b9
   requires_dist:
   - python-dotenv
   - openai

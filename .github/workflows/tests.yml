@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Pytests (Production Service Only)
         run: |
-          pixi run pytest tests/src/tools/test_get_locations.py::test_get_locations -v --cov
+          pixi run pytest tests/src/tools/webservice/test_get_locations.py::test_get_locations -v --cov
         # Decorator automatically detects CI and only runs against actueelwaterbeeld
 
       - name: Run All Tests (if you want comprehensive testing)

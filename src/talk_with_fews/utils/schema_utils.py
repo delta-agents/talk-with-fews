@@ -264,7 +264,7 @@ def generate_llm_context(schema: Dict[str, Any]) -> str:
     if schema["relationships"]:
         context += "## Relationships\n\n"
         for rel in schema["relationships"]:
-            context += f"- {rel['from_table']}.{rel['from_column']} → {rel['to_table']}.{rel['to_column']} ({rel['relationship_type']}, {rel['total_relations']} relations)\n"
+            context += f"- {rel['from_table']}.{rel['from_column']} -> {rel['to_table']}.{rel['to_column']} ({rel['relationship_type']}, {rel['total_relations']} relations)\n"
 
         context += "\n"
 
@@ -311,7 +311,7 @@ def get_table_relationships(schema: Dict[str, Any]) -> List[str]:
     relationships = []
     for rel in schema["relationships"]:
         relationships.append(
-            f"{rel['from_table']}.{rel['from_column']} → {rel['to_table']}.{rel['to_column']}"
+            f"{rel['from_table']}.{rel['from_column']} -> {rel['to_table']}.{rel['to_column']}"
         )
     return relationships
 
