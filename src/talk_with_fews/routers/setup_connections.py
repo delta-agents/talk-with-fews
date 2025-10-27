@@ -445,9 +445,9 @@ def _setup_webservice_cache(
             "1",
             "yes",
         )
-        if skip_header_ingest:
-            cache_db = setup_series_headers_table(cache_db)  # Re-create empty table
-        else:
+        # if skip_header_ingest:
+        cache_db = setup_series_headers_table(cache_db)  # Re-create empty table
+        if not skip_header_ingest:
             # Ingest series headers data (requires locations and parameters to be ingested first)
             # We need to ingest series headers for all parameters to populate the cache
             print("Ingesting series headers for all parameters...")
