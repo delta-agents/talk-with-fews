@@ -31,10 +31,10 @@ jobs:
 
       - name: Run Pytests (Production Service Only)
         run: |
-          pixi run pytest tests/src/tools/test_get_locations.py::test_get_locations -v --cov
+          pixi run tests-github
         # Decorator automatically detects CI and only runs against actueelwaterbeeld
 
       - name: Run All Tests (if you want comprehensive testing)
         run: |
-          pixi run pytest --cov
+          pixi run tests-all
         continue-on-error: true  # Allow failures for services without database files

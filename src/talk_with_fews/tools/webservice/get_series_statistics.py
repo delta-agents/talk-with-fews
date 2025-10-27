@@ -12,7 +12,7 @@ import json
 
 from pydantic_ai import RunContext, ModelRetry
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.get_series_statistics import (
+from talk_with_fews.models.webservice.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
 )

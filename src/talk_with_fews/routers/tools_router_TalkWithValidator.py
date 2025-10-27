@@ -20,15 +20,15 @@ from talk_with_fews.tools.validator.generate_xml_template import (
 from talk_with_fews.tools.validator.get_available_elements import (
     get_available_elements as get_available_elements_pydantic_ai,
 )
-from talk_with_fews.models.validate_xml import (
+from talk_with_fews.models.validator.validate_xml import (
     XMLValidationInput,
     XMLValidationOutput,
 )
-from talk_with_fews.models.generate_xml_template import (
+from talk_with_fews.models.validator.generate_xml_template import (
     XMLTemplateInput,
     XMLTemplateOutput,
 )
-from talk_with_fews.models.get_available_elements import (
+from talk_with_fews.models.validator.get_available_elements import (
     GetAvailableElementsInput,
     GetAvailableElementsOutput,
 )

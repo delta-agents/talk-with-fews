@@ -7,7 +7,7 @@ from talk_with_fews.utils.schema_utils import (
     extract_db_schema_as_dict,
     get_table_relationships,
 )
-from talk_with_fews.models.database_schema import (
+from talk_with_fews.models.config.database_schema import (
     DatabaseSchemaOutput,
     DatabaseSchemaInput,
 )

@@ -85,25 +85,25 @@ FEWS_SERVICES = {
         db_path="data/HDSR_wis.db3",
         test_data={
             "location_filters": ["gouda", "utrecht", "leiden"],
-            "location_ids": ["beg_109", "beg_110"],
-            "parameter_ids": ["BG.b.0", "H.G", "GW.G"],
-            "parameter_filters": ["groundwater", "level", "GW.G"],
+            "location_ids": ["S6458", "S6459"],
+            "parameter_ids": ["H.G.h", "Q.G.h", "H.G.d"],
+            "parameter_filters": ["water", "level", "H.G"],
             "validated_combinations": [
                 {
-                    "location_id": "beg_109",
-                    "parameter_id": "BG.b.0",
-                    "module_instance_id": "ImportBegroeiingsMonitoring",
+                    "location_id": "S6458",
+                    "parameter_id": "H.G.h",
+                    "module_instance_id": "ImportOwWsSa",
                 },
             ],
             # Test cases for multiple locations/parameters
             "multiple_location_test": {
-                "parameter_id": "BG.b.0",
-                "location_id": ["beg_109", "beg_110"],
+                "parameter_id": "H.G.h",
+                "location_id": ["S6458", "S6459"],
                 "description": "Single parameter with multiple locations",
             },
             "multiple_parameter_test": {
-                "parameter_id": ["BG.b.0", "H.G", "GW.G"],
-                "location_id": "beg_109",
+                "parameter_id": ["H.G.h", "Q.G.h", "H.G.d"],
+                "location_id": "S6458",
                 "description": "Multiple parameters with single location",
             },
             "expected_location_count": 6,
@@ -112,6 +112,16 @@ FEWS_SERVICES = {
             "end_time": "2024-12-31T23:59:59+01:00",
             # Module instance mapping for test combinations
             "module_instance_mapping": {
+                "S6458": {
+                    "H.G.h": "ImportOwWsSa",
+                    "Q.G.h": "ImportOwWsSa",
+                    "H.G.d": "ImportOwWsSa",
+                },
+                "S6459": {
+                    "H.G.h": "ImportOwWsSa",
+                    "Q.G.h": "ImportOwWsSa",
+                    "H.G.d": "ImportOwWsSa",
+                },
                 "beg_109": {
                     "BG.b.0": "ImportBegroeiingsMonitoring",
                     "H.G": "ImportBegroeiingsMonitoring",
@@ -125,6 +135,7 @@ FEWS_SERVICES = {
             },
         },
     ),
+    ################ WSVV  ################
     "wsvv": FEWSServiceConfig(
         name="WSVV",
         web_service_url="http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesWSVV",
@@ -194,6 +205,7 @@ FEWS_SERVICES = {
             },
         },
     ),
+    ################ HHD  ################
     "hhd": FEWSServiceConfig(
         name="HHD",
         web_service_url="http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesHHD",
@@ -219,15 +231,15 @@ FEWS_SERVICES = {
                     "module_instance_id": "ImportSphAbb",
                 },  # 8641 values (all flagged but real data)
                 {
-                    "location_id": "HHD_150183",
-                    "parameter_id": "Q.meting",
+                    "location_id": "HHD_150183-pomp1",
+                    "parameter_id": "pompstatus.paraat",
                     "module_instance_id": "ImportSphAbb",
-                },  # 9 series
+                },  # 3 series with data
                 {
-                    "location_id": "HHD_350101",
-                    "parameter_id": "Q.sim",
+                    "location_id": "HHD_150183-pomp1",
+                    "parameter_id": "pompstatus.storing",
                     "module_instance_id": "ImportSphAbb",
-                },  # 1 series
+                },  # 3 series with data
             ],
             "expected_location_count": 6,
             "expected_parameter_count": 6,
@@ -253,6 +265,7 @@ FEWS_SERVICES = {
             },
         },
     ),
+    ################ WSSS  ################
     "scheldestromen": FEWSServiceConfig(
         name="Scheldestromen",
         web_service_url="https://data.hkvfewsscheldestromen.nl:8443/FewsWebServices",
@@ -299,6 +312,60 @@ FEWS_SERVICES = {
                     "Q.meting": "Productie",
                 },
                 "VOV32379": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+            },
+        },
+    ),
+    ################ WSDD  ################
+    "wsdd": FEWSServiceConfig(
+        name="wsdd",
+        web_service_url="http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesWSDD",
+        db_path="data/HDSR_wis.db3",  # Use working database until Scheldestromen database is fixed
+        test_data={
+            "location_filters": ["boxtel", "eindhoven", "tilburg"],
+            "location_ids": [
+                "0032",
+                "0033",
+                "0034",
+            ],  # Real location IDs from web service
+            "parameter_ids": [
+                "H.meting",
+                "Q.afgeleid",
+                "K.meting",
+            ],  # Real parameter IDs with data
+            "parameter_filters": ["water", "tide", "Q.G"],
+            "validated_combinations": [
+                {
+                    "location_id": "0032",
+                    "parameter_id": "H.meting",
+                    "module_instance_id": "Aggregeren_uur_bewerkt",
+                },
+                {
+                    "location_id": "0033",
+                    "parameter_id": "H.meting",
+                    "module_instance_id": "ImportTMX",
+                },
+            ],
+            "expected_location_count": 6,
+            "expected_parameter_count": 6,
+            "start_time": "2020-01-01T00:00:00+01:00",
+            "end_time": "2024-12-31T23:59:59+01:00",
+            # Module instance mapping for test combinations
+            "module_instance_mapping": {
+                "0032": {
+                    "WNSHDB1": "ImportTMX",
+                    "WNSHDB3": "ImportTMX",
+                    "Q.meting": "ImportTMX",
+                },
+                "0033": {
+                    "WNSHDB1": "Productie",
+                    "WNSHDB3": "Productie",
+                    "Q.meting": "Productie",
+                },
+                "0034": {
                     "WNSHDB1": "Productie",
                     "WNSHDB3": "Productie",
                     "Q.meting": "Productie",
@@ -359,6 +426,33 @@ def get_test_data_for_service(service_name: str) -> Dict[str, Any]:
 def get_available_services() -> list[str]:
     """Get list of available FEWS service names."""
     return list(FEWS_SERVICES.keys())
+
+
+def generate_test_client_id(service: str = None, test_name: str = None) -> str:
+    """
+    Generate a unique client ID for testing to ensure database isolation.
+
+    This is especially important for parallel tests to prevent cache conflicts
+    between different test instances running simultaneously.
+
+    Args:
+        service: FEWS service name (e.g., 'actueelwaterbeeld', 'scheldestromen')
+        test_name: Optional test name to make the ID more specific
+
+    Returns:
+        str: Client ID based on service name for predictable isolation
+    """
+    import os
+
+    # Get current service from environment or parameter
+    if service is None:
+        service = os.getenv("FEWS_TEST_SERVICE", "actueelwaterbeeld")
+
+    # Use service name directly for predictable client IDs
+    if test_name:
+        return f"test_{service}_{test_name}"
+    else:
+        return f"test_{service}"
 
 
 def print_service_info():

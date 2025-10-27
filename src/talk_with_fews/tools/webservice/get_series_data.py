@@ -11,7 +11,7 @@ from datetime import datetime, timezone, timedelta
 import httpx
 from pydantic_ai import RunContext
 
-from talk_with_fews.models.get_series_data import (
+from talk_with_fews.models.webservice.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
     TimeseriesValue,
@@ -115,7 +115,7 @@ async def get_series_data(
     from talk_with_fews.tools.webservice.get_series_statistics import (
         get_series_statistics,
     )
-    from talk_with_fews.models.get_series_statistics import (
+    from talk_with_fews.models.webservice.get_series_statistics import (
         GetSeriesStatisticsInput,
         IntervalType,
     )
@@ -145,11 +145,11 @@ async def get_series_data(
 
     # Primary check: Use estimated_points from get_series_statistics
     if estimated_points and estimated_points > 500:
-        # Calculate thinning: view period in ms / display pixels
-        # For 5 years on 1024 pixels: 157784760000 / 1024 = 15408668 ms/pixel
+        # Calculate thinning: target ~500 points for AI context window
+        # Very aggressive to ensure manageable data size for AI assistants
         time_span_ms = int((input.end_time - input.start_time).total_seconds() * 1000)
-        display_pixels = 1024  # Standard display width
-        thinning_value = time_span_ms // display_pixels
+        target_points = 500  # Target for AI context window (very aggressive)
+        thinning_value = time_span_ms // target_points
         thinning_applied = True
         thinning_reason = f"Automatic thinning applied for large dataset ({estimated_points:,} estimated points > 500)"
 

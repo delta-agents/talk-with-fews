@@ -10,7 +10,7 @@ import duckdb
 import pandas as pd
 from pydantic_ai import ModelRetry, RunContext
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.get_series_headers import (
+from talk_with_fews.models.webservice.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
@@ -107,8 +107,8 @@ async def get_series_headers(
     - Use parameter_id to find ALL locations that have that parameter
 
     Examples:
-    - "What parameters are available at location X?" → use location_id="X"
-    - "Which locations have parameter Y?" → use parameter_id="Y"
+    - "What parameters are available at location X?" -> use location_id="X"
+    - "Which locations have parameter Y?" -> use parameter_id="Y"
 
     Use the returned available_ids to make targeted follow-up queries for specific data.
 

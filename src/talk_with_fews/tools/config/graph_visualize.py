@@ -8,15 +8,17 @@ from typing import Dict
 
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.timeseries_describe import DescribeTimeSeriesInput
-from talk_with_fews.models.transformation_details import TransformationDetailsInput
-from talk_with_fews.models.workflow_details import WorkflowDetailsInput
+from talk_with_fews.models.config.timeseries_describe import DescribeTimeSeriesInput
+from talk_with_fews.models.config.transformation_details import (
+    TransformationDetailsInput,
+)
+from talk_with_fews.models.config.workflow_details import WorkflowDetailsInput
 from talk_with_fews.tools.config.timeseries_describe import describe_timeseries
 from talk_with_fews.tools.config.transformation_details import (
     get_transformation_details,
 )
 from talk_with_fews.tools.config.workflows_details import get_workflow_details
-from talk_with_fews.models.graph import (
+from talk_with_fews.models.config.graph import (
     GraphEdge,
     GraphLayout,
     GraphNode,

@@ -11,49 +11,56 @@ from talk_with_fews.routers.setup_connections import (
 
 
 # Import tool functions and their models
+from talk_with_fews.tools.webservice.get_webservice_info import (
+    get_webservice_info as get_webservice_info_pydantic_ai,
+)
+from talk_with_fews.models.webservice.get_webservice_info import (
+    GetWebServiceInfoInput,
+    GetWebServiceInfoOutput,
+)
 from talk_with_fews.tools.webservice.sql_query_webservice import (
     execute_query_webservice as execute_query_webservice_pydantic_ai,
 )
-from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
+from talk_with_fews.models.config.sql_query import SQLQueryInput, SQLQueryOutput
 from talk_with_fews.tools.webservice.get_parameters import (
     get_parameters as get_parameters_pydantic_ai,
 )
-from talk_with_fews.models.get_parameters import (
+from talk_with_fews.models.webservice.get_parameters import (
     GetParameterInput,
     GetParameterOutput,
 )
 from talk_with_fews.tools.webservice.get_locations import (
     get_locations as get_locations_pydantic_ai,
 )
-from talk_with_fews.models.get_locations import (
+from talk_with_fews.models.webservice.get_locations import (
     GetLocationInput,
     GetLocationOutput,
 )
 from talk_with_fews.tools.webservice.get_series_headers import (
     get_series_headers as get_series_headers_pydantic_ai,
 )
-from talk_with_fews.models.get_series_headers import (
+from talk_with_fews.models.webservice.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
 from talk_with_fews.tools.webservice.get_series_statistics import (
     get_series_statistics as get_series_statistics_pydantic_ai,
 )
-from talk_with_fews.models.get_series_statistics import (
+from talk_with_fews.models.webservice.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
 )
 from talk_with_fews.tools.webservice.get_series_data import (
     get_series_data as get_series_data_pydantic_ai,
 )
-from talk_with_fews.models.get_series_data import (
+from talk_with_fews.models.webservice.get_series_data import (
     GetSeriesDataInput,
     GetSeriesDataOutput,
 )
 from talk_with_fews.tools.webservice.analyze_flags import (
     analyze_series_flags as analyze_series_flags_pyantic_ai,
 )
-from talk_with_fews.models.flags.io import (
+from talk_with_fews.models.webservice.flags.io import (
     SeriesFlagsInput,
     SeriesFlagsOutput,
 )
@@ -64,6 +71,19 @@ verifier = StaticTokenVerifier(tokens=tokens, required_scopes=["read:data"])
 # Setup router & auth
 router = APIRouter()
 mcp = FastMCP("TalkWithFewsWebservice", auth=verifier)
+
+
+# get_user_info tool registration
+@mcp.tool()
+@router.post("/tools.webservice/get_webservice_info")
+@auto_docstring(
+    "Call this at the start of the conversation to return information about the configured FEWS webservice for the given user."
+)
+async def get_webservice_info(input: GetWebServiceInfoInput) -> GetWebServiceInfoOutput:
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
+
+    return await get_webservice_info_pydantic_ai(ctx, input)
 
 
 # get_parameter_details tool registration

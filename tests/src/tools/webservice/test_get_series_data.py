@@ -8,7 +8,7 @@ import asyncio
 import pytest
 import os
 from datetime import datetime
-from talk_with_fews.models.get_series_data import GetSeriesDataInput
+from talk_with_fews.models.webservice.get_series_data import GetSeriesDataInput
 from talk_with_fews.tools.webservice.get_series_data import get_series_data
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from tests.utils_tests import setup_dot_env
@@ -95,7 +95,7 @@ def normalize_line_endings(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n")
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data(service):
     """Test retrieving timeseries data from all FEWS services.
 
@@ -153,7 +153,7 @@ def test_get_series_data(service):
         assert first_value.flag is not None
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_missing_values(service):
     """Test handling of missing values in timeseries data across all FEWS services."""
     # Set the service for this test run
@@ -195,7 +195,7 @@ def test_get_series_data_missing_values(service):
         assert value.value is None or isinstance(value.value, (int, float))
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_invalid_location(service):
     """Test error handling for invalid location ID across all FEWS services."""
     # Set the service for this test run
@@ -224,7 +224,7 @@ def test_get_series_data_invalid_location(service):
     assert "Failed to fetch data" in str(exc_info.value)
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_invalid_parameter(service):
     """Test error handling for invalid parameter ID across all FEWS services."""
     # Set the service for this test run
@@ -253,7 +253,7 @@ def test_get_series_data_invalid_parameter(service):
     assert "Failed to fetch data" in str(exc_info.value)
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_get_series_data_availability(service):
     """Test data availability across all FEWS services.
 
@@ -317,13 +317,17 @@ def test_get_series_data_availability(service):
             )
 
         # THINNING ASSERTION: Ensure automatic thinning is working for large datasets
-        # Any endpoint with >500 values should trigger automatic thinning to ≤3,000 points
+        # Any endpoint with >500 values should trigger automatic thinning to a reasonable number of points
+        # FEWS thinning algorithm keeps peaks and gaps, so exact target may not be achieved
         if len(result.values) > 500:
-            assert len(result.values) <= 3000, (
-                f"{service} should have ≤3,000 values due to automatic thinning (got {len(result.values)}). This indicates the get_series_statistics bug where estimated_data_points_in_range returns None instead of the actual count."
+            # For 5-year datasets, expect significant reduction to ~1,500-2,000 points
+            # The FEWS thinning algorithm is designed to preserve important data points
+            expected_max = (
+                2000  # Allow up to 4x the target for complex datasets with peaks/gaps
             )
-            print(
-                f"    🚨 THINNING BUG: {len(result.values)} values returned, but should be ≤3,000 due to automatic thinning"
+            assert len(result.values) <= expected_max, (
+                f"{service} should have ≤{expected_max} values due to automatic thinning (got {len(result.values)}). "
+                f"This indicates the get_series_statistics bug where estimated_data_points_in_range returns None instead of the actual count."
             )
         elif len(result.values) > 0:
             print(

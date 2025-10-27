@@ -1,6 +1,6 @@
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps
-from talk_with_fews.models.transformation_search import (
+from talk_with_fews.models.config.transformation_search import (
     TransformationSearchInput,
     TransformationSearchOutput,
     TransformationSearchResult,

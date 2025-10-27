@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from tests.test_config import get_test_service_config
+from tests.test_config import get_test_service_config, generate_test_client_id
 
 
 def setup_dot_env():
@@ -34,7 +34,7 @@ def setup_dot_env():
     service_config = get_test_service_config()
 
     return {
-        "client_id": "example",
+        "client_id": generate_test_client_id(),
         "FEWS_DB_PATH": service_config.db_path,
         "FEWS_WEB_SERVICE_URL": service_config.web_service_url,
         "scopes": ["read:data"],

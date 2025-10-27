@@ -13,9 +13,12 @@ import pytest
 from typing import List
 
 
-from talk_with_fews.models.flags.errors import UnknownFlagError, InvalidTimeRangeError
-from talk_with_fews.models.flags.io import SeriesFlagsInput
-from talk_with_fews.models.get_series_data import TimeseriesValue
+from talk_with_fews.models.webservice.flags.errors import (
+    UnknownFlagError,
+    InvalidTimeRangeError,
+)
+from talk_with_fews.models.webservice.flags.io import SeriesFlagsInput
+from talk_with_fews.models.webservice.get_series_data import TimeseriesValue
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from talk_with_fews.tools.webservice.analyze_flags import (
     count_series_flags,
@@ -138,7 +141,7 @@ async def test_count_series_flags_unknown():
     assert "99" in str(exc.value)
 
 
-@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
+@fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen", "wsdd")
 def test_analyze_series_flags_with_real_data(service):
     """
     Test flag analysis with real data from FEWS services using service-specific configuration.

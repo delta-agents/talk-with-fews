@@ -14,6 +14,7 @@ from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
+from datetime import datetime, timezone
 
 
 def setup_env():
@@ -48,7 +49,9 @@ def get_user_settings(verifier) -> dict:
         user_settings = {
             "client_id": "test-no-auth",
             "FEWS_DB_PATH": db_path,
+            "FEWS_CONFIG_NAME": "test-config",
             "FEWS_WEB_SERVICE_URL": webservice_url,
+            "FEWS_WEB_SERVICE_NAME": "test-web-service",
         }
     else:
         authorization = request.headers.get("Authorization", None)
@@ -89,9 +92,6 @@ class UserContextCache:
     db_connection: Optional[Any] = None
     schema: Optional[dict] = None
     cache_FewsWebServices_db: Optional[Any] = None
-    ingest_locations_output: Optional[Any] = None
-    ingest_parameters_output: Optional[Any] = None
-    ingest_series_headers_output: Optional[Any] = None
     cache_fews_schemas_dir: Optional[str] = None
 
 
@@ -157,6 +157,255 @@ def _setup_database_connection(db_path: str, cached_connection):
     return None
 
 
+def _ingest_all_series_headers(
+    webservice_url: str, cache_db: duckdb.DuckDBPyConnection
+):
+    """
+    Ingest series headers for all parameters using the series-aware approach.
+    This finds all unique (parameter_id, location_id, module_instance_id) combinations
+    and their individual first/last value times.
+    """
+    try:
+        # Get all parameters from the database
+        parameters = cache_db.execute("SELECT id FROM parameters").fetchall()
+        print(f"Found {len(parameters)} parameters to process")
+
+        total_inserted = 0
+
+        # Step 1: Discover series combinations by parameter (async parallel processing)
+        print(
+            "Step 1: Discovering series combinations by parameter (async parallel)..."
+        )
+
+        try:
+            import asyncio
+            from talk_with_fews.tools.webservice.ingest_series_headers import (
+                discover_all_series_async,
+            )
+
+            # Get all parameters
+            parameter_ids = [param_row[0] for param_row in parameters]
+
+            print(
+                f"Processing {len(parameter_ids)} parameters with async HTTP client..."
+            )
+
+            # Run the async discovery
+            series_results = asyncio.run(
+                discover_all_series_async(
+                    webservice_url=webservice_url,
+                    parameter_ids=parameter_ids,
+                    max_concurrent=20,  # Limit concurrent requests
+                )
+            )
+
+            # Insert all discovered series into database
+            for param_id, series_data in series_results.items():
+                for series_key, data in series_data.items():
+                    module_instance_id, location_id, param_id = series_key
+
+                    # Insert series with basic metadata and data_available flag
+                    cache_db.execute(
+                        """
+                        INSERT INTO series_headers (
+                            id, type, moduleInstanceId, locationId, parameterId,
+                            timeStepUnit, timeStepMultiplier, missVal, timeZone, qualifiers,
+                            first_value_time, last_value_time, data_available, created_at
+                        ) VALUES (nextval('series_headers_id_seq'), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                        [
+                            data.get("type"),
+                            module_instance_id,
+                            location_id,
+                            param_id,
+                            data.get("timeStepUnit"),
+                            data.get("timeStepMultiplier"),
+                            data.get("missVal"),
+                            data.get("timeZone"),
+                            data.get("qualifiers"),
+                            data.get("firstValueTime"),
+                            data.get("lastValueTime"),
+                            True,  # Assume all discovered series have data initially, Step 2 will filter out empty ones
+                            datetime.now(timezone.utc),
+                        ],
+                    )
+                    total_inserted += 1
+                    if total_inserted % 100 == 0:
+                        print(f"  Inserted {total_inserted} series...")
+
+        except Exception as e:
+            print(f"Error discovering series combinations: {e}")
+            return
+
+        print(f"Step 1 complete: Discovered {total_inserted} series combinations")
+
+        # Skip step 2 for now - instead do this on the fly.
+        # Step 2: Find actual date ranges for discovered series using showStatistics=True
+        # print("Step 2: Finding actual date ranges for discovered series...")
+
+        # try:
+        #     import asyncio
+        #     from talk_with_fews.tools.webservice.ingest_series_headers import (
+        #         discover_all_series_async,
+        #     )
+
+        #     # Get unique parameters from the discovered series combinations
+        #     unique_parameters = cache_db.execute("""
+        #         SELECT DISTINCT parameterId
+        #         FROM series_headers
+        #         WHERE data_available = true
+        #     """).fetchall()
+
+        #     print(
+        #         f"Found {len(unique_parameters)} unique parameters to process for date ranges"
+        #     )
+
+        #     # Process parameters in batches to get actual date ranges
+        #     async def process_parameter_for_dates(param_row):
+        #         """Process a single parameter to get actual date ranges using showStatistics=True."""
+        #         try:
+        #             param_id = param_row[0]
+        #             print(f"Processing parameter for dates: {param_id}")
+
+        #             # Use discover_all_series_async with showStatistics=True to get actual date ranges
+        #             # This will NOT trigger the full ingestion process, just get the statistics
+        #             result = await discover_all_series_async(
+        #                 webservice_url=webservice_url,
+        #                 parameter_ids=[param_id],
+        #                 show_statistics=True,
+        #                 max_concurrent=1,  # Process one parameter at a time to avoid overwhelming the API
+        #             )
+
+        #             # Update the database with actual date ranges from the result
+        #             updated_count = 0
+        #             # The discover_all_series_async function returns keys with "params_" prefix
+        #             result_key = f"params_{param_id}"
+        #             if result_key in result:
+        #                 for (
+        #                     module_instance_id,
+        #                     location_id,
+        #                     param_id_key,
+        #                 ), series_data in result[result_key].items():
+        #                     if series_data.get("hasData", False):
+        #                         # Update the existing series record with actual date ranges
+        #                         cache_db.execute(
+        #                             """
+        #                             UPDATE series_headers
+        #                             SET first_value_time = ?, last_value_time = ?, data_available = ?
+        #                             WHERE moduleInstanceId = ? AND locationId = ? AND parameterId = ?
+        #                         """,
+        #                             [
+        #                                 series_data.get("firstValueTime"),
+        #                                 series_data.get("lastValueTime"),
+        #                                 True,
+        #                                 module_instance_id,
+        #                                 location_id,
+        #                                 param_id_key,
+        #                             ],
+        #                         )
+        #                         updated_count += 1
+        #                     else:
+        #                         # Mark as no data
+        #                         cache_db.execute(
+        #                             """
+        #                             UPDATE series_headers
+        #                             SET data_available = ?
+        #                             WHERE moduleInstanceId = ? AND locationId = ? AND parameterId = ?
+        #                         """,
+        #                             [
+        #                                 False,
+        #                                 module_instance_id,
+        #                                 location_id,
+        #                                 param_id_key,
+        #                             ],
+        #                         )
+
+        #             print(
+        #                 f"Parameter {param_id}: Updated {updated_count} series with actual date ranges"
+        #             )
+        #             return param_id, updated_count
+
+        #         except Exception as e:
+        #             print(f"Error processing parameter {param_row[0]} for dates: {e}")
+        #             return param_row[0], 0
+
+        #     # Process all parameters sequentially to avoid overwhelming the API
+        #     async def run_date_range_processing():
+        #         results = []
+        #         for param_row in unique_parameters:
+        #             result = await process_parameter_for_dates(param_row)
+        #             results.append(result)
+        #         return results
+
+        #     print(
+        #         f"Processing {len(unique_parameters)} parameters for actual date ranges..."
+        #     )
+        #     date_results = asyncio.run(run_date_range_processing())
+
+        #     # Process results
+        #     total_updated = 0
+        #     successful_params = 0
+        #     for param_id, updated_count in date_results:
+        #         total_updated += updated_count
+        #         if updated_count > 0:
+        #             successful_params += 1
+        #         print(f"Parameter {param_id}: {updated_count} series updated")
+
+        #     print(
+        #         f"Step 2 complete: Updated {total_updated} series with actual date ranges from {successful_params}/{len(unique_parameters)} parameters"
+        #     )
+
+        # except Exception as e:
+        #     print(f"Error in Step 2: {e}")
+        #     return
+
+        # print(f"Successfully ingested {total_inserted} series headers")
+
+    except Exception as e:
+        print(f"Error in series headers ingestion: {e}")
+
+
+def _save_database_to_file(
+    cache_db: duckdb.DuckDBPyConnection, webservice_url: str
+) -> str:
+    """
+    Save the in-memory DuckDB database to a file for debugging and investigation.
+
+    Args:
+        cache_db: The in-memory DuckDB connection
+        webservice_url: The webservice URL to use in the filename
+
+    Returns:
+        Path to the saved database file
+    """
+    # Create a filename based on the webservice URL and timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    # Extract service name from URL (e.g., "hdsr" from "http://talk-with-fews.hkvservices.nl:8080/FewsWebServicesHDSR")
+    service_name = "unknown"
+    if webservice_url:
+        # Extract service name from URL path
+        url_parts = webservice_url.split("/")
+        for part in url_parts:
+            if "FewsWebServices" in part:
+                service_name = part.replace("FewsWebServices", "").lower()
+                break
+
+    # Create output directory
+    output_dir = Path("data") / "webservice_cache"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create filename
+    filename = f"fews_cache_{service_name}_{timestamp}.duckdb"
+    filepath = output_dir / filename
+
+    # Save the database to file
+    cache_db.execute(f"EXPORT DATABASE '{filepath}'")
+
+    print(f"Saved webservice cache to: {filepath}")
+    return str(filepath)
+
+
 def _setup_webservice_cache(
     webservice_url: str | None, cached_db, enable_webservice_ingest: bool
 ) -> tuple:
@@ -185,16 +434,37 @@ def _setup_webservice_cache(
     cache_db.execute("LOAD spatial;")
 
     # Optionally ingest data (this is the slow part)
-    locations_output = None
-    parameters_output = None
-    series_headers_output = None
     if enable_webservice_ingest:
-        locations_output = ingest_locations(webservice_url, cache_db)
-        parameters_output = ingest_parameters(webservice_url, cache_db)
+        ingest_locations(webservice_url, cache_db)
+        ingest_parameters(webservice_url, cache_db)
         # Setup the series_headers table (requires locations and parameters tables)
-        cache_db = setup_series_headers_table(cache_db)
+        skip_header_ingest = os.environ.get(
+            "DEV_SKIP_HEADER_INGEST", "false"
+        ).lower() in (
+            "true",
+            "1",
+            "yes",
+        )
+        # if skip_header_ingest:
+        cache_db = setup_series_headers_table(cache_db)  # Re-create empty table
+        if not skip_header_ingest:
+            # Ingest series headers data (requires locations and parameters to be ingested first)
+            # We need to ingest series headers for all parameters to populate the cache
+            print("Ingesting series headers for all parameters...")
+            _ingest_all_series_headers(webservice_url, cache_db)
+            ## Save the database to file for debugging and investigation
+            ## Controlled by DEV_SAVE_WEBSERVICE_CACHE environment variable
+            save_cache = os.environ.get(
+                "DEV_SAVE_WEBSERVICE_CACHE", "false"
+            ).lower() in (
+                "true",
+                "1",
+                "yes",
+            )
+            if webservice_url and save_cache:
+                _save_database_to_file(cache_db, webservice_url)
 
-    return cache_db, locations_output, parameters_output, series_headers_output
+    return cache_db, None, None, None
 
 
 def get_runtime_ctx(user_settings: dict) -> RunContext:
@@ -214,12 +484,15 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
         - Database connections and schemas are cached per client_id
         - Use DEV_DISABLE_CONFIG_DB=true to skip database connection (development)
         - Use DEV_DISABLE_WEBSERVICE_INGEST=true to skip slow webservice data ingestion (development)
+        - Use DEV_SAVE_WEBSERVICE_CACHE=true to save in-memory databases to files for debugging (development)
     """
 
     # Extract user settings
     client_id = user_settings["client_id"]
     db_path = user_settings["FEWS_DB_PATH"]  # Already validated in get_user_settings()
+    config_name = user_settings.get("FEWS_CONFIG_NAME")
     webservice_url = user_settings.get("FEWS_WEB_SERVICE_URL")
+    webservice_name = user_settings.get("FEWS_WEB_SERVICE_NAME")
 
     # Clean webservice URL (remove trailing slash)
     if webservice_url and webservice_url.endswith("/"):
@@ -254,10 +527,8 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     ).lower() not in ("true", "1", "yes")
 
     # Setup webservice cache (creates in-memory DB, optionally ingests data)
-    cache_db, locations_output, parameters_output, series_headers_output = (
-        _setup_webservice_cache(
-            webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
-        )
+    cache_db, _, _, _ = _setup_webservice_cache(
+        webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
     )
 
     # Get schemas directory for XML validation
@@ -272,6 +543,8 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     deps.schema = schema
     deps.cache_FewsWebServices_db = cache_db
     deps.cache_fews_schemas_dir = schemas_dir
+    deps.config_name = config_name
+    deps.webservice_name = webservice_name
 
     # Update cache with new values
     cache.db_connection = db_connection
@@ -306,6 +579,7 @@ def setup_series_headers_table(
             qualifiers VARCHAR,
             first_value_time TIMESTAMP,
             last_value_time TIMESTAMP,
+            data_available BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
             -- Foreign key constraints

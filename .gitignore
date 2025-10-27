@@ -36,3 +36,4 @@ data/*.db3
 !data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd
 !data/fews_schemas/fewsdocs_deltares_nl/timeSeriesImportRun.xsd
 .DS_Store
+data/webservice_cache/*
