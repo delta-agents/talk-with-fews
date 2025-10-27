@@ -943,10 +943,11 @@ async def ingest_series_headers(
                     )
                 )
                 if first_value_time_dict is None or last_value_time_dict is None:
+                    # no first or last date found
                     return IngestSeriesHeadersOutput(
                         description="error retrieving series headers",
                         series_count=0,
-                        sql_examples="",
+                        sql_examples=[""],
                     )
         inserted_count = 0
         skipped_count = 0
