@@ -191,6 +191,14 @@ def get_timeseries_headers(
             # Return None for expected no-data scenarios
             logger.info(f"No time series found for {query_type}")
             return None, None, request_time
+        elif (
+            "HTTP Status 500 – Internal Server Error" in error_str
+            and "java.lang.OutOfMemoryError" in error_str
+        ):
+            logger.info(
+                f"No time series found for {query_type} (500 Internal Server Error)"
+            )
+            return "OutofMemory", None, request_time
         else:
             # Log unexpected errors and re-raise
             logger.error(f"Error fetching series headers for {query_type}: {error}")

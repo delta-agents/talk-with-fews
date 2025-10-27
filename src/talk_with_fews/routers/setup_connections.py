@@ -438,21 +438,31 @@ def _setup_webservice_cache(
         ingest_locations(webservice_url, cache_db)
         ingest_parameters(webservice_url, cache_db)
         # Setup the series_headers table (requires locations and parameters tables)
-        cache_db = setup_series_headers_table(cache_db)
-        # Ingest series headers data (requires locations and parameters to be ingested first)
-        # We need to ingest series headers for all parameters to populate the cache
-        print("Ingesting series headers for all parameters...")
-        _ingest_all_series_headers(webservice_url, cache_db)
-
-        # Save the database to file for debugging and investigation
-        # Controlled by DEV_SAVE_WEBSERVICE_CACHE environment variable
-        save_cache = os.environ.get("DEV_SAVE_WEBSERVICE_CACHE", "false").lower() in (
+        skip_header_ingest = os.environ.get(
+            "DEV_SKIP_HEADER_INGEST", "false"
+        ).lower() in (
             "true",
             "1",
             "yes",
         )
-        if webservice_url and save_cache:
-            _save_database_to_file(cache_db, webservice_url)
+        if skip_header_ingest:
+            cache_db = setup_series_headers_table(cache_db)  # Re-create empty table
+        else:
+            # Ingest series headers data (requires locations and parameters to be ingested first)
+            # We need to ingest series headers for all parameters to populate the cache
+            print("Ingesting series headers for all parameters...")
+            _ingest_all_series_headers(webservice_url, cache_db)
+            ## Save the database to file for debugging and investigation
+            ## Controlled by DEV_SAVE_WEBSERVICE_CACHE environment variable
+            save_cache = os.environ.get(
+                "DEV_SAVE_WEBSERVICE_CACHE", "false"
+            ).lower() in (
+                "true",
+                "1",
+                "yes",
+            )
+            if webservice_url and save_cache:
+                _save_database_to_file(cache_db, webservice_url)
 
     return cache_db, None, None, None
 
