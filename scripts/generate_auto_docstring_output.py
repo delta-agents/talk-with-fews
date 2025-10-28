@@ -79,31 +79,65 @@ def get_auto_docstring_output():
         pass
 
     @auto_docstring(
-        "Execute SQL queries against the cached FEWS webservice database (DuckDB). "
-        "This tool queries the webservice cache containing series_headers, locations, and parameters. "
-        "Use this tool to access comprehensive webservice data with advanced filtering capabilities. "
-        "Features include: "
-        "- Full access to all series headers, locations, and parameters "
-        "- Complex JOINs between series_headers, locations, and parameters tables "
-        "- Spatial queries using DuckDB's geospatial functions (ST_Within, ST_DWithin, ST_Transform) "
-        "- CRITICAL: Use ST_Transform(geom, 28992) for accurate distance calculations in meters "
-        "- Location geometry data stored in EPSG:4326 (WGS84) - transform to EPSG:28992 for analysis "
-        "- Complex filtering, grouping, and aggregation operations "
-        "- Note: This queries the DuckDB cache, not the SQLite config database "
+        """Execute SQL queries against the cached FEWS webservice database (DuckDB).
+
+    This tool queries the webservice cache containing:
+    - series_headers: Available time series combinations
+    - locations: FEWS location data
+    - parameters: FEWS parameter data
+
+    Note: This queries the DuckDB cache, not the SQLite config database.
+
+    SPATIAL ANALYSIS - CRITICAL COORDINATE SYSTEM INFORMATION:
+
+    WARNING: The geom column is stored in EPSG:4326 (WGS84) coordinates (degrees).
+    For accurate spatial analysis with distance calculations, buffers, and spatial joins,
+    you MUST transform coordinates to EPSG:28992 (Dutch RD system) which uses meters.
+
+    CORRECT spatial analysis pattern:
+    ```sql
+    -- Transform to Dutch coordinate system for accurate distance calculations
+    SELECT
+        locationId,
+        shortName,
+        ST_Distance(
+            ST_Transform(geom, 'EPSG:4326', 'EPSG:28992'),  -- Transform to EPSG:28992 (meters)
+            ST_Transform(ST_Point(5.6667, 52.0333), 'EPSG:4326', 'EPSG:28992')  -- Transform point to EPSG:28992
+        ) as distance_meters
+    FROM locations
+    WHERE ST_DWithin(
+        ST_Transform(geom, 'EPSG:4326', 'EPSG:28992'),  -- Transform to EPSG:28992
+        ST_Transform(ST_Point(5.6667, 52.0333), 'EPSG:4326', 'EPSG:28992'),  -- Transform point to EPSG:28992
+        1000  -- 1000 meters buffer
+    )
+    ```
+
+    INCORRECT (will give results in degrees, not meters):
+    ```sql
+    SELECT ST_Distance(geom, ST_Point(5.6667, 52.0333)) FROM locations  -- WRONG!
+    ```
+
+    Coordinate Systems:
+    - EPSG:4326 (WGS84): Stored geometry - degrees (lat/lon)
+    - EPSG:28992 (Dutch RD): Use for spatial analysis - meters
+
+    Spatial Functions: All ST_* functions work, but use ST_Transform(geom, 'EPSG:4326', 'EPSG:28992') for analysis.
+    To return geometry data: use ST_AsText(geom) for WGS84 or ST_AsText(ST_Transform(geom, 'EPSG:4326', 'EPSG:28992')) for RD."""
     )
     async def query_webservice_cache(input: SQLQueryInput) -> SQLQueryOutput:
         pass
 
     @auto_docstring(
-        "Get series headers from the FEWS WebService with incremental caching. "
-        "Retrieves available time series metadata using an efficient caching strategy. "
-        "Features include: "
-        "- Query by parameter ID or location ID "
-        "- Incremental caching (only fetch when needed) "
-        "- Minimal but meaningful output for cost optimization "
-        "- User-friendly follow-up suggestions "
-        "- Automatic foreign key validation with existing data "
-        "- Essential for discovering available time series and their properties"
+        """Get series headers from the FEWS WebService with incremental caching.
+Retrieves available time series metadata using an efficient caching strategy.
+
+Features include:
+- Query by parameter ID or location ID
+- Incremental caching (only fetch when needed)
+- Minimal but meaningful output for cost optimization
+- User-friendly follow-up suggestions
+- Automatic foreign key validation with existing data
+- Essential for discovering available time series and their properties"""
     )
     async def get_series_headers(
         input: GetSeriesHeadersInput,
@@ -111,13 +145,14 @@ def get_auto_docstring_output():
         pass
 
     @auto_docstring(
-        "Get statistical summaries for time series from the FEWS WebService. "
-        "Retrieves statistics such as mean, min, max, and count for specified series. "
-        "Features include: "
-        "- Must Query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
-        "- Optionally Specify time range for statistics, else defaults 2 days"
-        "- Useful for quick data exploration and validation "
-        "- Returns summary statistics for each matching series"
+        """Get statistical summaries for time series from the FEWS WebService.
+Retrieves statistics such as mean, min, max, and count for specified series.
+
+Features include:
+- Must Query by parameter ID AND location ID, make sure the combination exists using get_series_headers first
+- Optionally Specify time range for statistics, else defaults 2 days
+- Useful for quick data exploration and validation
+- Returns summary statistics for each matching series"""
     )
     async def get_series_statistics(
         input: GetSeriesStatisticsInput,
@@ -125,30 +160,34 @@ def get_auto_docstring_output():
         pass
 
     @auto_docstring(
-        "Get timeseries data for a specific location-parameter combination. "
-        "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
-        "Features include: "
-        "- Query by location ID and parameter ID "
+        """Get timeseries data for a specific location-parameter combination.
+Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first.
+
+Features include:
+- Query by location ID and parameter ID"""
     )
     async def get_series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
         pass
 
     @auto_docstring(
-        "Analyze FEWS quality flags for a specific location-parameter combination. "
-        "This tool analyzes existing quality flags in the timeseries. "
-        "Features include: "
-        "- Detailed flag distribution (counts and percentages) "
-        "- Quality level summary (Reliable/Doubtful/Unreliable) "
-        "- Origin tracking (Original/Corrected/Completed) "
-        "- Complete flag descriptions and metadata "
-        "Requirements: "
-        "- Must provide location ID and parameter ID "
-        "- Time range cannot be in the future "
-        "- Start time must be before end time "
-        "Example Use Cases: "
-        "- Monitor data quality across different periods "
-        "- Compare quality between locations/parameters "
-        "- Identify problematic data sources"
+        """Analyze FEWS quality flags for a specific location-parameter combination.
+This tool analyzes existing quality flags in the timeseries.
+
+Features include:
+- Detailed flag distribution (counts and percentages)
+- Quality level summary (Reliable/Doubtful/Unreliable)
+- Origin tracking (Original/Corrected/Completed)
+- Complete flag descriptions and metadata
+
+Requirements:
+- Must provide location ID and parameter ID
+- Time range cannot be in the future
+- Start time must be before end time
+
+Example Use Cases:
+- Monitor data quality across different periods
+- Compare quality between locations/parameters
+- Identify problematic data sources"""
     )
     async def analyze_series_flags(input: SeriesFlagsInput) -> SeriesFlagsOutput:
         pass

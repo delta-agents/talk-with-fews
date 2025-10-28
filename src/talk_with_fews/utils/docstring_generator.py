@@ -42,10 +42,8 @@ def auto_docstring(description: str = "", model_class: type[BaseModel] = None):
 
         # Main description
         if description:
-            # Clean up description and format bullet points properly
+            # Clean up description - preserve original formatting
             clean_description = description.strip()
-            # Convert bullet points to proper markdown format
-            clean_description = clean_description.replace("- ", "\n- ")
             doc_parts.append(clean_description)
 
         # Add input documentation
