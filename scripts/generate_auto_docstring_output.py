@@ -128,15 +128,16 @@ def get_auto_docstring_output():
         pass
 
     @auto_docstring(
-        "Get series headers from the FEWS WebService with incremental caching. "
-        "Retrieves available time series metadata using an efficient caching strategy. "
-        "Features include: "
-        "- Query by parameter ID or location ID "
-        "- Incremental caching (only fetch when needed) "
-        "- Minimal but meaningful output for cost optimization "
-        "- User-friendly follow-up suggestions "
-        "- Automatic foreign key validation with existing data "
-        "- Essential for discovering available time series and their properties"
+        """Get series headers from the FEWS WebService with incremental caching.
+Retrieves available time series metadata using an efficient caching strategy.
+
+Features include:
+- Query by parameter ID or location ID
+- Incremental caching (only fetch when needed)
+- Minimal but meaningful output for cost optimization
+- User-friendly follow-up suggestions
+- Automatic foreign key validation with existing data
+- Essential for discovering available time series and their properties"""
     )
     async def get_series_headers(
         input: GetSeriesHeadersInput,
@@ -144,13 +145,14 @@ def get_auto_docstring_output():
         pass
 
     @auto_docstring(
-        "Get statistical summaries for time series from the FEWS WebService. "
-        "Retrieves statistics such as mean, min, max, and count for specified series. "
-        "Features include: "
-        "- Must Query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
-        "- Optionally Specify time range for statistics, else defaults 2 days"
-        "- Useful for quick data exploration and validation "
-        "- Returns summary statistics for each matching series"
+        """Get statistical summaries for time series from the FEWS WebService.
+Retrieves statistics such as mean, min, max, and count for specified series.
+
+Features include:
+- Must Query by parameter ID AND location ID, make sure the combination exists using get_series_headers first
+- Optionally Specify time range for statistics, else defaults 2 days
+- Useful for quick data exploration and validation
+- Returns summary statistics for each matching series"""
     )
     async def get_series_statistics(
         input: GetSeriesStatisticsInput,
@@ -158,30 +160,34 @@ def get_auto_docstring_output():
         pass
 
     @auto_docstring(
-        "Get timeseries data for a specific location-parameter combination. "
-        "Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first."
-        "Features include: "
-        "- Query by location ID and parameter ID "
+        """Get timeseries data for a specific location-parameter combination.
+Must query by parameter ID AND location ID, make sure the combination exists using get_series_headers first.
+
+Features include:
+- Query by location ID and parameter ID"""
     )
     async def get_series_data(input: GetSeriesDataInput) -> GetSeriesDataOutput:
         pass
 
     @auto_docstring(
-        "Analyze FEWS quality flags for a specific location-parameter combination. "
-        "This tool analyzes existing quality flags in the timeseries. "
-        "Features include: "
-        "- Detailed flag distribution (counts and percentages) "
-        "- Quality level summary (Reliable/Doubtful/Unreliable) "
-        "- Origin tracking (Original/Corrected/Completed) "
-        "- Complete flag descriptions and metadata "
-        "Requirements: "
-        "- Must provide location ID and parameter ID "
-        "- Time range cannot be in the future "
-        "- Start time must be before end time "
-        "Example Use Cases: "
-        "- Monitor data quality across different periods "
-        "- Compare quality between locations/parameters "
-        "- Identify problematic data sources"
+        """Analyze FEWS quality flags for a specific location-parameter combination.
+This tool analyzes existing quality flags in the timeseries.
+
+Features include:
+- Detailed flag distribution (counts and percentages)
+- Quality level summary (Reliable/Doubtful/Unreliable)
+- Origin tracking (Original/Corrected/Completed)
+- Complete flag descriptions and metadata
+
+Requirements:
+- Must provide location ID and parameter ID
+- Time range cannot be in the future
+- Start time must be before end time
+
+Example Use Cases:
+- Monitor data quality across different periods
+- Compare quality between locations/parameters
+- Identify problematic data sources"""
     )
     async def analyze_series_flags(input: SeriesFlagsInput) -> SeriesFlagsOutput:
         pass
