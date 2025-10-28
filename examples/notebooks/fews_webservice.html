@@ -502,7 +502,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Bij het ophalen van de parameters, locaties en series headers hebben we de metadata opgehaald. Deze slaan wij in een cache database op om deze later te kunnen gebruiken, met als voordeel dat we niet steeds dezelfde data hoeven op te halen, maar ook dat we alle vrijheid hebben om de data te filteren en te combineren. We kunnen nu de meta data verder analyseren, bijvoorbeeld ook met een ruimtelijke query:</p>
 <div id="cell-16" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools <span class="im">import</span> (</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    execute_query_webservice,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    query_webservice_cache,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    SQLQueryInput,</span>
@@ -512,7 +512,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT locationId, shortName, lat, lon, ST_Distance(geom, ST_Point(5.67, 52.035)) as distance_degrees FROM locations WHERE ST_DWithin(geom, ST_Point(5.67, 52.035), 0.1) ORDER BY distance_degrees LIMIT 30"</span>,</span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> execute_query_webservice(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>sql_query_output: SQLQueryOutput <span class="op">=</span> <span class="cf">await</span> query_webservice_cache(</span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    ctx<span class="op">=</span>ctx, <span class="bu">input</span><span class="op">=</span>sql_query_input</span>
 <span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

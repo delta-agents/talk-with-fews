@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>execute_query_webservice – Talk with FEWS</title>
+<title>query_webservice_cache – Talk with FEWS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -177,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#talk_with_fews.tools.execute_query_webservice" id="toc-talk_with_fews.tools.execute_query_webservice" class="nav-link active" data-scroll-target="#talk_with_fews.tools.execute_query_webservice">execute_query_webservice</a>
+  <li><a href="#talk_with_fews.tools.query_webservice_cache" id="toc-talk_with_fews.tools.query_webservice_cache" class="nav-link active" data-scroll-target="#talk_with_fews.tools.query_webservice_cache">query_webservice_cache</a>
   <ul class="collapse">
   <li><a href="#parameters" id="toc-parameters" class="nav-link" data-scroll-target="#parameters">Parameters</a></li>
   <li><a href="#returns" id="toc-returns" class="nav-link" data-scroll-target="#returns">Returns</a></li>
@@ -191,10 +191,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="talk_with_fews.tools.execute_query_webservice" class="level1">
-<h1>execute_query_webservice</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.execute_query_webservice(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Execute a SQL query on the FewsWebService cached database.</p>
+<section id="talk_with_fews.tools.query_webservice_cache" class="level1">
+<h1>query_webservice_cache</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tools.query_webservice_cache(ctx, <span class="bu">input</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Execute SQL queries against the cached FEWS webservice database (DuckDB).</p>
+<p>This tool queries the webservice cache containing: - series_headers: Available time series combinations - locations: FEWS location data - parameters: FEWS parameter data</p>
+<p>Note: This queries the DuckDB cache, not the SQLite config database.</p>
+<p>SPATIAL ANALYSIS - CRITICAL COORDINATE SYSTEM INFORMATION:</p>
+<p>WARNING: The geom column is stored in EPSG:4326 (WGS84) coordinates (degrees). For accurate spatial analysis with distance calculations, buffers, and spatial joins, you MUST transform coordinates to EPSG:28992 (Dutch RD system) which uses meters.</p>
+<p>CORRECT spatial analysis pattern:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Transform to Dutch coordinate system for accurate distance calculations</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    locationId,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    shortName,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ST_Distance(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        ST_Transform(geom, <span class="st">'EPSG:4326'</span>, <span class="st">'EPSG:28992'</span>),  <span class="co">-- Transform to EPSG:28992 (meters)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        ST_Transform(ST_Point(<span class="fl">5.6667</span>, <span class="fl">52.0333</span>), <span class="st">'EPSG:4326'</span>, <span class="st">'EPSG:28992'</span>)  <span class="co">-- Transform point to EPSG:28992</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="kw">as</span> distance_meters</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> locations</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> ST_DWithin(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ST_Transform(geom, <span class="st">'EPSG:4326'</span>, <span class="st">'EPSG:28992'</span>),  <span class="co">-- Transform to EPSG:28992</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ST_Transform(ST_Point(<span class="fl">5.6667</span>, <span class="fl">52.0333</span>), <span class="st">'EPSG:4326'</span>, <span class="st">'EPSG:28992'</span>),  <span class="co">-- Transform point to EPSG:28992</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1000</span>  <span class="co">-- 1000 meters buffer</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>INCORRECT (will give results in degrees, not meters):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> ST_Distance(geom, ST_Point(<span class="fl">5.6667</span>, <span class="fl">52.0333</span>)) <span class="kw">FROM</span> locations  <span class="co">-- WRONG!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Coordinate Systems: - EPSG:4326 (WGS84): Stored geometry - degrees (lat/lon) - EPSG:28992 (Dutch RD): Use for spatial analysis - meters</p>
+<p>Spatial Functions: All ST_* functions work, but use ST_Transform(geom, ‘EPSG:4326’, ‘EPSG:28992’) for analysis. To return geometry data: use ST_AsText(geom) for WGS84 or ST_AsText(ST_Transform(geom, ‘EPSG:4326’, ‘EPSG:28992’)) for RD.</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
