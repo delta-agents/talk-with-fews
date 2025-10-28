@@ -305,6 +305,9 @@ def discover_all_series_headers_sync(
     """
     Synchronous wrapper for the async series headers discovery function.
 
+    This function handles the case where we're already in an event loop
+    (like in FastAPI test environments) by using a separate thread.
+
     Args:
         webservice_url: Base URL of the FEWS webservice
         parameter_ids: List of parameter IDs to process (optional)
@@ -316,12 +319,36 @@ def discover_all_series_headers_sync(
         Dictionary mapping request_key -> series_data where series_data contains
         all discovered series headers for that request
     """
-    return asyncio.run(
-        discover_all_series_headers_async(
-            webservice_url=webservice_url,
-            parameter_ids=parameter_ids,
-            location_ids=location_ids,
-            show_statistics=show_statistics,
-            max_concurrent=max_concurrent,
+    try:
+        # Try to get the current event loop
+        asyncio.get_running_loop()
+        # If we're in an event loop, we need to handle this differently
+        import concurrent.futures
+
+        # Run in a separate thread with its own event loop
+        def run_in_thread():
+            return asyncio.run(
+                discover_all_series_headers_async(
+                    webservice_url=webservice_url,
+                    parameter_ids=parameter_ids,
+                    location_ids=location_ids,
+                    show_statistics=show_statistics,
+                    max_concurrent=max_concurrent,
+                )
+            )
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(run_in_thread)
+            return future.result()
+
+    except RuntimeError:
+        # No event loop running, safe to use asyncio.run()
+        return asyncio.run(
+            discover_all_series_headers_async(
+                webservice_url=webservice_url,
+                parameter_ids=parameter_ids,
+                location_ids=location_ids,
+                show_statistics=show_statistics,
+                max_concurrent=max_concurrent,
+            )
         )
-    )

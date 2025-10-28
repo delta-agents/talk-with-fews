@@ -29,12 +29,10 @@ jobs:
           manifest-path: pixi.toml
           pixi-version: "latest"
 
-      - name: Run Pytests (Production Service Only)
-        run: |
-          pixi run pytest tests/src/tools/webservice/test_get_locations.py::test_get_locations -v --cov
-        # Decorator automatically detects CI and only runs against actueelwaterbeeld
-
-      - name: Run All Tests (if you want comprehensive testing)
+      - name: Run Test Suite
+        env:
+          SKIP_BULK_SERIES_HEADERS_IN_TESTS: true  # Skip bulk ingestion in general tests for speed
+          DEV_DISABLE_SERIES_HEADERS_INGEST: false  # Allow bulk ingestion when explicitly enabled
         run: |
           pixi run pytest --cov
         continue-on-error: true  # Allow failures for services without database files

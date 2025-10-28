@@ -30,6 +30,37 @@ pytestmark = pytest.mark.skipif(
 )
 
 
+@pytest.fixture(autouse=True)
+def enable_bulk_ingestion_for_tests():
+    """
+    Enable bulk series headers ingestion for these specific tests.
+
+    This fixture uses autouse=True to automatically run for every test in this file.
+    It overrides the default behavior that skips bulk ingestion during testing.
+
+    How it works:
+    1. Before each test: Sets SKIP_BULK_SERIES_HEADERS_IN_TESTS="false" to enable bulk ingestion
+    2. Test runs: Bulk ingestion is now allowed for this specific test file
+    3. After test: Cleans up by removing the environment variable
+
+    This ensures that:
+    - Only tests in this file have bulk ingestion enabled
+    - Other test files automatically skip bulk ingestion (faster execution)
+    - Each test gets a clean environment state
+    - No manual fixture parameter needed in each test function
+    """
+    # Set environment variable to allow bulk ingestion in tests
+    # This overrides the default SKIP_BULK_SERIES_HEADERS_IN_TESTS=true behavior
+    os.environ["SKIP_BULK_SERIES_HEADERS_IN_TESTS"] = "false"
+
+    # Yield control to the test function
+    yield
+
+    # Clean up after test completes - remove the environment variable
+    # This ensures tests don't interfere with each other
+    os.environ.pop("SKIP_BULK_SERIES_HEADERS_IN_TESTS", None)
+
+
 @fews_parallel("actueelwaterbeeld", "hdsr", "wsvv", "hhd", "scheldestromen")
 def test_bulk_series_headers_discovery(service):
     """Test series headers discovery functionality."""

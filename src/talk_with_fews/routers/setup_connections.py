@@ -211,6 +211,17 @@ def _setup_webservice_cache(
             "DEV_DISABLE_SERIES_HEADERS_INGEST", "false"
         ).lower() not in ("true", "1", "yes")
 
+        # Additional check: Skip bulk ingestion in test mode unless explicitly enabled
+        # This prevents expensive bulk ingestion during general testing
+        skip_bulk_ingestion_in_tests = os.environ.get(
+            "SKIP_BULK_SERIES_HEADERS_IN_TESTS", "true"
+        ).lower() in ("true", "1", "yes")
+
+        # Skip bulk ingestion if we're in test mode and it's not explicitly enabled
+        if skip_bulk_ingestion_in_tests and os.environ.get("PYTEST_CURRENT_TEST"):
+            enable_series_headers_ingest = False
+            logger.info("Skipping bulk series headers ingestion in test mode")
+
         if enable_series_headers_ingest:
             # Get all parameter and location IDs for bulk ingestion
             parameter_ids = [
