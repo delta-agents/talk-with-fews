@@ -37,34 +37,42 @@ def auto_docstring(description: str = "", model_class: type[BaseModel] = None):
                 input_model = param_type
                 break
 
-        # Build docstring
+        # Build docstring following Google-style format
         doc_parts = []
+
+        # Main description
         if description:
-            doc_parts.append(description.strip())
+            # Clean up description and format bullet points properly
+            clean_description = description.strip()
+            # Convert bullet points to proper markdown format
+            clean_description = clean_description.replace("- ", "\n- ")
+            doc_parts.append(clean_description)
 
         # Add input documentation
         if input_model:
-            doc_parts.append("\nParameters:\n")
+            doc_parts.append("\nArgs:")
             doc_parts.append(
-                f"- input ({input_model.__name__}): Input parameters for the tool"
+                f"    input ({input_model.__name__}): Input parameters as JSON object for the tool"
             )
-            doc_parts.append(generate_pydantic_docstring(input_model, indent=4))
 
-            # Add JSON example
-            doc_parts.append("\nExample input:")
-            doc_parts.append("```json")
-            doc_parts.append(generate_json_example(input_model))
-            doc_parts.append("```")
+            # Add detailed parameter documentation
+            param_details = generate_pydantic_docstring(input_model, indent=8)
+            if param_details:
+                doc_parts.append(param_details)
 
         # Add return documentation
         if resolved_return_model:
-            doc_parts.append("\nReturns:\n")
+            doc_parts.append("\nReturns:")
             doc_parts.append(
-                f"- {resolved_return_model.__name__}: Output data from the tool"
+                f"    {resolved_return_model.__name__}: Output data from the tool"
             )
-            doc_parts.append(
-                generate_pydantic_docstring(resolved_return_model, indent=4)
+
+            # Add detailed return documentation
+            return_details = generate_pydantic_docstring(
+                resolved_return_model, indent=8
             )
+            if return_details:
+                doc_parts.append(return_details)
 
         # Combine with existing docstring if any
         existing_doc = func.__doc__ or ""
@@ -130,7 +138,27 @@ def generate_pydantic_docstring(
                         )
                         # Show nested properties
                         for nested_field, nested_info in nested_properties.items():
-                            nested_type = nested_info.get("type", "unknown")
+                            # Handle nested anyOf fields
+                            if "anyOf" in nested_info:
+                                sub_types = []
+                                for t in nested_info["anyOf"]:
+                                    if t.get("type") == "null":
+                                        continue  # Skip null types
+                                    elif "$ref" in t:
+                                        ref_name = t["$ref"].split("/")[-1]
+                                        sub_types.append(ref_name)
+                                    else:
+                                        sub_types.append(t.get("type", "unknown"))
+
+                                if len(sub_types) == 1:
+                                    nested_type = f"Optional[{sub_types[0]}]"
+                                elif len(sub_types) > 1:
+                                    nested_type = f"Optional[{' | '.join(sub_types)}]"
+                                else:
+                                    nested_type = "unknown"
+                            else:
+                                nested_type = nested_info.get("type", "unknown")
+
                             nested_desc = nested_info.get(
                                 "description", "No description"
                             )
@@ -160,7 +188,29 @@ def generate_pydantic_docstring(
                             )
                             # Show nested properties
                             for nested_field, nested_info in nested_properties.items():
-                                nested_type = nested_info.get("type", "unknown")
+                                # Handle nested anyOf fields
+                                if "anyOf" in nested_info:
+                                    sub_types = []
+                                    for t in nested_info["anyOf"]:
+                                        if t.get("type") == "null":
+                                            continue  # Skip null types
+                                        elif "$ref" in t:
+                                            ref_name = t["$ref"].split("/")[-1]
+                                            sub_types.append(ref_name)
+                                        else:
+                                            sub_types.append(t.get("type", "unknown"))
+
+                                    if len(sub_types) == 1:
+                                        nested_type = f"Optional[{sub_types[0]}]"
+                                    elif len(sub_types) > 1:
+                                        nested_type = (
+                                            f"Optional[{' | '.join(sub_types)}]"
+                                        )
+                                    else:
+                                        nested_type = "unknown"
+                                else:
+                                    nested_type = nested_info.get("type", "unknown")
+
                                 nested_desc = nested_info.get(
                                     "description", "No description"
                                 )
@@ -174,16 +224,40 @@ def generate_pydantic_docstring(
                                     f"{indent_str}    - {nested_field} ({nested_type}, {nested_req_flag}): {nested_desc}"
                                 )
                             continue
+            elif "anyOf" in items_info:  # Handle union types in lists
+                # Extract all non-null types from anyOf
+                union_types = []
+                for union_item in items_info["anyOf"]:
+                    if "$ref" in union_item:
+                        ref_name = union_item["$ref"].split("/")[-1]
+                        union_types.append(ref_name)
+                    elif union_item.get("type") != "null":
+                        union_types.append(union_item.get("type", "unknown"))
+                field_type = (
+                    f"List[{' | '.join(union_types)}]"
+                    if union_types
+                    else "List[unknown]"
+                )
             else:
                 field_type = f"List[{items_info.get('type', 'unknown')}]"
 
-        elif "anyOf" in field_info:  # Handle Optional
-            sub_types = [
-                t.get("type", "unknown")
-                for t in field_info["anyOf"]
-                if t.get("type") != "null"
-            ]
-            field_type = f"Optional[{', '.join(sub_types)}]"
+        elif "anyOf" in field_info:  # Handle Optional and Union types
+            sub_types = []
+            for t in field_info["anyOf"]:
+                if t.get("type") == "null":
+                    continue  # Skip null types
+                elif "$ref" in t:
+                    ref_name = t["$ref"].split("/")[-1]
+                    sub_types.append(ref_name)
+                else:
+                    sub_types.append(t.get("type", "unknown"))
+
+            if len(sub_types) == 1:
+                field_type = f"Optional[{sub_types[0]}]"
+            elif len(sub_types) > 1:
+                field_type = f"Optional[{' | '.join(sub_types)}]"
+            else:
+                field_type = "unknown"
 
         # Add the field to the lines
         lines.append(
@@ -191,74 +265,3 @@ def generate_pydantic_docstring(
         )
 
     return "\n".join(lines)
-
-
-def generate_json_example(model_class: type[BaseModel]) -> str:
-    """
-    Generate a JSON example from a Pydantic model.
-
-    Args:
-        model_class: The Pydantic model class
-
-    Returns:
-        A JSON example string
-    """
-    try:
-        # Get the schema
-        schema = model_class.model_json_schema()
-        properties = schema.get("properties", {})
-        required = schema.get("required", [])
-
-        # Build example JSON
-        example = {}
-        for field_name, field_info in properties.items():
-            # Check if field is required
-            is_required = field_name in required
-
-            # Handle Optional types (anyOf with null)
-            if "anyOf" in field_info:
-                # Find the non-null type
-                non_null_types = [
-                    t for t in field_info["anyOf"] if t.get("type") != "null"
-                ]
-                if non_null_types:
-                    field_type = non_null_types[0].get("type", "string")
-                else:
-                    field_type = "string"
-            else:
-                field_type = field_info.get("type", "string")
-
-            # Generate example values based on type
-            if field_type == "string":
-                if "parameter" in field_name.lower():
-                    example[field_name] = "Kwel"
-                elif "location" in field_name.lower():
-                    example[field_name] = "GPG_1698"
-                else:
-                    example[field_name] = "example_value"
-            elif field_type == "integer":
-                example[field_name] = 10
-            elif field_type == "number":
-                example[field_name] = 10
-            elif field_type == "boolean":
-                example[field_name] = True
-            elif field_type == "array":
-                example[field_name] = ["item1", "item2"]
-            elif field_type == "object":
-                example[field_name] = {"key": "value"}
-            else:
-                example[field_name] = None
-
-            # For optional fields, we might want to omit them or set to null
-            if not is_required and field_name in ["parameter_id", "location_id"]:
-                # For mutually exclusive fields, only include one
-                if field_name == "location_id":
-                    example[field_name] = None
-
-        # Convert to JSON string
-        import json
-
-        return json.dumps({"input": example}, indent=2)
-
-    except Exception as e:
-        return f'{{"input": {{"error": "Could not generate example: {e}"}}}}'
