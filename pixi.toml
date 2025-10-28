@@ -33,6 +33,9 @@ quarto-render = { cmd = "export QUARTO_PYTHON=python && quarto render docs --to 
     "quartodoc-build",
 ] }
 docs = { depends-on = ["quarto-preview"] }
+
+# Auto-docstring generation
+generate-auto-docs = { cmd = "python generate_auto_docstring_output.py", cwd = "scripts" }
 pre-commit = "pre-commit run --all-files"
 
 test = "pytest"
