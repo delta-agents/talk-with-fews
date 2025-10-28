@@ -7,7 +7,7 @@ using xmlschema package.
 
 from typing import Optional
 from pydantic import BaseModel, Field
-from talk_with_fews.models.fews_schema_options import FEWSSchemaOption
+from talk_with_fews.models.validator.fews_schema_options import FEWSSchemaOption
 from talk_with_fews.models.base import LaxBaseModel
 
 

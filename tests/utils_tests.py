@@ -37,5 +37,6 @@ def setup_dot_env():
         "client_id": "example",
         "FEWS_DB_PATH": service_config.db_path,
         "FEWS_WEB_SERVICE_URL": service_config.web_service_url,
+        "FEWS_WEB_SERVICE_NAME": service_config.name,
         "scopes": ["read:data"],
     }

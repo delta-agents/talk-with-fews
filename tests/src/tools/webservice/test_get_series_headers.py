@@ -9,11 +9,13 @@ import asyncio
 import os
 from pydantic_ai import ModelRetry
 import pytest
-from talk_with_fews.models.get_series_headers import (
+from talk_with_fews.models.webservice.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
-from talk_with_fews.models.ingest_series_headers import IngestSeriesHeadersOutput
+from talk_with_fews.models.webservice.ingest_series_headers import (
+    IngestSeriesHeadersOutput,
+)
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
 from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers

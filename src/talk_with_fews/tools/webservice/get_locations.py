@@ -2,7 +2,7 @@ from pydantic_ai import RunContext
 
 from talk_with_fews.models.base import Deps
 
-from talk_with_fews.models.get_locations import (
+from talk_with_fews.models.webservice.get_locations import (
     GetLocationInput,
     GetLocationOutput,
 )

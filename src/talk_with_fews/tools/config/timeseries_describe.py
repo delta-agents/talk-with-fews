@@ -1,9 +1,9 @@
 from pydantic_ai import ModelRetry, RunContext
 
-from talk_with_fews.models.sql_query import SQLQueryInput
+from talk_with_fews.models.config.sql_query import SQLQueryInput
 from talk_with_fews.models.base import Deps, TimeSeriesProperties
 
-from talk_with_fews.models.timeseries_describe import (
+from talk_with_fews.models.config.timeseries_describe import (
     DescribeTimeSeriesInput,
     DescribeTimeSeriesOutput,
 )

@@ -13,71 +13,71 @@ from talk_with_fews.routers.setup_connections import (
 from talk_with_fews.tools.config.timeseries_describe import (
     describe_timeseries as describe_timeseries_pydantic_ai,
 )
-from talk_with_fews.models.timeseries_describe import (
+from talk_with_fews.models.config.timeseries_describe import (
     DescribeTimeSeriesInput,
     DescribeTimeSeriesOutput,
 )
 from talk_with_fews.tools.config.timeseries_search import (
     search_timeseries as search_timeseries_pydantic_ai,
 )
-from talk_with_fews.models.timeseries_search import TimeSeriesSearchOutput
+from talk_with_fews.models.config.timeseries_search import TimeSeriesSearchOutput
 from talk_with_fews.tools.config.transformation_search import (
     search_transformations as search_transformations_pydantic_ai,
 )
-from talk_with_fews.models.transformation_search import (
+from talk_with_fews.models.config.transformation_search import (
     TransformationSearchInput,
     TransformationSearchOutput,
 )
 from talk_with_fews.tools.config.workflow_search import (
     search_workflows as search_workflows_pydantic_ai,
 )
-from talk_with_fews.models.workflow_search import (
+from talk_with_fews.models.config.workflow_search import (
     WorkflowSearchInput,
     WorkflowSearchOutput,
 )
 from talk_with_fews.tools.config.workflows_details import (
     get_workflow_details as get_workflow_details_pydantic_ai,
 )
-from talk_with_fews.models.workflow_details import (
+from talk_with_fews.models.config.workflow_details import (
     WorkflowDetailsInput,
     WorkflowDetailsOutput,
 )
 from talk_with_fews.tools.config.dead_point_analysis import (
     analyze_dead_points as analyze_dead_points_pydantic_ai,
 )
-from talk_with_fews.models.dead_point_analysis import (
+from talk_with_fews.models.config.dead_point_analysis import (
     DeadPointsAnalysisInput,
     DeadPointsAnalysisOutput,
 )
 from talk_with_fews.tools.config.dependency_analysis import (
     analyze_dependencies as analyze_dependencies_pydantic_ai,
 )
-from talk_with_fews.models.dependency_analysis import (
+from talk_with_fews.models.config.dependency_analysis import (
     DependencyAnalysisInput,
     DependencyAnalysisOutput,
 )
 from talk_with_fews.tools.config.get_database_schema import (
     get_database_schema as get_database_schema_pydantic_ai,
 )
-from talk_with_fews.models.database_schema import (
+from talk_with_fews.models.config.database_schema import (
     DatabaseSchemaInput,
     DatabaseSchemaOutput,
 )
 from talk_with_fews.tools.config.graph_visualize import (
     visualize_graph as visualize_graph_pydantic_ai,
 )
-from talk_with_fews.models.graph import (
+from talk_with_fews.models.config.graph import (
     GraphVisualizationInput,
     GraphVisualizationOutput,
 )
 from talk_with_fews.tools.config.sql_query import (
     execute_query as execute_query_pydantic_ai,
 )
-from talk_with_fews.models.sql_query import SQLQueryInput, SQLQueryOutput
+from talk_with_fews.models.config.sql_query import SQLQueryInput, SQLQueryOutput
 from talk_with_fews.tools.config.transformation_details import (
     get_transformation_details as get_transformation_details_pydantic_ai,
 )
-from talk_with_fews.models.transformation_details import (
+from talk_with_fews.models.config.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
 )
@@ -85,7 +85,10 @@ from talk_with_fews.models.transformation_details import (
 from talk_with_fews.tools.config.parameter_search import (
     search_parameters as search_parameters_pydantic_ai,
 )
-from talk_with_fews.models.get_parameters import GetParameterInput, GetParameterOutput
+from talk_with_fews.models.webservice.get_parameters import (
+    GetParameterInput,
+    GetParameterOutput,
+)
 
 
 tokens = setup_env()

@@ -326,6 +326,8 @@ class Deps:
         self.db_connection = db_connection
         self.tracker = tracker
         self.schema: Optional[Dict[str, Any]] = None
+        self.config_name: Optional[str] = None
         self.webservice_url: Optional[str] = None
+        self.webservice_name: Optional[str] = None
         self.cache_FewsWebServices_db: Optional[duckdb.DuckDBPyConnection] = None
         self.cache_fews_schemas_dir: Optional[str] = None

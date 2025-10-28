@@ -1,6 +1,6 @@
 from pydantic_ai import RunContext
 from talk_with_fews.models.base import Deps, ParameterBase
-from talk_with_fews.models.get_parameters import (
+from talk_with_fews.models.webservice.get_parameters import (
     GetParameterInput,
     GetParameterOutput,
 )

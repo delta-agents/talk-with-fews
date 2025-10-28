@@ -1,4 +1,4 @@
-from talk_with_fews.models.get_locations import (
+from talk_with_fews.models.webservice.get_locations import (
     GetLocationInput,
     GetLocationOutput,
 )
