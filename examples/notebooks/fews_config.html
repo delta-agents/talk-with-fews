@@ -244,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div id="cell-6" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_search <span class="im">import</span> search_workflows</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_search <span class="im">import</span> (</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchOutput,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    WorkflowSearchInput,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -309,7 +309,7 @@ Found 3 workflows matching the pattern 'im.wiwb.knmi'.
 </div>
 <div id="cell-10" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflows_details <span class="im">import</span> get_workflow_details</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_details <span class="im">import</span> (</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsOutput,</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    WorkflowDetailsInput,</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -402,7 +402,7 @@ graph TD
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_details <span class="im">import</span> (</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    get_transformation_details,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_details <span class="im">import</span> (</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsInput,</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    TransformationDetailsOutput,</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -487,7 +487,7 @@ graph LR
 </div>
 <div id="cell-18" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_describe <span class="im">import</span> describe_timeseries</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_describe <span class="im">import</span> (</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesInput,</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    DescribeTimeSeriesOutput,</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -542,7 +542,7 @@ No transformations found&lt;/markdown_content&gt;
 <p>Hier worden bijbehorende timeseries opgehaald die voldoen aan de opgegeven criteria.</p>
 <div id="cell-21" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.timeseries_search <span class="im">import</span> search_timeseries</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.timeseries_search <span class="im">import</span> (</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchInput,</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    TimeSeriesSearchOutput,</span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -1352,7 +1352,7 @@ Found 55 time series matching the criteria.
 </div>
 <div id="cell-25" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.transformation_search <span class="im">import</span> search_transformations</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.transformation_search <span class="im">import</span> (</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    TransformationSearchInput,</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    TransformationSearchOutput,</span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -1716,7 +1716,7 @@ Found 30 transformations matching the criteria.
 <p>De tools hier boven waren vooral gericht op het ophalen van informatie over de configuratie. Vanaf hier worden specifiekere tools besproken die helpen bij het werken met de configuratie database. Om op de juiste manier de tool execute query te gebruiken, is het handig om te weten wat er in de database zit. Hiervoor zijn de schema’s van de configuratie database. Deze tool geeft een overzicht van de beschikbare tabellen en kolommen.</p>
 <div id="cell-28" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.get_database_schema <span class="im">import</span> get_database_schema</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.database_schema <span class="im">import</span> (</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaOutput,</span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    DatabaseSchemaInput,</span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -1778,14 +1778,14 @@ Found 30 transformations matching the criteria.
     &lt;/ts_sets&gt;
   &lt;/tables&gt;
   &lt;relationships&gt;
-    &lt;example&gt;call_stacks.parent_id → call_stacks.id&lt;/example&gt;
-    &lt;example&gt;call_stacks.props_set_id → props_sets.id&lt;/example&gt;
-    &lt;example&gt;endpoints.tss_id → ts_sets.id&lt;/example&gt;
-    &lt;example&gt;links.tss_id → ts_sets.id&lt;/example&gt;
-    &lt;example&gt;links.trafo_id → trafos.id&lt;/example&gt;
-    &lt;example&gt;modins_calls.call_stack_id → call_stacks.id&lt;/example&gt;
-    &lt;example&gt;modins_calls.props_set_id → props_sets.id&lt;/example&gt;
-    &lt;example&gt;trafos.mic_id → modins_calls.id&lt;/example&gt;
+    &lt;example&gt;call_stacks.parent_id -&amp;gt; call_stacks.id&lt;/example&gt;
+    &lt;example&gt;call_stacks.props_set_id -&amp;gt; props_sets.id&lt;/example&gt;
+    &lt;example&gt;endpoints.tss_id -&amp;gt; ts_sets.id&lt;/example&gt;
+    &lt;example&gt;links.tss_id -&amp;gt; ts_sets.id&lt;/example&gt;
+    &lt;example&gt;links.trafo_id -&amp;gt; trafos.id&lt;/example&gt;
+    &lt;example&gt;modins_calls.call_stack_id -&amp;gt; call_stacks.id&lt;/example&gt;
+    &lt;example&gt;modins_calls.props_set_id -&amp;gt; props_sets.id&lt;/example&gt;
+    &lt;example&gt;trafos.mic_id -&amp;gt; modins_calls.id&lt;/example&gt;
   &lt;/relationships&gt;
   &lt;sample_data&gt;
     &lt;call_stacks&gt;
@@ -1944,7 +1944,7 @@ Found 30 transformations matching the criteria.
 <p>Deze tool geeft alle mogelijke vrijheid: het taalmodel kan elke SQL query uitvoeren. Dit geeft het AI model alle vrijheid om de database te doorzoeken.</p>
 <div id="cell-31" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.sql_query <span class="im">import</span> execute_query</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> SQLQueryInput, SQLQueryOutput</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>sql_query_input <span class="op">=</span> SQLQueryInput(</span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    query<span class="op">=</span><span class="st">"SELECT * FROM endpoints limit 3"</span>,</span>
@@ -1992,10 +1992,10 @@ Found 30 transformations matching the criteria.
 </div>
 <div id="cell-35" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.workflow_hierarchy <span class="im">import</span> find_workflow_call_hierarchy</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.workflow_hierarchy <span class="im">import</span> (</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    WorkflowCallHierarchyInput,</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.sql_query <span class="im">import</span> SQLQueryOutput <span class="im">as</span> sql_query_output</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> SQLQueryOutput <span class="im">as</span> sql_query_output</span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>workflow_call_hierarchy_input <span class="op">=</span> WorkflowCallHierarchyInput(</span>
 <span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    root_workflow_id<span class="op">=</span>root_workflow_id</span>
@@ -2054,7 +2054,7 @@ Found 30 transformations matching the criteria.
 <p>Deze tool geeft een overzicht van de afhankelijkheden tussen de verschillende workflows. Hierbij kun je aangeven welke richting van afhankelijkheden je wilt analyseren: upstream, downstream, of beide. ook geef je aan welke entiteit je wilt analyseren: timeseries, transformation, of workflow. Dit is eigenlijk een voorbereide versie van de <code>execute_query</code> tool, maar dan specifiek gericht op het analyseren van afhankelijkheden.</p>
 <div id="cell-38" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dependency_analysis <span class="im">import</span> analyze_dependencies</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.dependency_analysis <span class="im">import</span> (</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    DependencyAnalysisInput,</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    DependencyAnalysisOutput,</span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -2104,7 +2104,7 @@ Found 30 transformations matching the criteria.
 <p>Deze tool geeft een overzicht van de dode punten in de configuratie. Dit is een uitgewerkte analyse tool die sp laat zien hoe we een speciefieke analyse kunnen uitvoeren op de configuratie database.</p>
 <div id="cell-41" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.dead_point_analysis <span class="im">import</span> analyze_dead_points</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.dead_point_analysis <span class="im">import</span> (</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    DeadPointsAnalysisInput,</span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    DeadPointsAnalysisOutput,</span>
 <span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>)</span>
@@ -2510,7 +2510,7 @@ No qualifiers can be safely removed - all are used by active time series.
 <p>Hier wordt een grafische weergave van de workflow hiërarchie gegeven.</p>
 <div id="cell-44" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.config.graph_visualize <span class="im">import</span> visualize_graph</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.graph <span class="im">import</span> (</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    GraphVisualizationInput,</span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    GraphVisualizationOutput,</span>
 <span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>)</span>

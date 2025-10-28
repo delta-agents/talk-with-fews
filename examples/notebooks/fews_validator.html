@@ -252,8 +252,8 @@ Download completed: {'total_downloaded': 588, 'base_download_dir': '../data/fews
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div id="fcf7e27e-5471-4bb9-8b7e-701272146905" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.validate_xml <span class="im">import</span> validate_xml</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.validate_xml <span class="im">import</span> XMLValidationOutput, XMLValidationInput</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.fews_schema_options <span class="im">import</span> FEWSSchemaOption</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> XMLValidationOutput, XMLValidationInput</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> FEWSSchemaOption</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>xml_validation_input <span class="op">=</span> XMLValidationInput(</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    xml_content<span class="op">=</span>xml_snippet, schema_option<span class="op">=</span>FEWSSchemaOption.PI_TIMESERIES</span>
@@ -367,11 +367,11 @@ Reason: missing required attribute 'start'&lt;/reason&gt;
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># partial xml template generation</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.generate_xml_template <span class="im">import</span> generate_xml_template</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.generate_xml_template <span class="im">import</span> (</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    XMLTemplateInput,</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    XMLTemplateOutput,</span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.fews_schema_options <span class="im">import</span> FEWSSchemaOption</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> FEWSSchemaOption</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>xml_template_input <span class="op">=</span> XMLTemplateInput(</span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    schema_option<span class="op">=</span>FEWSSchemaOption.TIME_SERIES_EXPORT_RUN, target_element<span class="op">=</span><span class="st">"general"</span></span>
@@ -445,7 +445,7 @@ Tip: Use the 'get_available_elements' tool to get a complete list of available e
 <p>Hieronder laten we zien hoe we een lijst kunnen krijgen van alle elementen die beschikbaar zijn in het schema van de <code>timeSeriesExportRun</code>.</p>
 <div id="7e32a8aa" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.tools.validator.get_available_elements <span class="im">import</span> get_available_elements</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models.get_available_elements <span class="im">import</span> (</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> talk_with_fews.models <span class="im">import</span> (</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    GetAvailableElementsInput,</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    GetAvailableElementsOutput,</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span>
