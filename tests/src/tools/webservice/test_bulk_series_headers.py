@@ -13,11 +13,9 @@ from tests.test_config import FEWS_SERVICES
 from tests.parallel_decorator import fews_parallel
 from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
-from talk_with_fews.tools.webservice.ingest_all_series_headers import (
-    ingest_all_series_headers,
-)
-from talk_with_fews.tools.webservice.discover_all_series_headers import (
+from talk_with_fews.tools.webservice.ingest_series_headers import (
     discover_all_series_headers_sync,
+    ingest_all_series_headers,
 )
 from talk_with_fews.routers.setup_connections import setup_series_headers_table
 

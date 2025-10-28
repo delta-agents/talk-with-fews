@@ -18,8 +18,8 @@ from talk_with_fews.tools.config.workflows_details import get_workflow_details
 # WEB SERVICE
 from talk_with_fews.tools.webservice.get_parameters import get_parameters
 from talk_with_fews.tools.webservice.get_locations import get_locations
-from talk_with_fews.tools.webservice.sql_query_webservice import (
-    execute_query_webservice,
+from talk_with_fews.tools.webservice.query_webservice_cache import (
+    query_webservice_cache,
 )
 from talk_with_fews.tools.webservice.get_series_headers import get_series_headers
 from talk_with_fews.tools.webservice.get_series_statistics import get_series_statistics
@@ -49,7 +49,7 @@ __all__ = [
     # Web service tools
     "get_parameters",
     "get_locations",
-    "execute_query_webservice",
+    "query_webservice_cache",
     "get_series_headers",
     "get_series_statistics",
     "get_series_data",

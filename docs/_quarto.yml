@@ -64,7 +64,7 @@ quartodoc:
       contents:
         - get_parameters
         - get_locations
-        - execute_query_webservice
+        - query_webservice_cache
         - get_series_headers
         - get_series_statistics
         - get_series_data

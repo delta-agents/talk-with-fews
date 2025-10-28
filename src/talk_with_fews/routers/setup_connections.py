@@ -12,7 +12,7 @@ from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 import duckdb
 from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
-from talk_with_fews.tools.webservice.ingest_all_series_headers import (
+from talk_with_fews.tools.webservice.ingest_series_headers import (
     ingest_all_series_headers,
 )
 from talk_with_fews.utils.logging_utils import logger

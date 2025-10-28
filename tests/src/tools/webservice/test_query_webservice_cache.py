@@ -2,7 +2,9 @@ from talk_with_fews.models.config.sql_query import (
     SQLQueryInput,
     SQLQueryOutput,
 )
-from talk_with_fews.tools import execute_query_webservice
+from talk_with_fews.tools.webservice.query_webservice_cache import (
+    query_webservice_cache,
+)
 from talk_with_fews.routers.setup_connections import get_runtime_ctx
 from tests.utils_tests import setup_dot_env
 import asyncio
@@ -21,7 +23,7 @@ def test_get_locations():
 
     # Call the function
     ctx = get_runtime_ctx(user_settings)
-    output = asyncio.run(execute_query_webservice(ctx, input_data))
+    output = asyncio.run(query_webservice_cache(ctx, input_data))
 
     # Assert the output is of the expected type
     assert isinstance(output, SQLQueryOutput)
