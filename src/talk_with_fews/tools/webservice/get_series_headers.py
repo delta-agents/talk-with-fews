@@ -14,7 +14,6 @@ from talk_with_fews.models.webservice.get_series_headers import (
     GetSeriesHeadersInput,
     GetSeriesHeadersOutput,
 )
-from talk_with_fews.tools.webservice.ingest_series_headers import ingest_series_headers
 from talk_with_fews.utils.logging_utils import log_tool_call
 
 
@@ -36,8 +35,6 @@ def get_series_headers_with_details(
             sh.missVal,
             sh.timeZone,
             sh.qualifiers,
-            sh.first_value_time,
-            sh.last_value_time,
             sh.created_at,
             -- Location details
             l.shortName as location_name,
@@ -102,9 +99,8 @@ async def get_series_headers(
     """
     Discover available time series data by finding valid parameter-location combinations.
 
-    This is an ESSENTIAL discovery tool that helps you understand what data is available:
-    - Use location_id to find ALL parameters available at that location
-    - Use parameter_id to find ALL locations that have that parameter
+    This tool queries the pre-ingested series headers cache to find available combinations.
+    All series headers are now ingested during server initialization for optimal performance.
 
     Examples:
     - "What parameters are available at location X?" -> use location_id="X"
@@ -127,86 +123,19 @@ async def get_series_headers(
         raise ModelRetry("Must specify either parameter_id or location_id")
 
     cache_FewsWebServices_db = ctx.deps.cache_FewsWebServices_db
-    webservice_url = ctx.deps.webservice_url
 
-    # Initialize variables
-    df_results = None
-
-    # Check if we have data cached
-    if input.parameter_id:
-        result = cache_FewsWebServices_db.execute(
-            """
-            SELECT series_headers_retrieved FROM parameters WHERE id = ?
-            """,
-            [input.parameter_id],
-        ).fetchone()
-
-        # Handle case where parameter doesn't exist in database
-        if result is None:
-            series_headers_retrieved = False
-        else:
-            series_headers_retrieved = result[0]
-
-        if not series_headers_retrieved:
-            # No data cached - trigger ingestion
-            await ingest_series_headers(
-                webservice_url=webservice_url,
-                cache_FewsWebServices_db=cache_FewsWebServices_db,
-                parameter_id=input.parameter_id,
-            )
-            cache_FewsWebServices_db.execute(
-                """
-                UPDATE parameters SET series_headers_retrieved = TRUE WHERE id = ?
-            """,
-                [input.parameter_id],
-            )
-
-        # Query cached data (always do this, even if we just ingested)
-        df_results = get_series_headers_with_details(
-            cache_FewsWebServices_db, parameter_id=input.parameter_id
+    # Check if cache database is available
+    if cache_FewsWebServices_db is None:
+        raise ModelRetry(
+            "Webservice cache database not available. Please check webservice configuration."
         )
 
-    else:  # location_id
-        result = cache_FewsWebServices_db.execute(
-            """
-            SELECT series_headers_retrieved FROM locations WHERE locationId = ?
-            """,
-            [input.location_id],
-        ).fetchone()
-
-        # Handle case where location doesn't exist in database
-        if result is None:
-            series_headers_retrieved = False
-        else:
-            series_headers_retrieved = result[0]
-
-        if not series_headers_retrieved:
-            # No data cached - trigger ingestion
-            await ingest_series_headers(
-                webservice_url=webservice_url,
-                cache_FewsWebServices_db=cache_FewsWebServices_db,
-                location_id=input.location_id,
-            )
-            cache_FewsWebServices_db.execute(
-                """
-                UPDATE locations SET series_headers_retrieved = TRUE WHERE locationId = ?
-            """,
-                [input.location_id],
-            )
-
-        # Query cached data (always do this, even if we just ingested)
-        df_results = get_series_headers_with_details(
-            cache_FewsWebServices_db, location_id=input.location_id
-        )
-
-        # Get location name for summary
-        location_name = cache_FewsWebServices_db.execute(
-            """
-            SELECT shortName FROM locations WHERE locationId = ?
-        """,
-            [input.location_id],
-        ).fetchone()
-        location_display = location_name[0] if location_name else input.location_id
+    # Query cached data directly (no on-demand ingestion needed)
+    df_results = get_series_headers_with_details(
+        cache_FewsWebServices_db,
+        parameter_id=input.parameter_id,
+        location_id=input.location_id,
+    )
 
     # Convert DataFrame to dictionaries
     results = []

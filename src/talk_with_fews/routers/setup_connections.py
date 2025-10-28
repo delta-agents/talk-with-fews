@@ -12,6 +12,10 @@ from talk_with_fews.utils.schema_utils import extract_db_schema_as_dict
 import duckdb
 from talk_with_fews.tools.webservice.ingest_locations import ingest_locations
 from talk_with_fews.tools.webservice.ingest_parameters import ingest_parameters
+from talk_with_fews.tools.webservice.ingest_series_headers import (
+    ingest_all_series_headers,
+)
+from talk_with_fews.utils.logging_utils import logger
 from fastmcp.server.dependencies import get_http_request
 from starlette.requests import Request
 
@@ -93,7 +97,7 @@ class UserContextCache:
     cache_FewsWebServices_db: Optional[Any] = None
     ingest_locations_output: Optional[Any] = None
     ingest_parameters_output: Optional[Any] = None
-    ingest_series_headers_output: Optional[Any] = None
+    ingest_all_series_headers_output: Optional[Any] = None
     cache_fews_schemas_dir: Optional[str] = None
 
 
@@ -112,9 +116,28 @@ class ContextCacheManager:
     def clear(self, client_id: str = None):
         """Clear cache for specific user or all users."""
         if client_id:
+            # Close connections for specific client before removing
+            if client_id in self._caches:
+                self._close_connections(self._caches[client_id])
             self._caches.pop(client_id, None)
         else:
+            # Close all connections before clearing all caches
+            for cache in self._caches.values():
+                self._close_connections(cache)
             self._caches.clear()
+
+    def _close_connections(self, cache: UserContextCache):
+        """Close database connections in a cache entry."""
+        if cache.db_connection:
+            try:
+                cache.db_connection.close()
+            except Exception:
+                pass  # Ignore errors when closing
+        if cache.cache_FewsWebServices_db:
+            try:
+                cache.cache_FewsWebServices_db.close()
+            except Exception:
+                pass  # Ignore errors when closing
 
 
 # Global cache manager
@@ -168,7 +191,7 @@ def _setup_webservice_cache(
     Args:
         webservice_url: URL for FEWS webservice (or None)
         cached_db: Previously cached database connection (if any)
-        enable_webservice_ingest: Whether to ingest locations/parameters
+        enable_webservice_ingest: Whether to ingest locations/parameters/series_headers
 
     Returns:
         Tuple of (cache_db, locations_output, parameters_output, series_headers_output)
@@ -196,6 +219,58 @@ def _setup_webservice_cache(
         # Setup the series_headers table (requires locations and parameters tables)
         cache_db = setup_series_headers_table(cache_db)
 
+        # Check if series headers ingestion is enabled
+        # Behavior controlled by DEV_DISABLE_SERIES_HEADERS_INGEST environment variable:
+        # | DEV_DISABLE_SERIES_HEADERS_INGEST | enable_series_headers_ingest | Result                    |
+        # |-----------------------------------|------------------------------|---------------------------|
+        # | not set (default)                 | True                         | Full ingestion (default)  |
+        # | "false"                           | True                         | Full ingestion            |
+        # | "true" / "1" / "yes"              | False                        | No ingestion (fast mode)  |
+        enable_series_headers_ingest = os.environ.get(
+            "DEV_DISABLE_SERIES_HEADERS_INGEST", "false"
+        ).lower() not in ("true", "1", "yes")
+
+        # Additional check: Skip bulk ingestion in test mode unless explicitly enabled
+        # This prevents expensive bulk ingestion during general testing
+        skip_bulk_ingestion_in_tests = os.environ.get(
+            "SKIP_BULK_SERIES_HEADERS_IN_TESTS", "true"
+        ).lower() in ("true", "1", "yes")
+
+        # Skip bulk ingestion if we're in test mode and it's not explicitly enabled
+        if skip_bulk_ingestion_in_tests and os.environ.get("PYTEST_CURRENT_TEST"):
+            enable_series_headers_ingest = False
+            logger.info("Skipping bulk series headers ingestion in test mode")
+
+        if enable_series_headers_ingest:
+            # Get all parameter and location IDs for bulk ingestion
+            parameter_ids = [
+                row[0]
+                for row in cache_db.execute("SELECT id FROM parameters").fetchall()
+            ]
+            location_ids = [
+                row[0]
+                for row in cache_db.execute(
+                    "SELECT locationId FROM locations"
+                ).fetchall()
+            ]
+
+            logger.info(
+                f"Starting bulk series headers ingestion for {len(parameter_ids)} parameters and {len(location_ids)} locations"
+            )
+            series_headers_output = ingest_all_series_headers(
+                webservice_url=webservice_url,
+                cache_FewsWebServices_db=cache_db,
+                parameter_ids=parameter_ids,
+                location_ids=location_ids,
+            )
+            logger.info(
+                f"Bulk series headers ingestion completed: {series_headers_output.description}"
+            )
+        else:
+            logger.info(
+                "Series headers ingestion disabled via DEV_DISABLE_SERIES_HEADERS_INGEST"
+            )
+
     return cache_db, locations_output, parameters_output, series_headers_output
 
 
@@ -216,6 +291,7 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
         - Database connections and schemas are cached per client_id
         - Use DEV_DISABLE_CONFIG_DB=true to skip database connection (development)
         - Use DEV_DISABLE_WEBSERVICE_INGEST=true to skip slow webservice data ingestion (development)
+        - Use DEV_DISABLE_SERIES_HEADERS_INGEST=true to skip series headers ingestion (development)
     """
 
     # Extract user settings
@@ -310,8 +386,6 @@ def setup_series_headers_table(
             missVal DOUBLE,
             timeZone VARCHAR,
             qualifiers VARCHAR,
-            first_value_time TIMESTAMP,
-            last_value_time TIMESTAMP,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
             -- Foreign key constraints
@@ -332,11 +406,5 @@ def setup_series_headers_table(
     )
     _cache_FewsWebServices_db.execute(
         "CREATE INDEX idx_series_headers_type ON series_headers(type)"
-    )
-    _cache_FewsWebServices_db.execute(
-        "CREATE INDEX idx_series_headers_first_value_time ON series_headers(first_value_time)"
-    )
-    _cache_FewsWebServices_db.execute(
-        "CREATE INDEX idx_series_headers_last_value_time ON series_headers(last_value_time)"
     )
     return _cache_FewsWebServices_db

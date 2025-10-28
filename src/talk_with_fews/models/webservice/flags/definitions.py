@@ -26,5 +26,5 @@ class FlagSourceDefinition(BaseModel):
     validation_type: str = Field(
         ...,
         description="Type of validation (primary/secondary/custom)",
-        example="primary",
+        json_schema_extra={"example": "primary"},
     )

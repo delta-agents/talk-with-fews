@@ -97,3 +97,16 @@ def ingest_parameters(
         "SELECT COUNT(*) FROM parameters"
     ).fetchone()
     assert result is not None, "Failed to insert parameters into DuckDB table"
+
+    parameter_count = result[0]
+
+    # Return the ingestion output
+    return IngestParameterOutput(
+        description=f"Successfully ingested {parameter_count} parameters from {webservice_url}",
+        sql_examples=[
+            "SELECT * FROM parameters LIMIT 10;",
+            "SELECT COUNT(*) FROM parameters;",
+            "SELECT parameter_type, COUNT(*) FROM parameters GROUP BY parameter_type;",
+            "SELECT * FROM parameters WHERE parameter_group = 'Water Level';",
+        ],
+    )

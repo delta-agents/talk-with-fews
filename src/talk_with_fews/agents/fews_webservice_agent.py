@@ -18,7 +18,7 @@ from talk_with_fews.utils.logging_utils import logger, setup_logging
 from talk_with_fews.tools import (
     get_parameters,
     get_locations,
-    execute_query_webservice,
+    query_webservice_cache,
     get_series_statistics,
 )
 
@@ -144,10 +144,10 @@ class FEWSWebserviceAgent:
                 description="Get the locations from in the FEWS Webservice, including their attributes and relationships. Can be filtered by parameters and parameter groups obtainable from the tool get_parameters",
             ),
             Tool(
-                execute_query_webservice,
+                query_webservice_cache,
                 takes_ctx=True,
-                name="execute_query_webservice",
-                description="Execute a SQL query on the cached FewsWebService database which contains the locations and parameters from the FEWS web service. This is useful for quick access to parameter and location data.",
+                name="query_webservice_cache",
+                description="Execute SQL queries against the cached FEWS webservice database (DuckDB). This tool queries the webservice cache containing series_headers, locations, and parameters. Use this for complex queries and data analysis.",
             ),
             Tool(
                 get_series_statistics,

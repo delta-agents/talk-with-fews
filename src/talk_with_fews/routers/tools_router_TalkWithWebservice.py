@@ -18,8 +18,8 @@ from talk_with_fews.models.webservice.get_webservice_info import (
     GetWebServiceInfoInput,
     GetWebServiceInfoOutput,
 )
-from talk_with_fews.tools.webservice.sql_query_webservice import (
-    execute_query_webservice as execute_query_webservice_pydantic_ai,
+from talk_with_fews.tools.webservice.query_webservice_cache import (
+    query_webservice_cache as query_webservice_cache_pydantic_ai,
 )
 from talk_with_fews.models.config.sql_query import SQLQueryInput, SQLQueryOutput
 from talk_with_fews.tools.webservice.get_parameters import (
@@ -125,22 +125,26 @@ async def get_locations(
     return await get_locations_pydantic_ai(ctx, input)
 
 
-# execute_query_webservice tool registration
+# query_webservice_cache tool registration
 @mcp.tool()
-@router.post("/tools.webservice/execute_query_webservice")
+@router.post("/tools.webservice/query_webservice_cache")
 @auto_docstring(
-    "Execute SQL queries on the FEWS WebService database containing locations and parameters. "
-    "Use this tool to access comprehensive parameter and location data with advanced filtering capabilities. "
+    "Execute SQL queries against the cached FEWS webservice database (DuckDB). "
+    "This tool queries the webservice cache containing series_headers, locations, and parameters. "
+    "Use this tool to access comprehensive webservice data with advanced filtering capabilities. "
     "Features include: "
-    "- Full access to all parameters and location metadata "
+    "- Full access to all series headers, locations, and parameters "
+    "- Complex JOINs between series_headers, locations, and parameters tables "
     "- Spatial queries using DuckDB's geospatial functions (ST_Within, ST_DWithin, ST_Transform) "
-    "- Location geometry data stored in 'geom' field (EPSG:4326 coordinate system) "
-    "- Complex filtering and aggregation operations "
+    "- CRITICAL: Use ST_Transform(geom, 28992) for accurate distance calculations in meters "
+    "- Location geometry data stored in EPSG:4326 (WGS84) - transform to EPSG:28992 for analysis "
+    "- Complex filtering, grouping, and aggregation operations "
+    "- Note: This queries the DuckDB cache, not the SQLite config database "
 )
-async def execute_query_webservice(input: SQLQueryInput) -> SQLQueryOutput:
+async def query_webservice_cache(input: SQLQueryInput) -> SQLQueryOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
-    return await execute_query_webservice_pydantic_ai(ctx, input)
+    return await query_webservice_cache_pydantic_ai(ctx, input)
 
 
 # get_series_headers tool registration
