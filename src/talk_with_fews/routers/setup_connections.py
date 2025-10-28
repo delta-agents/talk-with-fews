@@ -116,9 +116,28 @@ class ContextCacheManager:
     def clear(self, client_id: str = None):
         """Clear cache for specific user or all users."""
         if client_id:
+            # Close connections for specific client before removing
+            if client_id in self._caches:
+                self._close_connections(self._caches[client_id])
             self._caches.pop(client_id, None)
         else:
+            # Close all connections before clearing all caches
+            for cache in self._caches.values():
+                self._close_connections(cache)
             self._caches.clear()
+
+    def _close_connections(self, cache: UserContextCache):
+        """Close database connections in a cache entry."""
+        if cache.db_connection:
+            try:
+                cache.db_connection.close()
+            except Exception:
+                pass  # Ignore errors when closing
+        if cache.cache_FewsWebServices_db:
+            try:
+                cache.cache_FewsWebServices_db.close()
+            except Exception:
+                pass  # Ignore errors when closing
 
 
 # Global cache manager
