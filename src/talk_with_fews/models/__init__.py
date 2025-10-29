@@ -64,6 +64,7 @@ from talk_with_fews.models.webservice.get_series_headers import (
 from talk_with_fews.models.webservice.get_series_statistics import (
     GetSeriesStatisticsInput,
     GetSeriesStatisticsOutput,
+    SeriesStatisticsItem,
 )
 from talk_with_fews.models.webservice.get_series_data import (
     GetSeriesDataInput,
@@ -128,6 +129,7 @@ __all__ = [
     "GetSeriesHeadersOutput",
     "GetSeriesStatisticsInput",
     "GetSeriesStatisticsOutput",
+    "SeriesStatisticsItem",
     "SeriesFlagsInput",
     "SeriesFlagsOutput",
     # XML models

@@ -101,7 +101,6 @@ async def get_series_data(
     Automatically applies thinning for large datasets (>500 estimated points) to ensure
     manageable data retrieval for AI assistants.
 
-    Note: Flag source retrieval requires FEWS API support (feature request pending).
 
     Args:
         ctx: Runtime context with webservice URL
@@ -134,9 +133,11 @@ async def get_series_data(
 
     # Get estimated points from the series (should be only one since moduleInstanceId is specified)
     estimated_points = None
-    if stats_result:
+    if stats_result and stats_result.series_statistics:
         # Since moduleInstanceId is specified, we should get exactly one series
-        estimated_points = stats_result[0].estimated_data_points_in_range
+        estimated_points = stats_result.series_statistics[
+            0
+        ].estimated_data_points_in_range
 
     # Step 2: Determine if thinning is needed
     thinning_applied = False
