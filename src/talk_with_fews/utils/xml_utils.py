@@ -7,7 +7,7 @@ including statistics parsing and data extraction that can be used across multipl
 
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
-from typing import Optional, List
+from typing import Optional, Callable
 
 from talk_with_fews.models.webservice.get_series_statistics import (
     SeriesStatisticsItem,
@@ -123,8 +123,8 @@ async def parse_timeseries_xml_statistics(
     end_time: datetime,
     include_interval_analysis: bool = False,
     interval_type: str = "MONTH",
-    location_ids: Optional[List[str]] = None,
-    parameter_ids: Optional[List[str]] = None,
+    webservice_url: Optional[str] = None,
+    get_interval_statistics_func: Optional[Callable] = None,
 ) -> list[SeriesStatisticsItem]:
     """
     Parse FEWS TimeSeries PI-XML and extract statistics for all series.
@@ -138,7 +138,9 @@ async def parse_timeseries_xml_statistics(
         start_time: Start time for analysis
         end_time: End time for analysis
         include_interval_analysis: Whether to include interval analysis
-        interval_type: Type of interval analysis
+        interval_type: Type of interval analysis (e.g., "MONTH", "CALENDAR_DAY")
+        webservice_url: URL of the webservice (required if include_interval_analysis=True)
+        get_interval_statistics_func: Function to call for interval statistics (required if include_interval_analysis=True)
 
     Returns:
         List of SeriesStatisticsItem objects, one for each series
@@ -293,6 +295,25 @@ async def parse_timeseries_xml_statistics(
 
             series_description = ". ".join(description_parts) + "."
 
+            # Fetch interval analysis if requested
+            interval_analysis = None
+            if include_interval_analysis and location_id and parameter_id:
+                if webservice_url and get_interval_statistics_func:
+                    try:
+                        interval_analysis = await get_interval_statistics_func(
+                            webservice_url=webservice_url,
+                            location_id=location_id,
+                            parameter_id=parameter_id,
+                            start_time=start_time,
+                            end_time=end_time,
+                            interval_type=interval_type,
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            f"Failed to fetch interval statistics for {location_id}/{parameter_id}: {e}"
+                        )
+                        interval_analysis = None
+
             # Create the series statistics object
             series_stat = SeriesStatisticsItem(
                 description=series_description,
@@ -307,6 +328,7 @@ async def parse_timeseries_xml_statistics(
                 module_instance_id=module_instance_id,
                 location_id=location_id,
                 parameter_id=parameter_id,
+                interval_analysis=interval_analysis,
             )
 
             all_series_stats.append(series_stat)

@@ -229,18 +229,18 @@ async def get_series_statistics(
             )
 
     # Parse the XML using the new parsing function
+    # Note: location_id and parameter_id are extracted from each series element in the XML,
+    # so we don't need to pass them as parameters
     series_statistics = await parse_timeseries_xml_statistics(
         xml_content=xml_content,
         start_time=input.start_time,
         end_time=input.end_time,
         include_interval_analysis=input.include_interval_analysis,
         interval_type=input.interval_type.value,
-        location_ids=input.location_id
-        if isinstance(input.location_id, list)
-        else [input.location_id],
-        parameter_ids=input.parameter_id
-        if isinstance(input.parameter_id, list)
-        else [input.parameter_id],
+        webservice_url=webservice_url if input.include_interval_analysis else None,
+        get_interval_statistics_func=get_interval_statistics
+        if input.include_interval_analysis
+        else None,
     )
 
     # Generate a summary description
