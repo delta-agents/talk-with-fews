@@ -218,7 +218,7 @@ Features include:
 )
 async def get_series_statistics(
     input: GetSeriesStatisticsInput,
-) -> list[GetSeriesStatisticsOutput]:
+) -> GetSeriesStatisticsOutput:
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await get_series_statistics_pydantic_ai(ctx, input)

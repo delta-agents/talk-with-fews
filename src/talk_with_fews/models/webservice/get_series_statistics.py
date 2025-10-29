@@ -95,11 +95,11 @@ class GetSeriesStatisticsInput(LaxBaseModel):
         return values
 
 
-class GetSeriesStatisticsOutput(BaseModel):
+class SeriesStatisticsItem(BaseModel):
     """
-    GetSeriesStatisticsOutput provides series data summary with interval analysis.
+    SeriesStatisticsItem represents statistics for a single series.
 
-    Returns data characteristics (min/max values, units, count), time information
+    Provides data characteristics (min/max values, units, count), time information
     (data range, time step), and interval statistics (monthly/daily patterns) to
     help decide whether to call get_series_data for detailed analysis.
     """
@@ -113,11 +113,11 @@ class GetSeriesStatisticsOutput(BaseModel):
     # Data characteristics
     min_value: Optional[str] = Field(
         None,
-        description="Minimum value across series (from full available data range, not requested time range)",
+        description="Minimum value across series (from requested time range)",
     )
     max_value: Optional[str] = Field(
         None,
-        description="Maximum value across series (from full available data range, not requested time range)",
+        description="Maximum value across series (from requested time range)",
     )
     parameter_units: Optional[str] = Field(
         None, description="Parameter units (e.g., 'mm', 'm3/s', '°C')"
@@ -150,7 +150,32 @@ class GetSeriesStatisticsOutput(BaseModel):
     )
 
     # Series identification
+    location_id: Optional[str] = Field(
+        None,
+        description="Location ID for this specific series",
+    )
+    parameter_id: Optional[str] = Field(
+        None,
+        description="Parameter ID for this specific series",
+    )
     module_instance_id: Optional[str] = Field(
         None,
         description="Module instance ID that manages this specific series",
+    )
+
+
+class GetSeriesStatisticsOutput(BaseModel):
+    """Model for the output of the get_series_statistics tool.
+
+    This model provides search results optimized for LLM consumption with
+    structured data and actionable contextual description.
+    """
+
+    series_statistics: List[SeriesStatisticsItem] = Field(
+        ...,
+        description="List of series statistics with key information for each series",
+    )
+    description: str = Field(
+        ...,
+        description="Contextual description with actionable insights for follow-up analysis",
     )

@@ -7,10 +7,10 @@ including statistics parsing and data extraction that can be used across multipl
 
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
-from typing import Optional
+from typing import Optional, List
 
 from talk_with_fews.models.webservice.get_series_statistics import (
-    GetSeriesStatisticsOutput,
+    SeriesStatisticsItem,
 )
 from talk_with_fews.utils.logging_utils import logger
 
@@ -123,7 +123,9 @@ async def parse_timeseries_xml_statistics(
     end_time: datetime,
     include_interval_analysis: bool = False,
     interval_type: str = "MONTH",
-) -> list[GetSeriesStatisticsOutput]:
+    location_ids: Optional[List[str]] = None,
+    parameter_ids: Optional[List[str]] = None,
+) -> list[SeriesStatisticsItem]:
     """
     Parse FEWS TimeSeries PI-XML and extract statistics for all series.
 
@@ -139,7 +141,7 @@ async def parse_timeseries_xml_statistics(
         interval_type: Type of interval analysis
 
     Returns:
-        List of GetSeriesStatisticsOutput objects, one for each series
+        List of SeriesStatisticsItem objects, one for each series
     """
     namespace = {"pi": "http://www.wldelft.nl/fews/PI"}
 
@@ -168,6 +170,17 @@ async def parse_timeseries_xml_statistics(
             module_instance_id = header_elem.find("pi:moduleInstanceId", namespace)
             module_instance_id = (
                 module_instance_id.text if module_instance_id is not None else None
+            )
+
+            # Extract location and parameter IDs from the header
+            location_id_elem = header_elem.find("pi:locationId", namespace)
+            location_id = (
+                location_id_elem.text if location_id_elem is not None else None
+            )
+
+            parameter_id_elem = header_elem.find("pi:parameterId", namespace)
+            parameter_id = (
+                parameter_id_elem.text if parameter_id_elem is not None else None
             )
 
             # Extract valueCount
@@ -255,9 +268,22 @@ async def parse_timeseries_xml_statistics(
                 estimated_data_points = 1000
 
             # Generate description for this series
-            description_parts = [
-                f"Series {series_idx + 1} ({module_instance_id or 'unknown'}): {count} values"
-            ]
+            description_parts = []
+
+            # Add location and parameter identification with abbreviations
+            id_parts = []
+            if location_id:
+                id_parts.append(f"loc: {location_id}")
+            if parameter_id:
+                id_parts.append(f"par: {parameter_id}")
+            if module_instance_id:
+                id_parts.append(f"module: {module_instance_id}")
+
+            if id_parts:
+                description_parts.append(", ".join(id_parts))
+
+            # Add value count
+            description_parts.append(f"{count} values")
             if time_step_description:
                 description_parts.append(time_step_description)
             if parameter_units:
@@ -268,7 +294,7 @@ async def parse_timeseries_xml_statistics(
             series_description = ". ".join(description_parts) + "."
 
             # Create the series statistics object
-            series_stat = GetSeriesStatisticsOutput(
+            series_stat = SeriesStatisticsItem(
                 description=series_description,
                 min_value=min_value,
                 max_value=max_value,
@@ -279,6 +305,8 @@ async def parse_timeseries_xml_statistics(
                 timestep_info=timestep_info,
                 estimated_data_points_in_range=estimated_data_points,
                 module_instance_id=module_instance_id,
+                location_id=location_id,
+                parameter_id=parameter_id,
             )
 
             all_series_stats.append(series_stat)

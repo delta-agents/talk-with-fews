@@ -163,7 +163,7 @@ def generate_actionable_description(
 @log_tool_call
 async def get_series_statistics(
     ctx: RunContext[Deps], input: GetSeriesStatisticsInput
-) -> list[GetSeriesStatisticsOutput]:
+) -> GetSeriesStatisticsOutput:
     """
     Retrieve series statistics from FEWS webservice.
 
@@ -175,7 +175,7 @@ async def get_series_statistics(
         input: GetSeriesStatisticsInput containing parameter_id AND location_id
 
     Returns:
-        List of GetSeriesStatisticsOutput objects, one for each series found
+        GetSeriesStatisticsOutput wrapper containing list of series statistics
     """
 
     # Validate input
@@ -218,18 +218,40 @@ async def get_series_statistics(
     if error is not None:
         # Check if it's a "No timeSeries found" error
         if "No timeSeries found" in error:
-            return []
+            return GetSeriesStatisticsOutput(
+                series_statistics=[],
+                description="No time series found for the given parameters.",
+            )
         else:
-            # Return a single error result
-            return [
-                GetSeriesStatisticsOutput(description=f"Error fetching data: {error}")
-            ]
+            # Return error result wrapped
+            return GetSeriesStatisticsOutput(
+                series_statistics=[], description=f"Error fetching data: {error}"
+            )
 
     # Parse the XML using the new parsing function
-    return await parse_timeseries_xml_statistics(
+    series_statistics = await parse_timeseries_xml_statistics(
         xml_content=xml_content,
         start_time=input.start_time,
         end_time=input.end_time,
         include_interval_analysis=input.include_interval_analysis,
         interval_type=input.interval_type.value,
+        location_ids=input.location_id
+        if isinstance(input.location_id, list)
+        else [input.location_id],
+        parameter_ids=input.parameter_id
+        if isinstance(input.parameter_id, list)
+        else [input.parameter_id],
+    )
+
+    # Generate a summary description
+    num_series = len(series_statistics)
+    if num_series == 0:
+        description = "No statistics found for the given parameters."
+    elif num_series == 1:
+        description = "Statistics for 1 series available."
+    else:
+        description = f"Statistics for {num_series} series available."
+
+    return GetSeriesStatisticsOutput(
+        series_statistics=series_statistics, description=description
     )
