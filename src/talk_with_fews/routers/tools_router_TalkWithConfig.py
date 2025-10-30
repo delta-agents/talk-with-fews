@@ -89,7 +89,13 @@ from talk_with_fews.models.webservice.get_parameters import (
     GetParameterInput,
     GetParameterOutput,
 )
-
+from talk_with_fews.tools.config.get_config_info import (
+    get_config_info as get_config_info_pydantic_ai,
+)
+from talk_with_fews.models.config.get_config_info import (
+    GetConfigInfoInput,
+    GetConfigInfoOutput,
+)
 
 tokens = setup_env()
 verifier = StaticTokenVerifier(tokens=tokens, required_scopes=["read:data"])
@@ -249,3 +255,15 @@ async def search_parameters(
     user_settings: dict = get_user_settings(verifier)
     ctx = get_runtime_ctx(user_settings)
     return await search_parameters_pydantic_ai(ctx, input)
+
+
+# Config info tool registration
+@mcp.tool()
+@router.post("/tools.config/get_config_info")
+@auto_docstring("Retrieve information about the FEWS configuration.")
+async def get_config_info(
+    input: GetConfigInfoInput,
+) -> GetConfigInfoOutput:
+    user_settings: dict = get_user_settings(verifier)
+    ctx = get_runtime_ctx(user_settings)
+    return await get_config_info_pydantic_ai(ctx, input)

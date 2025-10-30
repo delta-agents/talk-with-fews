@@ -42,6 +42,10 @@ from talk_with_fews.models.config.transformation_details import (
     TransformationDetailsInput,
     TransformationDetailsOutput,
 )
+from talk_with_fews.models.config.get_config_info import (
+    GetConfigInfoInput,
+    GetConfigInfoOutput,
+)
 
 # Webservice tools
 # corresponding models
@@ -116,6 +120,8 @@ __all__ = [
     "SQLQueryOutput",
     "TransformationDetailsInput",
     "TransformationDetailsOutput",
+    "GetConfigInfoInput",
+    "GetConfigInfoOutput",
     # Webservice models
     "GetWebServiceInfoInput",
     "GetWebServiceInfoOutput",
