@@ -2,19 +2,19 @@
 title: "Demo"
 ---
 
-## Config
+## Config [NL]
 {{< video https://www.youtube.com/embed/8D6_0Ds6l7s >}}
 
-## Webservice
-{{< video https://www.youtube.com/embed/GesXT97xkMY >}}
+## Webservice - HHD [EN]
+{{< video https://www.youtube.com/embed/BaJMOg6dytQ >}}
 
-### Webservice - English
+### Webservice - WSVV [EN]
 
-{{< video https://www.youtube.com/embed/XgAhHHyzR_E >}}
+{{< video https://www.youtube.com/embed/4y535SgwMvA >}}
 
-## Validator
+## Validator [NL]
 {{< video https://www.youtube.com/embed/djI5N7ufvDg >}}
 
 ### Zelf proberen?
 
-Zie [hier](MCP_instalatie.qmd) het stappenplan.
+Zie [hier](MCP_instalatie.qmd) het stappenplan, of login op [https://talk-with-fews.hkvservices.nl/](https://talk-with-fews.hkvservices.nl/).
