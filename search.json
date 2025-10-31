@@ -1,17 +1,17 @@
 [
   {
-    "objectID": "demo.html#webservice",
-    "href": "demo.html#webservice",
+    "objectID": "demo.html#webservice---hhd-en",
+    "href": "demo.html#webservice---hhd-en",
     "title": "Demo",
-    "section": "Webservice",
-    "text": "Webservice\n\n\nWebservice - English"
+    "section": "Webservice - HHD [EN]",
+    "text": "Webservice - HHD [EN]\n\n\nWebservice - WSVV [EN]"
   },
   {
-    "objectID": "demo.html#validator",
-    "href": "demo.html#validator",
+    "objectID": "demo.html#validator-nl",
+    "href": "demo.html#validator-nl",
     "title": "Demo",
-    "section": "Validator",
-    "text": "Validator\n\n\nZelf proberen?\nZie hier het stappenplan."
+    "section": "Validator [NL]",
+    "text": "Validator [NL]\n\n\nZelf proberen?\nZie hier het stappenplan, of login op https://talk-with-fews.hkvservices.nl/."
   },
   {
     "objectID": "reference/GetSeriesDataInput.html",
@@ -151,14 +151,14 @@
     "href": "reference/GetWebServiceInfoOutput.html",
     "title": "GetWebServiceInfoOutput",
     "section": "",
-    "text": "models.GetWebServiceInfoOutput()\nModel for the output of the get_webservice_info tool.\nThis model provides search results optimized for LLM consumption with structured data and actionable contextual description.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncurrent_time\n\n\n\ndescription\n\n\n\nwebservice_name"
+    "text": "models.GetWebServiceInfoOutput()\nModel for the output of the get_webservice_info tool.\nThis model provides search results optimized for LLM consumption with structured data and actionable contextual description.\n\n\n\n\n\nName\nDescription\n\n\n\n\ncurrent_date\n\n\n\ndescription\n\n\n\nwebservice_name"
   },
   {
     "objectID": "reference/GetWebServiceInfoOutput.html#attributes",
     "href": "reference/GetWebServiceInfoOutput.html#attributes",
     "title": "GetWebServiceInfoOutput",
     "section": "",
-    "text": "Name\nDescription\n\n\n\n\ncurrent_time\n\n\n\ndescription\n\n\n\nwebservice_name"
+    "text": "Name\nDescription\n\n\n\n\ncurrent_date\n\n\n\ndescription\n\n\n\nwebservice_name"
   },
   {
     "objectID": "reference/GetSeriesHeadersOutput.html",
