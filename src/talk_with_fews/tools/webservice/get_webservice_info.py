@@ -24,7 +24,8 @@ async def get_webservice_info(
         GetWebServiceInfoOutput: Retrieved web service information
     """
     webservice_name = ctx.deps.webservice_name
-    current_time = datetime.now().isoformat()
+    # For now
+    current_date = datetime.now().strftime("%Y-%m-%d")
     description = (
         "FEWS is a Forecast Early Warning System used to store and manage hydrological data."
         f"The web service '{webservice_name}' provides access to these hydrological data and services. "
@@ -33,6 +34,6 @@ async def get_webservice_info(
 
     return GetWebServiceInfoOutput(
         webservice_name=webservice_name,
-        current_time=current_time,
+        current_date=current_date,
         description=description,
     )

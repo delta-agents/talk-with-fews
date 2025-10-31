@@ -14,6 +14,7 @@ from talk_with_fews.tools.config.transformation_search import search_transformat
 from talk_with_fews.tools.config.workflow_hierarchy import find_workflow_call_hierarchy
 from talk_with_fews.tools.config.workflow_search import search_workflows
 from talk_with_fews.tools.config.workflows_details import get_workflow_details
+from talk_with_fews.tools.config.get_config_info import get_config_info
 
 # WEB SERVICE
 from talk_with_fews.tools.webservice.get_parameters import get_parameters
@@ -46,6 +47,7 @@ __all__ = [
     "find_workflow_call_hierarchy",
     "search_workflows",
     "get_workflow_details",
+    "get_config_info",
     # Web service tools
     "get_parameters",
     "get_locations",

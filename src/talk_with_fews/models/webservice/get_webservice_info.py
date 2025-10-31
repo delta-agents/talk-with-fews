@@ -22,9 +22,9 @@ class GetWebServiceInfoOutput(BaseModel):
     """
 
     webservice_name: str = Field(..., description="Name of the web service")
-    current_time: str = Field(
+    current_date: str = Field(
         ...,
-        description="Current time when the request was made by the user, use this to respond with relative questions like 'yesterday' and 'last month'",
+        description="Current Date when the request was made by the user, use this to respond with relative questions like 'yesterday' and 'last month'",
     )
     description: str = Field(
         ...,
