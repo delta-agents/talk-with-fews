@@ -38,4 +38,4 @@ EXPOSE 8000
 HEALTHCHECK CMD curl --fail http://localhost:8000/docs
 
 # Start the FastAPI app directly with uvicorn
-ENTRYPOINT ["pixi", "run", "start"]
+ENTRYPOINT ["/bin/sh","-c","pixi run init-fews-connections & pixi run start"]
