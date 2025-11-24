@@ -183,7 +183,7 @@ def _setup_database_connection(db_path: str, cached_connection):
 
 
 def _setup_webservice_cache(
-    webservice_url: str | None, cached_db, enable_webservice_ingest: bool
+    webservice_url: str | None, cached_db, enable_webservice_ingest: bool, db_path: str
 ) -> tuple:
     """
     Setup webservice cache database and optionally ingest data.
@@ -204,10 +204,29 @@ def _setup_webservice_cache(
     if webservice_url is None:
         return None, None, None, None
 
-    # Create in-memory DuckDB database
-    cache_db = duckdb.connect(database=":memory:", read_only=False)
+    # setup paths
+    db_dir = Path(db_path).parent / "webservice_cache"
+    db_dir.mkdir(parents=True, exist_ok=True)
+    unique_name = (
+        webservice_url.replace("http://", "").replace(":8080", "").replace("/", "")
+    )
+    # current_time = datetime.now().strftime("%Y%m%d%H%M%S")
+    # current_time = current_time.replace(" ","").replace(":","").replace("-","")
+    db_file = db_dir / f"cache_{unique_name}.duckdb"
+
+    if db_file.exists():  # in case it is already there, use it
+        return_cached_db = True
+        logger.info(f"Using existing webservice cache database: {db_file}")
+    else:
+        return_cached_db = False
+
+    # make connection to stored DuckDB database
+    cache_db = duckdb.connect(database=str(db_file), read_only=False)
     cache_db.execute("INSTALL spatial;")
     cache_db.execute("LOAD spatial;")
+
+    if return_cached_db:
+        return cache_db, None, None, None
 
     # Optionally ingest data (this is the slow part)
     locations_output = None
@@ -336,7 +355,10 @@ def get_runtime_ctx(user_settings: dict) -> RunContext:
     # Setup webservice cache (creates in-memory DB, optionally ingests data)
     cache_db, locations_output, parameters_output, series_headers_output = (
         _setup_webservice_cache(
-            webservice_url, cache.cache_FewsWebServices_db, enable_webservice_ingest
+            webservice_url,
+            cache.cache_FewsWebServices_db,
+            enable_webservice_ingest,
+            db_path,
         )
     )
 
