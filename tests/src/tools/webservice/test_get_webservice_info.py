@@ -45,5 +45,5 @@ def test_get_webservice_info(service):
 
     # Assert the output is of the expected type
     assert isinstance(output.webservice_name, str)
-    assert isinstance(output.current_time, str)
+    assert isinstance(output.current_date, str)
     assert isinstance(output.description, str)
