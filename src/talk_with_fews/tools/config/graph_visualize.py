@@ -11,8 +11,12 @@ from talk_with_fews.models.base import Deps
 from talk_with_fews.models.config.timeseries_describe import DescribeTimeSeriesInput
 from talk_with_fews.models.config.transformation_details import (
     TransformationDetailsInput,
+    TransformationDetailsOutput,
 )
-from talk_with_fews.models.config.workflow_details import WorkflowDetailsInput
+from talk_with_fews.models.config.workflow_details import (
+    WorkflowDetailsInput,
+    WorkflowDetailsOutput,
+)
 from talk_with_fews.tools.config.timeseries_describe import describe_timeseries
 from talk_with_fews.tools.config.transformation_details import (
     get_transformation_details,
@@ -118,17 +122,17 @@ async def visualize_graph(
         if level < max_depth and time_series.transformations:
             for trans in time_series.transformations:
                 # Add transformation node
-                trafo_label = f"{trans.module_config}|{trans.trafo_desc}"
+                trafo_label = f"{trans.module_config}|{trans.trafo_description}"
                 if add_node(
                     "transformation",
-                    trans.trafo_id,
+                    trans.trafo_idx,
                     trafo_label,
                     {"order": str(trans.ord_nr)},
                     level + 1,
                 ):
                     # Add edge from time series to transformation
                     add_edge(
-                        tss_id, trans.trafo_id, "used_by", f"in {trans.module_config}"
+                        tss_id, trans.trafo_idx, "used_by", f"in {trans.module_config}"
                     )
 
                     # Get linked time series
@@ -138,7 +142,7 @@ async def visualize_graph(
                             "timeseries", 0, linked_label, {}, level + 2
                         ):  # ID 0 for linked time series
                             add_edge(
-                                trans.trafo_id,
+                                trans.trafo_idx,
                                 0,
                                 "produces",
                                 f"out {trans.module_config}",
@@ -146,11 +150,11 @@ async def visualize_graph(
 
         return True
 
-    async def get_transformation_node(trafo_id: int, level: int = 0) -> bool:
+    async def get_transformation_node(trafo_idx: int, level: int = 0) -> bool:
         """Get transformation node and its relationships using get_transformation_details tool."""
         # Get transformation details
-        trafo_result = await get_transformation_details(
-            ctx, TransformationDetailsInput(transformation_id=trafo_id)
+        trafo_result: TransformationDetailsOutput = await get_transformation_details(
+            ctx, TransformationDetailsInput(transformation_id=trafo_idx)
         )
         if not trafo_result.results:
             return False
@@ -158,11 +162,11 @@ async def visualize_graph(
         trafo = trafo_result.results[0]
 
         # Create node label and properties
-        label = f"{trafo.modins}|{trafo.desc}"
+        label = f"{trafo.modins}|{trafo.description}"
         properties = {"order": str(trafo.ord_nr)}
 
         # Add the node
-        if not add_node("transformation", trafo.id, label, properties, level):
+        if not add_node("transformation", trafo.idx, label, properties, level):
             return False
 
         # Get time series links if we haven't reached max depth
@@ -173,11 +177,11 @@ async def visualize_graph(
                     # Add appropriate edge based on direction
                     if link.inout == "in":
                         add_edge(
-                            link.tss_id, trafo.id, "input_to", f"input {trafo.modins}"
+                            link.tss_id, trafo.idx, "input_to", f"input {trafo.modins}"
                         )
                     else:
                         add_edge(
-                            trafo.id, link.tss_id, "produces", f"output {trafo.modins}"
+                            trafo.idx, link.tss_id, "produces", f"output {trafo.modins}"
                         )
 
         return True
@@ -185,7 +189,7 @@ async def visualize_graph(
     async def get_workflow_node(workflow_id: int, level: int = 0) -> bool:
         """Get workflow node and its relationships using get_workflow_details tool."""
         # Get workflow details
-        workflow_result = await get_workflow_details(
+        workflow_result: WorkflowDetailsOutput = await get_workflow_details(
             ctx, WorkflowDetailsInput(workflow_id=workflow_id)
         )
         if not workflow_result.results:
@@ -195,7 +199,7 @@ async def visualize_graph(
 
         # Create node label and properties
         label = workflow.wf_id
-        properties = {"description": workflow.desc}
+        properties = {"description": workflow.description}
 
         # Add the node
         if not add_node("workflow", workflow.id, label, properties, level):

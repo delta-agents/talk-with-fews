@@ -57,8 +57,8 @@ class Transformation(BaseModel):
     according to specific rules defined in a module configuration.
     """
 
-    trafo_id: int = Field(..., description="Unique identifier of the transformation")
-    trafo_desc: str = Field(
+    trafo_idx: int = Field(..., description="Unique identifier of the transformation")
+    trafo_description: str = Field(
         ..., description="Description of what the transformation does"
     )
     ord_nr: int = Field(

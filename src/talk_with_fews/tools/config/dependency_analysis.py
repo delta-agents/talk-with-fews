@@ -33,12 +33,12 @@ async def analyze_dependencies(
         WITH producers AS (
             -- Find transformations that produce this time series
             SELECT
-                t.id as trafo_id, t.desc as trafo_desc, t.ord_nr,
+                t.idx as trafo_idx, t.description as trafo_desc, t.ord_nr,
                 mc.id as module_config_id, mc.modins as module_config,
-                cs.id as workflow_id, cs.wf_id as workflow_name, cs.desc as workflow_desc,
+                cs.id as workflow_id, cs.wf_id as workflow_name, cs.description as workflow_desc,
                 'out' as link_type
             FROM trafos t
-            JOIN links l ON t.id = l.trafo_id
+            JOIN links l ON t.idx = l.trafo_idx
             JOIN modins_calls mc ON t.mic_id = mc.id
             JOIN call_stacks cs ON mc.call_stack_id = cs.id
             WHERE l.tss_id = {input.entity_id} AND l.inout = 'out'
@@ -46,12 +46,12 @@ async def analyze_dependencies(
         consumers AS (
             -- Find transformations that consume this time series
             SELECT
-                t.id as trafo_id, t.desc as trafo_desc, t.ord_nr,
+                t.idx as trafo_idx, t.description as trafo_desc, t.ord_nr,
                 mc.id as module_config_id, mc.modins as module_config,
-                cs.id as workflow_id, cs.wf_id as workflow_name, cs.desc as workflow_desc,
+                cs.id as workflow_id, cs.wf_id as workflow_name, cs.description as workflow_desc,
                 'in' as link_type
             FROM trafos t
-            JOIN links l ON t.id = l.trafo_id
+            JOIN links l ON t.idx = l.trafo_idx
             JOIN modins_calls mc ON t.mic_id = mc.id
             JOIN call_stacks cs ON mc.call_stack_id = cs.id
             WHERE l.tss_id = {input.entity_id} AND l.inout = 'in'
@@ -71,7 +71,7 @@ async def analyze_dependencies(
                 'in' as link_type
             FROM ts_sets ts
             JOIN links l ON ts.id = l.tss_id
-            WHERE l.trafo_id = {input.entity_id} AND l.inout = 'in'
+            WHERE l.trafo_idx = {input.entity_id} AND l.inout = 'in'
         ),
         outputs AS (
             -- Find output time series
@@ -80,7 +80,7 @@ async def analyze_dependencies(
                 'out' as link_type
             FROM ts_sets ts
             JOIN links l ON ts.id = l.tss_id
-            WHERE l.trafo_id = {input.entity_id} AND l.inout = 'out'
+            WHERE l.trafo_idx = {input.entity_id} AND l.inout = 'out'
         )
         SELECT * FROM inputs
         UNION ALL
@@ -171,14 +171,14 @@ async def analyze_dependencies(
         for row in result.results:
             if row["link_type"] == "in":
                 markdown_content += (
-                    f"| {row['id']} | {row['wf_id']} | {row['desc']} |\n"
+                    f"| {row['id']} | {row['wf_id']} | {row['description']} |\n"
                 )
 
         markdown_content += "\n### Callees\n| Workflow ID | Name | Description |\n|------------|------|-------------|\n"
         for row in result.results:
             if row["link_type"] == "out":
                 markdown_content += (
-                    f"| {row['id']} | {row['wf_id']} | {row['desc']} |\n"
+                    f"| {row['id']} | {row['wf_id']} | {row['description']} |\n"
                 )
 
     return DependencyAnalysisOutput(

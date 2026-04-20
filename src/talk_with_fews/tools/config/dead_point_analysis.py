@@ -53,12 +53,12 @@ async def analyze_dead_points(
             )
         )
         SELECT dp.*,
-               t.id as trafo_id, t.desc as trafo_desc,
+               t.idx as trafo_idx, t.description as trafo_description
                mc.id as module_config_id, mc.modins as module_config,
                cs.id as workflow_id, cs.wf_id as workflow_name
         FROM dead_points dp
         LEFT JOIN links l ON dp.id = l.tss_id AND l.inout = 'out'
-        LEFT JOIN trafos t ON l.trafo_id = t.id
+        LEFT JOIN trafos t ON l.trafo_idx = t.idx
         LEFT JOIN modins_calls mc ON t.mic_id = mc.id
         LEFT JOIN call_stacks cs ON mc.call_stack_id = cs.id
         ORDER BY dp.modins, dp.parid
@@ -121,11 +121,11 @@ async def analyze_dead_points(
             id_list = ", ".join(str(id) for id in dead_point_ids)
 
             producers_query = f"""
-            SELECT l.tss_id, t.id AS trafo_id, t.desc AS trafo_desc,
+            SELECT l.tss_id, t.idx AS trafo_idx, t.description AS trafo_description,
                   m.modins AS module_instance, m.id as module_config_id,
                   c.wf_id AS workflow_id
             FROM links l
-            JOIN trafos t ON l.trafo_id = t.id
+            JOIN trafos t ON l.trafo_idx = t.idx
             JOIN modins_calls m ON t.mic_id = m.id
             JOIN call_stacks c ON m.call_stack_id = c.id
             WHERE l.tss_id IN ({id_list})
@@ -145,8 +145,8 @@ async def analyze_dead_points(
                     producers[tss_id].append(
                         DeadPointProducer(
                             tss_id=row["tss_id"],
-                            trafo_id=row["trafo_id"],
-                            trafo_desc=row["trafo_desc"],
+                            trafo_idx=row["trafo_idx"],
+                            trafo_desc=row["trafo_description"],
                             module_instance=row["module_instance"],
                             workflow_id=row["workflow_id"],
                         )

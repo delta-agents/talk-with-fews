@@ -118,20 +118,22 @@ def generate_mermaid_diagram(results: List[Dict[str, Any]], diagram_type: str) -
         diagram = "```mermaid\nflowchart LR\n"
 
         for i, row in enumerate(results):
-            if "trafo_id" in row and "tss_id" in row:
-                trafo_id = f"T{row['trafo_id']}"
+            if "trafo_idx" in row and "tss_id" in row:
+                trafo_idx = f"T{row['trafo_idx']}"
                 tss_id = f"TS{row['tss_id']}"
 
-                trafo_label = row.get("trafo_desc", f"Transformation {row['trafo_id']}")
+                trafo_label = row.get(
+                    "trafo_desc", f"Transformation {row['trafo_idx']}"
+                )
                 tss_label = row.get("parid", f"TimeSeries {row['tss_id']}")
 
-                diagram += f"  {trafo_id}[{trafo_label}]\n"
+                diagram += f"  {trafo_idx}[{trafo_label}]\n"
                 diagram += f"  {tss_id}[{tss_label}]\n"
 
                 if row.get("inout") == "in":
-                    diagram += f"  {tss_id} --> {trafo_id}\n"
+                    diagram += f"  {tss_id} --> {trafo_idx}\n"
                 else:
-                    diagram += f"  {trafo_id} --> {tss_id}\n"
+                    diagram += f"  {trafo_idx} --> {tss_id}\n"
 
         diagram += "```"
         return diagram
@@ -145,7 +147,7 @@ def generate_mermaid_diagram(results: List[Dict[str, Any]], diagram_type: str) -
             node_label = ", ".join(
                 f"{k}: {v}"
                 for k, v in row.items()
-                if k in ["id", "desc", "wf_id", "parid"]
+                if k in ["id", "description", "wf_id", "parid"]
             )
 
             diagram += f"  {node_id}[{node_label}]\n"

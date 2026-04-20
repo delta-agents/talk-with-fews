@@ -26,8 +26,8 @@ class DeadPointProducer(BaseModel):
     """Model representing a transformation that produces a dead point."""
 
     tss_id: int = Field(..., description="ID of the time series")
-    trafo_id: int = Field(..., description="ID of the transformation")
-    trafo_desc: str = Field(..., description="Description of the transformation")
+    trafo_idx: int = Field(..., description="ID of the transformation")
+    trafo_description: str = Field(..., description="Description of the transformation")
     module_instance: str = Field(
         ..., description="Module instance containing the transformation"
     )

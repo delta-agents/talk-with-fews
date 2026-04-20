@@ -18,7 +18,7 @@ class WorkflowDetails(BaseModel):
 
     id: int = Field(..., description="Unique identifier of the workflow")
     wf_id: str = Field(..., description="Name of the workflow")
-    desc: str = Field(..., description="Description of the workflow's purpose")
+    description: str = Field(..., description="Description of the workflow's purpose")
     wffn: str = Field(..., description="Workflow function name")
     module_calls: List[ModuleInstanceCall] = Field(
         ..., description="List of module instance calls in this workflow"

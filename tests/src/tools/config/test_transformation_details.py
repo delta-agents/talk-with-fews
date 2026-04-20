@@ -26,4 +26,4 @@ def test_transformation_details():
     assert output.results is not None
     assert len(output.results) == 1  # one transformation expected
     transformation: TransformationDetails = output.results[0]
-    assert transformation.id == index
+    assert transformation.idx == index

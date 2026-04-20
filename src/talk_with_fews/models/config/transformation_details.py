@@ -17,8 +17,10 @@ class TransformationDetails(BaseModel):
     according to specific rules defined in a module configuration.
     """
 
-    id: int = Field(..., description="Unique identifier of the transformation")
-    desc: str = Field(..., description="Description of what the transformation does")
+    idx: int = Field(..., description="Unique identifier of the transformation")
+    description: str = Field(
+        ..., description="Description of what the transformation does"
+    )
     ord_nr: int = Field(
         ...,
         description="Order number indicating the sequence in the module configuration",

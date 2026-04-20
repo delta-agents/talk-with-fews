@@ -28,18 +28,18 @@ async def search_transformations(
     # Build the base query
     query = """
     SELECT DISTINCT
-        t.id,
-        t.desc,
+        t.idx,
+        t.description,
         t.ord_nr,
         t.mic_id,
         mc.modins,
         cs.id as workflow_id,
         cs.wf_id as workflow_name,
-        cs.desc as workflow_desc
+        cs.description as workflow_desc
     FROM trafos t
     JOIN modins_calls mc ON t.mic_id = mc.id
     JOIN call_stacks cs ON mc.call_stack_id = cs.id
-    WHERE t.desc LIKE ?
+    WHERE t.description LIKE ?
     """
     params = [f"%{input.description_pattern}%"]
 

@@ -28,17 +28,17 @@ async def find_workflow_call_hierarchy(
 
     query = f"""
     WITH RECURSIVE workflow_hierarchy AS (
-        SELECT id, wf_id, desc, parent_id, 0 AS level
+        SELECT id, wf_id, description, parent_id, 0 AS level
         FROM call_stacks
         WHERE id = {root_workflow_id}
 
         UNION ALL
 
-        SELECT cs.id, cs.wf_id, cs.desc, cs.parent_id, wh.level + 1
+        SELECT cs.id, cs.wf_id, cs.description, cs.parent_id, wh.level + 1
         FROM call_stacks cs
         JOIN workflow_hierarchy wh ON cs.parent_id = wh.id
     )
-    SELECT id, wf_id, desc, parent_id, level
+    SELECT id, wf_id, description, parent_id, level
     FROM workflow_hierarchy
     ORDER BY level, wf_id
     """

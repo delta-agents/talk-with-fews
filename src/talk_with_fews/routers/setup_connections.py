@@ -208,7 +208,10 @@ def _setup_webservice_cache(
     db_dir = Path(db_path).parent / "webservice_cache"
     db_dir.mkdir(parents=True, exist_ok=True)
     unique_name = (
-        webservice_url.replace("http://", "").replace(":8080", "").replace("/", "")
+        webservice_url.replace("http://", "")
+        .replace("https://", "")
+        .replace(":8080", "")
+        .replace("/", "")
     )
     # current_time = datetime.now().strftime("%Y%m%d%H%M%S")
     # current_time = current_time.replace(" ","").replace(":","").replace("-","")
