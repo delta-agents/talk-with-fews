@@ -53,7 +53,7 @@ async def analyze_dead_points(
             )
         )
         SELECT dp.*,
-               t.idx as trafo_idx, t.description as trafo_description
+               t.idx as trafo_idx, t.description as trafo_description,
                mc.id as module_config_id, mc.modins as module_config,
                cs.id as workflow_id, cs.wf_id as workflow_name
         FROM dead_points dp
@@ -146,7 +146,7 @@ async def analyze_dead_points(
                         DeadPointProducer(
                             tss_id=row["tss_id"],
                             trafo_idx=row["trafo_idx"],
-                            trafo_desc=row["trafo_description"],
+                            trafo_description=row["trafo_description"],
                             module_instance=row["module_instance"],
                             workflow_id=row["workflow_id"],
                         )
@@ -235,7 +235,7 @@ Found {len(dead_points)} dead points across {len(module_counts)} modules.
             if producers_info:
                 for prod in producers_info:
                     ts_desc = format_timeseries_description(dp.model_dump())
-                    markdown_content += f"| {dp.id} | {ts_desc} | {prod.trafo_desc} | {prod.module_instance} | {prod.workflow_id} |\n"
+                    markdown_content += f"| {dp.id} | {ts_desc} | {prod.trafo_description} | {prod.module_instance} | {prod.workflow_id} |\n"
             else:
                 ts_desc = format_timeseries_description(dp.model_dump())
                 markdown_content += f"| {dp.id} | {ts_desc} | - | - | - |\n"
