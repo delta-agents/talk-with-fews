@@ -26,6 +26,7 @@ env/.static_tokens*.json
 # tests & CI
 .coverage
 .github/chatmodes
+.github/agents
 example code/*
 #logs
 logs/*.log
@@ -33,6 +34,8 @@ logs/*.log
 data/fews_schemas/*
 data/*.db3
 data/*/*.duckdb
+data/webservice_cache/cache_https
+data/webservice_cache/cache_*
 # Include specific PI schema files that are used within the notebook example
 !data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd
 !data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd

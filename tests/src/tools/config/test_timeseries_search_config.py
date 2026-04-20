@@ -15,7 +15,7 @@ def test_get_locations():
     # this is dependant on the FEWS web service being available indefinitely
     user_settings = setup_dot_env()
     # Create a mock RunContext and input
-    timeseries_search_input = TimeSeriesSearchInput(module_instance="im.wiwb.knmi")
+    timeseries_search_input = TimeSeriesSearchInput(module_instance="knmi")
     # Call the function
     ctx = get_runtime_ctx(user_settings)
     output: TimeSeriesSearchOutput = asyncio.run(
@@ -26,4 +26,4 @@ def test_get_locations():
     assert isinstance(output, TimeSeriesSearchOutput)
     assert output.results is not None
     assert len(output.results) > 1  # Expecting many results
-    assert output.results[0].id == 142
+    assert output.results[0].id == 37

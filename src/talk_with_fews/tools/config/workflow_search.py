@@ -27,11 +27,11 @@ async def search_workflows(
         WorkflowSearchOutput: Matching workflows with formatted markdown content
     """
     query = f"""
-    SELECT cs.id, cs.wf_id, cs.desc,
+    SELECT cs.id, cs.wf_id, cs.description,
            GROUP_CONCAT(mc.id) as module_config_ids
     FROM call_stacks cs
     LEFT JOIN modins_calls mc ON cs.id = mc.call_stack_id
-    WHERE cs.wf_id LIKE '%{input.name_pattern}%' OR cs.desc LIKE '%{input.name_pattern}%'
+    WHERE cs.wf_id LIKE '%{input.name_pattern}%' OR cs.description LIKE '%{input.name_pattern}%'
     GROUP BY cs.id
     ORDER BY cs.wf_id
     """
@@ -43,7 +43,7 @@ async def search_workflows(
         WorkflowSearchResult(
             id=row["id"],
             wf_id=row["wf_id"],
-            desc=row["desc"],
+            desc=row["description"],
             module_config_ids=row["module_config_ids"].split(",")
             if row["module_config_ids"]
             else [],

@@ -31,9 +31,9 @@ async def get_workflow_details(
     """
     # Get workflow details, module calls, and their transformations
     query = f"""
-    SELECT cs.id, cs.wf_id, cs.desc, cs.wffn,
+    SELECT cs.id, cs.wf_id, cs.description, cs.wffn,
            mc.id as mic_id, mc.modins,
-           t.id as trafo_id, t.desc as trafo_desc, t.ord_nr
+           t.idx as trafo_idx, t.description as trafo_desc, t.ord_nr
     FROM call_stacks cs
     LEFT JOIN modins_calls mc ON cs.id = mc.call_stack_id
     LEFT JOIN trafos t ON mc.id = t.mic_id
@@ -54,7 +54,7 @@ async def get_workflow_details(
             workflow_data[workflow_id] = {
                 "id": row["id"],
                 "wf_id": row["wf_id"],
-                "desc": row["desc"],
+                "description": row["description"],
                 "wffn": row["wffn"],
                 "module_calls": {},
             }
@@ -67,20 +67,20 @@ async def get_workflow_details(
                     "transformations": [],
                 }
 
-            if row["trafo_id"]:  # Add transformation if it exists
+            if row["trafo_idx"]:  # Add transformation if it exists
                 workflow_data[workflow_id]["module_calls"][row["mic_id"]][
                     "transformations"
                 ].append(
                     {
-                        "id": row["trafo_id"],
-                        "desc": row["trafo_desc"],
+                        "id": row["trafo_idx"],
+                        "description": row["trafo_desc"],
                         "ord_nr": row["ord_nr"],
                     }
                 )
 
     # Create markdown content
     markdown_content = f"""## Workflow: {workflow_data[input.workflow_id]["wf_id"]}
-**Description:** {workflow_data[input.workflow_id]["desc"]}
+**Description:** {workflow_data[input.workflow_id]["description"]}
 
 ### Basic Information
 | Property | Value |
@@ -104,11 +104,9 @@ async def get_workflow_details(
                 markdown_content += "| Order | Transformation ID | Description |\n"
                 markdown_content += "|-------|------------------|-------------|\n"
                 for trafo in sorted(
-                    module_call["transformations"], key=lambda x: x["ord_nr"]
+                    module_call["transformations"], key=lambda x: x["description"]
                 ):
-                    markdown_content += (
-                        f"| {trafo['ord_nr']} | {trafo['id']} | {trafo['desc']} |\n"
-                    )
+                    markdown_content += f"| {trafo['ord_nr']} | {trafo['id']} | {trafo['description']} |\n"
             else:
                 markdown_content += "This module has no transformations.\n"
     else:
@@ -139,7 +137,7 @@ async def get_workflow_details(
                 ):
                     # Add transformation node
                     markdown_content += (
-                        f"    T{trafo['id']}[{trafo['desc']}]:::transformation\n"
+                        f"    T{trafo['id']}[{trafo['description']}]:::transformation\n"
                     )
                     # Connect module to transformation
                     markdown_content += f"    M{mic_id} --> T{trafo['id']}\n"

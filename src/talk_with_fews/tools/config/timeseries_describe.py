@@ -51,16 +51,16 @@ async def describe_timeseries(
     # Get transformations if requested
     if input.include_transformations:
         transformations_query = f"""
-        SELECT l.inout, t.id as trafo_id, t.desc as trafo_desc, t.ord_nr,
-               cs.id as workflow_id, cs.wf_id as workflow_name, cs.desc as workflow_desc,
+        SELECT l.inout, t.idx as trafo_idx, t.description as trafo_description, t.ord_nr,
+               cs.id as workflow_id, cs.wf_id as workflow_name, cs.description as workflow_desc,
                linked_ts.modins as linked_tss_modins, linked_ts.parid as linked_tss_parid, linked_ts.qualifiers as linked_tss_qualifiers,
                mc.modins as module_config,
                mc.id as module_config_id
         FROM links l
-        JOIN trafos t ON l.trafo_id = t.id
+        JOIN trafos t ON l.trafo_idx = t.idx
         JOIN modins_calls mc ON t.mic_id = mc.id
         JOIN call_stacks cs ON mc.call_stack_id = cs.id
-        JOIN links linked_l ON t.id = linked_l.trafo_id
+        JOIN links linked_l ON t.idx = linked_l.trafo_idx
             AND linked_l.tss_id != {input.timeseries_id}
         JOIN ts_sets linked_ts ON linked_l.tss_id = linked_ts.id
         WHERE l.tss_id = {input.timeseries_id}
@@ -95,7 +95,7 @@ async def describe_timeseries(
 |--------------|---------------|------|--------------|-------------|
 """
         for trans in time_series["transformations"]:
-            markdown_content += f"| {trans['module_config']} | {trans['trafo_desc']} | {trans['inout']} | {trans['workflow_name']} | {trans['workflow_desc']} |\n"
+            markdown_content += f"| {trans['module_config']} | {trans['trafo_description']} | {trans['inout']} | {trans['workflow_name']} | {trans['workflow_desc']} |\n"
     elif input.include_transformations:
         markdown_content += "### Transformations\nNo transformations found"
 

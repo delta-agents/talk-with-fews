@@ -30,13 +30,13 @@ async def get_transformation_details(
     """
     # Get transformation details and time series links
     query = f"""
-    SELECT t.id, t.desc, t.ord_nr, t.config_file, t.mic_id, mc.modins,
+    SELECT t.idx, t.description, t.ord_nr, t.config_file, t.mic_id, mc.modins,
            l.inout, ts.id as tss_id
     FROM trafos t
     JOIN modins_calls mc ON t.mic_id = mc.id
-    LEFT JOIN links l ON t.id = l.trafo_id
+    LEFT JOIN links l ON t.idx = l.trafo_idx
     LEFT JOIN ts_sets ts ON l.tss_id = ts.id
-    WHERE t.id = {input.transformation_id}
+    WHERE t.idx = {input.transformation_id}
     ORDER BY l.inout, ts.id
     """
 
@@ -48,11 +48,11 @@ async def get_transformation_details(
     # Group time series links by transformation
     transformation_data = {}
     for row in result.results:
-        trafo_id = row["id"]
-        if trafo_id not in transformation_data:
-            transformation_data[trafo_id] = {
-                "id": row["id"],
-                "desc": row["desc"],
+        trafo_idx = row["idx"]
+        if trafo_idx not in transformation_data:
+            transformation_data[trafo_idx] = {
+                "idx": row["idx"],
+                "description": row["description"],
                 "ord_nr": row["ord_nr"],
                 "config_file": row["config_file"],
                 "mic_id": row["mic_id"],
@@ -61,14 +61,14 @@ async def get_transformation_details(
             }
 
         if row["tss_id"]:  # Only add if there's a time series link
-            transformation_data[trafo_id]["time_series_links"].append(
+            transformation_data[trafo_idx]["time_series_links"].append(
                 {"inout": row["inout"], "tss_id": row["tss_id"]}
             )
 
     # Create markdown content
     markdown_content = f"""## Transformation Details
-**ID:** {transformation_data[input.transformation_id]["id"]}
-**Description:** {transformation_data[input.transformation_id]["desc"]}
+**ID:** {transformation_data[input.transformation_id]["idx"]}
+**Description:** {transformation_data[input.transformation_id]["description"]}
 **Config File:** {transformation_data[input.transformation_id]["config_file"]}
 
 ### Basic Information
@@ -115,7 +115,7 @@ This transformation processes the following time series:
     markdown_content += "\n### Transformation Flow\n```mermaid\ngraph LR\n"
 
     # Add transformation node
-    markdown_content += f"    T[{transformation_data[input.transformation_id]['desc']}]:::transformation\n"
+    markdown_content += f"    T[{transformation_data[input.transformation_id]['description']}]:::transformation\n"
 
     # Add input time series nodes and connections
     if input_ts:
