@@ -218,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ctx <span class="op">=</span> setup_dot_env_docs(download_schemas<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Download directory: ../data/fews_schemas
-Download completed: {'total_downloaded': 590, 'base_download_dir': '../data/fews_schemas', 'results': {'https://fews.wldelft.nl/schemas/version1.0/': {'downloaded_count': 295, 'local_directory': '../data/fews_schemas/fews_wldelft_nl'}, 'https://fewsdocs.deltares.nl/schemas/version1.0/': {'downloaded_count': 295, 'local_directory': '../data/fews_schemas/fewsdocs_deltares_nl'}}}</code></pre>
+Download completed: {'total_downloaded': 0, 'base_download_dir': '../data/fews_schemas', 'results': {'https://fews.wldelft.nl/schemas/version1.0/': {'downloaded_count': 0, 'local_directory': '../data/fews_schemas/fews_wldelft_nl'}, 'https://fewsdocs.deltares.nl/schemas/version1.0/': {'downloaded_count': 0, 'local_directory': '../data/fews_schemas/fewsdocs_deltares_nl'}}}</code></pre>
 </div>
 </div>
 </section>
@@ -267,13 +267,8 @@ Download completed: {'total_downloaded': 590, 'base_download_dir': '../data/fews
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;examples&gt;
-  &lt;is_valid&gt;False&lt;/is_valid&gt;
-  &lt;errors&gt;
-    &lt;example&gt;
-      &lt;reason&gt;Unexpected child with tag 'parameterId' at position 2. Tag 'locationId' expected.&lt;/reason&gt;
-      &lt;xpath&gt;Found direct parent 'TimeSeries' for 'series'&lt;/xpath&gt;
-    &lt;/example&gt;
-  &lt;/errors&gt;
+  &lt;is_valid&gt;True&lt;/is_valid&gt;
+  &lt;errors /&gt;
   &lt;warnings /&gt;
   &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/pi-schemas/pi_timeseries.xsd&lt;/schema_location&gt;
 &lt;/examples&gt;</code></pre>
@@ -342,15 +337,8 @@ Download completed: {'total_downloaded': 590, 'base_download_dir': '../data/fews
 <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(format_as_xml(xml_validation_output))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;examples&gt;
-  &lt;is_valid&gt;False&lt;/is_valid&gt;
-  &lt;errors&gt;
-    &lt;example&gt;
-      &lt;reason&gt;Validation failed: {'end': '0', 'unit': 'day'} with XsdAttributeGroup(['start', 'end', 'startOverrulable', 'endOverrulable', 'unit']):
-
-Reason: missing required attribute 'start'&lt;/reason&gt;
-      &lt;xpath&gt;Found indirect parent 'timeSeriesExportRun' for 'general'. Child 'export' can contain 'general'&lt;/xpath&gt;
-    &lt;/example&gt;
-  &lt;/errors&gt;
+  &lt;is_valid&gt;True&lt;/is_valid&gt;
+  &lt;errors /&gt;
   &lt;warnings /&gt;
   &lt;schema_location&gt;data/fews_schemas/fewsdocs_deltares_nl/timeSeriesExportRun.xsd&lt;/schema_location&gt;
 &lt;/examples&gt;</code></pre>
@@ -386,7 +374,7 @@ Reason: missing required attribute 'start'&lt;/reason&gt;
   &lt;exportTypeStandard&gt;example_value&lt;/exportTypeStandard&gt;
   &lt;exportType&gt;example_value&lt;/exportType&gt;
   &lt;serializerClassName&gt;example_value&lt;/serializerClassName&gt;
-  &lt;folder&gt;example_value&lt;/folder&gt;
+  &lt;folder/&gt;
   &lt;exportFileName&gt;
     &lt;name&gt;example_value&lt;/name&gt;
     &lt;useExternalLocationIdAsName&gt;true&lt;/useExternalLocationIdAsName&gt;
@@ -397,10 +385,10 @@ Reason: missing required attribute 'start'&lt;/reason&gt;
   &lt;encryptedPassword&gt;example_value&lt;/encryptedPassword&gt;
   &lt;exportMissingValue&gt;1.0&lt;/exportMissingValue&gt;
   &lt;exportMissingValueString&gt;example_value&lt;/exportMissingValueString&gt;
-  &lt;dataFeedId&gt;example_value&lt;/dataFeedId&gt;
+  &lt;dataFeedId/&gt;
   &lt;disableDataFeedInfo/&gt;
-  &lt;columnSeparator&gt;example_value&lt;/columnSeparator&gt;
-  &lt;decimalSeparator&gt;1.0&lt;/decimalSeparator&gt;
+  &lt;columnSeparator/&gt;
+  &lt;decimalSeparator/&gt;
 &lt;/general&gt;</code></pre>
 </div>
 </div>
@@ -467,23 +455,23 @@ Tip: Use the 'get_available_elements' tool to get a complete list of available e
   &lt;root_element&gt;{http://www.wldelft.nl/fews}timeSeriesExportRun&lt;/root_element&gt;
   &lt;target_element&gt;general&lt;/target_element&gt;
   &lt;available_elements&gt;
-    &lt;example&gt;attributeColumn&lt;/example&gt;
     &lt;example&gt;backupServerUrl&lt;/example&gt;
     &lt;example&gt;binDir&lt;/example&gt;
     &lt;example&gt;coldStartDataExportRelativeStartTime&lt;/example&gt;
     &lt;example&gt;columnSeparator&lt;/example&gt;
-    &lt;example&gt;commentColumn&lt;/example&gt;
     &lt;example&gt;connectionTimeOutMillis&lt;/example&gt;
     &lt;example&gt;convertAnnotationEnumerationPropertyValuesToLabels&lt;/example&gt;
     &lt;example&gt;convertDatum&lt;/example&gt;
     &lt;example&gt;convertValuesToEnumerationLabels&lt;/example&gt;
     &lt;example&gt;creationTime&lt;/example&gt;
-    &lt;example&gt;currentTimeFormattingString&lt;/example&gt;
     &lt;example&gt;dataFeedId&lt;/example&gt;
-    &lt;example&gt;dateColumn&lt;/example&gt;
-    &lt;example&gt;dateTimeColumn&lt;/example&gt;
+    &lt;example&gt;dateTimePattern&lt;/example&gt;
+    &lt;example&gt;dbChangeViewPeriod&lt;/example&gt;
+    &lt;example&gt;decimalSeparator&lt;/example&gt;
+    &lt;example&gt;description&lt;/example&gt;
+    &lt;example&gt;disableDataFeedInfo&lt;/example&gt;
   &lt;/available_elements&gt;
-  &lt;total_count&gt;93&lt;/total_count&gt;
+  &lt;total_count&gt;57&lt;/total_count&gt;
   &lt;limit&gt;15&lt;/limit&gt;
   &lt;offset&gt;0&lt;/offset&gt;
   &lt;has_more&gt;True&lt;/has_more&gt;
