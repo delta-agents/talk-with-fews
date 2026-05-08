@@ -15,7 +15,7 @@ class WorkflowSearchResult(BaseModel):
 
     id: int = Field(..., description="Unique identifier of the workflow")
     wf_id: str = Field(..., description="Name of the workflow")
-    desc: str = Field(..., description="Description of the workflow")
+    desc: str | None = Field(..., description="Description of the workflow")
     module_config_ids: List[str] = Field(
         ..., description="List of module configuration IDs in this workflow"
     )

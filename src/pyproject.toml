@@ -10,7 +10,7 @@ packages = ["talk_with_fews"]
 
 [project]
 name = "talk_with_fews"
-version = "0.0.1"
+version = "1.0.1"
 description = "Talk with FEWS install"
 readme = "README.md"
 license = {text = "GNU-GPL V3"}

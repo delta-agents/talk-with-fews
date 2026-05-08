@@ -73,7 +73,7 @@ class Transformation(BaseModel):
     )
     workflow_id: int = Field(..., description="Unique identifier of the workflow")
     workflow_name: str = Field(..., description="Name of the workflow")
-    workflow_desc: str = Field(..., description="Description of the workflow")
+    workflow_desc: str | None = Field(..., description="Description of the workflow")
     inout: str = Field(
         ...,
         description="Indicates if the time series is used as input ('in') or output ('out')",
