@@ -5,6 +5,8 @@ environments:
     - url: https://conda.anaconda.org/conda-forge/
     indexes:
     - https://pypi.org/simple
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
     packages:
       linux-64:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -11664,8 +11666,8 @@ packages:
   timestamp: 1733589854804
 - pypi: ./src
   name: talk-with-fews
-  version: 0.0.1
-  sha256: 8378d288dd5814184fe660551405450a626cf8233be6032ffb84ced583e0d0b9
+  version: 1.0.1
+  sha256: 2f525142532f68e07d3fc478bb66174aec76d74f7a8447b5d47858fd3e265743
   requires_dist:
   - python-dotenv
   - openai
@@ -11674,7 +11676,6 @@ packages:
   - streamlit
   - pytest
   - pytest-asyncio
-  editable: true
 - conda: https://conda.anaconda.org/conda-forge/win-64/tbb-2021.13.0-h62715c5_1.conda
   sha256: 03cc5442046485b03dd1120d0f49d35a7e522930a2ab82f275e938e17b07b302
   md5: 9190dd0a23d925f7602f9628b3aed511

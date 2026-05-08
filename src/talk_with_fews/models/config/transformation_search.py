@@ -18,7 +18,9 @@ class TransformationSearchResult(BaseModel):
     """
 
     id: int = Field(..., description="Unique identifier of the transformation")
-    desc: str = Field(..., description="Description of what the transformation does")
+    desc: str | None = Field(
+        ..., description="Description of what the transformation does"
+    )
     ord_nr: int = Field(
         ...,
         description="Order number indicating the sequence in the module configuration",
@@ -31,7 +33,7 @@ class TransformationSearchResult(BaseModel):
     )
     workflow_id: int = Field(..., description="Unique identifier of the workflow")
     workflow_name: str = Field(..., description="Name of the workflow")
-    workflow_desc: str = Field(..., description="Description of the workflow")
+    workflow_desc: str | None = Field(..., description="Description of the workflow")
 
 
 class TransformationSearchInput(LaxBaseModel):
