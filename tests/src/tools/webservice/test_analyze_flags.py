@@ -292,7 +292,7 @@ def test_analyze_series_flags_datetime_comparison_error(service):
     - PASS for actueelwaterbeeld (working service)
     - PASS for wsvv (datetime error has been fixed)
 
-    Issue: https://github.com/HKV-products-services/talk-with-fews/issues/76
+    Issue: https://github.com/delta-agents/talk-with-fews/issues/76
 
     The datetime comparison error has been fixed by properly handling
     timezone-naive datetimes in the validate_time_range function.
