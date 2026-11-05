@@ -3,7 +3,7 @@
         "client_id": "example",
         "FEWS_DB_PATH": "data/digiflow.db3",
         "FEWS_CONFIG_NAME": "Configuratie van FEWS digiflow",
-        "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
+        "FEWS_WEB_SERVICE_URL": "https://data.hkvfewsscheldestromen.nl:8443/FewsWebServices/",
         "FEWS_WEB_SERVICE_NAME": "Webservice van FEWS digiflow",
         "scopes": [
             "read:data"
