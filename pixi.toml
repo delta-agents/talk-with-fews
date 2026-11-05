@@ -5,7 +5,7 @@ description = "AI agents to talk with DelftFEWS"
 channels = ["conda-forge"]
 platforms = ["osx-arm64", "osx-64", "win-64", "linux-64"]
 readme = "README.md"
-license = "GPL-3.0"
+license = "GPL-3.0-or-later"
 license-file = "LICENSE"
 
 [tasks]
