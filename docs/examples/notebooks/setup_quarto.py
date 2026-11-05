@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from talk_with_fews.routers.setup_connections import get_runtime_ctx
 import logging
 import subprocess
 
@@ -27,6 +26,10 @@ def setup_dot_env_docs(download_schemas: bool = False):
         "scopes": ["read:data"],
     }
     os.chdir(work_dir)
+    # talk_with_fews loads env/ from the working directory when it is imported,
+    # so import it only after switching to the repo root.
+    from talk_with_fews.routers.setup_connections import get_runtime_ctx
+
     ctx = get_runtime_ctx(user_settings)
     if download_schemas:
         subprocess.run(["pixi", "run", "download-schemas"], check=True)
