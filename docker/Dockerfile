@@ -28,7 +28,7 @@ RUN mkdir -p /app/logs
 # Install dependencies
 RUN pixi install
 
-# TODO: Download schemas, zie https://github.com/HKV-products-services/talk-with-fews/issues/55
+# TODO: Download schemas, zie https://github.com/delta-agents/talk-with-fews/issues/55
 # RUN pixi run download-schemas
 
 # Expose the port your FastAPI app uses

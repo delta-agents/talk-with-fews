@@ -17,7 +17,7 @@ website:
         file: reference/index.qmd
     right:
       - icon: github
-        href: https://github.com/HKV-products-services/talk-with-fews
+        href: https://github.com/delta-agents/talk-with-fews
         aria-label: GitHub
       - text: "Contributing"
         file: contributing.qmd
