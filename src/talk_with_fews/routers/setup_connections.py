@@ -21,12 +21,23 @@ from starlette.requests import Request
 
 
 def setup_env():
-    """Load environment variables from a .env file located in the 'env' directory."""
-    env_dir = Path(__file__).parent.parent.parent.parent / "env"
+    """Load .env and the static tokens file from the 'env' directory.
+
+    The directory is ``TALK_WITH_FEWS_ENV_DIR`` if set, otherwise ``env`` in
+    the current working directory. It is not looked up next to this file,
+    so it also works when the package is installed from a wheel.
+    """
+    env_dir = Path(os.getenv("TALK_WITH_FEWS_ENV_DIR", "env"))
     load_dotenv(dotenv_path=env_dir / ".env")
-    return json.load(
-        open(env_dir / os.getenv("STATIC_TOKENS_FILE", ".static_tokens_example.json"))
+    tokens_file = env_dir / os.getenv(
+        "STATIC_TOKENS_FILE", ".static_tokens_example.json"
     )
+    if not tokens_file.exists():
+        raise FileNotFoundError(
+            f"Static tokens file not found: {tokens_file.resolve()}. "
+            "Run from the folder that contains env/, or set TALK_WITH_FEWS_ENV_DIR."
+        )
+    return json.loads(tokens_file.read_text())
 
 
 def get_user_settings(verifier) -> dict:
