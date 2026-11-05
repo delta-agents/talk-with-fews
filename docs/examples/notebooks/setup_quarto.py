@@ -22,7 +22,7 @@ def setup_dot_env_docs(download_schemas: bool = False):
     user_settings = {
         "client_id": "example",
         "FEWS_DB_PATH": "data/fews_config.db3",
-        "FEWS_WEB_SERVICE_URL": "https://actueelwaterbeeld-api.hkvservices.nl/FewsWebServices",
+        "FEWS_WEB_SERVICE_URL": "https://data.hkvfewsscheldestromen.nl:8443/FewsWebServices/",
         "scopes": ["read:data"],
     }
     os.chdir(work_dir)
